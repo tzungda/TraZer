@@ -219,6 +219,7 @@ void drawaxes(void)
 	glVertex3f(0.75, 0.0, -0.25);
 	glVertex3f(1.0, 0.0, 0.0);
 	glEnd();
+	glColor3ub(0, 255, 0);
 	glBegin(GL_LINE_STRIP);
 	glVertex3f(0.0, 0.0, 0.0);
 	glVertex3f(0.0, 1.0, 0.0);
@@ -229,6 +230,7 @@ void drawaxes(void)
 	glVertex3f(-0.25, 0.75, 0.0);
 	glVertex3f(0.0, 1.0, 0.0);
 	glEnd();
+	glColor3ub(0, 0, 255);
 	glBegin(GL_LINE_STRIP);
 	glVertex3f(0.0, 0.0, 0.0);
 	glVertex3f(0.0, 0.0, 1.0);
@@ -562,7 +564,15 @@ void screen_reshape(int width, int height)
 void screen_display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_LIGHTING);
 	drawmodel();
+
+	glDisable(GL_LIGHTING);
+	// draw axes
+	{
+		drawaxes();
+	}
+
 	glutSwapBuffers();
 
 }
