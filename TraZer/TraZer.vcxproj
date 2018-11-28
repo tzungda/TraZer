@@ -104,13 +104,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./;./Utilities;./Tracer/include;../external/freeglut/win64_vs2012/3.0.0/include;../external/glew/win64_vs2012/1.13.0/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;./Utilities;./Tracer/include;../external/freeglut/win64_vs2017/3.0.0/include;../external/glew/win64_vs2017/1.13.0/include</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\external\glew\win64_vs2012\1.13.0\debug\lib;..\external\freeglut\win64_vs2012\3.0.0\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\external\glew\win64_vs2017\1.13.0\debug\lib;..\external\freeglut\win64_vs2017\3.0.0\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freeglutd.lib;glew32d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
