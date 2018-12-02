@@ -104,14 +104,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./;./Utilities;./Tracer/include;../external/freeglut/win64_vs2017/3.0.0/include;../external/glew/win64_vs2017/1.13.0/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;./Utilities;./Tracer/include;../external/freeglut/win64_vs2017/3.0.0/include;../external/glew/win64_vs2017/1.13.0/include;./include</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\external\glew\win64_vs2017\1.13.0\debug\lib;..\external\freeglut\win64_vs2017\3.0.0\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglutd.lib;glew32d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\external\glew\win64_vs2017\1.13.0\release\lib;..\external\freeglut\win64_vs2017\3.0.0\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -152,14 +152,20 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="glView\source\tzGLLine.cpp" />
+    <ClCompile Include="glView\source\tzGLWorldCentre.cpp" />
     <ClCompile Include="ImageExport\source\bmp-utils.c" />
     <ClCompile Include="ImplicitPrimitives\source\tzImplicitPlane.cpp" />
     <ClCompile Include="ImplicitPrimitives\source\tzImplicitSphere.cpp" />
+    <ClCompile Include="source\tzObject.cpp" />
+    <ClCompile Include="source\tzTransform.cpp" />
+    <ClCompile Include="source\ViewManager.cpp" />
     <ClCompile Include="Tracer\source\tzShadeRec.cpp" />
     <ClCompile Include="Tracer\source\tzRay.cpp" />
     <ClCompile Include="Tracer\source\tzViewPlane.cpp" />
     <ClCompile Include="Tracer\source\tzWrold.cpp" />
     <ClCompile Include="TraZer.cpp" />
+    <ClCompile Include="tzTool\source\tzTool.cpp" />
     <ClCompile Include="Utilities\BBox.cpp" />
     <ClCompile Include="Utilities\Maths.cpp" />
     <ClCompile Include="Utilities\Matrix.cpp" />
@@ -173,14 +179,22 @@
     <ClCompile Include="Utilities\Vector3D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="glView\include\tzGLLine.h" />
+    <ClInclude Include="glView\include\tzGLWorldCentre.h" />
     <ClInclude Include="ImageExport\include\bmp-utils.h" />
     <ClInclude Include="ImplicitPrimitives\include\tzImplicitPlane.h" />
     <ClInclude Include="ImplicitPrimitives\include\tzImplicitSphere.h" />
-    <ClInclude Include="Interfaces\GeometricObject.h" />
+    <ClInclude Include="Include\Common.h" />
+    <ClInclude Include="Include\tzObject.h" />
+    <ClInclude Include="Include\tzTransform.h" />
+    <ClInclude Include="Include\ViewManager.h" />
+    <ClInclude Include="Interfaces\tzIGeometricObject.h" />
+    <ClInclude Include="Interfaces\tzIGLDraw.h" />
     <ClInclude Include="Tracer\include\tzShadeRec.h" />
     <ClInclude Include="Tracer\include\tzRay.h" />
     <ClInclude Include="Tracer\include\tzViewPlane.h" />
     <ClInclude Include="Tracer\include\tzWrold.h" />
+    <ClInclude Include="tzTool\include\tzTool.h" />
     <ClInclude Include="Utilities\BBox.h" />
     <ClInclude Include="Utilities\Constants.h" />
     <ClInclude Include="Utilities\Maths.h" />

@@ -1,4 +1,5 @@
-﻿#ifdef _MSC_VER
+﻿/*
+#ifdef _MSC_VER
 #include "GLEW/glew.h"
 #include "FreeGLUT/freeglut.h"
 #include <direct.h>
@@ -7,211 +8,205 @@
 #include <GLUT/glut.h>
 #include <unistd.h>
 #endif
+*/
+#include "Common.h"
+#include "ViewManager.h"
+#include "../glView/include/tzGLWorldCentre.h";
 
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <string>
-#include <algorithm>
-
-#include <math.h>
-
-
-#define SIZE_1		1
-#define SIZE_2		2
-#define MENU_EXIT   3
-
+using namespace glm;
 using namespace std;
 
-//Cell 代表控制UI
-typedef struct _cell {
-	int id;
-	int x, y;
-	float min, max;
-	float value;
-	float step;
-	char* info;
-	char* format;
-}cell;
-//Cell UI參數設定
-cell lookat[9] = {
-	{ 1, 180, 120, -5.0, 5.0, 0.0, 0.1,
-	"Specifies the X position of the eye point.", "%.2f" },
-	{ 2, 240, 120, -5.0, 5.0, 0.0, 0.1,
-	"Specifies the Y position of the eye point.", "%.2f" },
-	{ 3, 300, 120, -5.0, 5.0, 2.0, 0.1,
-	"Specifies the Z position of the eye point.", "%.2f" },
-	{ 4, 180, 160, -5.0, 5.0, 0.0, 0.1,
-	"Specifies the X position of the reference point.", "%.2f" },
-	{ 5, 240, 160, -5.0, 5.0, 0.0, 0.1,
-	"Specifies the Y position of the reference point.", "%.2f" },
-	{ 6, 300, 160, -5.0, 5.0, 0.0, 0.1,
-	"Specifies the Z position of the reference point.", "%.2f" },
-	{ 7, 180, 200, -2.0, 2.0, 0.0, 0.1,
-	"Specifies the X direction of the up vector.", "%.2f" },
-	{ 8, 240, 200, -2.0, 2.0, 1.0, 0.1,
-	"Specifies the Y direction of the up vector.", "%.2f" },
-	{ 9, 300, 200, -2.0, 2.0, 0.0, 0.1,
-	"Specifies the Z direction of the up vector.", "%.2f" },
-};
+#define PI				3.14159265359f
+#define RADIAN_TO_ANGLE (180.0f / PI)
+#define ANGLE_TO_RADIAN (PI / 180.0f)
 
-cell perspective[4] = {
-	{ 10, 180, 80, 1.0, 179.0, 60.0, 1.0,
-	"Specifies field of view angle (in degrees) in y direction.", "%.1f" },
-	{ 11, 240, 80, -3.0, 3.0, 1.0, 0.01,
-	"Specifies field of view in x direction (width/height).", "%.2f" },
-	{ 12, 300, 80, 0.1, 10.0, 1.0, 0.05,
-	"Specifies distance from viewer to near clipping plane.", "%.1f" },
-	{ 13, 360, 80, 0.1, 10.0, 10.0, 0.05,
-	"Specifies distance from viewer to far clipping plane.", "%.1f" },
-};
+#define SHADOW_OTHO	15.0f
+const float SHADOW_NEAR_PLANE = 0.01f;
+const float SHADOW_FAR_PLANE = 50.0f;
 
-cell frustum[6] = {
-	{ 14, 120, 80, -10.0, 10.0, -1.0, 0.1,
-	"Specifies coordinate for left vertical clipping plane.", "%.2f" },
-	{ 15, 180, 80, -10.0, 10.0, 1.0, 0.1,
-	"Specifies coordinate for right vertical clipping plane.", "%.2f" },
-	{ 16, 240, 80, -10.0, 10.0, -1.0, 0.1,
-	"Specifies coordinate for bottom vertical clipping plane.", "%.2f" },
-	{ 17, 300, 80, -10.0, 10.0, 1.0, 0.1,
-	"Specifies coordinate for top vertical clipping plane.", "%.2f" },
-	{ 18, 360, 80, 0.1, 5.0, 1.0, 0.01,
-	"Specifies distance to near clipping plane.", "%.2f" },
-	{ 19, 420, 80, 0.1, 5.0, 3.5, 0.01,
-	"Specifies distance to far clipping plane.", "%.2f" },
-};
-
-cell ortho[6] = {
-	{ 14, 120, 80, -10.0, 10.0, -1.0, 0.1,
-	"Specifies coordinate for left vertical clipping plane.", "%.2f" },
-	{ 15, 180, 80, -10.0, 10.0, 1.0, 0.1,
-	"Specifies coordinate for right vertical clipping plane.", "%.2f" },
-	{ 16, 240, 80, -10.0, 10.0, -1.0, 0.1,
-	"Specifies coordinate for bottom vertical clipping plane.", "%.2f" },
-	{ 17, 300, 80, -10.0, 10.0, 1.0, 0.1,
-	"Specifies coordinate for top vertical clipping plane.", "%.2f" },
-	{ 18, 360, 80, -5.0, 5.0, 1.0, 0.01,
-	"Specifies distance to near clipping plane.", "%.2f" },
-	{ 19, 420, 80, -5.0, 5.0, 3.5, 0.01,
-	"Specifies distance to far clipping plane.", "%.2f" },
-};
-
-
-//鏡頭模式
-enum {
-	PERSPECTIVE, FRUSTUM, ORTHO
-}mode;
-
-//是否畫模型?
-GLboolean world_draw = GL_TRUE;
-
-//選擇的cell
-GLint selection = 0;
-//繪製的模型
-char* name = "SolidTeapot";
-//Draw Function ALL
-void redisplay_all(void);
-
-//projection matrix
-GLdouble projection[16], modelview[16], inverse[16];
-
-//Window ID
-GLuint window, world, screen, command;
-//畫面配置參數
-GLuint sub_width = 256, sub_height = 256;
-//UI字型
-GLvoid *font_style = GLUT_BITMAP_TIMES_ROMAN_10;
-//設定字型
-void setfont(char* name, int size) {
-	font_style = GLUT_BITMAP_HELVETICA_10;
-	if (strcmp(name, "helvetica") == 0) {
-		if (size == 12)
-			font_style = GLUT_BITMAP_HELVETICA_12;
-		else if (size == 18)
-			font_style = GLUT_BITMAP_HELVETICA_18;
-	}
-	else if (strcmp(name, "times roman") == 0) {
-		font_style = GLUT_BITMAP_TIMES_ROMAN_10;
-		if (size == 24)
-			font_style = GLUT_BITMAP_TIMES_ROMAN_24;
-	}
-	else if (strcmp(name, "8x13") == 0) {
-		font_style = GLUT_BITMAP_8_BY_13;
-	}
-	else if (strcmp(name, "9x15") == 0) {
-		font_style = GLUT_BITMAP_9_BY_15;
-	}
-}
-//Draw Function string
-void drawstr(GLuint x, GLuint y, char* format, ...)
+struct
 {
-	va_list args;
-	char buffer[255], *s;
+	GLint  model_matrix;
+	GLint  view_matrix;
+	GLint  projection_matrix;
+	GLint  light_matrix;
+	GLint  lightPos;
+	GLint  viewPos;
+	GLint  useShadowmap;
+	GLint  useBias;
+	GLint  pcfKernel;
+} blinnPhongShaderUniforms;
 
-	va_start(args, format);
-	vsprintf_s(buffer, format, args);
-	va_end(args);
-
-	glRasterPos2i(x, y);
-	for (s = buffer; *s; s++)
-		glutBitmapCharacter(font_style, *s);
-}
-//Draw Function Cell
-void cell_draw(cell* cell)
+struct
 {
-	glColor3ub(0, 255, 128);
-	if (selection == cell->id) {
-		glColor3ub(255, 255, 0);
-		drawstr(10, 240, cell->info);
-		glColor3ub(255, 0, 0);
+	GLint  model_matrix;
+	GLint  view_matrix;
+	GLint  projection_matrix;
+} simpleShaderPrograms;
+
+struct
+{
+	GLint model_matrix;
+	GLint view_matrix;
+	GLint projection_matrix;
+	GLint light_matrix;
+	GLint lightPos;
+	GLint viewPos;
+	GLint ambient;
+	GLint diffuse;
+	GLint specular;
+	GLint shininess;
+
+	GLint hasAmbientTex;
+	GLint hasDiffuseTex;
+	GLint hasSpecularTex;
+
+} phongShaderPrograms;
+
+struct
+{
+	GLint model_matrix;
+	GLint view_matrix;
+	GLint projection_matrix;
+	GLint line_color;
+
+} lineShaderPrograms;
+
+mat4			proj_matrix;		//projection matrix
+float			aspect;
+vec3			m_lightPos = vec3(5, 5, 0);
+
+//UI
+//TwBar			*bar;
+
+GLuint			m_mainWindow;
+vec2			m_screenSize;
+ViewManager		m_camera;
+
+
+//material info
+typedef struct
+{
+	string name;
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	vec3 transmittance;
+	vec3 emission;
+	GLfloat shininess;
+	GLfloat ior;      // index of refraction
+	GLfloat dissolve; // 1 == opaque; 0 == fully transparent
+					  // illumination model (see http://www.fileformat.info/format/material/)
+	int illum;
+
+	int dummy; // Suppress padding warning.
+
+	GLuint m_tex_ambient;
+	GLuint m_tex_diffuse;
+	GLuint m_tex_specular;
+	GLuint m_tex_specular_highlight;
+	GLuint m_tex_bump;
+	GLuint m_tex_displacement;
+	GLuint m_tex_alpha;
+
+	GLboolean hasAmbientTex;
+	GLboolean hasDiffuseTex;
+	GLboolean hasSpecularTex;
+
+} Material;
+
+
+GLuint			phongShaderProgram;
+map<string, vector<Material>> m_materials;//mesh name
+
+
+										  //model info
+typedef struct
+{
+	string name;
+	GLuint vao;
+	GLuint vbo[3];
+	GLuint ebo;
+	int materialId;
+	int indexCount;
+	GLuint m_texture;
+
+	vec3 position = vec3(0.0f);
+	vec3 rotation = vec3(0.0f);
+	vec3 scale = vec3(1.0f);
+
+	string shaderName = "phong";
+
+	mat4 getTransformationMatrix()
+	{
+		mat4 transformationMatrix = mat4(1.0f);
+		transformationMatrix = glm::translate(transformationMatrix, position);
+		transformationMatrix = glm::rotate(transformationMatrix, rotation[2] * ANGLE_TO_RADIAN, vec3(0.0, 0.0, 1.0));
+		transformationMatrix = glm::rotate(transformationMatrix, rotation[0] * ANGLE_TO_RADIAN, vec3(1.0, 0.0, 0.0));
+		transformationMatrix = glm::rotate(transformationMatrix, rotation[1] * ANGLE_TO_RADIAN, vec3(0.0, 1.0, 0.0));
+		transformationMatrix = glm::scale(transformationMatrix, scale);
+		return transformationMatrix;
 	}
 
-	drawstr(cell->x, cell->y, cell->format, cell->value);
-}
-//Cell 互動事件
-int cell_hit(cell* cell, int x, int y)
-{
-	if (x > cell->x && x < cell->x + 60 &&
-		y > cell->y - 30 && y < cell->y + 10)
-		return cell->id;
-	return 0;
-}
-//Cell 更新變數
-void cell_update(cell* cell, int update)
-{
-	if (selection != cell->id)
-		return;
+	void Draw()
+	{
+		map<string, vector<Material>>::iterator found = m_materials.find(name);
+		if (found != m_materials.end())
+		{
+			Material mat = found->second[materialId];
+			glBindVertexArray(vao);
+			glUniformMatrix4fv(phongShaderPrograms.model_matrix, 1, GL_FALSE, value_ptr(getTransformationMatrix()));
+			glUniform3fv(phongShaderPrograms.ambient, 1, value_ptr(mat.ambient));
+			glUniform3fv(phongShaderPrograms.diffuse, 1, value_ptr(mat.diffuse));
+			glUniform3fv(phongShaderPrograms.specular, 1, value_ptr(mat.specular));
+			glUniform1f(phongShaderPrograms.shininess, (mat.shininess));
 
-	cell->value += update * cell->step;
+			glUniform1i(phongShaderPrograms.hasAmbientTex, (mat.hasAmbientTex));
+			if (mat.hasAmbientTex)
+			{
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, mat.m_tex_ambient);
+			}
+			glUniform1i(phongShaderPrograms.hasDiffuseTex, (mat.hasDiffuseTex));
+			if (mat.hasDiffuseTex)
+			{
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, mat.m_tex_diffuse);
+			}
+			glUniform1i(phongShaderPrograms.hasSpecularTex, (mat.hasSpecularTex));
+			if (mat.hasSpecularTex)
+			{
+				glActiveTexture(GL_TEXTURE2);
+				glBindTexture(GL_TEXTURE_2D, mat.m_tex_specular);
+			}
+			//glPolygonMode(GL_FRONT, GL_LINE);
+			//glPolygonMode(GL_BACK, GL_LINE);
+			//glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+			glDrawArrays(GL_TRIANGLES, 0, indexCount);
+			glBindVertexArray(0);
+		}
+		else
+		{
+			printf("Material name : %s Not Find!!\n", name.c_str() );
+		}
 
-	if (cell->value < cell->min)
-		cell->value = cell->min;
-	else if (cell->value > cell->max)
-		cell->value = cell->max;
-
-}
-//取的UI變數值
-void cell_vector(float* dst, cell* cell, int num)
-{
-	while (--num >= 0)
-		dst[num] = cell[num].value;
-}
-//繪製模型
-void drawmodel(void) {
-	if (name == "SolidTeapot") {
-		glutSolidTeapot(0.5);
 	}
-	else {
-		glutWireTeapot(0.5);
-	}
-}
-//繪製座標軸
+
+} Shape;
+
+//---------------------------------------------------------------------------------------------------
+tzGLWorldCentre gWorldCentre;
+GLuint			lineShaderProgram;
+//---------------------------------------------------------------------------------------------------
+
+vector<Shape>	m_shapes;
+
 void drawaxes(void)
 {
 	glColor3ub(255, 0, 0);
 	glBegin(GL_LINE_STRIP);
 	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(1.0, 0.0, 0.0);
+	glVertex3f(50.0, 0.0, 0.0);
 	glVertex3f(0.75, 0.25, 0.0);
 	glVertex3f(0.75, -0.25, 0.0);
 	glVertex3f(1.0, 0.0, 0.0);
@@ -222,7 +217,7 @@ void drawaxes(void)
 	glColor3ub(0, 255, 0);
 	glBegin(GL_LINE_STRIP);
 	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, 1.0, 0.0);
+	glVertex3f(0.0, 50.0, 0.0);
 	glVertex3f(0.0, 0.75, 0.25);
 	glVertex3f(0.0, 0.75, -0.25);
 	glVertex3f(0.0, 1.0, 0.0);
@@ -233,7 +228,7 @@ void drawaxes(void)
 	glColor3ub(0, 0, 255);
 	glBegin(GL_LINE_STRIP);
 	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, 0.0, 1.0);
+	glVertex3f(0.0, 0.0, 50.0);
 	glVertex3f(0.25, 0.0, 0.75);
 	glVertex3f(-0.25, 0.0, 0.75);
 	glVertex3f(0.0, 0.0, 1.0);
@@ -243,629 +238,462 @@ void drawaxes(void)
 	glEnd();
 
 	glColor3ub(255, 255, 0);
-	glRasterPos3f(1.1, 0.0, 0.0);
-	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, 'x');
-	glRasterPos3f(0.0, 1.1, 0.0);
-	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, 'y');
-	glRasterPos3f(0.0, 0.0, 1.1);
-	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, 'z');
+	glRasterPos3f(50.1f, 0.0f, 0.0f);
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, 'x');
+	glRasterPos3f(0.0f, 50.1f, 0.0f);
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, 'y');
+	glRasterPos3f(0.0f, 0.0f, 50.1f);
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, 'z');
 }
-//取得單位矩陣
-void getIdentity(GLdouble m[16])
+
+
+GLuint loadShader(string vsPath, string fsPath)
 {
-	m[0 + 4 * 0] = 1; m[0 + 4 * 1] = 0; m[0 + 4 * 2] = 0; m[0 + 4 * 3] = 0;
-	m[1 + 4 * 0] = 0; m[1 + 4 * 1] = 1; m[1 + 4 * 2] = 0; m[1 + 4 * 3] = 0;
-	m[2 + 4 * 0] = 0; m[2 + 4 * 1] = 0; m[2 + 4 * 2] = 1; m[2 + 4 * 3] = 0;
-	m[3 + 4 * 0] = 0; m[3 + 4 * 1] = 0; m[3 + 4 * 2] = 0; m[3 + 4 * 3] = 1;
+	GLuint shaderProgram;
+	shaderProgram = glCreateProgram();
+	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+	GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+	char** vsSource = LoadShaderSource(vsPath.c_str());
+	char** fsSource = LoadShaderSource(fsPath.c_str());
+	glShaderSource(vs, 1, vsSource, NULL);
+	glShaderSource(fs, 1, fsSource, NULL);
+	FreeShaderSource(vsSource);
+	FreeShaderSource(fsSource);
+	glCompileShader(vs);
+	glCompileShader(fs);
+	ShaderLog(vs);
+	ShaderLog(fs);
+	//Attach Shader to program
+	glAttachShader(shaderProgram, vs);
+	glAttachShader(shaderProgram, fs);
+	glLinkProgram(shaderProgram);
+	return shaderProgram;
 }
-//取得反矩陣
-GLboolean invert(GLdouble src[16], GLdouble inverse[16])
+
+
+void setupShaders()
 {
-	double t;
-	int i, j, k, swap;
-	GLdouble tmp[4][4];
+	string dirPath = "./commonData/";
 
-	getIdentity(inverse);
+	phongShaderProgram = loadShader(dirPath + "phong.vs", dirPath + "phong.fs");
+	{
+		glUseProgram(phongShaderProgram);
 
-	for (i = 0; i < 4; i++) {
-		for (j = 0; j < 4; j++) {
-			tmp[i][j] = src[i * 4 + j];
-		}
+		//Cache uniform variable id
+		phongShaderPrograms.model_matrix = glGetUniformLocation(phongShaderProgram, "model");
+		phongShaderPrograms.view_matrix = glGetUniformLocation(phongShaderProgram, "view");
+		phongShaderPrograms.projection_matrix = glGetUniformLocation(phongShaderProgram, "projection");
+		phongShaderPrograms.light_matrix = glGetUniformLocation(phongShaderProgram, "lightSpaceMatrix");
+		phongShaderPrograms.lightPos = glGetUniformLocation(phongShaderProgram, "lightPos");
+		phongShaderPrograms.viewPos = glGetUniformLocation(phongShaderProgram, "viewPos");
+		phongShaderPrograms.ambient = glGetUniformLocation(phongShaderProgram, "ambient");
+		phongShaderPrograms.diffuse = glGetUniformLocation(phongShaderProgram, "diffuse");
+		phongShaderPrograms.specular = glGetUniformLocation(phongShaderProgram, "specular");
+		phongShaderPrograms.shininess = glGetUniformLocation(phongShaderProgram, "shininess");
+
+		phongShaderPrograms.hasAmbientTex = glGetUniformLocation(phongShaderProgram, "hasAmbientTexture");
+		phongShaderPrograms.hasDiffuseTex = glGetUniformLocation(phongShaderProgram, "hasDiffuseTexture");
+		phongShaderPrograms.hasSpecularTex = glGetUniformLocation(phongShaderProgram, "hasSpecularTexture");
+
+		glUniform1i(glGetUniformLocation(phongShaderProgram, "ambientTexture"), 0);
+		glUniform1i(glGetUniformLocation(phongShaderProgram, "diffuseTexture"), 1);
+		glUniform1i(glGetUniformLocation(phongShaderProgram, "specularTexture"), 2);
 	}
 
-	for (i = 0; i < 4; i++) {
-		/* look for largest element in column. */
-		swap = i;
-		for (j = i + 1; j < 4; j++) {
-			if (fabs(tmp[j][i]) > fabs(tmp[i][i])) {
-				swap = j;
+	// line shader
+	glUseProgram(0);
+	lineShaderProgram = loadShader(dirPath + "line.vs", dirPath + "line.fs");
+	{
+		glUseProgram(lineShaderProgram);
+		lineShaderPrograms.model_matrix = glGetUniformLocation(lineShaderProgram, "model");
+		lineShaderPrograms.view_matrix = glGetUniformLocation(lineShaderProgram, "view");
+		lineShaderPrograms.projection_matrix = glGetUniformLocation(lineShaderProgram, "projection");
+		lineShaderPrograms.line_color = glGetUniformLocation(lineShaderProgram, "lineColor");
+	}
+}
+
+
+
+
+void setupModels()
+{
+	// initialize world axes buffers
+	gWorldCentre.init();
+	/*line1.setLineData( glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 0.0f, 0.0f) );
+	line2.setLineData(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 20.0f, 0.0f));
+	line1.init();
+	line2.init();*/
+
+	// path
+	string dirPath = "./commonData/";
+
+	//
+	vector<string> model_names =
+	{
+		"torus.obj",//"sponza.obj",
+	};
+
+	map<string, vector<tinyobj::shape_t>> model_cache;
+	map<string, vector<tinyobj::material_t>> material_cache;
+
+	for (int i = 0; i < model_names.size(); i++)
+	{
+		tinyobj::attrib_t attrib;
+		std::vector<tinyobj::shape_t> shapes;
+		std::vector<tinyobj::material_t> materials;
+
+		map<string, vector<tinyobj::shape_t>>::iterator found = model_cache.find(model_names[i]);
+		if (found != model_cache.end())
+		{
+			shapes = found->second;
+		}
+		else
+		{
+			std::string err;
+
+			bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, model_names[i].c_str());
+			if (err.size() > 0)
+			{
+				printf("Load Models Fail: %s\n", err.c_str());
+				continue;
 			}
+			model_cache.insert(pair<string, vector<tinyobj::shape_t>>(model_names[i], shapes));
+			material_cache.insert(pair<string, vector<tinyobj::material_t>>(model_names[i], materials));
+
+			printf("Load Models Success ! Shapes size %d Material size %d\n", (int)shapes.size(), (int)materials.size());
 		}
+		vector<Material> temp_materials;
+		for (int j = 0; j < materials.size(); ++j)
+		{
+			Material m_material;
+			m_material.ambient = glm::vec3(materials[j].ambient[0], materials[j].ambient[1], materials[j].ambient[2]);
+			m_material.diffuse = glm::vec3(materials[j].diffuse[0], materials[j].diffuse[1], materials[j].diffuse[2]);
+			m_material.specular = glm::vec3(materials[j].specular[0], materials[j].specular[1], materials[j].specular[2]);
+			m_material.shininess = materials[j].shininess;
+			m_material.transmittance = glm::vec3(materials[j].transmittance[0], materials[j].transmittance[1], materials[j].transmittance[2]);
+			m_material.emission = glm::vec3(materials[j].emission[0], materials[j].emission[1], materials[j].emission[2]);
+			m_material.ior = materials[j].ior;      // index of refraction
+			m_material.dissolve = materials[j].dissolve; // 1 == opaque; 0 == fully transparent
+														 // illumination model (see http://www.fileformat.info/format/material/)
+			m_material.illum = materials[j].illum;
 
-		if (swap != i) {
-			/* swap rows. */
-			for (k = 0; k < 4; k++) {
-				t = tmp[i][k];
-				tmp[i][k] = tmp[swap][k];
-				tmp[swap][k] = t;
+			m_material.dummy = materials[j].dummy; // Suppress padding warning.
 
-				t = inverse[i * 4 + k];
-				inverse[i * 4 + k] = inverse[swap * 4 + k];
-				inverse[swap * 4 + k] = t;
+			TextureData textureData;
+			textureData = Load_png(materials[j].ambient_texname.c_str());
+			if (m_material.hasAmbientTex = (textureData.data != NULL))
+			{
+				glGenTextures(1, &m_material.m_tex_ambient);
+				glBindTexture(GL_TEXTURE_2D, m_material.m_tex_ambient);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, textureData.width, textureData.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData.data);
+				glGenerateMipmap(GL_TEXTURE_2D);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			}
-		}
 
-		if (tmp[i][i] == 0) {
-			/* no non-zero pivot.  the matrix is singular, which
-			shouldn't happen.  This means the user gave us a bad
-			matrix. */
-			return GL_FALSE;
-		}
+			textureData = Load_png(materials[j].diffuse_texname.c_str());
+			if (m_material.hasDiffuseTex = (textureData.data != NULL))
+			{
+				glGenTextures(1, &m_material.m_tex_diffuse);
+				glBindTexture(GL_TEXTURE_2D, m_material.m_tex_diffuse);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, textureData.width, textureData.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData.data);
+				glGenerateMipmap(GL_TEXTURE_2D);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			}
 
-		t = tmp[i][i];
-		for (k = 0; k < 4; k++) {
-			tmp[i][k] /= t;
-			inverse[i * 4 + k] /= t;
+			textureData = Load_png(materials[j].specular_texname.c_str());
+			if (m_material.hasSpecularTex = (textureData.data != NULL))
+			{
+				glGenTextures(1, &m_material.m_tex_specular);
+				glBindTexture(GL_TEXTURE_2D, m_material.m_tex_specular);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, textureData.width, textureData.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData.data);
+				glGenerateMipmap(GL_TEXTURE_2D);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			}
+
+			glBindTexture(GL_TEXTURE_2D, 0);
+
+			printf("Add material %s\n", materials[j].name.c_str());
+
+			temp_materials.push_back(m_material);
 		}
-		for (j = 0; j < 4; j++) {
-			if (j != i) {
-				t = tmp[j][i];
-				for (k = 0; k < 4; k++) {
-					tmp[j][k] -= tmp[i][k] * t;
-					inverse[j * 4 + k] -= inverse[i * 4 + k] * t;
+		m_materials.insert(pair<string, vector<Material>>(model_names[i], temp_materials));
+
+		for (int j = 0; j < shapes.size(); ++j)
+		{
+			Shape m_shape;
+			m_shape.name = model_names[i];
+			m_shape.indexCount = (int)shapes[j].mesh.indices.size();
+
+			std::vector<float> positions;
+			std::vector<float> texcoords;
+			std::vector<float> normals;
+			positions.resize(3 * shapes[j].mesh.indices.size());
+			texcoords.resize(2 * shapes[j].mesh.indices.size());
+			normals.resize(3 * shapes[j].mesh.indices.size());
+			for (int idx = 0; idx < m_shape.indexCount; idx++)
+			{
+				for (int channel = 0; channel < 3; channel++)
+				{
+					positions[3 * idx + channel] = attrib.vertices[3 * shapes[j].mesh.indices[idx].vertex_index + channel];
+					normals[3 * idx + channel] = attrib.normals[3 * shapes[j].mesh.indices[idx].normal_index + channel];
 				}
+				for (int channel = 0; channel < 2; channel++)
+					texcoords[2 * idx + channel] = attrib.texcoords[2 * shapes[j].mesh.indices[idx].texcoord_index + channel];
 			}
+			glGenVertexArrays(1, &m_shape.vao);
+			glBindVertexArray(m_shape.vao);
+
+			glGenBuffers(3, m_shape.vbo);
+			glBindBuffer(GL_ARRAY_BUFFER, m_shape.vbo[0]);
+			glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), positions.data(), GL_STATIC_DRAW);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+			glBindBuffer(GL_ARRAY_BUFFER, m_shape.vbo[1]);
+			glBufferData(GL_ARRAY_BUFFER, texcoords.size() * sizeof(float), texcoords.data(), GL_STATIC_DRAW);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+			glBindBuffer(GL_ARRAY_BUFFER, m_shape.vbo[2]);
+			glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float), normals.data(), GL_STATIC_DRAW);
+			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+			m_shape.materialId = shapes[j].mesh.material_ids[0];
+			glEnableVertexAttribArray(0);
+			glEnableVertexAttribArray(1);
+			glEnableVertexAttribArray(2);
+
+			printf("Add object %s ,material ID %d\n", shapes[j].name.c_str(), m_shape.materialId);
+			m_shapes.push_back(m_shape);
 		}
 	}
-	return GL_TRUE;
-}
-//單位化
-float normalize(float* v)
-{
-	float length;
 
-	length = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-	v[0] /= length;
-	v[1] /= length;
-	v[2] /= length;
-
-	return length;
+	m_shapes[0].position = vec3(0, 0, 0);
 }
-//main window 視窗調整
-void main_reshape(int width, int height)
-{
-	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluOrtho2D(0, width, height, 0);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
-#define GAP  25             /* gap between subwindows */
-	sub_width = (width - GAP * 3) / 2.0;
-	sub_height = (height - GAP * 3) / 2.0;
-
-	glutSetWindow(world);
-	glutPositionWindow(GAP, GAP);
-	glutReshapeWindow(sub_width, sub_height);
-	glutSetWindow(screen);
-	glutPositionWindow(GAP + sub_width + GAP, GAP);
-	glutReshapeWindow(sub_width, sub_height);
-	glutSetWindow(command);
-	glutPositionWindow(GAP, GAP + sub_height + GAP);
-	glutReshapeWindow(sub_width + GAP + sub_width, sub_height);
-}
-//main window 繪製
-void main_display(void)
+void My_Init()
 {
-	glClearColor(0.8, 0.8, 0.8, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glColor3ub(0, 0, 0);
-	setfont("helvetica", 12);
-	drawstr(GAP, GAP - 5, "World-space view");
-	drawstr(GAP + sub_width + GAP, GAP - 5, "Screen-space view");
-	drawstr(GAP, GAP + sub_height + GAP - 5, "Command manipulation window");
-	glutSwapBuffers();
-}
-//main window 輸入設定
-void main_keyboard(unsigned char key, int x, int y)
-{
-	switch (key) {
-	case 'p':
-		mode = PERSPECTIVE;
-		break;
-	case 'o':
-		mode = ORTHO;
-		break;
-	case 'f':
-		mode = FRUSTUM;
-		break;
-	case 'r':
-		perspective[0].value = 60.0;
-		perspective[1].value = 1.0;
-		perspective[2].value = 1.0;
-		perspective[3].value = 10.0;
-		ortho[0].value = -1.0;
-		ortho[1].value = 1.0;
-		ortho[2].value = -1.0;
-		ortho[3].value = 1.0;
-		ortho[4].value = 1.0;
-		ortho[5].value = 3.5;
-		frustum[0].value = -1.0;
-		frustum[1].value = 1.0;
-		frustum[2].value = -1.0;
-		frustum[3].value = 1.0;
-		frustum[4].value = 1.0;
-		frustum[5].value = 3.5;
-		lookat[0].value = 0.0;
-		lookat[1].value = 0.0;
-		lookat[2].value = 2.0;
-		lookat[3].value = 0.0;
-		lookat[4].value = 0.0;
-		lookat[5].value = 0.0;
-		lookat[6].value = 0.0;
-		lookat[7].value = 1.0;
-		lookat[8].value = 0.0;
-		break;
-	case 27:
-		exit(0);
-	}
-
-	redisplay_all();
-}
-//world window 視窗調整
-void world_reshape(int width, int height)
-{
-	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(60.0, (GLfloat)width / height, 1.0, 256.0);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(0.0, 0.0, -5.0);
-	glRotatef(-45.0, 0.0, 1.0, 0.0);
-	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHT0);
-}
-//world window 繪製
-void world_display(void)
-{
-	GLfloat light_pos[] = { 0.0, 0.0, 1.0, 0.0 };
-	double length;
-	float l[3];
-
-	l[0] = lookat[3].value - lookat[0].value;
-	l[1] = lookat[4].value - lookat[1].value;
-	l[2] = lookat[5].value - lookat[2].value;
-	length = normalize(l);
-
-	invert(modelview, inverse);
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	if (world_draw) {
-
-		glPushMatrix();
-		glMultMatrixd(inverse);
-		glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-		glPopMatrix();
-
-		glEnable(GL_LIGHTING);
-		drawmodel();
-
-		glDisable(GL_LIGHTING);
-		drawaxes();
-	}
-
-	glPushMatrix();
-
-	glMultMatrixd(inverse);
-
-	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-
-	/* draw the axis and eye vector */
-	glPushMatrix();
-	glColor3ub(0, 0, 255);
-	glBegin(GL_LINE_STRIP);
-	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, 0.0, -1.0*length);
-	glVertex3f(0.1, 0.0, -0.9*length);
-	glVertex3f(-0.1, 0.0, -0.9*length);
-	glVertex3f(0.0, 0.0, -1.0*length);
-	glVertex3f(0.0, 0.1, -0.9*length);
-	glVertex3f(0.0, -0.1, -0.9*length);
-	glVertex3f(0.0, 0.0, -1.0*length);
-	glEnd();
-	glColor3ub(255, 255, 0);
-	glRasterPos3f(0.0, 0.0, -1.1*length);
-	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, 'e');
-	glColor3ub(255, 0, 0);
-	glScalef(0.4, 0.4, 0.4);
-	drawaxes();
-	glPopMatrix();
-
-	invert(projection, inverse);
-	glMultMatrixd(inverse);
-
-	/* draw the viewing frustum */
-	glColor3f(0.2, 0.2, 0.2);
-	glBegin(GL_QUADS);
-	glVertex3i(1, 1, 1);
-	glVertex3i(-1, 1, 1);
-	glVertex3i(-1, -1, 1);
-	glVertex3i(1, -1, 1);
-	glEnd();
-
-	glColor3ub(128, 196, 128);
-	glBegin(GL_LINES);
-	glVertex3i(1, 1, -1);
-	glVertex3i(1, 1, 1);
-	glVertex3i(-1, 1, -1);
-	glVertex3i(-1, 1, 1);
-	glVertex3i(-1, -1, -1);
-	glVertex3i(-1, -1, 1);
-	glVertex3i(1, -1, -1);
-	glVertex3i(1, -1, 1);
-	glEnd();
-
+	glEnable(GLUT_MULTISAMPLE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4f(0.2, 0.2, 0.4, 0.5);
-	glBegin(GL_QUADS);
-	glVertex3i(1, 1, -1);
-	glVertex3i(-1, 1, -1);
-	glVertex3i(-1, -1, -1);
-	glVertex3i(1, -1, -1);
-	glEnd();
-	glDisable(GL_BLEND);
+	glDepthFunc(GL_LEQUAL);
 
-	glPopMatrix();
-	glutSwapBuffers();
+	//m_camera.SetCamera(vec3(-800.0f, 100.0f, -40.0f), vec3(10.0f, 100.0f, -40.0f));
+	m_camera.SetCamera(vec3(0.0f, 0.0f, -200.0f), vec3(0.0f, 0.0f, 0.0f));
+	m_camera.Zoom(3.0f);
+
+	setupShaders();
+	setupModels();
 }
-//world window 右鍵選單
-void world_menu(int value)
+
+// GLUT callback. Called to draw the scene.
+void My_Display()
 {
-	switch (value) {
-	case 'm':
-		world_draw = !world_draw;
-		break;
-	}
-	redisplay_all();
-}
-//screen window 視窗調整
-void screen_reshape(int width, int height)
-{
-	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	if (mode == PERSPECTIVE)
-		gluPerspective(perspective[0].value, perspective[1].value,
-			perspective[2].value, perspective[3].value);
-	else if (mode == ORTHO)
-		glOrtho(ortho[0].value, ortho[1].value, ortho[2].value,
-			ortho[3].value, ortho[4].value, ortho[5].value);
-	else if (mode == FRUSTUM)
-		glFrustum(frustum[0].value, frustum[1].value, frustum[2].value,
-			frustum[3].value, frustum[4].value, frustum[5].value);
-	glGetDoublev(GL_PROJECTION_MATRIX, projection);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	gluLookAt(lookat[0].value, lookat[1].value, lookat[2].value,
-		lookat[3].value, lookat[4].value, lookat[5].value,
-		lookat[6].value, lookat[7].value, lookat[8].value);
-	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-	glClearColor(0.2, 0.2, 0.2, 0.0);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-}
-//screen window 繪製
-void screen_display(void)
-{
+	glClearColor(0.243f, 0.36f, 0.459f, 1.0f); // 124, 184, 234
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_LIGHTING);
-	drawmodel();
 
-	glDisable(GL_LIGHTING);
-	// draw axes
+	/*glUseProgram(0);
+	drawaxes();*/
+
+	mat4 lightProjection, lightView, lightSpaceMatrix;
+	lightProjection = glm::ortho(-SHADOW_OTHO, SHADOW_OTHO, -SHADOW_OTHO, SHADOW_OTHO, SHADOW_NEAR_PLANE, SHADOW_FAR_PLANE);
+	lightView = glm::lookAt(m_lightPos, vec3(0.0f), vec3(0.0, 1.0, 0.0));
+	lightSpaceMatrix = lightProjection * lightView;
+
+	glUseProgram(phongShaderProgram);
 	{
-		drawaxes();
+		glUniform3fv(phongShaderPrograms.lightPos, 1, value_ptr(m_lightPos));
+		glUniform3fv(phongShaderPrograms.viewPos, 1, value_ptr(m_camera.GetWorldEyePosition()));
+		glUniformMatrix4fv(phongShaderPrograms.light_matrix, 1, GL_FALSE, value_ptr(lightSpaceMatrix));
+		glUniformMatrix4fv(phongShaderPrograms.view_matrix, 1, GL_FALSE, value_ptr(m_camera.GetViewMatrix() * m_camera.GetModelMatrix()));
+		glUniformMatrix4fv(phongShaderPrograms.projection_matrix, 1, GL_FALSE, value_ptr(m_camera.GetProjectionMatrix(aspect)));
+		//mesh->Draw();
+
+
+		for (int i = 0; i < m_shapes.size(); i++)
+		{
+			m_shapes[i].Draw();
+		}
+
 	}
+
+	// line
+	glUseProgram(lineShaderProgram);
+	{
+		glm::mat4 mtx; // identical matrix
+		glUniformMatrix4fv(lineShaderPrograms.view_matrix, 1, GL_FALSE, value_ptr(m_camera.GetViewMatrix() * m_camera.GetModelMatrix()));
+		glUniformMatrix4fv(lineShaderPrograms.projection_matrix, 1, GL_FALSE, value_ptr(m_camera.GetProjectionMatrix(aspect)));
+		glUniformMatrix4fv(lineShaderPrograms.model_matrix, 1, GL_FALSE, value_ptr(mtx));
+
+		//glutSolidTeapot(30.0);
+		/*
+		glUniform3fv(lineShaderPrograms.line_color, 1, value_ptr(vec3(0.0f, 1.0f, 0.0f)));
+		line1.draw();
+		glUniform3fv(lineShaderPrograms.line_color, 1, value_ptr(vec3(1.0f, 0.0f, 0.0f)));
+		line2.draw();
+		*/
+		gWorldCentre.draw(lineShaderPrograms.line_color);
+
+		//drawLine();
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////
+	//TwDraw();
+
+
 
 	glutSwapBuffers();
-
+	glutPostRedisplay();
 }
-//screen window 右鍵選單
-void screen_menu(int value)
-{
-	name = 0;
 
-	switch (value) {
-	case 's':
-		name = "SolidTeapot";
-		break;
-	case 'w':
-		name = "WireTeapot";
-		break;
-	}
-
-	redisplay_all();
-}
-//command window 視窗調整
-void command_reshape(int width, int height)
+//Call to resize the window
+void My_Reshape(int width, int height)
 {
+	m_screenSize = vec2(width, height);
+
+	aspect = width * 1.0f / height;
+	m_camera.SetWindowSize(width, height);
 	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluOrtho2D(0, width, height, 0);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+
+	//TwWindowSize(width, height);
 }
-//command window 繪製
-void command_display(void)
+
+//Timer event
+void My_Timer(int val)
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glColor3ub(255, 255, 255);
-
-	setfont("helvetica", 18);
-
-	if (mode == PERSPECTIVE) {
-		drawstr(180, perspective[0].y - 40, "fovy");
-		drawstr(230, perspective[0].y - 40, "aspect");
-		drawstr(300, perspective[0].y - 40, "zNear");
-		drawstr(360, perspective[0].y - 40, "zFar");
-	}
-	else {
-		drawstr(120, perspective[0].y - 40, "left");
-		drawstr(180, perspective[0].y - 40, "right");
-		drawstr(230, perspective[0].y - 40, "bottom");
-		drawstr(310, perspective[0].y - 40, "top");
-		drawstr(360, perspective[0].y - 40, "near");
-		drawstr(420, perspective[0].y - 40, "far");
-	}
-
-	if (mode == PERSPECTIVE) {
-		drawstr(40, perspective[0].y, "gluPerspective(");
-		drawstr(230, perspective[0].y, ",");
-		drawstr(290, perspective[0].y, ",");
-		drawstr(350, perspective[0].y, ",");
-		drawstr(410, perspective[0].y, ");");
-	}
-	else if (mode == FRUSTUM) {
-		drawstr(20, frustum[0].y, "glFrustum(");
-		drawstr(170, frustum[0].y, ",");
-		drawstr(230, frustum[0].y, ",");
-		drawstr(290, frustum[0].y, ",");
-		drawstr(350, frustum[0].y, ",");
-		drawstr(410, frustum[0].y, ",");
-		drawstr(470, frustum[0].y, ");");
-	}
-	else {
-		drawstr(35, ortho[0].y, "glOrtho(");
-		drawstr(170, ortho[0].y, ",");
-		drawstr(230, ortho[0].y, ",");
-		drawstr(290, ortho[0].y, ",");
-		drawstr(350, ortho[0].y, ",");
-		drawstr(410, ortho[0].y, ",");
-		drawstr(470, ortho[0].y, ");");
-	}
-
-	drawstr(78, lookat[0].y, "gluLookAt(");
-	drawstr(230, lookat[0].y, ",");
-	drawstr(290, lookat[0].y, ",");
-	drawstr(350, lookat[0].y, ",");
-	drawstr(380, lookat[0].y, "<- eye");
-	drawstr(230, lookat[3].y, ",");
-	drawstr(290, lookat[3].y, ",");
-	drawstr(350, lookat[3].y, ",");
-	drawstr(380, lookat[3].y, "<- center");
-	drawstr(230, lookat[6].y, ",");
-	drawstr(290, lookat[6].y, ",");
-	drawstr(350, lookat[6].y, ");");
-	drawstr(380, lookat[6].y, "<- up");
-
-	if (mode == PERSPECTIVE) {
-		cell_draw(&perspective[0]);
-		cell_draw(&perspective[1]);
-		cell_draw(&perspective[2]);
-		cell_draw(&perspective[3]);
-	}
-	else if (mode == FRUSTUM) {
-		cell_draw(&frustum[0]);
-		cell_draw(&frustum[1]);
-		cell_draw(&frustum[2]);
-		cell_draw(&frustum[3]);
-		cell_draw(&frustum[4]);
-		cell_draw(&frustum[5]);
-	}
-	else if (mode == ORTHO) {
-		cell_draw(&ortho[0]);
-		cell_draw(&ortho[1]);
-		cell_draw(&ortho[2]);
-		cell_draw(&ortho[3]);
-		cell_draw(&ortho[4]);
-		cell_draw(&ortho[5]);
-	}
-
-	cell_draw(&lookat[0]);
-	cell_draw(&lookat[1]);
-	cell_draw(&lookat[2]);
-	cell_draw(&lookat[3]);
-	cell_draw(&lookat[4]);
-	cell_draw(&lookat[5]);
-	cell_draw(&lookat[6]);
-	cell_draw(&lookat[7]);
-	cell_draw(&lookat[8]);
-
-	if (!selection) {
-		glColor3ub(255, 255, 0);
-		drawstr(10, 240,
-			"Click on the arguments and move the mouse to modify values.");
-	}
-
-	glutSwapBuffers();
-}
-//滑鼠上一個Y軸位置
-int old_y;
-//command window 滑鼠點擊事件
-void command_mouse(int button, int state, int x, int y)
-{
-	selection = 0;
-
-	if (state == GLUT_DOWN) {
-		if (mode == PERSPECTIVE) {
-			/* mouse should only hit _one_ of the cells, so adding up all
-			the hits just propagates a single hit. */
-			selection += cell_hit(&perspective[0], x, y);
-			selection += cell_hit(&perspective[1], x, y);
-			selection += cell_hit(&perspective[2], x, y);
-			selection += cell_hit(&perspective[3], x, y);
-		}
-		else if (mode == FRUSTUM) {
-			selection += cell_hit(&frustum[0], x, y);
-			selection += cell_hit(&frustum[1], x, y);
-			selection += cell_hit(&frustum[2], x, y);
-			selection += cell_hit(&frustum[3], x, y);
-			selection += cell_hit(&frustum[4], x, y);
-			selection += cell_hit(&frustum[5], x, y);
-		}
-		else if (mode == ORTHO) {
-			selection += cell_hit(&ortho[0], x, y);
-			selection += cell_hit(&ortho[1], x, y);
-			selection += cell_hit(&ortho[2], x, y);
-			selection += cell_hit(&ortho[3], x, y);
-			selection += cell_hit(&ortho[4], x, y);
-			selection += cell_hit(&ortho[5], x, y);
-		}
-		selection += cell_hit(&lookat[0], x, y);
-		selection += cell_hit(&lookat[1], x, y);
-		selection += cell_hit(&lookat[2], x, y);
-		selection += cell_hit(&lookat[3], x, y);
-		selection += cell_hit(&lookat[4], x, y);
-		selection += cell_hit(&lookat[5], x, y);
-		selection += cell_hit(&lookat[6], x, y);
-		selection += cell_hit(&lookat[7], x, y);
-		selection += cell_hit(&lookat[8], x, y);
-	}
-
-	old_y = y;
-
-	redisplay_all();
-}
-//command window 滑鼠移動事件
-void command_motion(int x, int y)
-{
-	cell_update(&perspective[0], old_y - y);
-	cell_update(&perspective[1], old_y - y);
-	cell_update(&perspective[2], old_y - y);
-	cell_update(&perspective[3], old_y - y);
-	cell_update(&frustum[0], old_y - y);
-	cell_update(&frustum[1], old_y - y);
-	cell_update(&frustum[2], old_y - y);
-	cell_update(&frustum[3], old_y - y);
-	cell_update(&frustum[4], old_y - y);
-	cell_update(&frustum[5], old_y - y);
-	cell_update(&ortho[0], old_y - y);
-	cell_update(&ortho[1], old_y - y);
-	cell_update(&ortho[2], old_y - y);
-	cell_update(&ortho[3], old_y - y);
-	cell_update(&ortho[4], old_y - y);
-	cell_update(&ortho[5], old_y - y);
-	cell_update(&lookat[0], old_y - y);
-	cell_update(&lookat[1], old_y - y);
-	cell_update(&lookat[2], old_y - y);
-	cell_update(&lookat[3], old_y - y);
-	cell_update(&lookat[4], old_y - y);
-	cell_update(&lookat[5], old_y - y);
-	cell_update(&lookat[6], old_y - y);
-	cell_update(&lookat[7], old_y - y);
-	cell_update(&lookat[8], old_y - y);
-
-	old_y = y;
-
-	redisplay_all();
-}
-//command window 右鍵選單
-void command_menu(int value)
-{
-	main_keyboard((unsigned char)value, 0, 0);
-}
-//繪製
-void redisplay_all(void)
-{
-	glutSetWindow(command);
 	glutPostRedisplay();
-
-	glutSetWindow(screen);
-	screen_reshape(sub_width, sub_height);
-	glutPostRedisplay();
-
-	glutSetWindow(world);
-	world_reshape(sub_width, sub_height);
-	glutPostRedisplay();
+	glutTimerFunc(16, My_Timer, val);
 }
-//程式起始點
+
+//Mouse event
+void My_Mouse(int button, int state, int x, int y)
+{
+	//if (!TwEventMouseButtonGLUT(button, state, x, y))
+	{
+		m_camera.mouseEvents(button, state, x, y);
+
+		if (button == GLUT_LEFT_BUTTON)
+		{
+			if (state == GLUT_DOWN)
+			{
+				//printf("Mouse %d is pressed at (%d, %d)\n", button, x, y);
+			}
+			else if (state == GLUT_UP)
+			{
+				//printf("Mouse %d is released at (%d, %d)\n", button, x, y);
+			}
+		}
+		else if (button == GLUT_RIGHT_BUTTON)
+		{
+			//printf("Mouse %d is pressed\n", button);
+		}
+		//printf("%d %d %d %d\n",button,state,x,y);
+	}
+}
+
+//Keyboard event
+void My_Keyboard(unsigned char key, int x, int y)
+{
+//	if (!TwEventKeyboardGLUT(key, x, y))
+	{
+		m_camera.keyEvents(key);
+		//printf("Key %c is pressed at (%d, %d)\n", key, x, y);
+	}
+}
+
+//Special key event
+void My_SpecialKeys(int key, int x, int y)
+{
+//	if (!TwEventSpecialGLUT(key, x, y))
+	{
+		switch (key)
+		{
+		case GLUT_KEY_F1:
+			printf("F1 is pressed at (%d, %d)\n", x, y);
+			break;
+		case GLUT_KEY_PAGE_UP:
+			printf("Page up is pressed at (%d, %d)\n", x, y);
+			break;
+		case GLUT_KEY_LEFT:
+			printf("Left arrow is pressed at (%d, %d)\n", x, y);
+			break;
+		default:
+			printf("Other special key is pressed at (%d, %d)\n", x, y);
+			break;
+		}
+	}
+}
+
+void My_Mouse_Moving(int x, int y)
+{
+//	if (!TwEventMouseMotionGLUT(x, y))
+	{
+		m_camera.mouseMoveEvent(x, y);
+	}
+}
+
+/*void setupGUI()
+{
+	// Initialize AntTweakBar
+
+#ifdef _MSC_VER
+	TwInit(TW_OPENGL, NULL);
+#else
+	TwInit(TW_OPENGL_CORE, NULL);
+#endif
+
+	TwGLUTModifiersFunc(glutGetModifiers);
+	//bar = TwNewBar("Properties");
+}*/
+
 int main(int argc, char *argv[])
 {
-
-#ifdef __APPLE__
-	//更改工作路徑
-	chdir(__FILEPATH__("/../Assets/"));
-#endif
-	//設定window
-	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-	glutInitWindowSize(512 + GAP * 3, 512 + GAP * 3);
-	glutInitWindowPosition(50, 50);
+	// Initialize GLUT and GLEW, then create a window.
+	////////////////////
 	glutInit(&argc, argv);
-	//main window
-	window = glutCreateWindow("Projection");
-	glutReshapeFunc(main_reshape);
-	glutDisplayFunc(main_display);
-	glutKeyboardFunc(main_keyboard);
-	//world window
-	world = glutCreateSubWindow(window, GAP, GAP, 256, 256);
-	glutReshapeFunc(world_reshape);
-	glutDisplayFunc(world_display);
-	glutKeyboardFunc(main_keyboard);
-	glutCreateMenu(world_menu);
-	glutAddMenuEntry("Toggle model", 'm');
-	glutAttachMenu(GLUT_RIGHT_BUTTON);
-	//screen window
-	screen = glutCreateSubWindow(window, GAP + 256 + GAP, GAP, 256, 256);
-	glutReshapeFunc(screen_reshape);
-	glutDisplayFunc(screen_display);
-	glutKeyboardFunc(main_keyboard);
-	glutCreateMenu(screen_menu);
-	glutAddMenuEntry("Models", 0);
-	glutAddMenuEntry("", 0);
-	glutAddMenuEntry("WireTeapot", 'w');
-	glutAddMenuEntry("SolidTeapot", 's');
-	glutAttachMenu(GLUT_RIGHT_BUTTON);
-	//command window
-	command = glutCreateSubWindow(window, GAP + 256 + GAP, GAP + 256 + GAP, 256, 256);
-	glutReshapeFunc(command_reshape);
-	glutDisplayFunc(command_display);
-	glutMotionFunc(command_motion);
-	glutMouseFunc(command_mouse);
-	glutKeyboardFunc(main_keyboard);
-	glutCreateMenu(command_menu);
-	glutAddMenuEntry("Projection", 0);
-	glutAddMenuEntry("", 0);
-	glutAddMenuEntry("[o]  glOrtho", 'o');
-	glutAddMenuEntry("[f]  glFrustum", 'f');
-	glutAddMenuEntry("[p]  gluPerspective", 'p');
-	glutAddMenuEntry("", 0);
-	glutAddMenuEntry("[r]  Reset parameters", 'r');
-	glutAddMenuEntry("", 0);
-	glutAddMenuEntry("Quit", 27);
-	glutAttachMenu(GLUT_RIGHT_BUTTON);
+#ifdef _MSC_VER
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
+#else
+	glutInitDisplayMode(GLUT_3_2_CORE_PROFILE | GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+#endif
 
-	redisplay_all();
+	glutInitWindowPosition(100, 100);
+	glutInitWindowSize(640, 480);
+	m_mainWindow = glutCreateWindow("TraZer - GL View"); // You cannot use OpenGL functions before this line; The OpenGL context must be created first by glutCreateWindow()!
+#ifdef _MSC_VER
+	glewInit();
+#endif
+
+	//Print debug information 
+	DumpInfo();
+	////////////////////
+
+	//Call custom initialize function
+	My_Init();
+	//setupGUI();
+
+	//Register GLUT callback functions
+	////////////////////
+	glutDisplayFunc(My_Display);
+	glutReshapeFunc(My_Reshape);
+	glutMouseFunc(My_Mouse);
+	glutKeyboardFunc(My_Keyboard);
+	glutSpecialFunc(My_SpecialKeys);
+	glutTimerFunc(16, My_Timer, 0);
+	glutPassiveMotionFunc(My_Mouse_Moving);
+	glutMotionFunc(My_Mouse_Moving);
+	////////////////////
+
+	// Enter main event loop.
 	glutMainLoop();
-
+	//TwTerminate();
 	return 0;
 }
-
