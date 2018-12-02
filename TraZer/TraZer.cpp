@@ -330,7 +330,7 @@ void setupModels()
 	//
 	vector<string> model_names =
 	{
-		"torus.obj",//"sponza.obj",
+		dirPath+"torus.obj",//"sponza.obj",
 	};
 
 	map<string, vector<tinyobj::shape_t>> model_cache;
@@ -351,7 +351,7 @@ void setupModels()
 		{
 			std::string err;
 
-			bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, model_names[i].c_str());
+			bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, model_names[i].c_str(), dirPath.c_str() );
 			if (err.size() > 0)
 			{
 				printf("Load Models Fail: %s\n", err.c_str());
