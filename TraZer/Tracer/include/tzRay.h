@@ -1,5 +1,5 @@
-#ifndef __RAY__
-#define __RAY__
+#ifndef TZ_TRACER_RAY
+#define TZ_TRACER_RAY
 
 #include "Point3D.h"
 #include "Vector3D.h"
