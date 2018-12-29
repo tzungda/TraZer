@@ -11,7 +11,12 @@
 */
 #include "Common.h"
 #include "ViewManager.h"
-#include "../glView/include/tzGLWorldCentre.h";
+
+// headers
+#include "../glView/include/tzGLWorldCentre.h"
+#include "../Include/tzTool.h"
+
+#include "Tracer\include\tzWorld.h"
 
 using namespace glm;
 using namespace std;
@@ -605,7 +610,17 @@ void My_Keyboard(unsigned char key, int x, int y)
 //	if (!TwEventKeyboardGLUT(key, x, y))
 	{
 		m_camera.keyEvents(key);
+		char k = 'r';
 		//printf("Key %c is pressed at (%d, %d)\n", key, x, y);
+		if ( key == k )
+		{
+			tzWorld w;
+			w.build();
+			w.setOutputPath( "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\areaLight.png" );
+			w.renderScene();
+			int a = 0;
+			a = 1;
+		}
 	}
 }
 

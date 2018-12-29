@@ -104,14 +104,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./;./Utilities;./Tracer/include;../external/freeglut/win64_vs2017/3.0.0/include;../external/glew/win64_vs2017/1.13.0/include;./include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;./Utilities;./Tracer/include;../external/freeglut/win64_vs2017/3.0.0/include;../external/glew/win64_vs2017/1.13.0/include;./include;../external</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\external\glew\win64_vs2017\1.13.0\release\lib;..\external\freeglut\win64_vs2017\3.0.0\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -152,60 +152,111 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\external\lodepng\lodepng.cpp" />
     <ClCompile Include="glView\source\tzGLLine.cpp" />
     <ClCompile Include="glView\source\tzGLWorldCentre.cpp" />
     <ClCompile Include="ImageExport\source\bmp-utils.c" />
-    <ClCompile Include="ImplicitPrimitives\source\tzImplicitPlane.cpp" />
-    <ClCompile Include="ImplicitPrimitives\source\tzImplicitSphere.cpp" />
+    <ClCompile Include="source\tzMesh.cpp" />
     <ClCompile Include="source\tzObject.cpp" />
+    <ClCompile Include="source\tzScene.cpp" />
+    <ClCompile Include="source\tzTool.cpp" />
     <ClCompile Include="source\tzTransform.cpp" />
     <ClCompile Include="source\ViewManager.cpp" />
+    <ClCompile Include="Tracer\source\tzAmbient.cpp" />
+    <ClCompile Include="Tracer\source\tzAmbientOccluder.cpp" />
+    <ClCompile Include="Tracer\source\tzAreaLight.cpp" />
+    <ClCompile Include="Tracer\source\tzAreaLighting.cpp" />
+    <ClCompile Include="Tracer\source\tzDirectional.cpp" />
+    <ClCompile Include="Tracer\source\tzEmissive.cpp" />
+    <ClCompile Include="Tracer\source\tzGlossySpecular.cpp" />
+    <ClCompile Include="Tracer\source\tzIBRDF.cpp" />
+    <ClCompile Include="Tracer\source\tzICamera.cpp" />
+    <ClCompile Include="Tracer\source\tzIGeometricObject.cpp" />
+    <ClCompile Include="Tracer\source\tzILight.cpp" />
+    <ClCompile Include="Tracer\source\tzIMaterial.cpp" />
+    <ClCompile Include="Tracer\source\tzISampler.cpp" />
+    <ClCompile Include="Tracer\source\tzLambertian.cpp" />
+    <ClCompile Include="Tracer\source\tzMaths.cpp" />
+    <ClCompile Include="Tracer\source\tzMatte.cpp" />
+    <ClCompile Include="Tracer\source\tzMultiJittered.cpp" />
+    <ClCompile Include="Tracer\source\tzMultipleObjects.cpp" />
+    <ClCompile Include="Tracer\source\tzPhong.cpp" />
+    <ClCompile Include="Tracer\source\tzPinhole.cpp" />
+    <ClCompile Include="Tracer\source\tzPlane.cpp" />
+    <ClCompile Include="Tracer\source\tzPointLight.cpp" />
+    <ClCompile Include="Tracer\source\tzRayCast.cpp" />
+    <ClCompile Include="Tracer\source\tzRectangle.cpp" />
+    <ClCompile Include="Tracer\source\tzRegular.cpp" />
     <ClCompile Include="Tracer\source\tzShadeRec.cpp" />
     <ClCompile Include="Tracer\source\tzRay.cpp" />
+    <ClCompile Include="Tracer\source\tzSingleSphere.cpp" />
+    <ClCompile Include="Tracer\source\tzSphere.cpp" />
+    <ClCompile Include="Tracer\source\tzITracer.cpp" />
     <ClCompile Include="Tracer\source\tzViewPlane.cpp" />
-    <ClCompile Include="Tracer\source\tzWrold.cpp" />
+    <ClCompile Include="Tracer\source\tzWorld.cpp" />
     <ClCompile Include="TraZer.cpp" />
-    <ClCompile Include="tzTool\source\tzTool.cpp" />
     <ClCompile Include="Utilities\BBox.cpp" />
-    <ClCompile Include="Utilities\Maths.cpp" />
     <ClCompile Include="Utilities\Matrix.cpp" />
     <ClCompile Include="Utilities\Mesh.cpp" />
     <ClCompile Include="Utilities\Normal.cpp" />
     <ClCompile Include="Utilities\Point2D.cpp" />
     <ClCompile Include="Utilities\Point3D.cpp" />
-    <ClCompile Include="Utilities\Ray.cpp" />
     <ClCompile Include="Utilities\RGBColor.cpp" />
-    <ClCompile Include="Utilities\ShadeRec.cpp" />
     <ClCompile Include="Utilities\Vector3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glView\include\tzGLLine.h" />
     <ClInclude Include="glView\include\tzGLWorldCentre.h" />
     <ClInclude Include="ImageExport\include\bmp-utils.h" />
-    <ClInclude Include="ImplicitPrimitives\include\tzImplicitPlane.h" />
-    <ClInclude Include="ImplicitPrimitives\include\tzImplicitSphere.h" />
     <ClInclude Include="Include\Common.h" />
+    <ClInclude Include="Include\tzMaterial.h" />
+    <ClInclude Include="Include\tzMesh.h" />
     <ClInclude Include="Include\tzObject.h" />
+    <ClInclude Include="Include\tzScene.h" />
+    <ClInclude Include="Include\tzTool.h" />
     <ClInclude Include="Include\tzTransform.h" />
     <ClInclude Include="Include\ViewManager.h" />
-    <ClInclude Include="Interfaces\tzIGeometricObject.h" />
     <ClInclude Include="Interfaces\tzIGLDraw.h" />
+    <ClInclude Include="Tracer\include\tzAmbient.h" />
+    <ClInclude Include="Tracer\include\tzAmbientOccluder.h" />
+    <ClInclude Include="Tracer\include\tzAreaLight.h" />
+    <ClInclude Include="Tracer\include\tzAreaLighting.h" />
+    <ClInclude Include="Tracer\include\tzConstants.h" />
+    <ClInclude Include="Tracer\include\tzDirectional.h" />
+    <ClInclude Include="Tracer\include\tzEmissive.h" />
+    <ClInclude Include="Tracer\include\tzGlossySpecular.h" />
+    <ClInclude Include="Tracer\include\tzIBRDF.h" />
+    <ClInclude Include="Tracer\include\tzICamera.h" />
+    <ClInclude Include="Tracer\include\tzIGeometricObject.h" />
+    <ClInclude Include="Tracer\include\tzILight.h" />
+    <ClInclude Include="Tracer\include\tzIMaterial.h" />
+    <ClInclude Include="Tracer\include\tzISampler.h" />
+    <ClInclude Include="Tracer\include\tzLambertian.h" />
+    <ClInclude Include="Tracer\include\tzMaths.h" />
+    <ClInclude Include="Tracer\include\tzMatte.h" />
+    <ClInclude Include="Tracer\include\tzMultiJittered.h" />
+    <ClInclude Include="Tracer\include\tzMultipleObjects.h" />
+    <ClInclude Include="Tracer\include\tzPhong.h" />
+    <ClInclude Include="Tracer\include\tzPinhole.h" />
+    <ClInclude Include="Tracer\include\tzPlane.h" />
+    <ClInclude Include="Tracer\include\tzPointLight.h" />
+    <ClInclude Include="Tracer\include\tzRayCast.h" />
+    <ClInclude Include="Tracer\include\tzRectangle.h" />
+    <ClInclude Include="Tracer\include\tzRegular.h" />
     <ClInclude Include="Tracer\include\tzShadeRec.h" />
     <ClInclude Include="Tracer\include\tzRay.h" />
+    <ClInclude Include="Tracer\include\tzSingleSphere.h" />
+    <ClInclude Include="Tracer\include\tzSphere.h" />
+    <ClInclude Include="Tracer\include\tzITracer.h" />
     <ClInclude Include="Tracer\include\tzViewPlane.h" />
-    <ClInclude Include="Tracer\include\tzWrold.h" />
-    <ClInclude Include="tzTool\include\tzTool.h" />
+    <ClInclude Include="Tracer\include\tzWorld.h" />
     <ClInclude Include="Utilities\BBox.h" />
-    <ClInclude Include="Utilities\Constants.h" />
-    <ClInclude Include="Utilities\Maths.h" />
     <ClInclude Include="Utilities\Matrix.h" />
     <ClInclude Include="Utilities\Mesh.h" />
     <ClInclude Include="Utilities\Normal.h" />
     <ClInclude Include="Utilities\Point2D.h" />
     <ClInclude Include="Utilities\Point3D.h" />
-    <ClInclude Include="Utilities\Ray.h" />
     <ClInclude Include="Utilities\RGBColor.h" />
-    <ClInclude Include="Utilities\ShadeRec.h" />
     <ClInclude Include="Utilities\Vector3D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
