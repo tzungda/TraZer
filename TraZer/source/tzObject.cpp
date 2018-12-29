@@ -1,12 +1,21 @@
 #include "../Include/tzObject.h"
 
 /*
-Constructor
+Constructor/Destructor
 */
 
 //===================================================================================
 tzObject::tzObject( )
 {
+	// create unique id
+	UUID uuid;
+	::UuidCreate(&uuid);
+	// set it
+	RPC_CSTR *str_id = 0;
+	UuidToStringA( &uuid, str_id);
+	mId = (char*)str_id;
+
+	//
 	mParent = NULL;
 }
 
@@ -14,6 +23,18 @@ tzObject::tzObject( )
 /*
 Interfaces
 */
+
+//===================================================================================
+string tzObject::name() const
+{
+	return mName;
+}
+
+//===================================================================================
+void tzObject::setName(const string &name)
+{
+	mName = name;
+}
 
 //===================================================================================
 tzObject* tzObject::parent() const
