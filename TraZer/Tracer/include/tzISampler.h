@@ -4,8 +4,8 @@
 #include <vector>
 #include <math.h>
 
-#include "Point2D.h"
-#include "Point3D.h"
+#include "tzPoint2D.h"
+#include "tzPoint3D.h"
 #include "../include/tzMaths.h"
 
 using namespace std;
@@ -60,19 +60,19 @@ class tzISampler {
 		
 		// the following functions are not const because they change count and jump
 		
-		Point2D											// get next sample on unit square
+		tzPoint2D											// get next sample on unit square
 		sample_unit_square(void);
 		
-		Point2D											// get next sample on unit disk
+		tzPoint2D											// get next sample on unit disk
 		sample_unit_disk(void);
 		
-		Point3D											// get next sample on unit hemisphere
+		tzPoint3D											// get next sample on unit hemisphere
 		sample_hemisphere(void);
 		
-		Point3D											// get next sample on unit sphere
+		tzPoint3D											// get next sample on unit sphere
 		sample_sphere(void);
 		
-		Point2D											// only used to set up a vector noise table
+		tzPoint2D											// only used to set up a vector noise table
 		sample_one_set(void);							// this is not discussed in the book, but see the
 														// file LatticeNoise.cpp in Chapter 31
 		
@@ -80,11 +80,11 @@ class tzISampler {
 	
 		int 					num_samples;     		// the number of sample points in a set
 		int 					num_sets;				// the number of sample sets
-		vector<Point2D>			samples;				// sample points on a unit square
+		vector<tzPoint2D>		samples;				// sample points on a unit square
 		vector<int>				shuffled_indices;		// shuffled samples array indices
-		vector<Point2D>			disk_samples;			// sample points on a unit disk
-		vector<Point3D> 		hemisphere_samples;		// sample points on a unit hemisphere
-		vector<Point3D> 		sphere_samples;			// sample points on a unit sphere
+		vector<tzPoint2D>		disk_samples;			// sample points on a unit disk
+		vector<tzPoint3D> 		hemisphere_samples;		// sample points on a unit hemisphere
+		vector<tzPoint3D> 		sphere_samples;			// sample points on a unit sphere
 		unsigned long 			count;					// the current number of sample points used
 		int 					jump;					// random index jump
 };

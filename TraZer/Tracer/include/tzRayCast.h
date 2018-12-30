@@ -12,7 +12,7 @@ class tzRayCast: public tzITracer {
 				
 		virtual ~tzRayCast(void);
 
-		virtual RGBColor	
+		virtual tzRGBColor
 		trace_ray(const tzRay ray, const int depth) const;
 };
 

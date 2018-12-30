@@ -11,7 +11,7 @@ class tzPlane: public tzIGeometricObject {
 	
 		tzPlane(void);   												// default constructor
 		
-		tzPlane(const Point3D& point, const Normal& normal);			// constructor	
+		tzPlane(const tzPoint3D& point, const tzNormal& normal);		// constructor	
 	
 		tzPlane(const tzPlane& plane); 									// copy constructor
 		
@@ -32,8 +32,8 @@ class tzPlane: public tzIGeometricObject {
 		
 	private:
 	
-		Point3D 	a;   				// point through which plane passes 
-		Normal 		n;					// normal to the plane
+		tzPoint3D 	a;   				// point through which plane passes 
+		tzNormal	n;					// normal to the plane
 				
 		static const double kEpsilon;   // for shadows and secondary rays
 };

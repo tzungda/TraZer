@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #include "../include/tzConstants.h"
-#include "RGBColor.h"
+#include "tzRGBColor.h"
 
 
 // prototypes

@@ -2,8 +2,8 @@
 #define TZ_TRACER_BRDF
 
 
-#include "RGBColor.h"
-#include "Vector3D.h"
+#include "tzRGBColor.h"
+#include "tzVector3D.h"
 #include "../include/tzShadeRec.h"
 #include "../include/tzISampler.h"
 
@@ -25,17 +25,17 @@ class tzIBRDF {
 		void							
 		set_sampler(tzISampler* sPtr);
 		
-		virtual RGBColor
-		f(const tzShadeRec& sr, const Vector3D& wo, const Vector3D& wi) const;
+		virtual tzRGBColor
+		f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
 		
-		virtual RGBColor
-		sample_f(const tzShadeRec& sr, const Vector3D& wo, Vector3D& wi) const;
+		virtual tzRGBColor
+		sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi) const;
 		
-		virtual RGBColor
-		sample_f(const tzShadeRec& sr, const Vector3D& wo, Vector3D& wi, float& pdf) const;
+		virtual tzRGBColor
+		sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const;
 		
-		virtual RGBColor
-		rho(const tzShadeRec& sr, const Vector3D& wo) const;
+		virtual tzRGBColor
+		rho(const tzShadeRec& sr, const tzVector3D& wo) const;
 		
 			
 	protected:

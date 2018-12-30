@@ -26,21 +26,21 @@ class tzAmbient: public tzILight {
 		set_color(const float c);
 		
 		void
-		set_color(const RGBColor& c);
+		set_color(const tzRGBColor& c);
 		
 		void
 		set_color(const float r, const float g, const float b); 
 		
-		virtual Vector3D								
+		virtual tzVector3D
 		get_direction(tzShadeRec& s); 
 		
-		virtual RGBColor
+		virtual tzRGBColor
 		L(tzShadeRec& s);
 	
 	private:
 	
 		float		ls;
-		RGBColor	color;
+		tzRGBColor	color;
 };
 
 
@@ -64,7 +64,7 @@ tzAmbient::set_color(const float c) {
 // ------------------------------------------------------------------------------- set_color
 
 inline void
-tzAmbient::set_color(const RGBColor& c) {
+tzAmbient::set_color(const tzRGBColor& c) {
 	color = c;
 }
 

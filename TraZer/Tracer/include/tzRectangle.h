@@ -9,9 +9,9 @@ class tzRectangle: public tzIGeometricObject {
 		
 		tzRectangle(void);
 				
-		tzRectangle(const Point3D& _p0, const Vector3D& _a, const Vector3D& _b);
+		tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVector3D& _b);
 		
-		tzRectangle(const Point3D& _p0, const Vector3D& _a, const Vector3D& _b, const Normal& n);
+		tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVector3D& _b, const tzNormal& n);
 		
 		virtual tzRectangle*
 		clone(void) const;
@@ -24,7 +24,7 @@ class tzRectangle: public tzIGeometricObject {
 		tzRectangle&
 		operator= (const tzRectangle& rhs);
 		
-		BBox
+		tzBBox
 		get_bounding_box(void);				
 	
 		virtual bool 												 
@@ -36,23 +36,23 @@ class tzRectangle: public tzIGeometricObject {
 		virtual void 								
 		set_sampler(tzISampler* sampler); 
 				
-		virtual Point3D 											
+		virtual tzPoint3D
 		sample(void);
 		
-		virtual Normal 																
-		get_normal(const Point3D& p);		
+		virtual tzNormal
+		get_normal(const tzPoint3D& p);
 		
 		virtual float												
 		pdf(tzShadeRec& sr);
 		
 	private:
 	
-		Point3D 		p0;   			// corner vertex 
-		Vector3D		a;				// side
-		Vector3D		b;				// side
+		tzPoint3D 		p0;   			// corner vertex 
+		tzVector3D		a;				// side
+		tzVector3D		b;				// side
 		double			a_len_squared;	// square of the length of side a
 		double			b_len_squared;	// square of the length of side b
-		Normal			normal;	
+		tzNormal		normal;
 		
 		float			area;			// for rectangular lights
 		float			inv_area;		// for rectangular lights

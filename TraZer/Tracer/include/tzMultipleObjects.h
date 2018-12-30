@@ -15,8 +15,8 @@ class tzMultipleObjects: public tzITracer {
 		virtual											
 		~tzMultipleObjects(void);
 						
-		virtual RGBColor trace_ray(const tzRay& ray) const;
-		virtual RGBColor trace_ray(const tzRay ray, const int depth) const;
+		virtual tzRGBColor trace_ray(const tzRay& ray) const;
+		virtual tzRGBColor trace_ray(const tzRay ray, const int depth) const;
 };
 
 #endif

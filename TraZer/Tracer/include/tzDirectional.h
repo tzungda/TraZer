@@ -2,8 +2,8 @@
 #define TZ_TRACER_DIRECTIONAL
 
 #include "../include/tzILight.h"
-#include "Vector3D.h"
-#include "RGBColor.h"
+#include "tzVector3D.h"
+#include "tzRGBColor.h"
 
 #include "../include/tzWorld.h"			// you will need this later on for shadows
 #include "tzShadeRec.h"
@@ -31,28 +31,28 @@ class tzDirectional: public tzILight {
 		set_color(const float c);
 		
 		void
-		set_color(const RGBColor& c);
+		set_color(const tzRGBColor& c);
 		
 		void
 		set_color(const float r, const float g, const float b); 		
 			
 		void
-		set_direction(Vector3D d);						
+		set_direction(tzVector3D d);
 		
 		void
 		set_direction(float dx, float dy, float dz);
 		
-		virtual Vector3D								
+		virtual tzVector3D
 		get_direction(tzShadeRec& sr);
 				
-		virtual RGBColor		
+		virtual tzRGBColor
 		L(tzShadeRec& sr);	
 		
 	private:
 
 		float		ls;			
-		RGBColor	color;
-		Vector3D	dir;		// direction the light comes from
+		tzRGBColor	color;
+		tzVector3D	dir;		// direction the light comes from
 };
 
 
@@ -77,7 +77,7 @@ tzDirectional::set_color(const float c) {
 // ------------------------------------------------------------------------------- set_color
 
 inline void
-tzDirectional::set_color(const RGBColor& c) {
+tzDirectional::set_color(const tzRGBColor& c) {
 	color = c;
 }
 
@@ -93,7 +93,7 @@ tzDirectional::set_color(const float r, const float g, const float b) {
 // ---------------------------------------------------------------------- set_direction
 
 inline void
-tzDirectional::set_direction(Vector3D d) {
+tzDirectional::set_direction(tzVector3D d) {
 	dir = d;
 	dir.normalize();
 }

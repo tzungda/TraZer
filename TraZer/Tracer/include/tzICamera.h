@@ -2,8 +2,8 @@
 #define TZ_TRACER_ICAMERA
 
 
-#include "Point3D.h"
-#include "Vector3D.h"
+#include "tzPoint3D.h"
+#include "tzVector3D.h"
 #include <string>
 
 class tzWorld;  // can't #include "World" here because World contains a camera pointer
@@ -27,19 +27,19 @@ class tzICamera {
 		render_scene(const tzWorld& w) = 0;
 		
 		void
-		set_eye(const Point3D& p);
+		set_eye(const tzPoint3D& p);
 
 		void
 		set_eye(const float x, const float y, const float z);
 		
 		void
-		set_lookat(const Point3D& p);
+		set_lookat(const tzPoint3D& p);
 
 		void
 		set_lookat(const float x, const float y, const float z);
 
 		void
-		set_up_vector(const Vector3D& u);
+		set_up_vector(const tzVector3D& u);
 
 		void
 		set_up_vector(const float x, const float y, const float z);
@@ -58,11 +58,11 @@ class tzICamera {
 		
 	protected:		
 	
-		Point3D			eye;				// eye point
-		Point3D			lookat; 			// lookat point
+		tzPoint3D		eye;				// eye point
+		tzPoint3D		lookat; 			// lookat point
 		float			ra;					// roll angle
-		Vector3D		u, v, w;			// orthonormal basis vectors
-		Vector3D		up;					// up vector
+		tzVector3D		u, v, w;			// orthonormal basis vectors
+		tzVector3D		up;					// up vector
 		float			exposure_time;
 
 		std::string		mOutputPath;
@@ -78,7 +78,7 @@ class tzICamera {
 // ----------------------------------------------------------------- set_eye
 
 inline void
-tzICamera::set_eye(const Point3D& p) {
+tzICamera::set_eye(const tzPoint3D& p) {
 	eye = p;
 }
 
@@ -94,7 +94,7 @@ tzICamera::set_eye(const float x, const float y, const float z) {
 // ----------------------------------------------------------------- set_lookat
 
 inline void
-tzICamera::set_lookat(const Point3D& p) {
+tzICamera::set_lookat(const tzPoint3D& p) {
 	lookat = p;
 }
 
@@ -110,7 +110,7 @@ tzICamera::set_lookat(const float x, const float y, const float z) {
 // ----------------------------------------------------------------- set_up_vector
 
 inline void
-tzICamera::set_up_vector(const Vector3D& u) {
+tzICamera::set_up_vector(const tzVector3D& u) {
 	up = u;
 }
 

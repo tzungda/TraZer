@@ -2,7 +2,7 @@
 #define TZ_TRACER_PINHOLE
 
 
-#include "Point2D.h"
+#include "tzPoint2D.h"
 #include "../include/tzWorld.h"    // we can #include "World.h" here
 
 //--------------------------------------------------------------------- class Pinhole
@@ -28,8 +28,8 @@ class tzPinhole: public tzICamera {
 		void
 		set_zoom(const float zoom_factor);
 		
-		Vector3D								
-		get_direction(const Point2D& p) const;
+		tzVector3D
+		get_direction(const tzPoint2D& p) const;
 		
 		virtual void 												
 		render_scene(const tzWorld& w);

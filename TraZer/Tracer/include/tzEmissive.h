@@ -9,7 +9,7 @@
 class tzEmissive: public tzIMaterial {
 	private:
 		float			ls;	//radiance scaling factor
-		RGBColor		ce;	//color
+		tzRGBColor		ce;	//color
 	public:
 			
 		tzEmissive(void);
@@ -25,13 +25,13 @@ class tzEmissive: public tzIMaterial {
 		~tzEmissive(void);
 		
 		float		emissiveRadiance( ) const;
-		RGBColor	emissiveColor() const;
+		tzRGBColor	emissiveColor() const;
 
 		void 													
 		scale_radiance(const float k);
 		
 		void													
-		set_ce(const RGBColor &c);
+		set_ce(const tzRGBColor &c);
 		
 		void													
 		set_ce(const float r, const float g, const float b);
@@ -39,11 +39,11 @@ class tzEmissive: public tzIMaterial {
 		void																						
 		set_ce(const float c);
 				
-		virtual RGBColor shade(tzShadeRec& sr);
+		virtual tzRGBColor shade(tzShadeRec& sr);
 
-		virtual RGBColor area_light_shade(tzShadeRec& sr);
+		virtual tzRGBColor area_light_shade(tzShadeRec& sr);
 
-		virtual RGBColor get_Le(tzShadeRec &sr);
+		virtual tzRGBColor get_Le(tzShadeRec &sr);
 		
 };
 

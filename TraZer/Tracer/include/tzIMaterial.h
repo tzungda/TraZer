@@ -2,8 +2,8 @@
 #define TZ_TRACER_MATERIAL
 
 #include "../include/tzWorld.h"			// required for the shade function in all derived classes
-#include "RGBColor.h"
-#include "../include/tzScene.h"
+#include "tzRGBColor.h"
+
 
 class tzIMaterial {	
 	public:
@@ -17,12 +17,12 @@ class tzIMaterial {
 				
 		virtual ~tzIMaterial(void);
 				
-		virtual RGBColor
+		virtual tzRGBColor
 		shade(tzShadeRec& sr);	
 
-		virtual RGBColor area_light_shade(tzShadeRec& sr);
+		virtual tzRGBColor area_light_shade(tzShadeRec& sr);
 
-		virtual RGBColor get_Le( tzShadeRec &sr );
+		virtual tzRGBColor get_Le( tzShadeRec &sr );
 		
 	protected:
 	

@@ -29,7 +29,7 @@ class tzPhong: public tzIMaterial {
 		set_kd(const float k);
 		
 		void													
-		set_cd(const RGBColor c);
+		set_cd(const tzRGBColor c);
 		
 		void													
 		set_cd(const float r, const float g, const float b);
@@ -45,7 +45,7 @@ class tzPhong: public tzIMaterial {
 		set_exp(const float exp);
 		
 		void
-		set_cs(const RGBColor& c);
+		set_cs(const tzRGBColor& c);
 		
 		void													
 		set_cs(const float r, const float g, const float b);
@@ -54,8 +54,11 @@ class tzPhong: public tzIMaterial {
 		set_cs(const float c);
 				
 		//
-		virtual RGBColor										
+		virtual tzRGBColor
 		shade(tzShadeRec& sr);
+
+		//
+		virtual tzRGBColor area_light_shade(tzShadeRec &sr);
 		
 	private:
 		
@@ -88,7 +91,7 @@ tzPhong::set_kd (const float kd) {
 // ---------------------------------------------------------------- set_cd
 
 inline void												
-tzPhong::set_cd(const RGBColor c) {
+tzPhong::set_cd(const tzRGBColor c) {
 	ambient_brdf->set_cd(c);
 	diffuse_brdf->set_cd(c);
 }
@@ -124,7 +127,7 @@ tzPhong::set_exp(const float exp)
 }
 
 inline void
-tzPhong::set_cs(const RGBColor& c)
+tzPhong::set_cs(const tzRGBColor& c)
 {
 	specular_brdf->set_cs( c );
 }

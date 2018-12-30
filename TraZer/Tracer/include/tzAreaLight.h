@@ -8,10 +8,10 @@
 //	See the file COPYING.txt for the full license.
 
 
-#include "RGBColor.h"
-#include "Vector3D.h"
-#include "Point3D.h"
-#include "Normal.h"
+#include "tzRGBColor.h"
+#include "tzVector3D.h"
+#include "tzPoint3D.h"
+#include "tzNormal.h"
 #include "../include/tzILight.h"
 #include "../include/tzIMaterial.h"
 #include "../include/tzIGeometricObject.h"
@@ -35,10 +35,10 @@ class tzAreaLight: public tzILight {
 		void 									
 		set_object(tzIGeometricObject* obj_ptr);
 		
-		virtual Vector3D												
+		virtual tzVector3D
 		get_direction(tzShadeRec& s);
 		
-		virtual RGBColor						
+		virtual tzRGBColor
 		L(tzShadeRec& sr);
 		
 		virtual bool									
@@ -54,9 +54,9 @@ class tzAreaLight: public tzILight {
 		
 		tzIGeometricObject* 	object_ptr;
 		tzIMaterial* 			material_ptr;	 // will be an emissive material
-		Point3D				sample_point;
-		Normal				light_normal;    // assigned in get_direction - which therefore can't be const for any light
-		Vector3D			wi;			     // unit direction from hit point being shaded to sample point on light surface			
+		tzPoint3D				sample_point;
+		tzNormal				light_normal;    // assigned in get_direction - which therefore can't be const for any light
+		tzVector3D				wi;			     // unit direction from hit point being shaded to sample point on light surface			
 	
 };
 

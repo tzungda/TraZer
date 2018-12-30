@@ -11,7 +11,7 @@ class tzSphere: public tzIGeometricObject {
 		
 		tzSphere(void);   									// Default constructor
 				
-		tzSphere(Point3D center, double r);					// Constructor 
+		tzSphere(tzPoint3D center, double r);					// Constructor 
 					
 		tzSphere(const tzSphere& tzSphere); 						// Copy constructor
 		
@@ -25,7 +25,7 @@ class tzSphere: public tzIGeometricObject {
 		operator= (const tzSphere& tzSphere);				
 																					
 		void
-		set_center(const Point3D& c);
+		set_center(const tzPoint3D& c);
 		
 		void
 		set_center(const double x, const double y, const double z);
@@ -40,7 +40,7 @@ class tzSphere: public tzIGeometricObject {
 		
 	private:
 	
-		Point3D 	center;   			// center coordinates as a point  
+		tzPoint3D 	center;   			// center coordinates as a point  
 		double 		radius;				// the radius 
 		
 		static const double kEpsilon;   // for shadows and secondary rays
@@ -49,7 +49,7 @@ class tzSphere: public tzIGeometricObject {
 
 
 inline void
-tzSphere::set_center(const Point3D& c) {
+tzSphere::set_center(const tzPoint3D& c) {
 	center = c;
 }
 		

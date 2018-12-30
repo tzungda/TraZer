@@ -23,14 +23,14 @@ class tzLambertian: public tzIBRDF
 		virtual tzLambertian*
 		clone(void) const;
 		
-		virtual RGBColor
-		f(const tzShadeRec& sr, const Vector3D& wo, const Vector3D& wi) const;
+		virtual tzRGBColor
+		f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
 		
-		virtual RGBColor												
-		sample_f(const tzShadeRec& sr, const Vector3D& wo, Vector3D& wi, float& pdf) const;
+		virtual tzRGBColor
+		sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const;
 		
-		virtual RGBColor
-		rho(const tzShadeRec& sr, const Vector3D& wo) const;
+		virtual tzRGBColor
+		rho(const tzShadeRec& sr, const tzVector3D& wo) const;
 			
 		void
 		set_ka(const float ka);	
@@ -39,7 +39,7 @@ class tzLambertian: public tzIBRDF
 		set_kd(const float kd);
 		
 		void
-		set_cd(const RGBColor& c);
+		set_cd(const tzRGBColor& c);
 		
 		void													
 		set_cd(const float r, const float g, const float b);
@@ -50,7 +50,7 @@ class tzLambertian: public tzIBRDF
 	private:
 	
 		float		kd;
-		RGBColor 	cd;
+		tzRGBColor 	cd;
 };
 
 
@@ -76,7 +76,7 @@ tzLambertian::set_kd(const float k) {
 // -------------------------------------------------------------- set_cd
 
 inline void
-tzLambertian::set_cd(const RGBColor& c) {
+tzLambertian::set_cd(const tzRGBColor& c) {
 	cd = c;
 }
 

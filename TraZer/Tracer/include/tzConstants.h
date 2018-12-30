@@ -4,7 +4,7 @@
 
 #include <math.h>
 #include <stdlib.h>			// for RAND_MAX
-#include "RGBColor.h"
+#include "tzRGBColor.h"
 
 
 const double 	PI 			= 3.1415926535897932384;
@@ -16,9 +16,9 @@ const double 	invTWO_PI 	= 0.1591549430918953358;
 const double 	kEpsilon 	= 0.0001; 
 const double	kHugeValue	= 1.0E10;
 
-const RGBColor	black(0.0);
-const RGBColor	white(1.0);
-const RGBColor	red(1.0, 0.0, 0.0);
+const tzRGBColor	black(0.0);
+const tzRGBColor	white(1.0);
+const tzRGBColor	red(1.0, 0.0, 0.0);
 
 const float 	invRAND_MAX = 1.0f / (float)RAND_MAX;
 

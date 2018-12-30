@@ -28,7 +28,7 @@ class tzMatte: public tzIMaterial {
 		set_kd(const float k);
 		
 		void													
-		set_cd(const RGBColor c);
+		set_cd(const tzRGBColor c);
 		
 		void													
 		set_cd(const float r, const float g, const float b);
@@ -36,10 +36,10 @@ class tzMatte: public tzIMaterial {
 		void																						
 		set_cd(const float c);
 				
-		virtual RGBColor										
+		virtual tzRGBColor
 		shade(tzShadeRec& sr);
 
-		virtual RGBColor area_light_shade( tzShadeRec &sr );
+		virtual tzRGBColor area_light_shade( tzShadeRec &sr );
 		
 	private:
 		
@@ -71,7 +71,7 @@ tzMatte::set_kd (const float kd) {
 // ---------------------------------------------------------------- set_cd
 
 inline void												
-tzMatte::set_cd(const RGBColor c) {
+tzMatte::set_cd(const tzRGBColor c) {
 	ambient_brdf->set_cd(c);
 	diffuse_brdf->set_cd(c);
 }

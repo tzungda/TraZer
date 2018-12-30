@@ -1,8 +1,8 @@
 #ifndef TZ_TRACER_LIGHT
 #define TZ_TRACER_LIGHT
 
-#include "Vector3D.h"
-#include "RGBColor.h"
+#include "tzVector3D.h"
+#include "tzRGBColor.h"
 #include "../include/tzRay.h"
 
 class tzShadeRec;
@@ -24,10 +24,10 @@ class tzILight {
 		
 		virtual ~tzILight(void);
 						
-		virtual Vector3D								
+		virtual tzVector3D
 		get_direction(tzShadeRec& sr) = 0;				
 																
-		virtual RGBColor														
+		virtual tzRGBColor
 		L(tzShadeRec& sr);								
 
 		virtual float G(const tzShadeRec& sr) const;
