@@ -56,14 +56,14 @@ tzDirectional::~tzDirectional(void) {}
 // ---------------------------------------------------------------------- get_direction
 // as this function is virtual, it shouldn't be inlined 
 
-Vector3D								
+tzVector3D
 tzDirectional::get_direction(tzShadeRec& sr) {
 	return (dir);
 }	
 
 // ------------------------------------------------------------------------------  L
 
-RGBColor
+tzRGBColor
 tzDirectional::L(tzShadeRec& s) {
 	return (ls * color);
 }

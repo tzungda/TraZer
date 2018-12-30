@@ -26,7 +26,7 @@ tzRayCast::~tzRayCast(void) {}
 // -------------------------------------------------------------------- trace_ray
 // this ignores the depth argument
 
-RGBColor	
+tzRGBColor
 tzRayCast::trace_ray(const tzRay ray, const int depth) const {
 	float tmin = 0.0f;
 	tzShadeRec sr(world_ptr->hitObjects(ray, tmin));

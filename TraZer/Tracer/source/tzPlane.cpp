@@ -14,7 +14,7 @@ tzPlane::tzPlane(void)
 
 // ----------------------------------------------------------------------  constructor
 
-tzPlane::tzPlane(const Point3D& point, const Normal& normal)
+tzPlane::tzPlane(const tzPoint3D& point, const tzNormal& normal)
 	:	tzIGeometricObject(),
 		a(point),
 		n(normal)

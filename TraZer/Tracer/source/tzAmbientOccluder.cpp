@@ -62,22 +62,22 @@ tzAmbientOccluder::~tzAmbientOccluder(void)
 
 // ---------------------------------------------------------------------- get_direction	
 
-Vector3D								
+tzVector3D
 tzAmbientOccluder::get_direction(tzShadeRec& s) 
 {
-	Point3D sp = mSamplerPtr->sample_hemisphere();
+	tzPoint3D sp = mSamplerPtr->sample_hemisphere();
 	return ( sp.x*u + sp.y*v + sp.z*w );
 }
 
 
 // ---------------------------------------------------------------------- L
 
-RGBColor
+tzRGBColor
 tzAmbientOccluder::L(tzShadeRec& sr) 
 {
 	w = sr.mNormal;
 	// jitter up vector in case normal is vertical
-	v = w^Vector3D(0.0072f, 1.0f, 0.0034f);
+	v = w^tzVector3D(0.0072f, 1.0f, 0.0034f);
 	v.normalize();
 	u = v^w;
 

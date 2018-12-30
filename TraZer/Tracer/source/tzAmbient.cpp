@@ -51,15 +51,15 @@ tzAmbient::~tzAmbient(void) {}
 
 // ---------------------------------------------------------------------- get_direction	
 
-Vector3D								
+tzVector3D
 tzAmbient::get_direction(tzShadeRec& s) {
-	return (Vector3D(0.0));
+	return (tzVector3D(0.0));
 }
 
 
 // ---------------------------------------------------------------------- L
 
-RGBColor
+tzRGBColor
 tzAmbient::L(tzShadeRec& sr) {
 	return (ls * color);
 }

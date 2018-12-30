@@ -29,7 +29,7 @@ tzSingleSphere::~tzSingleSphere(void) {}
 
 // -------------------------------------------------------------------- trace_ray
 
-RGBColor	
+tzRGBColor
 tzSingleSphere::trace_ray(const tzRay& ray) const {
 	tzShadeRec	sr(*world_ptr); 	// not used
 	double    	t;  				// not used

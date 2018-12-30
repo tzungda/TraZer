@@ -96,7 +96,7 @@ tzMultiJittered::generate_samples(void) {
 	// fill the samples array with dummy points to allow us to use the [ ] notation when we set the 
 	// initial patterns
 	
-	Point2D fill_point;
+	tzPoint2D fill_point;
 	for (int j = 0; j < num_samples * num_sets; j++)
 		samples.push_back(fill_point);
 		

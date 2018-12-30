@@ -52,7 +52,7 @@ tzPointLight::~tzPointLight(void) {}
 
 // ---------------------------------------------------------------------- get_direction	
 
-Vector3D								
+tzVector3D
 tzPointLight::get_direction(tzShadeRec& s) {
 	return ((location - s.mHitPoint).hat() );
 }
@@ -78,12 +78,12 @@ bool tzPointLight::in_shadow(const tzRay &ray, const tzShadeRec &sr) const
 
 // ---------------------------------------------------------------------- L
 
-RGBColor
+tzRGBColor
 tzPointLight::L(tzShadeRec& sr) {
 	return (ls * color);
 }
 
-void tzPointLight::set_location(const Vector3D &loc)
+void tzPointLight::set_location(const tzVector3D &loc)
 {
 	location = loc;
 }

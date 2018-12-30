@@ -109,7 +109,7 @@ void tzWorld::build()
 	//mVp.setMaxDepth(0);
 	mVp.setSampler(sampler_ptr);
 
-	mBackgroundColor = RGBColor(0.5);
+	mBackgroundColor = tzRGBColor(0.5);
 
 	mTracerPtr = new tzAreaLighting(this);
 
@@ -130,11 +130,11 @@ void tzWorld::build()
 	float height = 8.0;
 	//	float width = 2.0;				// for Figure 18.4(c)
 	//	float height = 2.0;
-	Point3D center(0.0, 7.0, -7.0);	// center of each area light (rectangular, disk, and spherical)
-	Point3D p0(-0.5 * width, center.y - 0.5 * height, center.z);
-	Vector3D a(width, 0.0, 0.0);
-	Vector3D b(0.0, height, 0.0);
-	Normal normal(0, 0, 1);
+	tzPoint3D center(0.0, 7.0, -7.0);	// center of each area light (rectangular, disk, and spherical)
+	tzPoint3D p0(-0.5 * width, center.y - 0.5 * height, center.z);
+	tzVector3D a(width, 0.0, 0.0);
+	tzVector3D b(0.0, height, 0.0);
+	tzNormal normal(0, 0, 1);
 
 	// rectangle emit object
 	tzRectangle* rectangle_ptr = new tzRectangle(p0, a, b, normal);
@@ -150,10 +150,17 @@ void tzWorld::build()
 	addLight(area_light_ptr);
 
 	// material matte
-	tzMatte* mattePtr1 = new tzMatte();
+	tzPhong* phongPtr = new tzPhong();
+	phongPtr->set_ka(0.25);
+	phongPtr->set_kd(0.75);
+	phongPtr->set_cd(0.4, 0.7, 0.4);  	// light green
+	phongPtr->set_ks(0.005);
+	phongPtr->set_exp(500);
+	/*
 	mattePtr1->set_ka(0.25);
 	mattePtr1->set_kd(0.75);
 	mattePtr1->set_cd(0.4, 0.7, 0.4);
+	*/
 	//
 	tzMatte* mattePtr2 = new tzMatte();
 	mattePtr2->set_ka(0.1);
@@ -161,12 +168,12 @@ void tzWorld::build()
 	mattePtr2->set_cd(white);
 
 	// sphere
-	tzSphere *spherePtr = new tzSphere(Point3D(0, 2, 0), 1);
-	spherePtr->set_material(mattePtr1);
+	tzSphere *spherePtr = new tzSphere(tzPoint3D(0, 2, 0), 1);
+	spherePtr->set_material(phongPtr);
 	addObject(spherePtr);
 
 	// plane
-	tzPlane* planePtr = new tzPlane(Point3D(0), Normal(0, 1, 0));
+	tzPlane* planePtr = new tzPlane(tzPoint3D(0), tzNormal(0, 1, 0));
 	planePtr->set_material(mattePtr2);
 	addObject(planePtr);
 
@@ -323,17 +330,17 @@ void tzWorld::renderScene() const
 	
 
 	std::vector< glm::vec4 > pixelColorArray;
-	RGBColor pixelColor;
+	tzRGBColor pixelColor;
 	tzRay ray;
 	double zw = 100.0;
 //	double x, y;
 	pixelColorArray.resize(mVp.mHres*mVp.mVres);
 
-	ray.d = Vector3D( 0.0f, 0.0f, -1.0f );
+	ray.d = tzVector3D( 0.0f, 0.0f, -1.0f );
 	const float h = (float)mVp.mHres;
 	const float v = (float)mVp.mVres;
-	Point2D sp; // sample point in [0, 1] x [0, 1]
-	Point2D pp; // sample point on a pixel
+	tzPoint2D sp; // sample point in [0, 1] x [0, 1]
+	tzPoint2D pp; // sample point on a pixel
 	float invNumSamples = 1.0f/(float)mVp.mNumSamples;
 	for ( int r = 0; r < mVp.mVres; r++ )
 	{
@@ -351,7 +358,7 @@ void tzWorld::renderScene() const
 				sp = mVp.mSamplerPtr->sample_unit_square();
 				pp.x = mVp.mS * (fC - 0.5f*h + sp.x);
 				pp.y = mVp.mS * (fR - 0.5f*v + sp.y);
-				ray.o = Point3D( pp.x, pp.y, zw );
+				ray.o = tzPoint3D( pp.x, pp.y, zw );
 				pixelColor += mTracerPtr->trace_ray( ray );
 			}
 			pixelColor *= invNumSamples;
@@ -375,7 +382,7 @@ void tzWorld::openWindow(const int hres, const int vres) const
 }
 
 //===================================================================================
-void tzWorld::writeToBuffer(std::vector<glm::vec4>& buffer, const int row, const int column, const RGBColor& pixel_color) const
+void tzWorld::writeToBuffer(std::vector<glm::vec4>& buffer, const int row, const int column, const tzRGBColor& pixel_color) const
 {
 	int index = column + row*mVp.mHres;
 	buffer[index].r = pixel_color.r;
@@ -407,8 +414,8 @@ tzShadeRec tzWorld::hitObjects(const tzRay &ray, float &tmin)
 {
 	tzShadeRec sr( *this );
 	double t;
-	Normal normal;
-	Point3D localHitPoint;
+	tzNormal normal;
+	tzPoint3D localHitPoint;
 	tmin = kHugeValue;
 	int numObjects = (int)mObjects.size();
 

@@ -81,14 +81,14 @@ tzMatte::~tzMatte(void) {
 
 // ---------------------------------------------------------------- shade
 
-RGBColor
+tzRGBColor
 tzMatte::shade(tzShadeRec& sr) {
-	Vector3D 	wo 			= -sr.mRay.d;
-	RGBColor 	L 			= ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
+	tzVector3D 	wo 			= -sr.mRay.d;
+	tzRGBColor 	L 			= ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
 	int 		num_lights	= (int)sr.mWorld.mLights.size();
 	
 	for (int j = 0; j < num_lights; j++) {
-		Vector3D wi = sr.mWorld.mLights[j]->get_direction(sr);    
+		tzVector3D wi = sr.mWorld.mLights[j]->get_direction(sr);
 		float ndotwi = (float)(sr.mNormal * wi);
 	
 		if (ndotwi > 0.0) 
@@ -112,14 +112,14 @@ tzMatte::shade(tzShadeRec& sr) {
 }
 
 //===================================================================================
-RGBColor tzMatte::area_light_shade(tzShadeRec &sr)
+tzRGBColor tzMatte::area_light_shade(tzShadeRec &sr)
 {
-	Vector3D 	wo = -sr.mRay.d;
-	RGBColor 	L = ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
+	tzVector3D 	wo = -sr.mRay.d;
+	tzRGBColor 	L = ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
 	int 		num_lights = (int)sr.mWorld.mLights.size();
 
 	for (int j = 0; j < num_lights; j++) {
-		Vector3D wi = sr.mWorld.mLights[j]->get_direction(sr);
+		tzVector3D wi = sr.mWorld.mLights[j]->get_direction(sr);
 		float ndotwi = (float)(sr.mNormal * wi);
 
 		if (ndotwi > 0.0)

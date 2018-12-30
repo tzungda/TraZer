@@ -35,7 +35,7 @@ tzILight::~tzILight(void) {}
 // ---------------------------------------------------------------------- L
 // returns the radiance
 
-RGBColor								
+tzRGBColor
 tzILight::L(tzShadeRec& s) {
 	return (black);
 }

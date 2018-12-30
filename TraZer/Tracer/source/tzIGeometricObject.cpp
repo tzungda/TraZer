@@ -69,9 +69,9 @@ tzIGeometricObject::add_object(tzIGeometricObject* object_ptr) {}
 
 // ----------------------------------------------------------------------- get_normal
 
-Normal
+tzNormal
 tzIGeometricObject::get_normal(void) const{
-	return (Normal());
+	return (tzNormal());
 } 
 
 
@@ -99,9 +99,9 @@ tzIGeometricObject::get_material(void) const {
 
 // ----------------------------------------------------------------------- compute_normal
 
-Normal
-tzIGeometricObject::get_normal(const Point3D& p) {
-	return (Normal());
+tzNormal
+tzIGeometricObject::get_normal(const tzPoint3D& p) {
+	return (tzNormal());
 }  
 
 
@@ -113,9 +113,9 @@ tzIGeometricObject::set_bounding_box (void) {}
 
 // ----------------------------------------------------------------------- set_bounding_box
 
-BBox 
+tzBBox 
 tzIGeometricObject::get_bounding_box (void) {
-	return BBox();
+	return tzBBox();
 }
 
 
@@ -123,9 +123,9 @@ tzIGeometricObject::get_bounding_box (void) {
 // ----------------------------------------------------------------------- sample
 // returns a sample point on the object for area light shading
 
-Point3D 
+tzPoint3D
 tzIGeometricObject::sample(void) {
-	return (Point3D(0.0));
+	return (tzPoint3D(0.0));
 }
 
 

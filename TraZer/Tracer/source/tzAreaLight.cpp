@@ -78,7 +78,7 @@ tzAreaLight::operator= (const tzAreaLight& rhs) {
 
 // --------------------------------------------------------------- get_direction
 
-Vector3D								
+tzVector3D
 tzAreaLight::get_direction(tzShadeRec& sr) {
 	sample_point = object_ptr->sample();    // used in the G function
 	light_normal = object_ptr->get_normal(sample_point); 
@@ -91,7 +91,7 @@ tzAreaLight::get_direction(tzShadeRec& sr) {
 
 // --------------------------------------------------------------- L
 
-RGBColor								
+tzRGBColor
 tzAreaLight::L(tzShadeRec& sr) {
 	float ndotd = (float)( -light_normal * wi ); 
 	

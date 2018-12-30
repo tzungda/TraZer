@@ -109,15 +109,15 @@ tzPhong::~tzPhong(void) {
 
 // ---------------------------------------------------------------- shade
 
-RGBColor
+tzRGBColor
 tzPhong::shade(tzShadeRec& sr) {
-	Vector3D 	wo 			= -sr.mRay.d;
-	RGBColor	ambientColor = ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
-	RGBColor 	L 			= ambientColor;
+	tzVector3D 	wo 			= -sr.mRay.d;
+	tzRGBColor	ambientColor = ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
+	tzRGBColor 	L 			= ambientColor;
 	int 		num_lights	= (int)sr.mWorld.mLights.size();
 	
 	for (int j = 0; j < num_lights; j++) {
-		Vector3D wi = sr.mWorld.mLights[j]->get_direction(sr);    
+		tzVector3D wi = sr.mWorld.mLights[j]->get_direction(sr);
 		float ndotwi = (float)(sr.mNormal * wi);
 	
 		if (ndotwi > 0.0) 
@@ -133,7 +133,8 @@ tzPhong::shade(tzShadeRec& sr) {
 			//
 			if ( !in_shadow )
 			{
-				L += ( diffuse_brdf->f(sr, wo, wi) + specular_brdf->f( sr, wo, wi ) ) * sr.mWorld.mLights[j]->L(sr) * ndotwi;
+				// L += diffuse_brdf->f(sr, wo, wi) * sr.mWorld.mLights[j]->L(sr) * sr.mWorld.mLights[j]->G(sr) * ndotwi / sr.mWorld.mLights[j]->pdf(sr);
+				L += ( diffuse_brdf->f(sr, wo, wi) + specular_brdf->f( sr, wo, wi ) ) * sr.mWorld.mLights[j]->L(sr) * sr.mWorld.mLights[j]->G(sr) * ndotwi / sr.mWorld.mLights[j]->pdf(sr);
 			}
 		}
 	}
@@ -141,6 +142,37 @@ tzPhong::shade(tzShadeRec& sr) {
 	return (L);
 }
 
+//===================================================================================
+tzRGBColor tzPhong::area_light_shade(tzShadeRec &sr)
+{
+	tzVector3D 	wo = -sr.mRay.d;
+	tzRGBColor	ambientColor = ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
+	tzRGBColor 	L = ambientColor;
+	int 		num_lights = (int)sr.mWorld.mLights.size();
 
+	for (int j = 0; j < num_lights; j++) {
+		tzVector3D wi = sr.mWorld.mLights[j]->get_direction(sr);
+		float ndotwi = (float)(sr.mNormal * wi);
+
+		if (ndotwi > 0.0)
+		{
+			// check if it's in shadow
+			bool in_shadow = false;
+			if (sr.mWorld.mLights[j]->castsShadow())
+			{
+				tzRay shadowRay(sr.mHitPoint, wi);
+				in_shadow = sr.mWorld.mLights[j]->in_shadow(shadowRay, sr);
+			}
+
+			//
+			if (!in_shadow)
+			{
+				L += (diffuse_brdf->f(sr, wo, wi) + specular_brdf->f(sr, wo, wi)) * sr.mWorld.mLights[j]->L(sr) * ndotwi;
+			}
+		}
+	}
+
+	return (L);
+}
 
 

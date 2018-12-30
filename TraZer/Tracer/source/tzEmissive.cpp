@@ -49,13 +49,13 @@ tzEmissive::~tzEmissive(void)
 
 
 //===================================================================================
-RGBColor tzEmissive::shade(tzShadeRec& sr) 
+tzRGBColor tzEmissive::shade(tzShadeRec& sr)
 {
 	return black;	
 }
 
 //===================================================================================
-RGBColor tzEmissive::area_light_shade(tzShadeRec& sr)
+tzRGBColor tzEmissive::area_light_shade(tzShadeRec& sr)
 {
 	if ( -sr.mNormal * sr.mRay.d > 0.0 )
 	{
@@ -66,7 +66,7 @@ RGBColor tzEmissive::area_light_shade(tzShadeRec& sr)
 }
 
 //===================================================================================
-RGBColor tzEmissive::get_Le( tzShadeRec &sr )
+tzRGBColor tzEmissive::get_Le( tzShadeRec &sr )
 {
 	return ls*ce;
 }
@@ -79,7 +79,7 @@ float tzEmissive::emissiveRadiance() const
 }
 
 //===================================================================================
-RGBColor tzEmissive::emissiveColor() const
+tzRGBColor tzEmissive::emissiveColor() const
 {
 	return ce;
 }
@@ -91,7 +91,7 @@ void tzEmissive::scale_radiance(const float k)
 }
 
 //===================================================================================
-void tzEmissive::set_ce(const RGBColor &c)
+void tzEmissive::set_ce(const tzRGBColor &c)
 {
 	ce = c;
 }
@@ -99,11 +99,11 @@ void tzEmissive::set_ce(const RGBColor &c)
 //===================================================================================
 void tzEmissive::set_ce(const float r, const float g, const float b)
 {
-	ce = RGBColor(r, g, b);
+	ce = tzRGBColor(r, g, b);
 }
 
 //===================================================================================
 void tzEmissive::set_ce(const float c)
 {
-	ce = RGBColor(c);
+	ce = tzRGBColor(c);
 }

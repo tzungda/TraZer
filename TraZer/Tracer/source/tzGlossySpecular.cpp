@@ -48,11 +48,11 @@ tzGlossySpecular::set_samples(const int num_samples, const float exp) {
 // no sampling here: just use the Phong formula
 // this is used for direct illumination only
 
-RGBColor
-tzGlossySpecular::f(const tzShadeRec& sr, const Vector3D& wo, const Vector3D& wi) const {
-	RGBColor 	L;  				
+tzRGBColor
+tzGlossySpecular::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const {
+	tzRGBColor 	L;
 	float 		ndotwi = (float)(sr.mNormal * wi);
-	Vector3D 	r(-wi + 2.0 * sr.mNormal * ndotwi); // mirror reflection direction
+	tzVector3D 	r(-wi + 2.0 * sr.mNormal * ndotwi); // mirror reflection direction
 	float 		rdotwo = (float)(r * wo);
 		
 	if (rdotwo > 0.0)
@@ -65,18 +65,18 @@ tzGlossySpecular::f(const tzShadeRec& sr, const Vector3D& wo, const Vector3D& wi
 // ----------------------------------------------------------------------------------- sample_f
 // this is used for indirect illumination
 
-RGBColor
-tzGlossySpecular::sample_f(const tzShadeRec& sr, const Vector3D& wo, Vector3D& wi, float& pdf) const {
+tzRGBColor
+tzGlossySpecular::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const {
 	
 	float ndotwo = (float)(sr.mNormal * wo);
-	Vector3D r = -wo + 2.0 * sr.mNormal * ndotwo;     // direction of mirror reflection
+	tzVector3D r = -wo + 2.0 * sr.mNormal * ndotwo;     // direction of mirror reflection
 	
-	Vector3D w = r;								
-	Vector3D u = Vector3D(0.00424, 1, 0.00764) ^ w; 
+	tzVector3D w = r;
+	tzVector3D u = tzVector3D(0.00424, 1, 0.00764) ^ w;
 	u.normalize();
-	Vector3D v = u ^ w;
+	tzVector3D v = u ^ w;
 		
-	Point3D sp = sampler_ptr->sample_hemisphere();
+	tzPoint3D sp = sampler_ptr->sample_hemisphere();
 	wi = sp.x * u + sp.y * v + sp.z * w;			// reflected ray direction
 	
 	if (sr.mNormal * wi < 0.0) 						// reflected ray is below tangent plane
@@ -91,8 +91,8 @@ tzGlossySpecular::sample_f(const tzShadeRec& sr, const Vector3D& wo, Vector3D& w
 
 // ----------------------------------------------------------------------------------- rho
 
-RGBColor
-tzGlossySpecular::rho(const tzShadeRec& sr, const Vector3D& wo) const {
+tzRGBColor
+tzGlossySpecular::rho(const tzShadeRec& sr, const tzVector3D& wo) const {
 	return (black);
 }
 

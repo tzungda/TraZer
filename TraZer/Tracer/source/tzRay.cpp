@@ -12,7 +12,7 @@ tzRay::tzRay(void)
 {}
 
 // ================================================================================
-tzRay::tzRay(const Point3D& origin, const Vector3D& dir)
+tzRay::tzRay(const tzPoint3D& origin, const tzVector3D& dir)
 	: o(origin), d(dir)
 {}
 

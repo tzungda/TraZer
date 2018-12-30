@@ -154,7 +154,7 @@ void
 tzISampler::map_samples_to_unit_disk(void) {
 	int size = (int)samples.size();
 	float r, phi;		// polar coordinates
-	Point2D sp; 		// sample point on unit disk
+	tzPoint2D sp; 		// sample point on unit disk
 	
 	disk_samples.reserve(size);
 		
@@ -216,7 +216,7 @@ tzISampler::map_samples_to_hemisphere(const float exp) {
 		float pu = sin_theta * cos_phi;
 		float pv = sin_theta * sin_phi;
 		float pw = cos_theta;
-		hemisphere_samples.push_back(Point3D(pu, pv, pw)); 
+		hemisphere_samples.push_back(tzPoint3D(pu, pv, pw));
 	}
 }
 
@@ -243,7 +243,7 @@ tzISampler::map_samples_to_sphere(void) {
     	phi = (float)TWO_PI * r2;
     	x 	= r * cos(phi);
     	y 	= r * sin(phi);
-		sphere_samples.push_back(Point3D(x, y, z)); 
+		sphere_samples.push_back(tzPoint3D(x, y, z));
 	}
 }
 
@@ -251,7 +251,7 @@ tzISampler::map_samples_to_sphere(void) {
 // ------------------------------------------------------------------- sample_unit_square
 // the final version in Listing 5.13
 
-Point2D
+tzPoint2D
 tzISampler::sample_unit_square(void) {
 	if (count % num_samples == 0)  									// start of a new pixel
 		jump = (rand_int() % num_sets) * num_samples;				// random index jump initialised to zero in constructor
@@ -295,7 +295,7 @@ Sampler::sample_unit_square(void) {
 
 // ------------------------------------------------------------------- sample_unit_disk
 
-Point2D
+tzPoint2D
 tzISampler::sample_unit_disk(void) {
 	if (count % num_samples == 0)  									// start of a new pixel
 		jump = (rand_int() % num_sets) * num_samples;
@@ -307,7 +307,7 @@ tzISampler::sample_unit_disk(void) {
 
 // ------------------------------------------------------------------- sample_hemisphere
 
-Point3D
+tzPoint3D
 tzISampler::sample_hemisphere(void) {
 	if (count % num_samples == 0)  									// start of a new pixel
 		jump = (rand_int() % num_sets) * num_samples;
@@ -319,7 +319,7 @@ tzISampler::sample_hemisphere(void) {
 
 // ------------------------------------------------------------------- sample_sphere
 
-Point3D
+tzPoint3D
 tzISampler::sample_sphere(void) {
 	if (count % num_samples == 0)  									// start of a new pixel
 		jump = (rand_int() % num_sets) * num_samples;
@@ -333,7 +333,7 @@ tzISampler::sample_sphere(void) {
 // This is a specialised function called in LatticeNoise::init_vector_table
 // It doesn't shuffle the indices
 
-Point2D
+tzPoint2D
 tzISampler::sample_one_set(void) {
 	return(samples[count++ % num_samples]);  
 }

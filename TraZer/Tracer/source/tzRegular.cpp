@@ -58,5 +58,5 @@ tzRegular::generate_samples(void) {
 	for (int j = 0; j < num_sets; j++)
 		for (int p = 0; p < n; p++)		
 			for (int q = 0; q < n; q++)
-				samples.push_back(Point2D((q + 0.5f) / n, (p + 0.5f) / n));
+				samples.push_back(tzPoint2D((q + 0.5f) / n, (p + 0.5f) / n));
 }

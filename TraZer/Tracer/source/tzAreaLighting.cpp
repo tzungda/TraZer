@@ -28,7 +28,7 @@ tzAreaLighting::~tzAreaLighting(void) {}
 // The statement sr.ray = ray; is required for specular shading, computing the reflected and 
 // transmitted ray directions, and for rendering single sided emissive materials with area lights
 
-RGBColor	
+tzRGBColor
 tzAreaLighting::trace_ray(const tzRay ray, const int depth) const {
 	if (depth > world_ptr->mVp.mMaxDepth)
 		return (black);

@@ -21,15 +21,15 @@ tzRectangle::tzRectangle(void)
 // ----------------------------------------------------------------  constructor
 // this constructs the normal
 
-tzRectangle::tzRectangle(const Point3D& _p0, const Vector3D& _a, const Vector3D& _b)
+tzRectangle::tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVector3D& _b)
 	:	tzIGeometricObject(),
 		p0(_p0),
 		a(_a),
 		b(_b),
-		a_len_squared(a.len_squared()), 
-		b_len_squared(b.len_squared()),
-		area(a.length() * b.length()),
-		inv_area(1.0 / area),
+		a_len_squared((float)(a.len_squared())), 
+		b_len_squared((float)(b.len_squared())),
+		area((float)(a.length() * b.length())),
+		inv_area(1.0f / (float)area),
 		sampler_ptr(NULL)		
 {
 	normal = a ^ b;
@@ -40,15 +40,15 @@ tzRectangle::tzRectangle(const Point3D& _p0, const Vector3D& _a, const Vector3D&
 // ----------------------------------------------------------------  constructor
 // this has the normal as an argument
 
-tzRectangle::tzRectangle(const Point3D& _p0, const Vector3D& _a, const Vector3D& _b, const Normal& n)
+tzRectangle::tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVector3D& _b, const tzNormal& n)
 	:	tzIGeometricObject(),
 		p0(_p0),
 		a(_a),
 		b(_b),
 		a_len_squared(a.len_squared()), 
 		b_len_squared(b.len_squared()),
-		area(a.length() * b.length()),	
-		inv_area(1.0 / area),
+		area((float)(a.length() * b.length())),	
+		inv_area(1.0f / (float)area),
 		normal(n),
 		sampler_ptr(NULL)
 {
@@ -127,11 +127,11 @@ tzRectangle::~tzRectangle(void) {
 
 //------------------------------------------------------------------ get_bounding_box 
 
-BBox
+tzBBox
 tzRectangle::get_bounding_box(void) {
 	double delta = 0.0001; 
 
-	return(BBox(fmin(p0.x, p0.x + a.x + b.x) - delta, fmax(p0.x, p0.x + a.x + b.x) + delta,
+	return(tzBBox(fmin(p0.x, p0.x + a.x + b.x) - delta, fmax(p0.x, p0.x + a.x + b.x) + delta,
 				fmin(p0.y, p0.y + a.y + b.y) - delta, fmax(p0.y, p0.y + a.y + b.y) + delta, 
 				fmin(p0.z, p0.z + a.z + b.z) - delta, fmax(p0.z, p0.z + a.z + b.z) + delta));
 }
@@ -147,8 +147,8 @@ tzRectangle::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {
 	if (t <= kEpsilon)
 		return (false);
 			
-	Point3D p = ray.o + t * ray.d;
-	Vector3D d = p - p0;
+	tzPoint3D p = ray.o + t * ray.d;
+	tzVector3D d = p - p0;
 	
 	double ddota = d * a;
 	
@@ -179,17 +179,17 @@ tzRectangle::set_sampler(tzISampler* sampler) {
 // ---------------------------------------------------------------- sample
 // returns a sample point on the rectangle
 
-Point3D 											
+tzPoint3D
 tzRectangle::sample(void) {
-	Point2D sample_point = sampler_ptr->sample_unit_square();
+	tzPoint2D sample_point = sampler_ptr->sample_unit_square();
 	return (p0 + sample_point.x * a + sample_point.y * b);
 }
 
 
 //------------------------------------------------------------------ get_normal 
 					 
-Normal 										
-tzRectangle::get_normal(const Point3D& p) {
+tzNormal 										
+tzRectangle::get_normal(const tzPoint3D& p) {
 	return (normal);
 }
 

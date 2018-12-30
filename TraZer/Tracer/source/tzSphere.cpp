@@ -16,7 +16,7 @@ tzSphere::tzSphere(void)
 
 // ---------------------------------------------------------------- constructor
 
-tzSphere::tzSphere(Point3D c, double r)
+tzSphere::tzSphere(tzPoint3D c, double r)
 	: 	tzIGeometricObject(),
 		center(c),
 		radius(r)
@@ -64,7 +64,7 @@ tzSphere::~tzSphere(void) {}
 bool tzSphere::shadow_hit(const tzRay &ray, float &tmin) const
 {
 	double 		t;
-	Vector3D	temp = ray.o - center;
+	tzVector3D	temp = ray.o - center;
 	double 		a = ray.d * ray.d;
 	double 		b = 2.0 * temp * ray.d;
 	double 		c = temp * temp - radius * radius;
@@ -78,14 +78,14 @@ bool tzSphere::shadow_hit(const tzRay &ray, float &tmin) const
 		t = (-b - e) / denom;    // smaller root
 
 		if (t > kEpsilon) {
-			tmin = t;
+			tmin = (float)t;
 			return (true);
 		}
 
 		t = (-b + e) / denom;    // larger root
 
 		if (t > kEpsilon) {
-			tmin = t;
+			tmin = (float)t;
 			return (true);
 		}
 	}
@@ -97,7 +97,7 @@ bool tzSphere::shadow_hit(const tzRay &ray, float &tmin) const
 
 bool tzSphere::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {
 	double 		t;
-	Vector3D	temp 	= ray.o - center;
+	tzVector3D	temp 	= ray.o - center;
 	double 		a 		= ray.d * ray.d;
 	double 		b 		= 2.0 * temp * ray.d;
 	double 		c 		= temp * temp - radius * radius;

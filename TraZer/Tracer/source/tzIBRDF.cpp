@@ -60,32 +60,32 @@ tzIBRDF::set_sampler(tzISampler* sPtr) {
 
 // ------------------------------------------------------------------------ f
 
-RGBColor
-tzIBRDF::f(const tzShadeRec& sr, const Vector3D& wo, const Vector3D& wi) const {
+tzRGBColor
+tzIBRDF::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const {
 	return (black);
 }
 
 
 // ------------------------------------------------------------------------ sample_f
 
-RGBColor
-tzIBRDF::sample_f(const tzShadeRec& sr, const Vector3D& wo, Vector3D& wi) const {
+tzRGBColor
+tzIBRDF::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi) const {
 	return (black);
 }
 
 
 // ------------------------------------------------------------------------ sample_f
 
-RGBColor
-tzIBRDF::sample_f(const tzShadeRec& sr, const Vector3D& wo, Vector3D& wi, float& pdf) const {
+tzRGBColor
+tzIBRDF::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const {
 	return (black);
 }
 
 
 // ------------------------------------------------------------------------ rho	
 	
-RGBColor
-tzIBRDF::rho(const tzShadeRec& sr, const Vector3D& wo) const {
+tzRGBColor
+tzIBRDF::rho(const tzShadeRec& sr, const tzVector3D& wo) const {
 	return (black);
 }
 

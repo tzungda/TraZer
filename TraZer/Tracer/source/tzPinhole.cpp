@@ -2,8 +2,8 @@
 // This file contains the definition of the Pinhole class
 
 #include "../include/tzConstants.h" 
-#include "Point3D.h"
-#include "Vector3D.h"
+#include "tzPoint3D.h"
+#include "tzVector3D.h"
 #include "../include/tzPinhole.h"
 #include "../include/tzMultiJittered.h"
 #include <math.h>
@@ -58,9 +58,9 @@ tzPinhole::~tzPinhole(void) {}
 
 // ----------------------------------------------------------------------------- get_direction
 
-Vector3D
-tzPinhole::get_direction(const Point2D& p) const {
-	Vector3D dir = p.x * u + p.y * v - d * w;
+tzVector3D
+tzPinhole::get_direction(const tzPoint2D& p) const {
+	tzVector3D dir = p.x * u + p.y * v - d * w;
 	dir.normalize();
 	
 	return(dir);
@@ -72,11 +72,11 @@ tzPinhole::get_direction(const Point2D& p) const {
 
 void 												
 tzPinhole::render_scene(const tzWorld& w) {
-	RGBColor	L;
+	tzRGBColor	L;
 	tzViewPlane	vp(w.mVp);	 								
 	tzRay			ray;
 	int 		depth = 0;  
-	Point2D 	pp;		// sample point on a pixel
+	tzPoint2D 	pp;		// sample point on a pixel
 	int n = (int)sqrt((float)vp.mNumSamples);
 		
 	vp.mS /= zoom;
