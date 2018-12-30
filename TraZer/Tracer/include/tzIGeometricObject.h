@@ -81,7 +81,7 @@ class tzIGeometricObject {
 	
 	protected:
 	
-		/*mutable*/ tzIMaterial*   material_ptr;   	// mutable allows the const functions Compound::hit, Instance::hit, and RegularGrid::hit to assign to material_ptr
+		mutable tzIMaterial*   material_ptr;   	// mutable allows the const functions Compound::hit, Instance::hit, and RegularGrid::hit to assign to material_ptr
 		tzRGBColor   			color;				// only used for Bare Bones ray tracing
 	
 		tzIGeometricObject&						
