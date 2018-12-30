@@ -616,7 +616,7 @@ void My_Keyboard(unsigned char key, int x, int y)
 		{
 			tzWorld w;
 			w.build();
-			w.setOutputPath( "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\areaLight.png" );
+			w.setOutputPath( "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\Horse2K_01.png" );
 			w.renderScene();
 			int a = 0;
 			a = 1;
