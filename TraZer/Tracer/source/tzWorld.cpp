@@ -14,9 +14,66 @@
 #include "../include/tzEmissive.h"
 #include "../include/tzAreaLighting.h"
 #include "../include/tzRectangle.h"
+#include "../include/tzDirectional.h"
+#include "../include/tzGrid.h"
+#include "tzMesh.h"
 
 //
 #include "../../Include/tzTool.h"
+
+//
+#include <algorithm>
+
+void checkFileEnd( const char* filePath, const char* outputPath )
+{
+	char str[4096];
+	char *result;
+
+	FILE *fp = NULL;
+	fopen_s( &fp, filePath, "r" );
+	if ( !fp )
+	{
+		return;
+	}
+
+	bool needReplace = false;
+	std::string outputStr;
+	//
+	result = fgets(str, 4096, fp);
+	while (result != NULL )
+	{
+		std::string s( str );
+		int p = (int)s.find( '\r' );
+		if ( p >= 0 )
+		{
+			std::replace(s.begin(), s.end(), '\r', '\n');
+			if (!needReplace )
+			{
+				needReplace = true;
+			}
+			outputStr += s;
+		}
+		result = fgets(str, 4096, fp);
+	}
+
+	//
+	fclose( fp );
+	if( !needReplace )
+	{
+		return;
+	}
+
+	// output new string
+	FILE *fp_out = NULL;
+	fopen_s(&fp_out, outputPath, "w");
+	if (!fp_out)
+	{
+		fclose(fp);
+		return;
+	}
+	fprintf( fp_out, outputStr.c_str() );
+	fclose(fp_out);
+}
 
 /*
 Constructor/Destructor
@@ -100,12 +157,61 @@ tzShadeRec tzWorld::hitBareBonesObject(const tzRay &ray)
 //===================================================================================
 void tzWorld::build()
 {
-	int num_samples = 64;
+	/*--------------------------------------------------------------------------
+	int num_samples = 16;
+
+	mVp.setHres(400);
+	mVp.setVres(400);
+	mVp.setSamples(num_samples);
+
+	mTracerPtr = new tzRayCast(this);
+
+	mBackgroundColor = black;
+
+	tzPinhole* pinhole_ptr = new tzPinhole;
+	pinhole_ptr->set_eye(0, 15, 15);
+	pinhole_ptr->set_lookat(0, 0, 0);
+	pinhole_ptr->set_view_distance(16000);
+	pinhole_ptr->compute_uvw();
+	setCamera(pinhole_ptr);
+
+	tzDirectional* directional_ptr = new tzDirectional;
+	directional_ptr->set_direction(0.75, 1, -0.15);
+	directional_ptr->scale_radiance(4.5);
+	directional_ptr->setCastsShadows(true);
+	addLight(directional_ptr);
+
+	tzMatte* matte_ptr1 = new tzMatte;
+	matte_ptr1->set_ka(0.1);
+	matte_ptr1->set_kd(0.75);
+	matte_ptr1->set_cd(0.1, 0.5, 1.0);
+
+	const char* file_name = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Stanford_Bunny\\Bunny10K.ply";//"TwoTriangles.ply"; Horse2K
+	checkFileEnd( file_name, file_name);
+	tzGrid* grid_ptr = new tzGrid(new tzMesh);
+	grid_ptr->read_flat_triangles((char*)file_name);		// for Figure 23.7(a)
+													//	grid_ptr->read_smooth_triangles(file_name);		// for Figure 23.7(b)
+	grid_ptr->set_material(matte_ptr1);
+	grid_ptr->setup_cells();
+	addObject(grid_ptr);
+
+	tzMatte* matte_ptr2 = new tzMatte;
+	matte_ptr2->set_cd(1, 0.9, 0.6);
+	matte_ptr2->set_ka(0.25);
+	matte_ptr2->set_kd(0.4);
+
+	tzPlane* plane_ptr1 = new tzPlane(tzPoint3D(0, -2.0, 0), tzNormal(0, 1, 0));
+	plane_ptr1->set_material(matte_ptr2);
+	addObject(plane_ptr1);
+	*/
+
+	//------------------------------------------------------------------------------
+	int num_samples = 100;
 
 	tzISampler* sampler_ptr = new tzMultiJittered(num_samples);
 
-	mVp.setHres(600);
-	mVp.setVres(600);
+	mVp.setHres(400);
+	mVp.setVres(400);
 	//mVp.setMaxDepth(0);
 	mVp.setSampler(sampler_ptr);
 
@@ -114,9 +220,9 @@ void tzWorld::build()
 	mTracerPtr = new tzAreaLighting(this);
 
 	tzPinhole* camera = new tzPinhole();
-	camera->set_eye(-20, 10, 20);
-	camera->set_lookat(0, 2, 0);
-	camera->set_view_distance(1080);
+	camera->set_eye(200, 100, 204);
+	camera->set_lookat(0, -0.5, 0);
+	camera->set_view_distance(16000);
 	camera->compute_uvw();
 	setCamera(camera);
 
@@ -131,11 +237,21 @@ void tzWorld::build()
 	//	float width = 2.0;				// for Figure 18.4(c)
 	//	float height = 2.0;
 	tzPoint3D center(0.0, 7.0, -7.0);	// center of each area light (rectangular, disk, and spherical)
-	tzPoint3D p0(-0.5 * width, center.y - 0.5 * height, center.z);
+	tzPoint3D p0(-0.5 * width, center.y - 0.5 * height - 1.0, center.z);
 	tzVector3D a(width, 0.0, 0.0);
 	tzVector3D b(0.0, height, 0.0);
 	tzNormal normal(0, 0, 1);
 
+
+	// point light
+	/*
+	tzPointLight* lightPtr = new tzPointLight();
+	lightPtr->set_location(tzVector3D(50, 100, 0));
+	lightPtr->scale_radiance(3.0);
+	lightPtr->setCastsShadows(true);
+	addLight(lightPtr);
+	*/
+	
 	// rectangle emit object
 	tzRectangle* rectangle_ptr = new tzRectangle(p0, a, b, normal);
 	rectangle_ptr->set_material(emissive_ptr);
@@ -148,34 +264,47 @@ void tzWorld::build()
 	area_light_ptr->set_object(rectangle_ptr);
 	area_light_ptr->setCastsShadows(true);
 	addLight(area_light_ptr);
+	
 
 	// material matte
-	tzPhong* phongPtr = new tzPhong();
-	phongPtr->set_ka(0.25);
-	phongPtr->set_kd(0.75);
-	phongPtr->set_cd(0.4, 0.7, 0.4);  	// light green
-	phongPtr->set_ks(0.005);
-	phongPtr->set_exp(500);
-	/*
+	tzMatte* mattePtr1 = new tzMatte();
 	mattePtr1->set_ka(0.25);
 	mattePtr1->set_kd(0.75);
 	mattePtr1->set_cd(0.4, 0.7, 0.4);
-	*/
+	//tzPhong* phongPtr = new tzPhong();
+	//phongPtr->set_ka(0.25);
+	//phongPtr->set_kd(0.75);
+	//phongPtr->set_cd(0.4, 0.7, 0.4);  	// light green
+	//phongPtr->set_ks(0.005);
+	//phongPtr->set_exp(500);
+
 	//
 	tzMatte* mattePtr2 = new tzMatte();
 	mattePtr2->set_ka(0.1);
 	mattePtr2->set_kd(0.9);
 	mattePtr2->set_cd(white);
 
+	//
+	// "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Stanford_Bunny\\Bunny10K.ply"
+	const char* file_name = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Horse2K.ply";//"TwoTriangles.ply"; Horse2K
+	//checkFileEnd(file_name, file_name);
+	tzGrid* grid_ptr = new tzGrid(new tzMesh);
+	grid_ptr->read_flat_triangles((char*)file_name);
+	//grid_ptr->setScale( 10.0f );
+	grid_ptr->set_material(mattePtr1);
+	grid_ptr->setup_cells();
+	addObject(grid_ptr);
+
 	// sphere
-	tzSphere *spherePtr = new tzSphere(tzPoint3D(0, 2, 0), 1);
-	spherePtr->set_material(phongPtr);
-	addObject(spherePtr);
+	//tzSphere *spherePtr = new tzSphere(tzPoint3D(0, 2, 0), 1);
+	//spherePtr->set_material(phongPtr);
+	//addObject(spherePtr);
 
 	// plane
-	tzPlane* planePtr = new tzPlane(tzPoint3D(0), tzNormal(0, 1, 0));
+	tzPlane* planePtr = new tzPlane(tzPoint3D(0, -0.8, 0), tzNormal(0, 1, 0));
 	planePtr->set_material(mattePtr2);
 	addObject(planePtr);
+	
 
 	/*---------------------------------------------------------------------------------------------------------
 	const int numSamples = 256;
