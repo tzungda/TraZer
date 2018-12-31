@@ -58,6 +58,10 @@ class tzGrid: public tzCompound {
 
 		void	setScale( float scale );
 
+		// uv related
+		void read_flat_uv_triangles(char* file_name);
+		void read_smooth_uv_triangles(char* file_name);
+
 	private: 
 
 		vector<tzIGeometricObject*>	cells;			// grid of cells
@@ -79,7 +83,8 @@ class tzGrid: public tzCompound {
 		void
 		compute_mesh_normals(void);	
 
-
+		// uv related
+		void read_uv_ply_file(char* file_name, const int triangle_type);
 };
 
 

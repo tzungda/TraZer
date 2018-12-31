@@ -1,25 +1,26 @@
-#ifndef TZ_TRACER_MATTE
-#define TZ_TRACER_MATTE
+#ifndef TZ_TRACER_MATTE_SV
+#define TZ_TRACER_MATTE_SV
 
 #include "../include/tzIMaterial.h"
-#include "../include/tzLambertian.h"
+#include "../include/tzLambertianSV.h"
+#include "../include/tzITexture.h"
 
 //----------------------------------------------------------------------------- class Matte
 
-class tzMatte: public tzIMaterial {
+class tzMatteSV: public tzIMaterial {
 	public:
 			
-		tzMatte(void);											
+		tzMatteSV(void);
 
-		tzMatte(const tzMatte& m);
+		tzMatteSV(const tzMatteSV& m);
 		
 		virtual tzIMaterial*										
 		clone(void) const;									
 
-		tzMatte&
-		operator= (const tzMatte& rhs);
+		tzMatteSV&
+		operator= (const tzMatteSV& rhs);
 
-		~tzMatte(void);
+		~tzMatteSV(void);
 		
 		void 													
 		set_ka(const float k);
@@ -28,13 +29,7 @@ class tzMatte: public tzIMaterial {
 		set_kd(const float k);
 		
 		void													
-		set_cd(const tzRGBColor c);
-		
-		void													
-		set_cd(const float r, const float g, const float b);
-		
-		void																						
-		set_cd(const float c);
+		set_cd(const tzITexture *c);
 				
 		virtual tzRGBColor
 		shade(tzShadeRec& sr);
@@ -45,8 +40,8 @@ class tzMatte: public tzIMaterial {
 		
 	private:
 		
-		tzLambertian*		ambient_brdf;
-		tzLambertian*		diffuse_brdf;
+		tzLambertianSV*		ambient_brdf;
+		tzLambertianSV*		diffuse_brdf;
 };
 
 
@@ -56,7 +51,7 @@ class tzMatte: public tzIMaterial {
 // is diffuse reflection
 
 inline void								
-tzMatte::set_ka(const float ka) {
+tzMatteSV::set_ka(const float ka) {
 	ambient_brdf->set_kd(ka);
 }
 
@@ -65,7 +60,7 @@ tzMatte::set_ka(const float ka) {
 // this also sets Lambertian::kd, but for a different Lambertian object
 
 inline void								
-tzMatte::set_kd (const float kd) {
+tzMatteSV::set_kd (const float kd) {
 	diffuse_brdf->set_kd(kd);
 }
 
@@ -73,26 +68,10 @@ tzMatte::set_kd (const float kd) {
 // ---------------------------------------------------------------- set_cd
 
 inline void												
-tzMatte::set_cd(const tzRGBColor c) {
+tzMatteSV::set_cd(const tzITexture *c) {
 	ambient_brdf->set_cd(c);
 	diffuse_brdf->set_cd(c);
 }
 
-
-// ---------------------------------------------------------------- set_cd
-
-inline void													
-tzMatte::set_cd(const float r, const float g, const float b) {
-	ambient_brdf->set_cd(r, g, b);
-	diffuse_brdf->set_cd(r, g, b);
-}
-
-// ---------------------------------------------------------------- set_cd
-
-inline void													
-tzMatte::set_cd(const float c) {
-	ambient_brdf->set_cd(c);
-	diffuse_brdf->set_cd(c);
-}
 
 #endif

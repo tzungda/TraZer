@@ -9,6 +9,7 @@ class tzRay
 public:
 	tzPoint3D o;		// origin
 	tzVector3D d;		// direction
+	int		depth;
 
 	// default constructor
 	tzRay( void );	

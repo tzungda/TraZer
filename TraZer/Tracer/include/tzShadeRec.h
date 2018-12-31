@@ -20,6 +20,8 @@ public:
 	tzRGBColor			mColor;
 	tzWorld&			mWorld;
 	float				mT;
+	float				u;
+	float				v;
 
 	//
 	tzIMaterial			*mMaterialPtr;

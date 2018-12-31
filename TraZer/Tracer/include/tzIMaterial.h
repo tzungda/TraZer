@@ -23,6 +23,9 @@ class tzIMaterial {
 		virtual tzRGBColor area_light_shade(tzShadeRec& sr);
 
 		virtual tzRGBColor get_Le( tzShadeRec &sr );
+
+		// for path trace
+		virtual tzRGBColor path_shade(tzShadeRec& sr);
 		
 	protected:
 	
