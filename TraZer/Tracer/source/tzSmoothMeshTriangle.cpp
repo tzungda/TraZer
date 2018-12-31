@@ -102,7 +102,7 @@ tzSmoothMeshTriangle::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const 
 		return (false);
 					
 	tmin 				= t;
-	sr.mNormal 			= interpolate_normal(beta, gamma); // for smooth shading
+	sr.mNormal 			= interpolate_normal((float)beta, (float)gamma); // for smooth shading
 	sr.mLocalHitPoint 	= ray.o + t * ray.d;	
 	
 	return (true);	

@@ -1,20 +1,20 @@
 
-#include "../include/tzLambertian.h"
+#include "../include/tzLambertianSV.h"
 #include "../include/tzConstants.h"
 
 // ---------------------------------------------------------------------- default constructor
 
-tzLambertian::tzLambertian(void)
-	:   tzIBRDF(),
+tzLambertianSV::tzLambertianSV(void)
+	: tzIBRDF(),
 		kd(0.0), 
-		cd(0.0)
+		cd(NULL)
 {}
 
 
 // ---------------------------------------------------------------------- copy constructor
 
-tzLambertian::tzLambertian(const tzLambertian& lamb)
-	:   tzIBRDF(lamb),
+tzLambertianSV::tzLambertianSV(const tzLambertianSV& lamb)
+	: tzIBRDF(lamb),
 		kd(lamb.kd), 
 		cd(lamb.cd)
 {}
@@ -22,8 +22,8 @@ tzLambertian::tzLambertian(const tzLambertian& lamb)
 
 // ---------------------------------------------------------------------- assignment operator
 
-tzLambertian&
-tzLambertian::operator= (const tzLambertian& rhs) {
+tzLambertianSV&
+tzLambertianSV::operator= (const tzLambertianSV& rhs) {
 	if (this == &rhs)
 		return (*this);
 		
@@ -38,14 +38,14 @@ tzLambertian::operator= (const tzLambertian& rhs) {
 
 // ---------------------------------------------------------------------- destructor
 
-tzLambertian::~tzLambertian(void) {}
+tzLambertianSV::~tzLambertianSV(void) {}
 
 
 // ---------------------------------------------------------------------- clone
 
-tzLambertian*
-tzLambertian::clone(void) const {
-	return (new tzLambertian(*this));
+tzLambertianSV*
+tzLambertianSV::clone(void) const {
+	return (new tzLambertianSV(*this));
 }	
 
 
@@ -53,8 +53,8 @@ tzLambertian::clone(void) const {
 // there is no sampling here
 
 tzRGBColor
-tzLambertian::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const {
-	return (kd * cd * (float)invPI);
+tzLambertianSV::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const {
+	return (kd * cd->get_color(sr) * (float)invPI);
 }
 
 
@@ -65,7 +65,7 @@ tzLambertian::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi
 // the samples have to be stored with a cosine distribution
 
 tzRGBColor
-tzLambertian::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const {
+tzLambertianSV::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const {
 	
 	tzVector3D w = sr.mNormal;
 	tzVector3D v = tzVector3D(0.0034, 1, 0.0071) ^ w;
@@ -78,7 +78,7 @@ tzLambertian::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& w
 	
 	pdf = (float)(sr.mNormal * wi * invPI);
 	
-	return (kd * cd * (float)invPI);
+	return (kd * cd->get_color(sr) * (float)invPI);
 }
 
 
@@ -86,8 +86,8 @@ tzLambertian::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& w
 // ---------------------------------------------------------------------- rho
 
 tzRGBColor
-tzLambertian::rho(const tzShadeRec& sr, const tzVector3D& wo) const {
-	return (kd * cd);
+tzLambertianSV::rho(const tzShadeRec& sr, const tzVector3D& wo) const {
+	return (kd * cd->get_color(sr));
 }
 
 

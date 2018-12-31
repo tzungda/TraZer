@@ -47,3 +47,9 @@ tzRGBColor tzIMaterial::get_Le(tzShadeRec &sr)
 {
 	return black;
 }
+
+//===================================================================================
+tzRGBColor tzIMaterial::path_shade(tzShadeRec& sr)
+{
+	return black;
+}

@@ -1,46 +1,45 @@
 
-
 #include "../include/tzConstants.h"
-#include "../include/tzFlatMeshTriangle.h"
+#include "../include/tzSmoothUVMeshTriangle.h"
 						
 
 // ----------------------------------------------------------------  default constructor
 
-tzFlatMeshTriangle::tzFlatMeshTriangle(void)
-	: 	tzMeshTriangle()
+tzSmoothUVMeshTriangle::tzSmoothUVMeshTriangle(void)
+	: tzSmoothMeshTriangle()
 {}
 
 
 // ---------------------------------------------------------------- constructor
 
-tzFlatMeshTriangle::tzFlatMeshTriangle (tzMesh* _mesh_ptr, const int i0, const int i1, const int i2)
-	: 	tzMeshTriangle(_mesh_ptr, i0, i1, i2)
+tzSmoothUVMeshTriangle::tzSmoothUVMeshTriangle(tzMesh* _mesh_ptr, const int i0, const int i1, const int i2)
+	: tzSmoothMeshTriangle(_mesh_ptr, i0, i1, i2)
 {}
 
 
 // ---------------------------------------------------------------- clone
 
-tzFlatMeshTriangle* 
-tzFlatMeshTriangle::clone(void) const {
-	return (new tzFlatMeshTriangle(*this));
+tzSmoothUVMeshTriangle*
+tzSmoothUVMeshTriangle::clone (void) const {
+	return (new tzSmoothUVMeshTriangle(*this));
 }
 
 
 // ---------------------------------------------------------------- copy constructor
 
-tzFlatMeshTriangle::tzFlatMeshTriangle(const tzFlatMeshTriangle& fmt)
-	:	tzMeshTriangle(fmt)
+tzSmoothUVMeshTriangle::tzSmoothUVMeshTriangle(const tzSmoothUVMeshTriangle& fmt)
+	: tzSmoothMeshTriangle(fmt)
 {}
 
 
 // ---------------------------------------------------------------- assignment operator
 
-tzFlatMeshTriangle& 
-tzFlatMeshTriangle::operator= (const tzFlatMeshTriangle& rhs) {
+tzSmoothUVMeshTriangle&
+tzSmoothUVMeshTriangle::operator= (const tzSmoothUVMeshTriangle& rhs) {
 	if (this == &rhs)
 		return (*this);
 
-	tzMeshTriangle::operator= (rhs);
+	tzSmoothMeshTriangle::operator= (rhs);
 	
 	return (*this);
 }
@@ -48,13 +47,14 @@ tzFlatMeshTriangle::operator= (const tzFlatMeshTriangle& rhs) {
 
 // ---------------------------------------------------------------- destructor
 
-tzFlatMeshTriangle::~tzFlatMeshTriangle(void) {}
+tzSmoothUVMeshTriangle::~tzSmoothUVMeshTriangle(void) {}
+
 
 
 // ---------------------------------------------------------------- hit
 
 bool 															 
-tzFlatMeshTriangle::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {	
+tzSmoothUVMeshTriangle::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {
 	tzPoint3D v0(mesh_ptr->vertices[index0]);
 	tzPoint3D v1(mesh_ptr->vertices[index1]);
 	tzPoint3D v2(mesh_ptr->vertices[index2]);
@@ -91,10 +91,11 @@ tzFlatMeshTriangle::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {
 		return (false);
 					
 	tmin 				= t;
-	sr.mNormal 			= normal;  				// for flat shading
+	sr.mNormal 			= interpolate_normal((float)beta, (float)gamma); // for smooth shading
+	sr.u				= interpolate_u((float)beta, (float)gamma );
+	sr.v				= interpolate_v((float)beta, (float)gamma );
 	sr.mLocalHitPoint 	= ray.o + t * ray.d;	
 	
 	return (true);	
 }  
-
 

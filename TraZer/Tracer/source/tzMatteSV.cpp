@@ -1,19 +1,19 @@
 
-#include "../include/tzMatte.h"
+#include "../include/tzMatteSV.h"
 
 // ---------------------------------------------------------------- default constructor
 
-tzMatte::tzMatte(void)
+tzMatteSV::tzMatteSV(void)
 	:	tzIMaterial(),
-		ambient_brdf(new tzLambertian),
-		diffuse_brdf(new tzLambertian)
+		ambient_brdf(new tzLambertianSV),
+		diffuse_brdf(new tzLambertianSV)
 {}
 
 
 
 // ---------------------------------------------------------------- copy constructor
 
-tzMatte::tzMatte(const tzMatte& m)
+tzMatteSV::tzMatteSV(const tzMatteSV& m)
 	: 	tzIMaterial(m)
 {
 	if(m.ambient_brdf)
@@ -29,15 +29,15 @@ tzMatte::tzMatte(const tzMatte& m)
 // ---------------------------------------------------------------- clone
 
 tzIMaterial*										
-tzMatte::clone(void) const {
-	return (new tzMatte(*this));
+tzMatteSV::clone(void) const {
+	return (new tzMatteSV(*this));
 }	
 
 
 // ---------------------------------------------------------------- assignment operator
 
-tzMatte&
-tzMatte::operator= (const tzMatte& rhs) {
+tzMatteSV&
+tzMatteSV::operator= (const tzMatteSV& rhs) {
 	if (this == &rhs)
 		return (*this);
 		
@@ -65,7 +65,7 @@ tzMatte::operator= (const tzMatte& rhs) {
 
 // ---------------------------------------------------------------- destructor
 
-tzMatte::~tzMatte(void) {
+tzMatteSV::~tzMatteSV(void) {
 
 	if (ambient_brdf) {
 		delete ambient_brdf;
@@ -82,16 +82,21 @@ tzMatte::~tzMatte(void) {
 // ---------------------------------------------------------------- shade
 
 tzRGBColor
-tzMatte::shade(tzShadeRec& sr) {
+tzMatteSV::shade(tzShadeRec& sr) 
+{
 	tzVector3D 	wo 			= -sr.mRay.d;
 	tzRGBColor 	L 			= ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
 	int 		num_lights	= (int)sr.mWorld.mLights.size();
 	
-	for (int j = 0; j < num_lights; j++) {
-		tzVector3D wi = sr.mWorld.mLights[j]->get_direction(sr);
+	for (int j = 0; j < num_lights; j++) 
+	{
+		tzILight* light_ptr = sr.mWorld.mLights[j];
+		tzVector3D wi = light_ptr->get_direction( sr );
+		wi.normalize();
 		float ndotwi = (float)(sr.mNormal * wi);
+		float ndotwo = (float)(sr.mNormal * wo);
 	
-		if (ndotwi > 0.0) 
+		if (ndotwi > 0.0 && ndotwo)
 		{
 			// check if it's in shadow
 			bool in_shadow = false;
@@ -103,7 +108,7 @@ tzMatte::shade(tzShadeRec& sr) {
 
 			if ( !in_shadow )
 			{
-				L += diffuse_brdf->f(sr, wo, wi) * sr.mWorld.mLights[j]->L(sr) * ndotwi;
+				L += diffuse_brdf->f(sr, wo, wi) * sr.mWorld.mLights[j]->L(sr) * sr.mWorld.mLights[j]->G(sr) * ndotwi;
 			}
 		}
 	}
@@ -112,7 +117,7 @@ tzMatte::shade(tzShadeRec& sr) {
 }
 
 //===================================================================================
-tzRGBColor tzMatte::area_light_shade(tzShadeRec &sr)
+tzRGBColor tzMatteSV::area_light_shade(tzShadeRec &sr)
 {
 	tzVector3D 	wo = -sr.mRay.d;
 	tzRGBColor 	L = ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
@@ -143,13 +148,13 @@ tzRGBColor tzMatte::area_light_shade(tzShadeRec &sr)
 }
 
 //===================================================================================
-tzRGBColor tzMatte::path_shade(tzShadeRec &sr)
+tzRGBColor tzMatteSV::path_shade(tzShadeRec &sr)
 {
 	tzVector3D 	wo = -sr.mRay.d;
 	tzVector3D 	wi;
 	float 		pdf;
 	tzRGBColor 	f = diffuse_brdf->sample_f(sr, wo, wi, pdf);
-	float 		ndotwi = sr.mNormal * wi;
+	float 		ndotwi = (float)(sr.mNormal * wi);
 	tzRay 		reflected_ray(sr.mHitPoint, wi);
 
 	return (f * sr.mWorld.mTracerPtr->trace_ray(reflected_ray, sr.mDepth + 1) * ndotwi / pdf);

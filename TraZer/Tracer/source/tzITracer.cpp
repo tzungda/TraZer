@@ -39,6 +39,3 @@ tzITracer::trace_ray(const tzRay ray, const int depth) const {
 	return (black);
 }
 
-
-
-

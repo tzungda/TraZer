@@ -10,13 +10,13 @@ tzShadeRec::~tzShadeRec( )
 
 // ================================================================================
 tzShadeRec::tzShadeRec( tzWorld& w )
-: mHitAnObject( false ), mLocalHitPoint(), mNormal(), mColor( 0.0f, 0.0f, 0.0f ), mWorld( w ), mT(0.0f), mHitPoint(), mMaterialPtr(NULL), mDepth(0), mDir(), mRay()
+: mHitAnObject( false ), mLocalHitPoint(), mNormal(), mColor( 0.0f, 0.0f, 0.0f ), mWorld( w ), mT(0.0f), mHitPoint(), mMaterialPtr(NULL), mDepth(0), mDir(), mRay(), u(0.0f), v( 0.0f )
 {
 }
 
 // ================================================================================
 tzShadeRec::tzShadeRec(const tzShadeRec &sr)
-:mHitAnObject( sr.mHitAnObject ), mLocalHitPoint( sr.mLocalHitPoint ), mNormal(sr.mNormal), mT(0.0f), mColor( sr.mColor ), mWorld( sr.mWorld), mHitPoint(sr.mHitPoint), mMaterialPtr(sr.mMaterialPtr), mDepth(sr.mDepth), mDir(sr.mDir), mRay(sr.mRay)
+:mHitAnObject( sr.mHitAnObject ), mLocalHitPoint( sr.mLocalHitPoint ), mNormal(sr.mNormal), mT(0.0f), mColor( sr.mColor ), mWorld( sr.mWorld), mHitPoint(sr.mHitPoint), mMaterialPtr(sr.mMaterialPtr), mDepth(sr.mDepth), mDir(sr.mDir), mRay(sr.mRay), u(sr.u), v(sr.v)
 {
 }
 
@@ -32,6 +32,14 @@ tzShadeRec::operator= (const tzShadeRec& sr) {
 	mNormal = sr.mNormal;
 	mColor = sr.mColor;
 	mWorld = sr.mWorld;
+	mT = sr.mT;
+	u = sr.u;
+	v = sr.v;
+	mHitPoint = sr.mHitPoint;
+	mRay = sr.mRay;
+	mMaterialPtr = sr.mMaterialPtr;
+	mDepth = sr.mDepth;
+	mDir = sr.mDir;
 
 	return (*this);
 }

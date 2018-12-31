@@ -146,7 +146,7 @@ tzMeshTriangle::shadow_hit(const tzRay& ray, float& tmin) const {
 	if (t < kEpsilon) 
 		return (false);
                                                                                                        					
-	tmin = t;
+	tmin = (float)t;
 	
 	return (true);	
 }   

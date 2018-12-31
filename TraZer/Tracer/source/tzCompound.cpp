@@ -65,7 +65,7 @@ tzCompound::add_object(tzIGeometricObject* object_ptr) {
 
 void 
 tzCompound::set_material(tzIMaterial* material_ptr) {
-	int num_objects = objects.size();
+	int num_objects = (int)objects.size();
 
 	for (int j = 0; j < num_objects; j++)
 		objects[j]->set_material(material_ptr);
@@ -78,7 +78,7 @@ tzCompound::set_material(tzIMaterial* material_ptr) {
 
 void
 tzCompound::delete_objects(void) {
-	int num_objects = objects.size();
+	int num_objects = (int)objects.size();
 	
 	for (int j = 0; j < num_objects; j++) {
 		delete objects[j];
@@ -94,7 +94,7 @@ tzCompound::delete_objects(void) {
 void
 tzCompound::copy_objects(const std::vector<tzIGeometricObject*>& rhs_ojects) {
 	delete_objects();    	
-	int num_objects = rhs_ojects.size();
+	int num_objects = (int)rhs_ojects.size();
 	
 	for (int j = 0; j < num_objects; j++)
 		objects.push_back(rhs_ojects[j]->clone());
@@ -110,7 +110,7 @@ tzCompound::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {
 	tzPoint3D		local_hit_point;
 	bool		hit 		= false;
 				tmin 		= kHugeValue;
-	int 		num_objects	= objects.size();
+	int 		num_objects	= (int)objects.size();
 	
 	for (int j = 0; j < num_objects; j++)
 		if (objects[j]->hit(ray, t, sr) && (t < tmin)) {
@@ -122,7 +122,7 @@ tzCompound::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {
 		}
 	
 	if (hit) {
-		sr.mT				= tmin;
+		sr.mT				= (float)tmin;
 		sr.mNormal 			= normal;   
 		sr.mLocalHitPoint 	= local_hit_point;  
 	}
@@ -137,7 +137,7 @@ bool tzCompound::shadow_hit(const tzRay& ray, float& tmin) const {
 	tzPoint3D		local_hit_point;
 	bool		hit = false;
 	tmin = kHugeValue;
-	int 		num_objects = objects.size();
+	int 		num_objects = (int)objects.size();
 
 	for (int j = 0; j < num_objects; j++)
 		if (objects[j]->shadow_hit(ray, t) && (t < tmin)) {

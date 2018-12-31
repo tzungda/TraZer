@@ -17,6 +17,11 @@
 #include "../include/tzDirectional.h"
 #include "../include/tzGrid.h"
 #include "tzMesh.h"
+#include "../include/tzImageTexture.h"
+#include "../include/tzImage.h"
+#include "../include/tzFlatUVMeshTriangle.h"
+#include "../include/tzSmoothUVMeshTriangle.h"
+#include "../include/tzMatteSV.h"
 
 //
 #include "../../Include/tzTool.h"
@@ -157,6 +162,61 @@ tzShadeRec tzWorld::hitBareBonesObject(const tzRay &ray)
 //===================================================================================
 void tzWorld::build()
 {
+	int num_samples = 16;
+
+	mVp.setHres(400);
+	mVp.setVres(400);
+	mVp.setSamples(num_samples);
+
+	mTracerPtr = new tzRayCast(this);
+
+	mBackgroundColor = black;
+
+	tzPinhole* pinhole_ptr = new tzPinhole;
+	pinhole_ptr->set_eye(11, 5, 9);
+	pinhole_ptr->set_view_distance(1600.0);
+	pinhole_ptr->set_lookat(0, -0.5, 0);
+	pinhole_ptr->compute_uvw();
+	setCamera(pinhole_ptr);
+
+
+	tzDirectional* directional_ptr = new tzDirectional;
+	directional_ptr->set_direction(0.75, 1, -0.15);
+	directional_ptr->scale_radiance(4.5);
+	directional_ptr->setCastsShadows(true);
+	addLight(directional_ptr);
+
+	tzImage* image_ptr = new tzImage;
+	const char* texPath = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\TextureImages\\TextureFiles\\ppm\\BlueGlass.ppm";
+	image_ptr->read_ppm_file(texPath);
+
+	tzImageTexture* texture_ptr = new tzImageTexture;
+	texture_ptr->set_image(image_ptr);
+
+	tzMatteSV* sv_matte_ptr = new tzMatteSV;
+	sv_matte_ptr->set_ka(0.1);
+	sv_matte_ptr->set_kd(0.75);
+	sv_matte_ptr->set_cd(texture_ptr);
+
+	const char* file_name = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\Chapter29\\TwoUVTriangles.ply";//"TwoUVTriangles.ply";
+	checkFileEnd(file_name, file_name);
+	tzGrid* grid_ptr = new tzGrid(new tzMesh);
+	grid_ptr->read_flat_uv_triangles((char*)file_name);		// for Figure 29.22(a)
+														//	grid_ptr->read_smooth_uv_triangles(file_name);		// for Figure 29.22(b)
+	grid_ptr->set_material(sv_matte_ptr);
+	grid_ptr->setup_cells();
+	addObject(grid_ptr);
+
+
+	tzMatte* matte_ptr = new tzMatte;
+	matte_ptr->set_cd(1, 0.9, 0.6);
+	matte_ptr->set_ka(0.25);
+	matte_ptr->set_kd(0.4);
+
+	tzPlane* plane_ptr1 = new tzPlane(tzPoint3D(0, -2.0, 0), tzNormal(0, 1, 0));
+	plane_ptr1->set_material(matte_ptr);
+	addObject(plane_ptr1);
+
 	/*--------------------------------------------------------------------------
 	int num_samples = 16;
 
@@ -206,6 +266,7 @@ void tzWorld::build()
 	*/
 
 	//------------------------------------------------------------------------------
+	/*
 	int num_samples = 100;
 
 	tzISampler* sampler_ptr = new tzMultiJittered(num_samples);
@@ -220,8 +281,8 @@ void tzWorld::build()
 	mTracerPtr = new tzAreaLighting(this);
 
 	tzPinhole* camera = new tzPinhole();
-	camera->set_eye(200, 100, 204);
-	camera->set_lookat(0, -0.5, 0);
+	camera->set_eye(200, 200, 200);
+	camera->set_lookat(0, 0, 0);
 	camera->set_view_distance(16000);
 	camera->compute_uvw();
 	setCamera(camera);
@@ -242,15 +303,12 @@ void tzWorld::build()
 	tzVector3D b(0.0, height, 0.0);
 	tzNormal normal(0, 0, 1);
 
-
 	// point light
-	/*
-	tzPointLight* lightPtr = new tzPointLight();
-	lightPtr->set_location(tzVector3D(50, 100, 0));
-	lightPtr->scale_radiance(3.0);
-	lightPtr->setCastsShadows(true);
-	addLight(lightPtr);
-	*/
+	//tzPointLight* lightPtr = new tzPointLight();
+	//lightPtr->set_location(tzVector3D(50, 100, 0));
+	//lightPtr->scale_radiance(3.0);
+	//lightPtr->setCastsShadows(true);
+	//addLight(lightPtr);
 	
 	// rectangle emit object
 	tzRectangle* rectangle_ptr = new tzRectangle(p0, a, b, normal);
@@ -286,11 +344,12 @@ void tzWorld::build()
 
 	//
 	// "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Stanford_Bunny\\Bunny10K.ply"
-	const char* file_name = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Horse2K.ply";//"TwoTriangles.ply"; Horse2K
+	// "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Horse2K.ply"
+	const char* file_name = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Stanford_Bunny\\Bunny10K.ply";//"TwoTriangles.ply"; Horse2K
 	//checkFileEnd(file_name, file_name);
 	tzGrid* grid_ptr = new tzGrid(new tzMesh);
+	grid_ptr->setScale( 10.0f );
 	grid_ptr->read_flat_triangles((char*)file_name);
-	//grid_ptr->setScale( 10.0f );
 	grid_ptr->set_material(mattePtr1);
 	grid_ptr->setup_cells();
 	addObject(grid_ptr);
@@ -301,10 +360,10 @@ void tzWorld::build()
 	//addObject(spherePtr);
 
 	// plane
-	tzPlane* planePtr = new tzPlane(tzPoint3D(0, -0.8, 0), tzNormal(0, 1, 0));
+	tzPlane* planePtr = new tzPlane(tzPoint3D(0, 0.5, 0), tzNormal(0, 1, 0));
 	planePtr->set_material(mattePtr2);
 	addObject(planePtr);
-	
+	*/
 
 	/*---------------------------------------------------------------------------------------------------------
 	const int numSamples = 256;
