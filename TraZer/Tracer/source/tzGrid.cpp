@@ -1389,3 +1389,36 @@ void tzGrid::read_uv_ply_file(char* file_name, const int triangle_type)
 	ply_close(ply);
 }
 
+//===================================================================================
+void tzGrid::addMesh(const vector<tzPoint3D> &vertices,
+	const vector<tzNormal> &normals,
+	const vector<float> &u,
+	const vector<float> &v,
+	const vector<vector<int> > &vertex_faces,
+	const vector<vector<int> > &face_vertices,
+	const int &num_vertices,
+	const int &num_triangles)
+{
+	if ( !mesh_ptr )
+	{
+		printf( " the mesh pointer hasn't been initialized \n" );
+		return;
+	}
+
+	//
+	mesh_ptr->vertices = vertices;
+	mesh_ptr->normals = normals;
+	mesh_ptr->u = u;
+	mesh_ptr->v = v;
+	mesh_ptr->vertex_faces = vertex_faces;
+	mesh_ptr->num_vertices = num_vertices;
+	mesh_ptr->num_triangles = num_triangles;
+
+	// create triangles
+	for ( int tr = 0; tr < num_triangles; tr++ )
+	{
+		tzFlatUVMeshTriangle* triangle_ptr = new tzFlatUVMeshTriangle(mesh_ptr, face_vertices[tr][0], face_vertices[tr][1], face_vertices[tr][2]);
+		triangle_ptr->compute_normal(reverse_normal);
+		objects.push_back(triangle_ptr);
+	}
+}

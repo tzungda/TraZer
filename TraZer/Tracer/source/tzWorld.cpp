@@ -23,6 +23,9 @@
 #include "../include/tzSmoothUVMeshTriangle.h"
 #include "../include/tzMatteSV.h"
 
+// core
+#include "../include/tzCoreScene.h"
+
 //
 #include "../../Include/tzTool.h"
 
@@ -90,6 +93,7 @@ tzWorld::tzWorld()
 	mTracerPtr = NULL;
 	mCameraPtr = NULL;
 	mAmbientPtr = new tzAmbient();
+	mScenePtr = NULL;
 }
 
 //===================================================================================
@@ -173,7 +177,7 @@ void tzWorld::build()
 	mBackgroundColor = black;
 
 	tzPinhole* pinhole_ptr = new tzPinhole;
-	pinhole_ptr->set_eye(11, 5, 9);
+	pinhole_ptr->set_eye(80, 80, 80);
 	pinhole_ptr->set_view_distance(1600.0);
 	pinhole_ptr->set_lookat(0, -0.5, 0);
 	pinhole_ptr->compute_uvw();
@@ -201,8 +205,18 @@ void tzWorld::build()
 	const char* file_name = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\Chapter29\\TwoUVTriangles.ply";//"TwoUVTriangles.ply";
 	checkFileEnd(file_name, file_name);
 	tzGrid* grid_ptr = new tzGrid(new tzMesh);
-	grid_ptr->read_flat_uv_triangles((char*)file_name);		// for Figure 29.22(a)
+
+	if ( mScenePtr && mScenePtr->meshList().size() > 0 )
+	{
+		tzCoreMesh *ptrCoreMesh = mScenePtr->meshList()[0];
+		grid_ptr->addMesh(ptrCoreMesh->vertices(), ptrCoreMesh->vertexNormals(), ptrCoreMesh->us(), ptrCoreMesh->vs(), ptrCoreMesh->vertexFaces(), ptrCoreMesh->faceVertices(), ptrCoreMesh->numVertices(), ptrCoreMesh->numTriangles() );
+	}
+	else
+	{
+		grid_ptr->read_smooth_uv_triangles((char*)file_name);		// for Figure 29.22(a)
 														//	grid_ptr->read_smooth_uv_triangles(file_name);		// for Figure 29.22(b)
+	}
+
 	grid_ptr->set_material(sv_matte_ptr);
 	grid_ptr->setup_cells();
 	addObject(grid_ptr);
