@@ -8,12 +8,14 @@ Constructor/Destructor
 tzCoreObject::tzCoreObject( )
 {
 	// create unique id
+	/*
 	UUID uuid;
 	::UuidCreate(&uuid);
 	// set it
 	RPC_CSTR *str_id = 0;
 	UuidToStringA( &uuid, str_id);
 	mId = (char*)str_id;
+	*/
 
 	//
 	mParent = NULL;
