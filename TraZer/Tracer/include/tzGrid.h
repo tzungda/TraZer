@@ -62,6 +62,16 @@ class tzGrid: public tzCompound {
 		void read_flat_uv_triangles(char* file_name);
 		void read_smooth_uv_triangles(char* file_name);
 
+		// add mesh
+		void addMesh(	const vector<tzPoint3D> &vertices,
+						const vector<tzNormal> &normals,
+						const vector<float> &u,
+						const vector<float> &v,
+						const vector<vector<int> > &vertex_faces,
+						const vector<vector<int> > &face_vertices,
+						const int &num_vertices,
+						const int &num_triangles );
+
 	private: 
 
 		vector<tzIGeometricObject*>	cells;			// grid of cells

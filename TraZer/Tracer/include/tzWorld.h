@@ -10,6 +10,7 @@
 #include <vector>
 
 //class tzILight;
+class tzCoreScene;
 
 class tzWorld
 {
@@ -29,6 +30,9 @@ public:
 
 	//
 	std::string							mOutputPath;
+
+	// scene
+	tzCoreScene							*mScenePtr;
 
 
 public:
