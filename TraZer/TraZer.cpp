@@ -333,17 +333,83 @@ void addMeshesToScene( tzCoreScene *scene, const tinyobj::attrib_t &attrib, cons
 			printf( " mesh's indices needs to be a multiple of 3 \n" );
 			continue;
 		}
+		bool moreTexcoordNum = true;
+		if (attrib.texcoords.size()/2 < attrib.vertices.size() / 3)
+		{
+			//printf(" the number of texcoords should be larger than the vertices \n");
+			moreTexcoordNum = false;
+			//continue;
+		}
 
+		//
 		tzCoreMesh *newMesh = new tzCoreMesh();
 		newMesh->setName( shapes[i].name );
 		newMesh->setNumTriangles( shapes[i].mesh.indices.size()/3 );
-		newMesh->setNumVertices( attrib.vertices.size()/3 );
-		// vertices
-		newMesh->setVertices(attrib.vertices);
+
+		// get number of verts
+		int numVerts = (int)std::max((int)attrib.vertices.size()/3, (int)attrib.texcoords.size()/2);
+		newMesh->setNumVertices(numVerts);
+		// vertices & uv & normal
+		std::vector<tzPoint3D> verts(numVerts);
+		std::vector<float> us(numVerts);
+		std::vector<float> vs(numVerts);
+		std::vector<tzNormal> normals(numVerts);
+		int numNorms = (int)attrib.normals.size()/3;
+		for ( int f = 0; f < (int)shapes[i].mesh.indices.size(); f++ )
+		{
+			int uvid = 0; 
+			int vid =  0; 
+			if (moreTexcoordNum )
+			{
+				uvid = shapes[i].mesh.indices[f].texcoord_index;
+				vid = uvid;
+				if (shapes[i].mesh.indices[f].texcoord_index >= (int)attrib.vertices.size() / 3)
+				{
+					vid = shapes[i].mesh.indices[f].vertex_index;
+				}
+			}
+			else
+			{
+				vid = shapes[i].mesh.indices[f].vertex_index;
+				uvid = uvid;
+				if (shapes[i].mesh.indices[f].vertex_index >= (int)attrib.texcoords.size() / 2)
+				{
+					uvid = shapes[i].mesh.indices[f].texcoord_index;
+				}
+			}
+			//
+			verts[vid].x = attrib.vertices[vid *3];
+			verts[vid].y = attrib.vertices[vid *3 + 1];
+			verts[vid].z = attrib.vertices[vid *3 + 2];
+
+			//
+			us[uvid] = attrib.texcoords[uvid*2];
+			vs[uvid] = attrib.texcoords[uvid*2 + 1];
+
+			//
+			if ( vid > numNorms - 1 )
+			{
+				normals[vid].x = attrib.normals[numNorms - 1];
+				normals[vid].y = attrib.normals[numNorms];
+				normals[vid].z = attrib.normals[numNorms + 1];
+			}
+			else
+			{
+				normals[vid].x = attrib.normals[vid * 3];
+				normals[vid].y = attrib.normals[vid * 3 + 1];
+				normals[vid].z = attrib.normals[vid * 3 + 2];
+			}
+		}
+		newMesh->setVertices(verts);
+		newMesh->setUs(us);
+		newMesh->setVs(vs);
+		newMesh->setVertexNormals(normals);
+
 		// normals
-		std::vector<tzNormal> normals(newMesh->numVertices());
+		/*
+		std::vector<tzNormal> normals(numVerts);
 		int idx = 0;
-		for ( int j = 0; j < newMesh->numVertices( ); j++ )
+		for ( int j = 0; j < numVerts; j++ )
 		{
 			if (j >= (int)(attrib.normals.size()/3) - 1)
 			{
@@ -359,10 +425,11 @@ void addMeshesToScene( tzCoreScene *scene, const tinyobj::attrib_t &attrib, cons
 			}
 		}
 		newMesh->setVertexNormals( normals );
+		*/
 		// vertex faces & indices
 		std::vector< std::vector< int > > vertexFaces(newMesh->numVertices());
 		std::vector< std::vector< int > > faceVertices(newMesh->numTriangles());
-		idx = 0;
+		int idx = 0;
 		std::vector< int > indices(shapes[i].mesh.indices.size());
 		for (int j = 0; j < newMesh->numTriangles(); j++)
 		{
@@ -389,6 +456,7 @@ void addMeshesToScene( tzCoreScene *scene, const tinyobj::attrib_t &attrib, cons
 		newMesh->setFaceVertices(faceVertices );
 		newMesh->setVertexFaces(vertexFaces);
 		// uv
+		/*
 		std::vector< float > us(newMesh->numVertices());
 		std::vector< float > vs(newMesh->numVertices());
 		idx = 0;
@@ -400,6 +468,7 @@ void addMeshesToScene( tzCoreScene *scene, const tinyobj::attrib_t &attrib, cons
 		}
 		newMesh->setUs( us );
 		newMesh->setVs( vs );
+		*/
 
 		// add new mesh
 		scene->addMesh( newMesh );
@@ -425,7 +494,7 @@ void setupModels(tzCoreScene *scene)
 	//
 	vector<string> model_names =
 	{
-		dirPath+"torus.obj",//"sponza.obj",
+		dirPath+"happynewyear.obj",//"sponza.obj",
 	};
 
 	map<string, vector<tinyobj::shape_t>> model_cache;
@@ -712,7 +781,7 @@ void My_Keyboard(unsigned char key, int x, int y)
 			tzWorld w;
 			w.mScenePtr = &myScene;
 			w.build();
-			w.setOutputPath( "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\texture_test.png" );
+			w.setOutputPath( "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\happy_new_year.png" );
 			w.renderScene();
 			int a = 0;
 			a = 1;
