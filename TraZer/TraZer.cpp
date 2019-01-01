@@ -12,6 +12,9 @@
 #include "Common.h"
 #include "ViewManager.h"
 
+// core
+#include "../Include/tzCoreScene.h"
+
 // headers
 #include "../glView/include/tzGLWorldCentre.h"
 #include "../Include/tzTool.h"
@@ -88,6 +91,8 @@ GLuint			m_mainWindow;
 vec2			m_screenSize;
 ViewManager		m_camera;
 
+// create a scene
+tzCoreScene myScene;
 
 //material info
 typedef struct
@@ -317,10 +322,95 @@ void setupShaders()
 	}
 }
 
+// add meshes to scene
+void addMeshesToScene( tzCoreScene *scene, const tinyobj::attrib_t &attrib, const std::vector<tinyobj::shape_t>& shapes )
+{
+	int numShapes = (int)shapes.size();
+	for ( int i = 0; i < numShapes; i++ )
+	{
+		if (shapes[i].mesh.indices.size() % 3 != 0 || attrib.vertices.size() % 3 != 0 )
+		{
+			printf( " mesh's indices needs to be a multiple of 3 \n" );
+			continue;
+		}
+
+		tzCoreMesh *newMesh = new tzCoreMesh();
+		newMesh->setName( shapes[i].name );
+		newMesh->setNumTriangles( shapes[i].mesh.indices.size()/3 );
+		newMesh->setNumVertices( attrib.vertices.size()/3 );
+		// vertices
+		newMesh->setVertices(attrib.vertices);
+		// normals
+		std::vector<tzNormal> normals(newMesh->numVertices());
+		int idx = 0;
+		for ( int j = 0; j < newMesh->numVertices( ); j++ )
+		{
+			if (j >= (int)(attrib.normals.size()/3) - 1)
+			{
+				normals[j].x = attrib.normals[idx];
+				normals[j].y = attrib.normals[idx+1];
+				normals[j].z = attrib.normals[idx+2];
+			}
+			else
+			{
+				normals[j].x = attrib.normals[idx], idx++;
+				normals[j].y = attrib.normals[idx], idx++;
+				normals[j].z = attrib.normals[idx], idx++;
+			}
+		}
+		newMesh->setVertexNormals( normals );
+		// vertex faces & indices
+		std::vector< std::vector< int > > vertexFaces(newMesh->numVertices());
+		std::vector< std::vector< int > > faceVertices(newMesh->numTriangles());
+		idx = 0;
+		std::vector< int > indices(shapes[i].mesh.indices.size());
+		for (int j = 0; j < newMesh->numTriangles(); j++)
+		{
+			int vid = shapes[i].mesh.indices[idx].vertex_index;
+			vertexFaces[vid].push_back( j );
+			indices[idx] = vid;
+			faceVertices[j].push_back(vid);
+			idx++;
+
+			vid = shapes[i].mesh.indices[idx].vertex_index;
+			vertexFaces[vid].push_back( j );
+			indices[idx] = vid;
+			faceVertices[j].push_back(vid);
+			idx++;
+
+			vid = shapes[i].mesh.indices[idx].vertex_index;
+			vertexFaces[vid].push_back( j );
+			indices[idx] = vid;
+			faceVertices[j].push_back(vid);
+			idx++;
+			//
+		}
+		newMesh->setIndices(indices);
+		newMesh->setFaceVertices(faceVertices );
+		newMesh->setVertexFaces(vertexFaces);
+		// uv
+		std::vector< float > us(newMesh->numVertices());
+		std::vector< float > vs(newMesh->numVertices());
+		idx = 0;
+		for ( int j = 0; j < (int)attrib.texcoords.size(); j+=2)
+		{
+			us[idx] = attrib.texcoords[j];
+			vs[idx] = attrib.texcoords[j+1];
+			idx++;
+		}
+		newMesh->setUs( us );
+		newMesh->setVs( vs );
+
+		// add new mesh
+		scene->addMesh( newMesh );
+	}
+
+	int a = 0;
+	a = 1;
+}
 
 
-
-void setupModels()
+void setupModels(tzCoreScene *scene)
 {
 	// initialize world axes buffers
 	gWorldCentre.init();
@@ -362,6 +452,11 @@ void setupModels()
 				printf("Load Models Fail: %s\n", err.c_str());
 				continue;
 			}
+
+			// test------------------------------------------------------------------
+			addMeshesToScene( scene, attrib, shapes);
+			// test------------------------------------------------------------------
+
 			model_cache.insert(pair<string, vector<tinyobj::shape_t>>(model_names[i], shapes));
 			material_cache.insert(pair<string, vector<tinyobj::material_t>>(model_names[i], materials));
 
@@ -483,7 +578,7 @@ void setupModels()
 	m_shapes[0].position = vec3(0, 0, 0);
 }
 
-void My_Init()
+void My_Init(tzCoreScene *scene)
 {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GLUT_MULTISAMPLE);
@@ -496,7 +591,7 @@ void My_Init()
 	m_camera.Zoom(3.0f);
 
 	setupShaders();
-	setupModels();
+	setupModels( scene );
 }
 
 // GLUT callback. Called to draw the scene.
@@ -615,6 +710,7 @@ void My_Keyboard(unsigned char key, int x, int y)
 		if ( key == k )
 		{
 			tzWorld w;
+			w.mScenePtr = &myScene;
 			w.build();
 			w.setOutputPath( "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\texture_test.png" );
 			w.renderScene();
@@ -692,7 +788,7 @@ int main(int argc, char *argv[])
 	////////////////////
 
 	//Call custom initialize function
-	My_Init();
+	My_Init( &myScene );
 	//setupGUI();
 
 	//Register GLUT callback functions
