@@ -3,15 +3,13 @@
 #include "../Include/tzConstants.h"
 
 
-// --------------------------------------------------------------------- default constructor
-
+// ================================================================================
 tzBBox::tzBBox (void)
 	: x0(-1), x1(1), y0(-1), y1(1), z0(-1), z1(1)
 {}	
 
 
-// --------------------------------------------------------------------- constructor
-
+// ================================================================================
 tzBBox::tzBBox (	const double _x0, const double _x1,			
 				const double _y0, const double _y1, 
 				const double _z0, const double _z1)
@@ -19,25 +17,22 @@ tzBBox::tzBBox (	const double _x0, const double _x1,
 {}
 
 
-// --------------------------------------------------------------------- constructor
-
+// ================================================================================
 tzBBox::tzBBox(const tzPoint3D p0, const tzPoint3D p1)
 	: x0(p0.x), x1(p1.x), y0(p0.y), y1(p1.y), z0(p0.z), z1(p1.z)
 {}
 										
 
 
-// --------------------------------------------------------------------- copy constructor
-
+// ================================================================================
 tzBBox::tzBBox(const tzBBox& bbox)
 	: x0(bbox.x0), x1(bbox.x1), y0(bbox.y0), y1(bbox.y1), z0(bbox.z0), z1(bbox.z1)
 {}						
 				
 
-// --------------------------------------------------------------------- assignment operator
-
-tzBBox&
-tzBBox::operator= (const tzBBox& rhs) {
+// ================================================================================
+tzBBox& tzBBox::operator= (const tzBBox& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
@@ -52,15 +47,15 @@ tzBBox::operator= (const tzBBox& rhs) {
 }			
 
 
-// --------------------------------------------------------------------- destructor
+// ================================================================================
+tzBBox::~tzBBox(void) 
+{
+}
 
-tzBBox::~tzBBox(void) {}
 
-
-// --------------------------------------------------------------------- hit
-
-bool 									
-tzBBox::hit(const tzRay& ray) const {
+// ================================================================================
+bool tzBBox::hit(const tzRay& ray) const 
+{
 	double ox = ray.o.x; double oy = ray.o.y; double oz = ray.o.z;
 	double dx = ray.d.x; double dy = ray.d.y; double dz = ray.d.z;
 	
@@ -122,12 +117,9 @@ tzBBox::hit(const tzRay& ray) const {
 	return (t0 < t1 && t1 > kEpsilon);
 }
 
-
-// --------------------------------------------------------------------- inside
-// used to test if a ray starts inside a grid
-
-bool
-tzBBox::inside(const tzPoint3D& p) const {
+// ================================================================================
+bool tzBBox::inside(const tzPoint3D& p) const 
+{
 	return ((p.x > x0 && p.x < x1) && (p.y > y0 && p.y < y1) && (p.z > z0 && p.z < z1));
 };
 

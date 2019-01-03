@@ -23,8 +23,7 @@ class tzPoint2D {
 };
 
 
-// multiplication by a float on the right
-
+//===================================================================================
 inline tzPoint2D
 tzPoint2D::operator* (const float a) {
 	return (tzPoint2D(x * a, y * a));

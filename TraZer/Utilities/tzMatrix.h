@@ -1,32 +1,35 @@
 #ifndef TZ_MATRIX
 #define TZ_MATRIX
 
-//----------------------------------------- class Matrix
+class tzVector3D;
+class tzPoint3D;
 
 class tzMatrix {
 	
 	public:
 	
-		double	m[4][4];								// elements
+		double	m[4][4];								
 	
 		
-		tzMatrix(void);									// default constructor
+		tzMatrix(void);									
 
-		tzMatrix(const tzMatrix& mat);						// copy constructor
+		tzMatrix(const tzMatrix& mat);			
 		
-		~tzMatrix(void);									// destructor
+		~tzMatrix(void);
 			
-		tzMatrix& 										// assignment operator
-		operator= (const tzMatrix& rhs);
+		tzMatrix& operator= (const tzMatrix& rhs);
 			
-		tzMatrix 											// multiplication of two matrices
-		operator* (const tzMatrix& mat) const;
+		tzMatrix operator* (const tzMatrix& mat) const;
 
-		tzMatrix 											// divsion by a double
-		operator/ (const double d);
+		tzVector3D operator* (const tzVector3D& v) const; // m*vector
 
-		void											// set to the identity matrix
-		set_identity(void);	
+		tzPoint3D operator* (const tzPoint3D& p) const; // m*vector
+
+		tzMatrix operator/ (const double d);
+
+		void	setIdentity(void);	
+
+		void	initializeWithAValue( double v );
 };
 
 #endif
