@@ -24,7 +24,7 @@ class tzICamera {
 		~tzICamera();   							
 
 		virtual void 																		
-		render_scene(const tzWorld& w) = 0;
+		renderScene(const tzWorld& w) = 0;
 		
 		void
 		set_eye(const tzPoint3D& p);

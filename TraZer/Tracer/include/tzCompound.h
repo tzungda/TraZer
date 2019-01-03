@@ -40,8 +40,7 @@ class tzCompound: public tzIGeometricObject {
 		virtual bool 															 
 		hit(const tzRay& ray, double& tmin, tzShadeRec& s) const;
 
-		virtual	bool
-		shadow_hit(const tzRay& ray, float& tmin) const;
+		virtual	bool shadowHit(const tzRay& ray, float& tmin) const;
 			
 	protected:		
 		

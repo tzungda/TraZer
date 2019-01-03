@@ -42,7 +42,7 @@ class tzPointLight: public tzILight {
 		void		set_location( const tzVector3D &loc );
 
 		//
-		virtual bool			in_shadow(const tzRay &ray, const tzShadeRec &sr) const;
+		virtual bool inShadow(const tzRay &ray, const tzShadeRec &sr) const;
 	
 	private:
 	
@@ -86,4 +86,4 @@ tzPointLight::set_color(const float r, const float g, const float b) {
 
 
 #endif
-
+

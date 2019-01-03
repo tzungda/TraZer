@@ -48,7 +48,7 @@ class tzDirectional: public tzILight {
 		virtual tzRGBColor
 		L(tzShadeRec& sr);	
 
-		bool in_shadow(const tzRay &ray, const tzShadeRec &sr) const;
+		bool inShadow(const tzRay &ray, const tzShadeRec &sr) const;
 		
 	private:
 

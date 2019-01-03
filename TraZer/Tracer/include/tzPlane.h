@@ -24,7 +24,7 @@ class tzPlane: public tzIGeometricObject {
 		virtual ~tzPlane(void);
 					
 		//
-		virtual bool shadow_hit(const tzRay &ray, float &tmin) const;
+		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
 		//
 		virtual bool hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const;
 
@@ -39,4 +39,4 @@ class tzPlane: public tzIGeometricObject {
 };
 
 #endif
-
+

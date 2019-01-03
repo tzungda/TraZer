@@ -1,11 +1,5 @@
-
 #ifndef TZ_TRACER_AREA_LIGHT
 #define TZ_TRACER_AREA_LIGHT
-
-// 	Copyright (C) Kevin Suffern 2000-2007.
-//	This C++ code is for non-commercial purposes only.
-//	This C++ code is licensed under the GNU General Public License Version 2.
-//	See the file COPYING.txt for the full license.
 
 
 #include "tzRGBColor.h"
@@ -26,29 +20,22 @@ class tzAreaLight: public tzILight {
 
 		virtual tzILight* clone(void) const;
 		
-		virtual 								
-		~tzAreaLight(void);
+		virtual ~tzAreaLight(void);
 		
-		tzAreaLight&
-		operator= (const tzAreaLight& rhs);
+		tzAreaLight& operator= (const tzAreaLight& rhs);
 		
 		void 									
 		set_object(tzIGeometricObject* obj_ptr);
 		
-		virtual tzVector3D
-		get_direction(tzShadeRec& s);
+		virtual tzVector3D get_direction(tzShadeRec& s);
 		
-		virtual tzRGBColor
-		L(tzShadeRec& sr);
+		virtual tzRGBColor L(tzShadeRec& sr);
 		
-		virtual bool									
-		in_shadow(const tzRay& ray, const tzShadeRec& sr) const;
+		virtual bool inShadow(const tzRay& ray, const tzShadeRec& sr) const;
 		
-		virtual float
-		G(const tzShadeRec& sr) const;
+		virtual float G(const tzShadeRec& sr) const;
 		
-		virtual float									
-		pdf(const tzShadeRec& sr) const;
+		virtual float pdf(const tzShadeRec& sr) const;
 		
 	private:
 		
@@ -64,7 +51,8 @@ class tzAreaLight: public tzILight {
 // --------------------------------------------------------------- set_object
 
 inline void 									
-tzAreaLight::set_object(tzIGeometricObject* obj_ptr) {
+tzAreaLight::set_object(tzIGeometricObject* obj_ptr) 
+{
 	object_ptr = obj_ptr;
 	material_ptr = object_ptr->get_material();	
 }

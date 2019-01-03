@@ -29,8 +29,7 @@ class tzSmoothTriangle: public tzIGeometricObject {
 		virtual bool 
 		hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const;		 					 
 		
-		virtual bool 																						 
-		shadow_hit(const tzRay& ray, double& tmin) const; 
+		virtual bool shadowHit(const tzRay& ray, double& tmin) const;
 		
 	private:
 		

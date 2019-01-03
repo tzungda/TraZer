@@ -24,10 +24,6 @@ class tzFlatMeshTriangle: public tzMeshTriangle {
 		virtual	bool
 		hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const; 																	
 
-		/*
-		virtual	bool
-		shadow_hit(const tzRay& ray, float& tmin) const;
-		*/
 };
 
 #endif

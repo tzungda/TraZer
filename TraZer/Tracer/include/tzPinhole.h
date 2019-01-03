@@ -32,7 +32,7 @@ class tzPinhole: public tzICamera {
 		get_direction(const tzPoint2D& p) const;
 		
 		virtual void 												
-		render_scene(const tzWorld& w);
+			renderScene(const tzWorld& w);
 		
 	private:
 			

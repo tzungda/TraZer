@@ -33,8 +33,7 @@ class tzMeshTriangle: public tzIGeometricObject {
 		virtual bool 												 
 		hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const = 0;
 		
-		virtual	bool 																	
-		shadow_hit(const tzRay& ray, float& tmin) const;
+		virtual	bool shadowHit(const tzRay& ray, float& tmin) const;
 		
 		void 
 		compute_normal(const bool reverse_normal);

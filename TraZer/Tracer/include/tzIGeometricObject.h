@@ -32,7 +32,7 @@ class tzIGeometricObject {
 		virtual bool hit(const tzRay& ray, double& t, tzShadeRec& s) const = 0;
 
 		//
-		virtual bool shadow_hit(const tzRay &ray, float &tmin) const;
+		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
 		
 		virtual void 							// This needs to be virtual so that it can be overridden in Compound
 		set_material(tzIMaterial* mPtr); 			// It therefore shouldn't be inlined

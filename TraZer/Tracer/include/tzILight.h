@@ -24,16 +24,14 @@ class tzILight {
 		
 		virtual ~tzILight(void);
 						
-		virtual tzVector3D
-		get_direction(tzShadeRec& sr) = 0;				
+		virtual tzVector3D get_direction(tzShadeRec& sr) = 0;				
 																
-		virtual tzRGBColor
-		L(tzShadeRec& sr);								
+		virtual tzRGBColor L(tzShadeRec& sr);								
 
 		virtual float G(const tzShadeRec& sr) const;
 
 		//
-		virtual bool			in_shadow( const tzRay &ray, const tzShadeRec &sr ) const;
+		virtual bool			inShadow( const tzRay &ray, const tzShadeRec &sr ) const;
 		//
 		virtual void			setCastsShadows( bool castsShadow );
 		virtual bool			castsShadow( ) const;

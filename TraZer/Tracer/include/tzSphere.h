@@ -1,6 +1,7 @@
 #ifndef TZ_TRACER_SPHEERE
 #define TZ_TRACER_SPHEERE
-
+
+
 #include "../include/tzIGeometricObject.h"
 #include "../include/tzRay.h"
 #include "../include/tzShadeRec.h"
@@ -33,7 +34,7 @@ class tzSphere: public tzIGeometricObject {
 		void
 		set_radius(const double r);
 
-		virtual bool shadow_hit(const tzRay &ray, float &tmin) const;
+		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
 						
 		virtual bool 												 
 		hit(const tzRay& ray, double& t, tzShadeRec& s) const;	
@@ -66,4 +67,4 @@ tzSphere::set_radius(const double r) {
 }
 
 #endif
-
+

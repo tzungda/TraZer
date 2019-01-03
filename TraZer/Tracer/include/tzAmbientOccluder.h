@@ -38,7 +38,7 @@ class tzAmbientOccluder: public tzILight {
 		L(tzShadeRec& s);
 
 		//
-		virtual bool	in_shadow(const tzRay &ray, const tzShadeRec &sr) const;
+		virtual bool	inShadow(const tzRay &ray, const tzShadeRec &sr) const;
 
 		//
 		void		setSampler( tzISampler *samplerPtr );
