@@ -63,7 +63,7 @@ tzPlane::~tzPlane(void)
 {}
 
 //===================================================================================
-bool tzPlane::shadow_hit(const tzRay &ray, float &tmin) const
+bool tzPlane::shadowHit(const tzRay &ray, float &tmin) const
 {
 	float t = (float)((a - ray.o) * n / (ray.d * n));
 

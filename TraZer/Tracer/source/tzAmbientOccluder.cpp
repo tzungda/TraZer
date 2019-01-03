@@ -72,8 +72,7 @@ tzAmbientOccluder::get_direction(tzShadeRec& s)
 
 // ---------------------------------------------------------------------- L
 
-tzRGBColor
-tzAmbientOccluder::L(tzShadeRec& sr) 
+tzRGBColor tzAmbientOccluder::L(tzShadeRec& sr) 
 {
 	w = sr.mNormal;
 	// jitter up vector in case normal is vertical
@@ -85,7 +84,7 @@ tzAmbientOccluder::L(tzShadeRec& sr)
 	shadowRay.o = sr.mHitPoint;
 	shadowRay.d = get_direction( sr );
 
-	if ( in_shadow( shadowRay, sr ) )
+	if (inShadow( shadowRay, sr ) )
 	{
 		return (min_amount * ls * color);
 	}
@@ -94,14 +93,14 @@ tzAmbientOccluder::L(tzShadeRec& sr)
 }
 
 //===================================================================================
-bool tzAmbientOccluder::in_shadow(const tzRay &ray, const tzShadeRec &sr) const
+bool tzAmbientOccluder::inShadow(const tzRay &ray, const tzShadeRec &sr) const
 {
 	float t;
 	int numObjects = (int)sr.mWorld.mObjects.size();
 
 	for ( int j = 0; j < numObjects; j++ )
 	{
-		if ( sr.mWorld.mObjects[j]->shadow_hit( ray, t ) )
+		if ( sr.mWorld.mObjects[j]->shadowHit( ray, t ) )
 		{
 			return true;
 		}

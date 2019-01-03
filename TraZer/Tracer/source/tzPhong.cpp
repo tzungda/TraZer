@@ -127,7 +127,7 @@ tzPhong::shade(tzShadeRec& sr) {
 			if ( sr.mWorld.mLights[j]->castsShadow( ) )
 			{
 				tzRay shadowRay( sr.mHitPoint, wi );
-				in_shadow = sr.mWorld.mLights[j]->in_shadow( shadowRay, sr );
+				in_shadow = sr.mWorld.mLights[j]->inShadow( shadowRay, sr );
 			}
 
 			//
@@ -150,22 +150,23 @@ tzRGBColor tzPhong::area_light_shade(tzShadeRec &sr)
 	tzRGBColor 	L = ambientColor;
 	int 		num_lights = (int)sr.mWorld.mLights.size();
 
-	for (int j = 0; j < num_lights; j++) {
+	for (int j = 0; j < num_lights; j++) 
+	{
 		tzVector3D wi = sr.mWorld.mLights[j]->get_direction(sr);
 		float ndotwi = (float)(sr.mNormal * wi);
 
 		if (ndotwi > 0.0)
 		{
 			// check if it's in shadow
-			bool in_shadow = false;
+			bool inShadow = false;
 			if (sr.mWorld.mLights[j]->castsShadow())
 			{
 				tzRay shadowRay(sr.mHitPoint, wi);
-				in_shadow = sr.mWorld.mLights[j]->in_shadow(shadowRay, sr);
+				inShadow = sr.mWorld.mLights[j]->inShadow(shadowRay, sr);
 			}
 
 			//
-			if (!in_shadow)
+			if (!inShadow)
 			{
 				L += (diffuse_brdf->f(sr, wo, wi) + specular_brdf->f(sr, wo, wi)) * sr.mWorld.mLights[j]->L(sr) * ndotwi;
 			}

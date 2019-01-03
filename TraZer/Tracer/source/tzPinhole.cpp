@@ -71,7 +71,7 @@ tzPinhole::get_direction(const tzPoint2D& p) const {
 // ----------------------------------------------------------------------------- render_scene
 
 void 												
-tzPinhole::render_scene(const tzWorld& w) {
+tzPinhole::renderScene(const tzWorld& w) {
 	tzRGBColor	L;
 	tzViewPlane	vp(w.mVp);	 								
 	tzRay			ray;

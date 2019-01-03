@@ -59,9 +59,11 @@ tzSphere::operator= (const tzSphere& rhs)
 
 // ---------------------------------------------------------------- destructor
 
-tzSphere::~tzSphere(void) {}
+tzSphere::~tzSphere(void) 
+{
+}
 
-bool tzSphere::shadow_hit(const tzRay &ray, float &tmin) const
+bool tzSphere::shadowHit(const tzRay &ray, float &tmin) const
 {
 	double 		t;
 	tzVector3D	temp = ray.o - center;
@@ -136,4 +138,4 @@ bool tzSphere::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {
 
 
 
-
+

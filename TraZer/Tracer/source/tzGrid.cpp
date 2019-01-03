@@ -971,7 +971,7 @@ tzGrid::hit(const tzRay& ray, double& t, tzShadeRec& sr) const {
 }	// end of hit
 
 	//===================================================================================
-bool tzGrid::shadow_hit(const tzRay &ray, float &tmin) const
+bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 {
 	double ox = ray.o.x;
 	double oy = ray.o.y;
@@ -1138,7 +1138,7 @@ bool tzGrid::shadow_hit(const tzRay &ray, float &tmin) const
 		}
 
 		if (tx_next < ty_next && tx_next < tz_next) {
-			if (object_ptr && object_ptr->shadow_hit(ray, tmin) && tmin < tx_next) {
+			if (object_ptr && object_ptr->shadowHit(ray, tmin) && tmin < tx_next) {
 				//material_ptr = object_ptr->get_material();
 				return (true);
 			}
@@ -1151,7 +1151,7 @@ bool tzGrid::shadow_hit(const tzRay &ray, float &tmin) const
 		}
 		else {
 			if (ty_next < tz_next) {
-				if (object_ptr && object_ptr->shadow_hit(ray, tmin) && tmin < ty_next) {
+				if (object_ptr && object_ptr->shadowHit(ray, tmin) && tmin < ty_next) {
 					//material_ptr = object_ptr->get_material();
 					return (true);
 				}
@@ -1163,7 +1163,7 @@ bool tzGrid::shadow_hit(const tzRay &ray, float &tmin) const
 					return (false);
 			}
 			else {
-				if (object_ptr && object_ptr->shadow_hit(ray, tmin) && tmin < tz_next) {
+				if (object_ptr && object_ptr->shadowHit(ray, tmin) && tmin < tz_next) {
 					//material_ptr = object_ptr->get_material();
 					return (true);
 				}

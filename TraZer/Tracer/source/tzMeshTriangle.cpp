@@ -73,7 +73,7 @@ tzMeshTriangle::compute_normal(const bool reverse_normal) {
 			 (mesh_ptr->vertices[index2] - mesh_ptr->vertices[index0]);
 	normal.normalize();
 	
-	normal = -normal;
+	//normal = -normal;
 
 	if (reverse_normal)
 		normal = -normal;
@@ -109,8 +109,7 @@ tzMeshTriangle::get_bounding_box(void) {
 // this function is independent of the derived triangle type:
 // flat, smooth, flat uv, smooth uv
 
-bool 															 
-tzMeshTriangle::shadow_hit(const tzRay& ray, float& tmin) const {
+bool tzMeshTriangle::shadowHit(const tzRay& ray, float& tmin) const {
 	tzPoint3D v0(mesh_ptr->vertices[index0]);
 	tzPoint3D v1(mesh_ptr->vertices[index1]);
 	tzPoint3D v2(mesh_ptr->vertices[index2]);

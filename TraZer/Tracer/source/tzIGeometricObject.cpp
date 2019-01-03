@@ -84,7 +84,7 @@ tzIGeometricObject::set_material(tzIMaterial* mPtr) {
 
 
 //===================================================================================
-bool tzIGeometricObject::shadow_hit(const tzRay &ray, float &tmin) const
+bool tzIGeometricObject::shadowHit(const tzRay &ray, float &tmin) const
 {
 	return false;
 }

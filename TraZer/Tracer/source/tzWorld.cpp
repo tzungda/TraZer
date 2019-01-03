@@ -110,6 +110,7 @@ tzWorld::~tzWorld()
 		if ( (*iter) )
 		{
 			delete (*iter);
+			(*iter) = NULL;
 		}
 	}
 	mObjects.clear();
@@ -166,6 +167,119 @@ tzShadeRec tzWorld::hitBareBonesObject(const tzRay &ray)
 //===================================================================================
 void tzWorld::build()
 {
+	// area light & bunny------------------------------------------------------------------------------
+	int num_samples = 100;
+
+	tzISampler* sampler_ptr = new tzMultiJittered(num_samples);
+
+	mVp.setHres(400);
+	mVp.setVres(400);
+	//mVp.setMaxDepth(0);
+	mVp.setSampler(sampler_ptr);
+
+	mBackgroundColor = tzRGBColor(0.5);
+
+	mTracerPtr = new tzAreaLighting(this);
+
+	tzPinhole* camera = new tzPinhole();
+	camera->set_eye(200, 200, 200);
+	camera->set_lookat(0, 0, 0);
+	camera->set_view_distance(16000);
+	camera->compute_uvw();
+	setCamera(camera);
+
+
+	tzEmissive* emissive_ptr = new tzEmissive;
+	emissive_ptr->scale_radiance(300);
+	emissive_ptr->set_ce(white);
+
+	//
+	float width = 8.0;				// for Figure 18.4(a) & (b)
+	float height = 8.0;
+	//	float width = 2.0;				// for Figure 18.4(c)
+	//	float height = 2.0;
+	tzPoint3D center(0.0, 7.0, -7.0);	// center of each area light (rectangular, disk, and spherical)
+	tzPoint3D p0(-0.5 * width, center.y - 0.5 * height - 1.0, center.z);
+	tzVector3D a(width, 0.0, 0.0);
+	tzVector3D b(0.0, height, 0.0);
+	tzNormal normal(0, 0, 1);
+
+	// rectangle emit object
+	tzRectangle* rectangle_ptr = new tzRectangle(p0, a, b, normal);
+	rectangle_ptr->set_material(emissive_ptr);
+	rectangle_ptr->set_sampler(sampler_ptr);
+	//rectangle_ptr->set_shadows(false);
+	addObject(rectangle_ptr);
+
+	// area light
+	tzAreaLight* area_light_ptr = new tzAreaLight;
+	area_light_ptr->set_object(rectangle_ptr);
+	area_light_ptr->setCastsShadows(true);
+	addLight(area_light_ptr);
+
+	// point light
+	tzPointLight* lightPtr = new tzPointLight();
+	lightPtr->set_location(tzVector3D(0, 7, 7));
+	lightPtr->scale_radiance(0.2);
+	lightPtr->setCastsShadows(false);
+	addLight(lightPtr);
+
+	// material matte sv
+	tzImage* image_ptr = new tzImage;
+	const char* texPath = "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\images.ppm";
+	image_ptr->read_ppm_file(texPath);
+
+	tzImageTexture* texture_ptr = new tzImageTexture;
+	texture_ptr->set_image(image_ptr);
+
+	tzMatteSV* sv_matte_ptr = new tzMatteSV;
+	sv_matte_ptr->set_ka(0.1);
+	sv_matte_ptr->set_kd(4/*0.75*/);
+	sv_matte_ptr->set_cd(texture_ptr);
+	//tzMatte* mattePtr1 = new tzMatte();
+	//mattePtr1->set_ka(0.25);
+	//mattePtr1->set_kd(0.75);
+	//mattePtr1->set_cd(0.4, 0.7, 0.4);
+
+	//
+	tzMatte* mattePtr2 = new tzMatte();
+	mattePtr2->set_ka(0.1);
+	mattePtr2->set_kd(0.9);
+	mattePtr2->set_cd(white);
+
+	//
+	// "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Stanford_Bunny\\Bunny10K.ply"
+	// "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Horse2K.ply"
+	const char* file_name = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Stanford_Bunny\\Bunny10K.ply";//"TwoTriangles.ply"; Horse2K
+	//checkFileEnd(file_name, file_name);
+	tzGrid* grid_ptr = new tzGrid(new tzMesh);
+	if (mScenePtr && mScenePtr->meshList().size() > 0)
+	{
+		tzCoreMesh *ptrCoreMesh = mScenePtr->meshList()[0];
+		grid_ptr->addMesh(ptrCoreMesh->vertices(), ptrCoreMesh->vertexNormals(), ptrCoreMesh->us(), ptrCoreMesh->vs(), ptrCoreMesh->vertexFaces(), ptrCoreMesh->faceVertices(), ptrCoreMesh->numVertices(), ptrCoreMesh->numTriangles());
+	}
+	else
+	{
+		grid_ptr->read_smooth_uv_triangles((char*)file_name);		// for Figure 29.22(a)
+																	//	grid_ptr->read_smooth_uv_triangles(file_name);		// for Figure 29.22(b)
+	}
+	//grid_ptr->read_flat_triangles((char*)file_name);
+	grid_ptr->set_material(sv_matte_ptr);
+	grid_ptr->setup_cells();
+	addObject(grid_ptr);
+
+	// sphere
+	//tzSphere *spherePtr = new tzSphere(tzPoint3D(0, 2, 0), 1);
+	//spherePtr->set_material(phongPtr);
+	//addObject(spherePtr);
+
+	// plane
+	tzPlane* planePtr = new tzPlane(tzPoint3D(0, 0.5, 0), tzNormal(0, 1, 0));
+	planePtr->set_material(mattePtr2);
+	addObject(planePtr);
+	
+
+	/*----------------------------------------------------------------
 	int num_samples = 16;
 
 	mVp.setHres(400);
@@ -230,8 +344,10 @@ void tzWorld::build()
 	tzPlane* plane_ptr1 = new tzPlane(tzPoint3D(0, -2.0, 0), tzNormal(0, 1, 0));
 	plane_ptr1->set_material(matte_ptr);
 	addObject(plane_ptr1);
+	*/
 
-	/*--------------------------------------------------------------------------
+	//--------------------------------------------------------------------------
+	/*
 	int num_samples = 16;
 
 	mVp.setHres(400);
@@ -278,8 +394,9 @@ void tzWorld::build()
 	plane_ptr1->set_material(matte_ptr2);
 	addObject(plane_ptr1);
 	*/
+	
 
-	//------------------------------------------------------------------------------
+	// area light & bunny------------------------------------------------------------------------------
 	/*
 	int num_samples = 100;
 
@@ -526,7 +643,7 @@ void tzWorld::renderScene() const
 	if ( mCameraPtr )
 	{
 		mCameraPtr->setOutputPath(mOutputPath);	
-		mCameraPtr->render_scene( *this );
+		mCameraPtr->renderScene( *this );
 		return;
 	}
 	

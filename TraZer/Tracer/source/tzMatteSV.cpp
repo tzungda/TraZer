@@ -99,14 +99,14 @@ tzMatteSV::shade(tzShadeRec& sr)
 		if (ndotwi > 0.0 && ndotwo)
 		{
 			// check if it's in shadow
-			bool in_shadow = false;
+			bool inShadow = false;
 			if ( sr.mWorld.mLights[j]->castsShadow() )
 			{
 				tzRay shadowRay( sr.mHitPoint, wi );
-				in_shadow = sr.mWorld.mLights[j]->in_shadow( shadowRay, sr );
+				inShadow = sr.mWorld.mLights[j]->inShadow( shadowRay, sr );
 			}
 
-			if ( !in_shadow )
+			if ( !inShadow )
 			{
 				L += diffuse_brdf->f(sr, wo, wi) * sr.mWorld.mLights[j]->L(sr) * sr.mWorld.mLights[j]->G(sr) * ndotwi;
 			}
@@ -130,14 +130,14 @@ tzRGBColor tzMatteSV::area_light_shade(tzShadeRec &sr)
 		if (ndotwi > 0.0)
 		{
 			// check if it's in shadow
-			bool in_shadow = false;
+			bool inShadow = false;
 			if (sr.mWorld.mLights[j]->castsShadow())
 			{
 				tzRay shadowRay(sr.mHitPoint, wi);
-				in_shadow = sr.mWorld.mLights[j]->in_shadow(shadowRay, sr);
+				inShadow = sr.mWorld.mLights[j]->inShadow(shadowRay, sr);
 			}
 
-			if (!in_shadow)
+			if (!inShadow)
 			{
 				L += diffuse_brdf->f(sr, wo, wi) * sr.mWorld.mLights[j]->L(sr) * sr.mWorld.mLights[j]->G(sr) * ndotwi / sr.mWorld.mLights[j]->pdf(sr);
 			}

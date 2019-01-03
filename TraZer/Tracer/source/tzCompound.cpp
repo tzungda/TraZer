@@ -131,7 +131,7 @@ tzCompound::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {
 }
 
 
-bool tzCompound::shadow_hit(const tzRay& ray, float& tmin) const {
+bool tzCompound::shadowHit(const tzRay& ray, float& tmin) const {
 	float		t;
 	tzNormal		normal;
 	tzPoint3D		local_hit_point;
@@ -140,7 +140,7 @@ bool tzCompound::shadow_hit(const tzRay& ray, float& tmin) const {
 	int 		num_objects = (int)objects.size();
 
 	for (int j = 0; j < num_objects; j++)
-		if (objects[j]->shadow_hit(ray, t) && (t < tmin)) {
+		if (objects[j]->shadowHit(ray, t) && (t < tmin)) {
 			hit = true;
 			tmin = t;
 		}

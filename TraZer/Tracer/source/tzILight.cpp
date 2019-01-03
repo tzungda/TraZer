@@ -47,7 +47,7 @@ float tzILight::G(const tzShadeRec& sr) const
 }
 
 //===================================================================================
-bool tzILight::in_shadow(const tzRay &ray, const tzShadeRec &sr) const
+bool tzILight::inShadow(const tzRay &ray, const tzShadeRec &sr) const
 {
 	return false;
 }

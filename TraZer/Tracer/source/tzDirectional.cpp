@@ -69,14 +69,14 @@ tzDirectional::L(tzShadeRec& s) {
 }
 
 //===================================================================================
-bool tzDirectional::in_shadow(const tzRay &ray, const tzShadeRec &sr) const
+bool tzDirectional::inShadow(const tzRay &ray, const tzShadeRec &sr) const
 {
 	float t = 0.0f;
 	int numObjects = (int)sr.mWorld.mObjects.size();
 
 	for (int j = 0; j < numObjects; j++)
 	{
-		if (sr.mWorld.mObjects[j]->shadow_hit(ray, t))
+		if (sr.mWorld.mObjects[j]->shadowHit(ray, t))
 		{
 			return true;
 		}

@@ -34,16 +34,21 @@ tzAreaLight::clone(void) const {
 
 // ---------------------------------------------------------------- destructor
  								
-tzAreaLight::~tzAreaLight(void) {
-	if (object_ptr) {
+tzAreaLight::~tzAreaLight(void) 
+{
+	/*
+	if (object_ptr) 
+	{
 		delete object_ptr;
 		object_ptr = NULL;
 	}
-	
+	*/
+	/*
 	if (material_ptr) {
 		delete material_ptr;
 		material_ptr = NULL;
 	}
+	*/
 }
 
 
@@ -105,15 +110,20 @@ tzAreaLight::L(tzShadeRec& sr) {
 // ---------------------------------------------------------------- in_shadow	
 
 bool									
-tzAreaLight::in_shadow(const tzRay& ray, const tzShadeRec& sr) const {
+tzAreaLight::inShadow(const tzRay& ray, const tzShadeRec& sr) const 
+{
 	float t;
 	int num_objects = (int)sr.mWorld.mObjects.size();
 	float ts = (float)((sample_point - ray.o) * ray.d);
 	
 	for (int j = 0; j < num_objects; j++)
-		if (sr.mWorld.mObjects[j]->shadow_hit(ray, t) && t < ts)
+	{
+		if (sr.mWorld.mObjects[j]->shadowHit(ray, t) && t < ts)
+		{
 			return (true); 
-		
+		}
+	}
+
 	return (false);     
 }
 
