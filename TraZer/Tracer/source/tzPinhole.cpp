@@ -7,6 +7,12 @@
 #include "../include/tzPinhole.h"
 #include "../include/tzMultiJittered.h"
 #include <math.h>
+#include <time.h>
+
+#ifdef _OPENMP 
+#include <omp.h>
+#endif
+
 
 // ----------------------------------------------------------------------------- default constructor
 
@@ -14,7 +20,8 @@ tzPinhole::tzPinhole(void)
 	:	tzICamera(),
 		d(500),
 		zoom(1.0)
-{}
+{
+}
 
 
 // ----------------------------------------------------------------------------- copy constructor
@@ -23,13 +30,14 @@ tzPinhole::tzPinhole(const tzPinhole& c)
 	: 	tzICamera(c),
 		d(c.d),
 		zoom(c.zoom)
-{}
+{
+}
 
 
 // ----------------------------------------------------------------------------- clone
 
-tzICamera* 
-tzPinhole::clone(void) const {
+tzICamera* tzPinhole::clone(void) const 
+{
 	return (new tzPinhole(*this));
 }
 
@@ -37,8 +45,8 @@ tzPinhole::clone(void) const {
 
 // ----------------------------------------------------------------------------- assignment operator
 
-tzPinhole&
-tzPinhole::operator= (const tzPinhole& rhs) {
+tzPinhole& tzPinhole::operator= (const tzPinhole& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 		
@@ -53,13 +61,15 @@ tzPinhole::operator= (const tzPinhole& rhs) {
 
 // ----------------------------------------------------------------------------- destructor
 
-tzPinhole::~tzPinhole(void) {}
+tzPinhole::~tzPinhole(void) 
+{
+}
 
 
 // ----------------------------------------------------------------------------- get_direction
 
-tzVector3D
-tzPinhole::get_direction(const tzPoint2D& p) const {
+tzVector3D tzPinhole::get_direction(const tzPoint2D& p) const 
+{
 	tzVector3D dir = p.x * u + p.y * v - d * w;
 	dir.normalize();
 	
@@ -70,28 +80,52 @@ tzPinhole::get_direction(const tzPoint2D& p) const {
 
 // ----------------------------------------------------------------------------- render_scene
 
-void 												
-tzPinhole::renderScene(const tzWorld& w) {
-	tzRGBColor	L;
-	tzViewPlane	vp(w.mVp);	 								
-	tzRay			ray;
-	int 		depth = 0;  
-	tzPoint2D 	pp;		// sample point on a pixel
-	int n = (int)sqrt((float)vp.mNumSamples);
-		
+void tzPinhole::renderScene(const tzWorld& w) 
+{
+	tzViewPlane	vp(w.mVp);
+	const int n = (int)sqrt((float)vp.mNumSamples);
+
 	vp.mS /= zoom;
+	
+#ifndef _OPENMP
+	tzRGBColor	L;
+	tzRay			ray;
+	int 		depth = 0;
+	tzPoint2D 	pp;		// sample point on a pixel
 	ray.o = eye;
+#endif
 
 	std::vector<glm::vec4> colorBuffer;
 	colorBuffer.resize(vp.mVres*vp.mHres);
 
-	float invNumSamples = 1.0f/(float)vp.mNumSamples;
+	const float invNumSamples = 1.0f/(float)vp.mNumSamples;
 		
-	for (int r = 0; r < vp.mVres; r++)			// up
+	clock_t t = clock();
+
+	for (int r = 0; r < vp.mVres; r++)
 	{
-		for (int c = 0; c < vp.mVres; c++) {		// across 					
+
+#ifdef _OPENMP
+		int maxThreads = omp_get_max_threads();
+		omp_set_num_threads(maxThreads);
+		int threadnum = omp_get_thread_num();
+		int a = 0;
+		a = 1;
+		omp_set_num_threads(maxThreads);
+		#pragma omp parallel for
+#endif
+
+		for (int c = 0; c < vp.mVres; c++) 
+		{
+#ifndef _OPENMP
 			L = black; 
-			
+#else
+			int threadnumX = omp_get_thread_num();
+			tzRGBColor	threadL( black );
+#endif
+
+//----------------------------------------------------------------------
+#ifndef _OPENMP			
 			for (int p = 0; p < n; p++)			// up pixel
 				for (int q = 0; q < n; q++) {	// across pixel
 					pp.x = vp.mS * (c - 0.5f * vp.mHres + (q + 0.5f) / n); 
@@ -101,9 +135,9 @@ tzPinhole::renderScene(const tzWorld& w) {
 				}	
 											
 			L *= invNumSamples;
-			L *= exposure_time;
+			L *= mExposureTime;
 
-			// test
+			// clamp color
 			if ( L.r > 1.0f )
 			{
 				L.r = 1.0f;
@@ -117,10 +151,61 @@ tzPinhole::renderScene(const tzWorld& w) {
 				L.b = 1.0f;
 			}
 			// 
-
 			w.writeToBuffer(colorBuffer, r, c, L);
+#else
+			//tzRay			ray;
+			int 		depth = 0;
+			//tzPoint2D 	pp;		// sample point on a pixel
+			//ray.o = eye;
+
+			for (int p = 0; p < n; p++)			// up pixel
+				for (int q = 0; q < n; q++) {	// across pixel
+					tzPoint2D 	pp;
+					tzRay ray;
+					ray.o = eye;
+					pp.x = vp.mS * (c - 0.5f * vp.mHres + (q + 0.5f) / n);
+					pp.y = vp.mS * (r - 0.5f * vp.mVres + (p + 0.5f) / n);
+					ray.d = get_direction(pp);
+					threadL += w.mTracerPtr->trace_ray(ray, depth);
+				}
+
+			threadL *= invNumSamples;
+			threadL *= mExposureTime;
+
+			// clamp color
+			if (threadL.r > 1.0f)
+			{
+				threadL.r = 1.0f;
+			}
+			if (threadL.g > 1.0f)
+			{
+				threadL.g = 1.0f;
+			}
+			if (threadL.b > 1.0f)
+			{
+				threadL.b = 1.0f;
+			}
+			// 
+			w.writeToBuffer(colorBuffer, r, c, threadL);
+#endif
 		} 
 	}
+
+	//-------------
+	t = clock() - t;
+#ifndef _OPENMP
+	const char* logFile = "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\timeLog_noOpenMp.txt";
+#else
+	const char* logFile = "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\timeLog_openMp.txt";
+#endif
+	FILE *fp = NULL;
+	fopen_s( &fp, logFile, "w" );
+	if ( fp )
+	{
+		fprintf( fp, "time = %f\n", ((float)t) / CLOCKS_PER_SEC );
+		fclose( fp );
+	}
+	//-------------
 
 	// output png
 	//std::string outPath("C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\areaLight.png");

@@ -12,7 +12,7 @@ tzICamera::tzICamera(void)
 		u(1, 0, 0),
 		v(0, 1, 0),
 		w(0, 0, 1),
-		exposure_time(1.0),
+		mExposureTime(1.0),
 		mOutputPath( "C:\\Temp\\test.png" )
 {}
 
@@ -27,7 +27,7 @@ tzICamera::tzICamera(const tzICamera& c)
 		u(c.u),
 		v(c.v),
 		w(c.w),
-		exposure_time(c.exposure_time),
+		mExposureTime(c.mExposureTime),
 		mOutputPath(c.mOutputPath)
 {}
 
@@ -47,7 +47,7 @@ tzICamera::operator= (const tzICamera& rhs) {
 	u				= rhs.u;
 	v				= rhs.v;
 	w				= rhs.w;
-	exposure_time 	= rhs.exposure_time;
+	mExposureTime = rhs.mExposureTime;
 	mOutputPath		= rhs.mOutputPath;
 
 	return (*this);
