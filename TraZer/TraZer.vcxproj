@@ -106,6 +106,9 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>./;./Utilities;./Tracer/include;../external/freeglut/win64_vs2017/3.0.0/include;../external/glew/win64_vs2017/1.13.0/include;./include;../external</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
+      <MultiProcessorCompilation>
+      </MultiProcessorCompilation>
+      <OpenMPSupport>false</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -188,6 +191,7 @@
     <ClCompile Include="Tracer\source\tzMaths.cpp" />
     <ClCompile Include="Tracer\source\tzMatte.cpp" />
     <ClCompile Include="Tracer\source\tzMatteSV.cpp" />
+    <ClCompile Include="Tracer\source\tzMesh.cpp" />
     <ClCompile Include="Tracer\source\tzMeshTriangle.cpp" />
     <ClCompile Include="Tracer\source\tzMultiJittered.cpp" />
     <ClCompile Include="Tracer\source\tzMultipleObjects.cpp" />
@@ -220,7 +224,6 @@
     <ClCompile Include="Utilities\ply.cpp" />
     <ClCompile Include="Utilities\tzBBox.cpp" />
     <ClCompile Include="Utilities\tzMatrix.cpp" />
-    <ClCompile Include="Utilities\tzMesh.cpp" />
     <ClCompile Include="Utilities\tzNormal.cpp" />
     <ClCompile Include="Utilities\tzPoint2D.cpp" />
     <ClCompile Include="Utilities\tzPoint3D.cpp" />
@@ -267,6 +270,7 @@
     <ClInclude Include="Tracer\include\tzMaths.h" />
     <ClInclude Include="Tracer\include\tzMatte.h" />
     <ClInclude Include="Tracer\include\tzMatteSV.h" />
+    <ClInclude Include="Tracer\include\tzMesh.h" />
     <ClInclude Include="Tracer\include\tzMeshTriangle.h" />
     <ClInclude Include="Tracer\include\tzMultiJittered.h" />
     <ClInclude Include="Tracer\include\tzMultipleObjects.h" />
@@ -298,7 +302,6 @@
     <ClInclude Include="Utilities\ply.h" />
     <ClInclude Include="Utilities\tzBBox.h" />
     <ClInclude Include="Utilities\tzMatrix.h" />
-    <ClInclude Include="Utilities\tzMesh.h" />
     <ClInclude Include="Utilities\tzNormal.h" />
     <ClInclude Include="Utilities\tzPoint2D.h" />
     <ClInclude Include="Utilities\tzPoint3D.h" />
