@@ -23,6 +23,8 @@
 #include <string>
 #include <algorithm>
 
+class tzNormal;
+
 /**
  * @brief The ViewManager class
  * The ViewManager class provides viewing manipulation related functionalities.
@@ -64,13 +66,18 @@ public:
     bool IsOrthoProjection() { return ortho; }
 
 	void SetCamera(glm::vec3 cameraPos, glm::vec3 focusPos);
-    void SetRotation(float theta, float phi);
-    void SetRotation(float x, float y, float z);
+//    void SetRotation(float theta, float phi);
+//    void SetRotation(float x, float y, float z);
 	void SetWindowSize(int width, int height);
 
     bool ToggleOrtho() { return ortho = !ortho; }
     void Zoom(float distance);
     void Reset();
+
+	//
+	glm::vec3	faceDir( ) const;
+	glm::vec3	upDir() const;
+	glm::vec3	rightDir() const;
 
 private:
     bool ortho = false;
@@ -83,17 +90,25 @@ private:
 	glm::vec3 viewVector;
 	glm::vec3 rotateXAxis;
 	glm::vec3 rotateYAxis;
+	glm::vec3 rotateZAxis;
 	glm::vec3 eyePosition;
 	glm::vec3 eyeLookPosition;
 
     bool lmbDown = false;
     bool midDown = false;
+	bool rmbDown = false;
 	glm::vec2 lmbDownCoord;
 	glm::vec2 midDownCoord;
+	glm::vec2 rmbDownCoord;
 	
 	int w_width;
 	int w_height;
 	float wheel_val;
+
+	//
+	glm::vec3	mFace;
+	glm::vec3	mUp;
+	glm::vec3	mRight;
 };
 
 
