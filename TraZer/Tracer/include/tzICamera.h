@@ -47,8 +47,7 @@ class tzICamera {
 		void
 		set_roll(const float ra);
 		
-		void
-		set_exposure_time(const float exposure);
+		void setExposureTime(const float exposure);
 		
 		void									
 		compute_uvw(void);
@@ -63,7 +62,7 @@ class tzICamera {
 		float			ra;					// roll angle
 		tzVector3D		u, v, w;			// orthonormal basis vectors
 		tzVector3D		up;					// up vector
-		float			exposure_time;
+		float			mExposureTime;
 
 		std::string		mOutputPath;
 		
@@ -134,8 +133,9 @@ tzICamera::set_roll(const float r) {
 // ----------------------------------------------------------------- set_exposure_time
 
 inline void
-tzICamera::set_exposure_time(const float exposure) {
-	exposure_time = exposure;
+tzICamera::setExposureTime(const float exposure) 
+{
+	mExposureTime = exposure;
 }
 
 
