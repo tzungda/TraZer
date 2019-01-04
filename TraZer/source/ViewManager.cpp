@@ -1,10 +1,19 @@
 #include "../Include/ViewManager.h"
 
+//
+#include "tzMatrix.h"
+#include "tzNormal.h"
+
 using namespace glm;
 
 ViewManager::ViewManager()
 {
+	mFace.x = 0.0f, mFace.y = 0.0f, mFace.z = -1.0f;
+	mUp.x = 0.0f, mUp.y = 1.0f, mUp.z = 0.0f;
+	mRight.x = 1.0f, mRight.y = 0.0f, mRight.z = 0.0f;
+
 	SetCamera(vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, 0.0f));
+	zoom = 1.0f;
 }
 
 mat4 ViewManager::GetModelMatrix() {
@@ -28,7 +37,7 @@ mat4 ViewManager::GetProjectionMatrix(float aspect)
         projectionMatrix = glm::ortho(-aspect * size, aspect * size, -size, size, nearVal, farVal);
     } 
 	else {
-        projectionMatrix = perspective(radians(30.0f * zoom), aspect, nearVal, farVal);
+        projectionMatrix = perspective(radians(45.0f * zoom), aspect, nearVal, farVal);		
     }
     return projectionMatrix;
 }
@@ -119,24 +128,36 @@ void ViewManager::mousePressEvent(int button, int x, int y)
         lmbDownCoord = vec2(x,y);
         mat4 invrtRot = inverse(rotationMatrix);
         rotateYAxis = (invrtRot * vec4(0, 1, 0, 0)).xyz;
-        rotateXAxis = (invrtRot * vec4(1, 0, 0, 0)).xyz;
+        rotateXAxis = (invrtRot * /*vec4(1, 0, 0, 0)*/vec4(mRight, 0.0f)).xyz;
+		
     } 
 	else if(button == GLUT_MIDDLE_BUTTON)
 	{
         midDown = true;
         midDownCoord = vec2(x, y);
     }
+	else if ( button == GLUT_RIGHT_BUTTON )
+	{
+		rmbDown = true;
+		rmbDownCoord = vec2(x, y);
+		mat4 invrtRot = inverse(rotationMatrix);
+		rotateZAxis = (invrtRot * /*vec4(1, 0, 0, 0)*/vec4(mFace, 0.0f)).xyz;
+	}
 }
 
 void ViewManager::mouseReleaseEvent(int button, int x, int y)
 {
-    if( button == GLUT_LEFT_BUTTON)
+    if( button == GLUT_LEFT_BUTTON) // rotation
 	{
         lmbDown = false;
     }
-	else if(button == GLUT_MIDDLE_BUTTON || button == 3 || button == 4) {
+	else if(button == GLUT_MIDDLE_BUTTON || button == 3 || button == 4) { // pan
         midDown = false;
     }
+	else if(button == GLUT_RIGHT_BUTTON) // zoomn
+	{
+		rmbDown = false;
+	}
 }
 
 void ViewManager::mouseMoveEvent(int x,int y)
@@ -146,8 +167,20 @@ void ViewManager::mouseMoveEvent(int x,int y)
         vec2 coord = vec2(x, y);
 		vec2 diff = coord - lmbDownCoord;
         float factor = 0.002f;
-        rotationMatrix = rotate(rotationMatrix,diff.x * factor, rotateYAxis);
-        rotationMatrix = rotate(rotationMatrix,diff.y * factor, rotateXAxis);
+		if ( fabs( diff.x ) > fabs( diff.y ) )
+		{
+			//glm::vec3 up = mUp;//upDir();
+			rotationMatrix = rotate(rotationMatrix,diff.x * factor, rotateYAxis);
+			//mRight = mRight*glm::mat3(rotationMatrix), mRight = normalize(mRight );
+			//mFace = mFace*glm::mat3(rotationMatrix), mFace = normalize(mFace);
+		}
+		else
+		{
+			//glm::vec3 right = mRight;//rightDir();
+			rotationMatrix = rotate(rotationMatrix,diff.y * factor, rotateXAxis);
+			//mUp *= rotationMatrix, mUp = normalize(mUp);
+			//mFace *= rotationMatrix, mFace = normalize(mFace);
+		}
         lmbDownCoord = coord;
     }
 	else if(midDown)
@@ -155,8 +188,8 @@ void ViewManager::mouseMoveEvent(int x,int y)
 		vec2 coord = vec2(x,y);
 		vec2 diff = coord - midDownCoord;
 
-		vec4 up = vec4(0, 1, 0, 0);
-		vec4 right = vec4(1, 0, 0, 0);
+		vec4 up( upDir(), 0.0f ); //vec4(0, 1, 0, 0);
+		vec4 right(rotateXAxis, 0.0f ); //vec4(1, 0, 0, 0);
 
 		vec3 diffUp = up.xyz * diff.y / (float)w_height;
 		vec3 diffRight = right.xyz * diff.x / (float)w_width;
@@ -164,6 +197,22 @@ void ViewManager::mouseMoveEvent(int x,int y)
         translationMatrix = translate(translationMatrix, (-diffUp + diffRight) * zoom * 3.0f);
         midDownCoord = coord;
     }
+	else if( rmbDown )
+	{
+		vec2 coord = vec2(x, y);
+		vec2 diff = coord - rmbDownCoord;
+		rmbDownCoord = coord;
+		float d = 0.02f;
+		if (fabs(diff.x) > fabs(diff.y))
+		{
+			d *= diff.x;
+		}
+		else
+		{
+			d *= diff.y;
+		}
+		translationMatrix = translate(translationMatrix, rotateZAxis * d * 3.0f);
+	}
 }
 
 void ViewManager::wheelEvent(int direction)
@@ -181,6 +230,13 @@ void ViewManager::Zoom(float distance)
 void ViewManager::SetCamera(glm::vec3 cameraPos, glm::vec3 focusPos) {
 	eyePosition = cameraPos;
 	eyeLookPosition = focusPos;
+
+	//
+	mFace = normalize( focusPos - cameraPos );
+	mRight = normalize( cross(mFace, mUp) );
+	mUp = normalize(cross(mRight, mFace));
+	//
+
 	vec3 up = vec3(0, 1, 0);
 	viewMatrix = lookAt(eyePosition, eyeLookPosition, up);
 	viewVector = eyePosition - eyeLookPosition;
@@ -192,6 +248,7 @@ void ViewManager::SetWindowSize(int width,int height) {
 	w_height = height;
 }
 
+/*
 void ViewManager::SetRotation(float theta, float phi)
 {
     rotationMatrix = mat4(1.0);
@@ -208,6 +265,7 @@ void ViewManager::SetRotation(float x, float y, float z)
     rotationMatrix = mat4(1.0);
     rotationMatrix = rotate(rotationMatrix, (float)angle, cross(o, v));
 }
+*/
 
 void ViewManager::Reset()
 {
@@ -229,4 +287,22 @@ void ViewManager::Translate(vec3 vec) {
 	vec3 diffFront = front.xyz * diff.z;
 
 	translationMatrix = translate(translationMatrix, (-diffUp + diffRight + diffFront) * zoom * 3.0f);
+}
+
+glm::vec3 ViewManager::faceDir() const
+{
+	glm::vec3 face = glm::mat3( rotationMatrix )*mFace;
+	return normalize( face );
+}
+
+glm::vec3 ViewManager::upDir() const
+{
+	glm::vec3 up = glm::mat3(rotationMatrix)*mUp;
+	return normalize(up);
+}
+
+glm::vec3 ViewManager::rightDir() const
+{
+	glm::vec3 right = glm::mat3(rotationMatrix)*mRight;
+	return normalize(right);
 }
