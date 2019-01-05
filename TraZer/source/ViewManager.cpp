@@ -6,23 +6,31 @@
 
 using namespace glm;
 
+const float degreeToRadian = 3.1415926f / 180.0f;
+
 ViewManager::ViewManager()
 {
 	mFace.x = 0.0f, mFace.y = 0.0f, mFace.z = -1.0f;
 	mUp.x = 0.0f, mUp.y = 1.0f, mUp.z = 0.0f;
 	mRight.x = 1.0f, mRight.y = 0.0f, mRight.z = 0.0f;
 
+	//
+	mXAxisAngle = mYAxisAngle = mZAxisAngle = 0.0f;
+	//
+
 	SetCamera(vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, 0.0f));
 	zoom = 1.0f;
 }
 
 mat4 ViewManager::GetModelMatrix() {
-	return translationMatrix * rotationMatrix;
+	return mat4();//translationMatrix * rotationMatrix;
 }
 
 mat4 ViewManager::GetViewMatrix()
 {
-    return viewMatrix;
+	viewMatrix = inverse(mTransform );
+	mat4 m = viewMatrix ;//*translationMatrix * rotationMatrix;
+    return m;
 }
 
 mat4 ViewManager::GetProjectionMatrix(float aspect)
@@ -128,7 +136,7 @@ void ViewManager::mousePressEvent(int button, int x, int y)
         lmbDownCoord = vec2(x,y);
         mat4 invrtRot = inverse(rotationMatrix);
         rotateYAxis = (invrtRot * vec4(0, 1, 0, 0)).xyz;
-        rotateXAxis = (invrtRot * /*vec4(1, 0, 0, 0)*/vec4(mRight, 0.0f)).xyz;
+        rotateXAxis = (invrtRot * /*vec4(1, 0, 0, 0)*/vec4(rightDir(), 0.0f)).xyz;
 		
     } 
 	else if(button == GLUT_MIDDLE_BUTTON)
@@ -141,7 +149,7 @@ void ViewManager::mousePressEvent(int button, int x, int y)
 		rmbDown = true;
 		rmbDownCoord = vec2(x, y);
 		mat4 invrtRot = inverse(rotationMatrix);
-		rotateZAxis = (invrtRot * /*vec4(1, 0, 0, 0)*/vec4(mFace, 0.0f)).xyz;
+		rotateZAxis = (invrtRot * /*vec4(1, 0, 0, 0)*/vec4(faceDir(), 0.0f)).xyz;
 	}
 }
 
@@ -166,21 +174,33 @@ void ViewManager::mouseMoveEvent(int x,int y)
 	{
         vec2 coord = vec2(x, y);
 		vec2 diff = coord - lmbDownCoord;
-        float factor = 0.002f;
+        float factor = 0.06f;
+		glm::mat4 rotM;
 		if ( fabs( diff.x ) > fabs( diff.y ) )
 		{
-			//glm::vec3 up = mUp;//upDir();
-			rotationMatrix = rotate(rotationMatrix,diff.x * factor, rotateYAxis);
-			//mRight = mRight*glm::mat3(rotationMatrix), mRight = normalize(mRight );
-			//mFace = mFace*glm::mat3(rotationMatrix), mFace = normalize(mFace);
+			rotM = rotateMatrixAlongVector(diff.x*factor, upDir());
 		}
 		else
 		{
-			//glm::vec3 right = mRight;//rightDir();
-			rotationMatrix = rotate(rotationMatrix,diff.y * factor, rotateXAxis);
-			//mUp *= rotationMatrix, mUp = normalize(mUp);
-			//mFace *= rotationMatrix, mFace = normalize(mFace);
+			rotM = rotateMatrixAlongVector(diff.y*factor, rightDir());
 		}
+		float angleX = atan2(rotM[1][2], rotM[2][2]) / degreeToRadian;
+		float angleY = atan2(-rotM[0][2], sqrt(rotM[1][2] * rotM[1][2] + rotM[2][2] * rotM[2][2])) / degreeToRadian;
+		float angleZ = atan2(rotM[0][1], rotM[0][0]) / degreeToRadian;
+		roatateX( angleX );
+		roatateY( angleY );
+		roatateZ( angleZ );
+		updateTransformMatrix();
+			//glm::vec3 up = mUp;//upDir();
+			//rotationMatrix = rotate( rotationMatrix ,diff.x * factor, /* rotateYAxis*/ upDir() );
+			//vec3 dir = normalize(viewVector*mat3(rotationMatrix) );
+			//float len = ( eyeLookPosition - eyePosition ).length();
+			//viewMatrix = lookAt( eyePosition, eyePosition - dir*len, upDir() );
+
+			//mRight = mRight*glm::mat3(rotationMatrix), mRight = normalize(mRight );
+			//mFace = mFace*glm::mat3(rotationMatrix), mFace = normalize(mFace);
+		
+		
         lmbDownCoord = coord;
     }
 	else if(midDown)
@@ -188,13 +208,21 @@ void ViewManager::mouseMoveEvent(int x,int y)
 		vec2 coord = vec2(x,y);
 		vec2 diff = coord - midDownCoord;
 
-		vec4 up( upDir(), 0.0f ); //vec4(0, 1, 0, 0);
-		vec4 right(rotateXAxis, 0.0f ); //vec4(1, 0, 0, 0);
+		mPosition += upDir() * diff.y * 10.0f / (float)w_height;
+		mPosition -= rightDir() * diff.x * 10.0f / (float)w_height;
+		updateTransformMatrix();
 
-		vec3 diffUp = up.xyz * diff.y / (float)w_height;
-		vec3 diffRight = right.xyz * diff.x / (float)w_width;
+		//vec4 up( upDir(), 0.0f ); //vec4(0, 1, 0, 0);
+		//vec4 right( rightDir(), 0.0f ); //vec4(1, 0, 0, 0);
 
-        translationMatrix = translate(translationMatrix, (-diffUp + diffRight) * zoom * 3.0f);
+		//vec3 diffUp = up.xyz * diff.y / (float)w_height;
+		//vec3 diffRight = right.xyz * diff.x / (float)w_width;
+
+		//eyeLookPosition += ( diffUp - diffRight )*3.0f;
+		//eyePosition += (diffUp - diffRight)*3.0f;
+
+		//viewMatrix = lookAt(eyePosition, eyeLookPosition, vec3( 0.0f, 1.0f, 0.0f ) );
+        //translationMatrix = translate(translationMatrix, (-diffUp + diffRight) * zoom * 3.0f);
         midDownCoord = coord;
     }
 	else if( rmbDown )
@@ -211,7 +239,13 @@ void ViewManager::mouseMoveEvent(int x,int y)
 		{
 			d *= diff.y;
 		}
-		translationMatrix = translate(translationMatrix, rotateZAxis * d * 3.0f);
+		mPosition += faceDir()*d*3.0f;
+		updateTransformMatrix();
+		//translationMatrix = translate(translationMatrix, rotateZAxis * d * 3.0f);
+		//eyeLookPosition += faceDir()*d*3.0f;
+		//eyePosition += faceDir()*d*3.0f;
+
+		//viewMatrix = lookAt(eyePosition, eyeLookPosition, vec3(0.0f, 1.0f, 0.0f));
 	}
 }
 
@@ -232,14 +266,50 @@ void ViewManager::SetCamera(glm::vec3 cameraPos, glm::vec3 focusPos) {
 	eyeLookPosition = focusPos;
 
 	//
-	mFace = normalize( focusPos - cameraPos );
-	mRight = normalize( cross(mFace, mUp) );
-	mUp = normalize(cross(mRight, mFace));
+	//mFace = normalize( focusPos - cameraPos );
+	//mRight = normalize( cross(mFace, mUp) );
+	//mUp = normalize(cross(mRight, mFace));
 	//
+	viewVector = eyePosition - eyeLookPosition;
+	viewVector = normalize(viewVector);
 
 	vec3 up = vec3(0, 1, 0);
-	viewMatrix = lookAt(eyePosition, eyeLookPosition, up);
-	viewVector = eyePosition - eyeLookPosition;
+	viewMatrix = lookAt(eyePosition, eyePosition - viewVector, up);
+
+	/*
+	tmat4x4(
+	T const & x0, T const & y0, T const & z0, T const & w0,
+	T const & x1, T const & y1, T const & z1, T const & w1,
+	T const & x2, T const & y2, T const & z2, T const & w2,
+	T const & x3, T const & y3, T const & z3, T const & w3);
+	*/
+	setPosition(vec3(50.0f, 70.0f, 50.0f));
+	mXAxisAngle = mYAxisAngle = mZAxisAngle = 0.0f;
+	mat4 rotXMatrixX = roatateX( -45.0f );
+	mat4 r0 = rotateMatrixAlongVector( -45.0f, vec3( 1.0f, 0.0f, 0.0f ) );
+	mat4 rotYXMatrix = roatateY(45.0f);
+	mat4 r1 = rotateMatrixAlongVector(45.0f, vec3(0.0f, 1.0f, 0.0f));
+	updateTransformMatrix();
+
+	float angleX = atan2( mTransform[1][2], mTransform[2][2] )/degreeToRadian;
+	float angleY = atan2( -mTransform[0][2], sqrt(mTransform[1][2]* mTransform[1][2] + mTransform[2][2]* mTransform[2][2]) ) / degreeToRadian;
+	float angleZ = atan2( mTransform[0][1], mTransform[0][0] ) / degreeToRadian;
+	/*
+	const float ff = 3.1415926f/180.0f;
+	mat4 viewMatrixTest(	1.0f, 0.0f, 0.0f, 0.0f,
+							0.0f, cos(-45.0f*ff), sin(-45.0f*ff), 0.0f,
+							0.0f, -sin(-45.0f*ff), cos(-45.0f*ff), 0.0f,
+							0.0f, 50.0f, 50.0f, 1.0f );
+	*/
+	
+	//viewMatrix = inverse(mTransform);
+
+	// test------------------------------------------------------------
+	//vec4 test = vec4( 0, 1, 0, 0 );
+	//test = test*viewMatrix;
+	// test------------------------------------------------------------
+
+	//viewVector = eyePosition - eyeLookPosition;
 	viewVector = normalize(viewVector);
 }
 
@@ -289,20 +359,107 @@ void ViewManager::Translate(vec3 vec) {
 	translationMatrix = translate(translationMatrix, (-diffUp + diffRight + diffFront) * zoom * 3.0f);
 }
 
+//===================================================================================
 glm::vec3 ViewManager::faceDir() const
 {
-	glm::vec3 face = glm::mat3( rotationMatrix )*mFace;
+	glm::vec3 face = glm::mat3(mZRotationMatrix*mYRotationMatrix*mXRotationMatrix)*mFace;
 	return normalize( face );
 }
 
+//===================================================================================
 glm::vec3 ViewManager::upDir() const
 {
-	glm::vec3 up = glm::mat3(rotationMatrix)*mUp;
+	glm::vec3 up = glm::mat3(mZRotationMatrix*mYRotationMatrix*mXRotationMatrix)*mUp;
 	return normalize(up);
 }
 
+//===================================================================================
 glm::vec3 ViewManager::rightDir() const
 {
-	glm::vec3 right = glm::mat3(rotationMatrix)*mRight;
+	glm::vec3 right = glm::mat3(mZRotationMatrix*mYRotationMatrix*mXRotationMatrix)*mRight;
 	return normalize(right);
+}
+
+//===================================================================================
+glm::mat4 ViewManager::rotateMatrixAlongVector(float angle, const glm::vec3 &v)
+{
+	float a = angle*degreeToRadian;
+	glm::vec3 u = normalize( v );
+
+	//
+	glm::mat4 m(	cos(a) + u.x*u.x*(1.0f - cos(a) )   , u.y*u.x*(1.0f - cos(a)) + u.z*sin(a), u.z*u.x*(1.0f - cos(a)) - u.y*sin(a), 0.0f,
+					u.x*u.y*(1.0f - cos(a)) - u.z*sin(a), cos(a) + u.y*u.y*(1.0f - cos(a))	  , u.z*u.y*(1.0f - cos(a)) + u.x*sin(a), 0.0f,
+					u.x*u.z*(1.0f - cos(a)) + u.y*sin(a), u.y*u.z*(1.0f - cos(a)) - u.x*sin(a), cos(a) + u.z*u.z*(1.0f - cos(a))    , 0.0f,
+					0.0f, 0.0f, 0.0f, 1.0f );
+	return m;
+}
+
+//===================================================================================
+glm::mat4  ViewManager::roatateX(float deltaAngle)
+{
+	mXAxisAngle += deltaAngle;
+	mXRotationMatrix = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, cos(mXAxisAngle*degreeToRadian), sin(mXAxisAngle*degreeToRadian), 0.0f,
+		0.0f, -sin(mXAxisAngle*degreeToRadian), cos(mXAxisAngle*degreeToRadian), 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+
+	return mXRotationMatrix;
+}
+
+//===================================================================================
+glm::mat4  ViewManager::roatateY(float deltaAngle)
+{
+	mYAxisAngle += deltaAngle;
+	mYRotationMatrix = glm::mat4(cos(mYAxisAngle*degreeToRadian), 0.0f, -sin(mYAxisAngle*degreeToRadian), 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		sin(mYAxisAngle*degreeToRadian), 0.0f, cos(mYAxisAngle*degreeToRadian), 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+
+	return mYRotationMatrix;
+}
+
+//===================================================================================
+glm::mat4  ViewManager::roatateZ(float deltaAngle)
+{
+	mZAxisAngle += deltaAngle;
+	mZRotationMatrix = glm::mat4(cos(mZAxisAngle*degreeToRadian), sin(mZAxisAngle*degreeToRadian), 0.0f, 0.0f,
+		-sin(mZAxisAngle*degreeToRadian), cos(mZAxisAngle*degreeToRadian), 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+
+	return mZRotationMatrix;
+}
+
+//===================================================================================
+glm::mat4  ViewManager::updateTransformMatrix()
+{
+	/*
+	viewMatrix = mat4(	1.0f, 0.0f, 0.0f, 0.0f,
+						0.0f, 1.0f, 0.0f, 0.0f,
+						0.0f, 0.0f, 1.0f, 0.0f,
+					mPosition.x, mPosition.y, mPosition.z, 1.0f);
+	*/
+	
+	mTransform = mZRotationMatrix*mYRotationMatrix*mXRotationMatrix ;
+	mTransform[3][0] = mPosition.x;
+	mTransform[3][1] = mPosition.y;
+	mTransform[3][2] = mPosition.z;
+	return mTransform;
+}
+
+//===================================================================================
+void ViewManager::setPosition( const glm::vec3 &position)
+{
+	mPosition = position;
+}
+
+//===================================================================================
+glm::vec3  ViewManager::move(float deltaX, float deltaY, float deltaZ)
+{
+	glm::vec3 up = upDir( );
+	glm::vec3 face = faceDir( );
+	glm::vec3 right = rightDir( );
+	mPosition += right*deltaX + up*deltaY + face*deltaZ ;
+
+	return mPosition;
 }
