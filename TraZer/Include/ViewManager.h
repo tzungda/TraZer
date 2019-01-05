@@ -79,6 +79,15 @@ public:
 	glm::vec3	upDir() const;
 	glm::vec3	rightDir() const;
 
+	//
+	glm::mat4	rotateMatrixAlongVector( float angle, const glm::vec3 &v );
+	glm::mat4	roatateX( float deltaAngle );
+	glm::mat4	roatateY( float deltaAngle );
+	glm::mat4	roatateZ( float deltaAngle );
+	glm::mat4	updateTransformMatrix( );
+	void		setPosition( const glm::vec3& position );
+	glm::vec3	move( float deltaX, float deltaY, float deltaZ );
+
 private:
     bool ortho = false;
     float zoom = 1.0f;
@@ -93,6 +102,17 @@ private:
 	glm::vec3 rotateZAxis;
 	glm::vec3 eyePosition;
 	glm::vec3 eyeLookPosition;
+
+	//----------------------------------
+	glm::mat4 mTransform;
+	glm::mat4 mXRotationMatrix;
+	glm::mat4 mYRotationMatrix;
+	glm::mat4 mZRotationMatrix;
+	float mXAxisAngle;// degree
+	float mYAxisAngle;// degree
+	float mZAxisAngle;// degree
+	glm::vec3 mPosition;
+	//----------------------------------
 
     bool lmbDown = false;
     bool midDown = false;
