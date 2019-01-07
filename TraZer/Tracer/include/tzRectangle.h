@@ -28,7 +28,7 @@ class tzRectangle: public tzIGeometricObject {
 		get_bounding_box(void);				
 	
 		virtual bool 												 
-		hit(const tzRay& ray, double& t, tzShadeRec& s) const;	
+		hit(const tzRay& ray, float& t, tzShadeRec& s) const;
 				
 		
 		// the following functions are used when the rectangle is a light source
@@ -50,15 +50,15 @@ class tzRectangle: public tzIGeometricObject {
 		tzPoint3D 		p0;   			// corner vertex 
 		tzVector3D		a;				// side
 		tzVector3D		b;				// side
-		double			a_len_squared;	// square of the length of side a
-		double			b_len_squared;	// square of the length of side b
+		float			a_len_squared;	// square of the length of side a
+		float			b_len_squared;	// square of the length of side b
 		tzNormal		normal;
 		
 		float			area;			// for rectangular lights
 		float			inv_area;		// for rectangular lights
 		tzISampler*		sampler_ptr;	// for rectangular lights 	
 		
-		static const double kEpsilon;   											
+		static const float kEpsilon;
 };
 
 #endif

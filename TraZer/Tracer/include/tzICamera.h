@@ -10,7 +10,8 @@ class tzWorld;  // can't #include "World" here because World contains a camera p
 
 //--------------------------------------------------------------------- class Camera
 
-class tzICamera {
+class tzICamera 
+{
 	public:
 	
 		tzICamera();   							// default constructor
@@ -23,8 +24,7 @@ class tzICamera {
 		virtual
 		~tzICamera();   							
 
-		virtual void 																		
-		renderScene(const tzWorld& w) = 0;
+		virtual void renderScene(const tzWorld& w) const = 0;
 		
 		void
 		set_eye(const tzPoint3D& p);

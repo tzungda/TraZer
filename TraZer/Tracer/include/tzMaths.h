@@ -10,11 +10,11 @@
 
 // prototypes
 
-double
-_min(double x0, double x1);
+float
+_min(float x0, float x1);
 
-double
-_max(double x0, double x1);
+float
+_max(float x0, float x1);
 
 
 int							
@@ -32,17 +32,17 @@ rand_float(int l, float h);
 int							// for multi-jittered sampling
 rand_int(int l, int h);   
 
-double
-clamp(const double x, const double min, const double max);
+float
+clamp(const float x, const float min, const float max);
 
 int
-SolveQuadric(double c[3], double s[2]);
+SolveQuadric(float c[3], float s[2]);
 
 int 
-SolveCubic(double c[4], double s[3]);
+SolveCubic(float c[4], float s[3]);
 
 int 
-SolveQuartic(double c[5], double s[4]);
+SolveQuartic(float c[5], float s[4]);
 
 
 
@@ -50,16 +50,16 @@ SolveQuartic(double c[5], double s[4]);
 
 // ----------------------------------------------------------------- min
 
-inline double
-_min(double x0, double x1) {
+inline float
+_min(float x0, float x1) {
 	return ((x0 < x1) ? x0 : x1);
 }
 
 
 // ----------------------------------------------------------------- max
 
-inline double
-_max(double x0, double x1) {
+inline float
+_max(float x0, float x1) {
 	return ((x0 > x1) ? x0 : x1);
 }
 
@@ -110,8 +110,8 @@ rand_int(int l, int h) {
 
 // ---------------------------------------------------- clamp
 
-inline double
-clamp(const double x, const double min, const double max) {
+inline float
+clamp(const float x, const float min, const float max) {
 	return (x < min ? min : (x > max ? max : x));
 }
 

@@ -41,7 +41,7 @@ class tzEmissive: public tzIMaterial {
 				
 		virtual tzRGBColor shade(tzShadeRec& sr);
 
-		virtual tzRGBColor area_light_shade(tzShadeRec& sr);
+		virtual tzRGBColor area_light_shade( tzShadeRec& sr) const;
 
 		virtual tzRGBColor get_Le(tzShadeRec &sr);
 		

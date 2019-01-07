@@ -31,7 +31,7 @@ class tzMeshTriangle: public tzIGeometricObject {
 		operator= (const tzMeshTriangle& rhs);
 		
 		virtual bool 												 
-		hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const = 0;
+		hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const = 0;
 		
 		virtual	bool shadowHit(const tzRay& ray, float& tmin) const;
 		

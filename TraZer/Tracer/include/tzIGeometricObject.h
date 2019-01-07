@@ -29,7 +29,7 @@ class tzIGeometricObject {
 		virtual 												
 		~tzIGeometricObject(void);	
 			
-		virtual bool hit(const tzRay& ray, double& t, tzShadeRec& s) const = 0;
+		virtual bool hit(const tzRay& ray, float& t, tzShadeRec& s) const = 0;
 
 		//
 		virtual bool shadowHit(const tzRay &ray, float &tmin) const;

@@ -15,7 +15,7 @@ class tzPathTrace: public tzITracer {
 		trace_ray(const tzRay ray, const int depth) const;
 		
 		virtual tzRGBColor	
-		trace_ray(const tzRay ray, double& tmin, const int depth) const;
+		trace_ray(const tzRay ray, float& tmin, const int depth) const;
 };
 
 #endif

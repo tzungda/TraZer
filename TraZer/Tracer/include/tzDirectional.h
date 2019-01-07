@@ -42,11 +42,9 @@ class tzDirectional: public tzILight {
 		void
 		set_direction(float dx, float dy, float dz);
 		
-		virtual tzVector3D
-		get_direction(tzShadeRec& sr);
+		virtual tzVector3D getDirection( tzShadeRec& sr) ;
 				
-		virtual tzRGBColor
-		L(tzShadeRec& sr);	
+		virtual tzRGBColor L( tzShadeRec& sr) ;	
 
 		bool inShadow(const tzRay &ray, const tzShadeRec &sr) const;
 		

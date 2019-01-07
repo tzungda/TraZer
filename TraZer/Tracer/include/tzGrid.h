@@ -43,7 +43,7 @@ class tzGrid: public tzCompound {
 		tessellate_smooth_sphere(const int horizontal_steps, const int vertical_steps);
 
 		virtual bool 
-		hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const;		 					 
+		hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;
 
 		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
 

@@ -31,11 +31,9 @@ class tzAmbientOccluder: public tzILight {
 		void
 		set_color(const float r, const float g, const float b); 
 		
-		virtual tzVector3D
-		get_direction(tzShadeRec& s); 
+		virtual tzVector3D getDirection( tzShadeRec& s);
 		
-		virtual tzRGBColor
-		L(tzShadeRec& s);
+		virtual tzRGBColor L( tzShadeRec& s);
 
 		//
 		virtual bool	inShadow(const tzRay &ray, const tzShadeRec &sr) const;

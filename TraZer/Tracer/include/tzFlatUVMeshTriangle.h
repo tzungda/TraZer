@@ -10,8 +10,7 @@ class tzFlatUVMeshTriangle: public tzFlatMeshTriangle {
 		
 		tzFlatUVMeshTriangle(tzMesh* _meshPtr, const int i0, const int i1, const int i2);
 
-		virtual tzFlatUVMeshTriangle*
-		clone(void) const;
+		virtual tzFlatUVMeshTriangle* clone(void) const;
 	
 		tzFlatUVMeshTriangle(const tzFlatUVMeshTriangle& fmt);
 
@@ -21,8 +20,7 @@ class tzFlatUVMeshTriangle: public tzFlatMeshTriangle {
 		tzFlatUVMeshTriangle&
 		operator= (const tzFlatUVMeshTriangle& rhs);
 				
-		virtual	bool
-		hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const; 																	
+		virtual	bool hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;
 
 };
 

@@ -38,7 +38,7 @@ class tzCompound: public tzIGeometricObject {
 		get_num_objects(void);						
 
 		virtual bool 															 
-		hit(const tzRay& ray, double& tmin, tzShadeRec& s) const;
+		hit(const tzRay& ray, float& tmin, tzShadeRec& s) const;
 
 		virtual	bool shadowHit(const tzRay& ray, float& tmin) const;
 			

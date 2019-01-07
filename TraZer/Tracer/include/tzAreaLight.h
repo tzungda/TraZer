@@ -27,9 +27,9 @@ class tzAreaLight: public tzILight {
 		void 									
 		set_object(tzIGeometricObject* obj_ptr);
 		
-		virtual tzVector3D get_direction(tzShadeRec& s);
+		virtual tzVector3D getDirection( tzShadeRec& s) ;
 		
-		virtual tzRGBColor L(tzShadeRec& sr);
+		virtual tzRGBColor L( tzShadeRec& sr) ;
 		
 		virtual bool inShadow(const tzRay& ray, const tzShadeRec& sr) const;
 		

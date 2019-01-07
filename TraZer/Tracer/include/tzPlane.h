@@ -26,7 +26,7 @@ class tzPlane: public tzIGeometricObject {
 		//
 		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
 		//
-		virtual bool hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const;
+		virtual bool hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;
 
 		
 		
@@ -35,7 +35,7 @@ class tzPlane: public tzIGeometricObject {
 		tzPoint3D 	a;   				// point through which plane passes 
 		tzNormal	n;					// normal to the plane
 				
-		static const double kEpsilon;   // for shadows and secondary rays
+		static const float kEpsilon;   // for shadows and secondary rays
 };
 
 #endif

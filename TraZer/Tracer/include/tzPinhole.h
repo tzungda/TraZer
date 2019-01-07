@@ -28,11 +28,9 @@ class tzPinhole: public tzICamera {
 		void
 		set_zoom(const float zoom_factor);
 		
-		tzVector3D
-		get_direction(const tzPoint2D& p) const;
+		tzVector3D getDirection(const tzPoint2D& p) const;
 		
-		virtual void 												
-			renderScene(const tzWorld& w);
+		virtual void renderScene(const tzWorld& w) const;
 		
 	private:
 			

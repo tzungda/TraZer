@@ -12,7 +12,7 @@ class tzSphere: public tzIGeometricObject {
 		
 		tzSphere(void);   									// Default constructor
 				
-		tzSphere(tzPoint3D center, double r);					// Constructor 
+		tzSphere(tzPoint3D center, float r);					// Constructor 
 					
 		tzSphere(const tzSphere& tzSphere); 						// Copy constructor
 		
@@ -29,22 +29,22 @@ class tzSphere: public tzIGeometricObject {
 		set_center(const tzPoint3D& c);
 		
 		void
-		set_center(const double x, const double y, const double z);
+		set_center(const float x, const float y, const float z);
 		
 		void
-		set_radius(const double r);
+		set_radius(const float r);
 
 		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
 						
 		virtual bool 												 
-		hit(const tzRay& ray, double& t, tzShadeRec& s) const;	
+		hit(const tzRay& ray, float& t, tzShadeRec& s) const;
 		
 	private:
 	
 		tzPoint3D 	center;   			// center coordinates as a point  
-		double 		radius;				// the radius 
+		float 		radius;				// the radius 
 		
-		static const double kEpsilon;   // for shadows and secondary rays
+		static const float kEpsilon;   // for shadows and secondary rays
 };
 
 
@@ -55,14 +55,14 @@ tzSphere::set_center(const tzPoint3D& c) {
 }
 		
 inline void
-tzSphere::set_center(const double x, const double y, const double z) {
+tzSphere::set_center(const float x, const float y, const float z) {
 	center.x = x;
 	center.y = y;
 	center.z = z;
 }
 		
 inline void
-tzSphere::set_radius(const double r) {
+tzSphere::set_radius(const float r) {
 	radius = r;
 }
 

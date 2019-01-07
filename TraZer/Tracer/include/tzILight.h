@@ -24,9 +24,9 @@ class tzILight {
 		
 		virtual ~tzILight(void);
 						
-		virtual tzVector3D get_direction(tzShadeRec& sr) = 0;				
+		virtual tzVector3D getDirection( tzShadeRec& sr) = 0;
 																
-		virtual tzRGBColor L(tzShadeRec& sr);								
+		virtual tzRGBColor L( tzShadeRec& sr) ;								
 
 		virtual float G(const tzShadeRec& sr) const;
 

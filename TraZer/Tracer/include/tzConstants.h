@@ -7,18 +7,18 @@
 #include "tzRGBColor.h"
 
 
-const double 	PI 			= 3.1415926535897932384;
-const double 	TWO_PI 		= 6.2831853071795864769;
-const double 	PI_ON_180 	= 0.0174532925199432957;
-const double 	invPI 		= 0.3183098861837906715;
-const double 	invTWO_PI 	= 0.1591549430918953358;
+const float 	PI 			= 3.1415926535897932384f;
+const float 	TWO_PI 		= 6.2831853071795864769f;
+const float 	PI_ON_180 	= 0.0174532925199432957f;
+const float 	invPI 		= 0.3183098861837906715f;
+const float 	invTWO_PI 	= 0.1591549430918953358f;
 
-const double 	kEpsilon 	= 0.0001; 
-const double	kHugeValue	= 1.0E10;
+const float 	kEpsilon 	= 0.0001f;
+const float	kHugeValue	= 1.0E10f;
 
-const tzRGBColor	black(0.0);
-const tzRGBColor	white(1.0);
-const tzRGBColor	red(1.0, 0.0, 0.0);
+const tzRGBColor	black(0.0f);
+const tzRGBColor	white(1.0f);
+const tzRGBColor	red(1.0f, 0.0f, 0.0f);
 
 const float 	invRAND_MAX = 1.0f / (float)RAND_MAX;
 

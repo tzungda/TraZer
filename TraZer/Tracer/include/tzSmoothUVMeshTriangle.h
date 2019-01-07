@@ -22,7 +22,7 @@ class tzSmoothUVMeshTriangle: public tzSmoothMeshTriangle {
 		operator= (const tzSmoothUVMeshTriangle& rhs);
 				
 		virtual	bool 
-		hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const; 																	
+		hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;
 
 };
 
