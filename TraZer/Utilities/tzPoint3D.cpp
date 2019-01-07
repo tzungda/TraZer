@@ -10,12 +10,12 @@ tzPoint3D::tzPoint3D()
 
 
 //===================================================================================
-tzPoint3D::tzPoint3D(const double a)
+tzPoint3D::tzPoint3D(const float a)
 	:x(a), y(a), z(a)
 {}
 
 //===================================================================================
-tzPoint3D::tzPoint3D(const double a, const double b, const double c)
+tzPoint3D::tzPoint3D(const float a, const float b, const float c)
 	:x(a), y(b), z(c)
 {}
 
@@ -52,9 +52,9 @@ tzPoint3D tzPoint3D::operator* (const tzMatrix& mat) const
 }
 
 //===================================================================================
-double tzPoint3D::distance(const tzPoint3D& p) const 
+float tzPoint3D::distance(const tzPoint3D& p) const 
 {
-	return (sqrt(		(x - p.x) * (x - p.x) 
+	return (sqrtf(		(x - p.x) * (x - p.x) 
 					+ 	(y - p.y) * (y - p.y)
 					+	(z - p.z) * (z - p.z) ));
 }

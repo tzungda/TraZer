@@ -7,11 +7,11 @@
 class tzPoint3D {
 	public:
 	
-		double x, y, z;
+		float x, y, z;
 	
 		tzPoint3D();													// default constructor
-		tzPoint3D(const double a);									// constructor
-		tzPoint3D(const double a, const double b, const double c);	// constructor
+		tzPoint3D(const float a);									// constructor
+		tzPoint3D(const float a, const float b, const float c);	// constructor
 		tzPoint3D(const tzPoint3D& p);									// copy constructor
 		~tzPoint3D();													// destructor
 		
@@ -25,13 +25,13 @@ class tzPoint3D {
 		
 		tzPoint3D  operator- (const tzVector3D& v) const;
 				
-		tzPoint3D  operator* (const double a) const;
+		tzPoint3D  operator* (const float a) const;
 
 		tzPoint3D operator* (const tzMatrix& mat) const;
 		
-		double d_squared(const tzPoint3D& p) const;
+		float d_squared(const tzPoint3D& p) const;
 		
-		double distance(const tzPoint3D& p) const;
+		float distance(const tzPoint3D& p) const;
 
 };
 
@@ -66,13 +66,13 @@ inline tzPoint3D tzPoint3D::operator- (const tzVector3D& v) const
 
 
 //===================================================================================
-inline tzPoint3D tzPoint3D::operator* (const double a) const 
+inline tzPoint3D tzPoint3D::operator* (const float a) const 
 {
 	return (tzPoint3D(x * a,y * a,z * a));
 }
 
 //===================================================================================
-inline double tzPoint3D::d_squared(const tzPoint3D& p) const 
+inline float tzPoint3D::d_squared(const tzPoint3D& p) const 
 {
 	return (	(x - p.x) * (x - p.x) 
 			+ 	(y - p.y) * (y - p.y)
@@ -81,9 +81,9 @@ inline double tzPoint3D::d_squared(const tzPoint3D& p) const
 
 
 //===================================================================================
-tzPoint3D operator* (double a, const tzPoint3D& p);
+tzPoint3D operator* (float a, const tzPoint3D& p);
 
-inline tzPoint3D operator* (double a, const tzPoint3D& p) 
+inline tzPoint3D operator* (float a, const tzPoint3D& p) 
 {
 	return (tzPoint3D(a * p.x, a * p.y, a * p.z));
 }

@@ -7,13 +7,13 @@
 
 class tzBBox {
 	public:
-		double x0, x1, y0, y1, z0, z1;
+		float x0, x1, y0, y1, z0, z1;
 		
 		tzBBox(void);
 						
-		tzBBox(	const double x0, const double x1,
-				const double y0, const double y1, 
-				const double z0, const double z1);
+		tzBBox(	const float x0, const float x1,
+				const float y0, const float y1, 
+				const float z0, const float z1);
 
 		tzBBox(const tzPoint3D p0, const tzPoint3D p1);
 

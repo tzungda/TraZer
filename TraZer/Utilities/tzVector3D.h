@@ -12,13 +12,13 @@ class tzPoint3D;
 class tzVector3D {
 	public:
 	
-		double	x, y, z;
+		float	x, y, z;
 
 	public:
 	
 		tzVector3D(void);											// default constructor
-		tzVector3D(double a);										// constructor
-		tzVector3D(double _x, double _y, double _z);				// constructor
+		tzVector3D(float a);										// constructor
+		tzVector3D(float _x, float _y, float _z);				// constructor
 		tzVector3D(const tzVector3D& v);							// copy constructor
 		tzVector3D(const tzNormal& n);								// constructs a vector from a Normal
 		tzVector3D(const tzPoint3D& p);								// constructs a vector from a point
@@ -37,28 +37,29 @@ class tzVector3D {
 		tzVector3D												// unary minus
 		operator- (void) const;									
 				
-		double													// length
+		float													// length
 		length(void);
 		
-		double													// square of the length
+		float													// square of the length
 		len_squared(void);
 		
-		tzVector3D												// multiplication by a double on the right
-		operator* (const double a) const;
+		tzVector3D operator* (const float a) const;
+
+		tzVector3D operator* (const tzMatrix &m) const;
 				
-		tzVector3D												// division by a double
-		operator/ (const double a) const;
+		tzVector3D												// division by a float
+		operator/ (const float a) const;
 		
 		tzVector3D												// addition
 		operator+ (const tzVector3D& v) const;
 		
-		tzVector3D& 												// compound addition
-		operator+= (const tzVector3D& v);
+		tzVector3D& operator+= (const tzVector3D& v);
+		tzVector3D& operator-= (const tzVector3D& v);
 		
 		tzVector3D												// subtraction
 		operator- (const tzVector3D& v) const;
 		
-		double 													// dot product							
+		float 													// dot product							
 		operator* (const tzVector3D& b) const;
 		
 		tzVector3D 												// cross product				
@@ -88,25 +89,25 @@ tzVector3D::operator- (void) const {
 // ---------------------------------------------------------------------  len_squared
 // the square of the length
 
-inline double													
+inline float													
 tzVector3D::len_squared(void) {
 	return (x * x + y * y + z * z);
 }
 
 
 // ----------------------------------------------------------------------- operator*
-// multiplication by a double on the right
+// multiplication by a float on the right
 
 inline tzVector3D
-tzVector3D::operator* (const double a) const {
+tzVector3D::operator* (const float a) const {
 	return (tzVector3D(x * a, y * a, z * a));
 }
 
 // ----------------------------------------------------------------------- operator/
-// division by a double
+// division by a float
 
 inline tzVector3D
-tzVector3D::operator/ (const double a) const {
+tzVector3D::operator/ (const float a) const {
 	return (tzVector3D(x / a, y / a, z / a));
 }
 
@@ -132,7 +133,7 @@ tzVector3D::operator- (const tzVector3D& v) const {
 // ----------------------------------------------------------------------- operator*
 // dot product
 
-inline double 
+inline float 
 tzVector3D::operator* (const tzVector3D& v) const {
 	return (x * v.x + y * v.y + z * v.z);
 } 
@@ -150,25 +151,29 @@ tzVector3D::operator^ (const tzVector3D& v) const {
 // ---------------------------------------------------------------------  operator+=
 // compound addition
 
-inline tzVector3D&
-tzVector3D::operator+= (const tzVector3D& v) {
+inline tzVector3D& tzVector3D::operator+= (const tzVector3D& v)
+{
 	x += v.x; y += v.y; z += v.z;
 	return (*this);
 }
 
-
+inline tzVector3D& tzVector3D::operator-= (const tzVector3D& v)
+{
+	x -= v.x; y -= v.y; z -= v.z;
+	return (*this);
+}
 
 
 // inlined non-member function
 
 // ----------------------------------------------------------------------- operator*
-// multiplication by a double on the left
+// multiplication by a float on the left
 
 tzVector3D 											// prototype
-operator* (const double a, const tzVector3D& v);
+operator* (const float a, const tzVector3D& v);
 
 inline tzVector3D
-operator* (const double a, const tzVector3D& v) {
+operator* (const float a, const tzVector3D& v) {
 	return (tzVector3D(a * v.x, a * v.y, a * v.z));
 }
 
@@ -178,9 +183,10 @@ operator* (const double a, const tzVector3D& v) {
 
 // ----------------------------------------------------------------------- operator* 
 // multiplication by a matrix on the left
-
+/*
 tzVector3D 											// prototype
 operator* (const tzMatrix& mat, const tzVector3D& v);
+*/
 
 
 #endif

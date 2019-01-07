@@ -12,13 +12,13 @@ tzNormal::tzNormal(void)
 
 
 //===================================================================================
-tzNormal::tzNormal(double a)
+tzNormal::tzNormal(float a)
 	 : x(a), y(a), z(a)							
 {}
 
 
 //===================================================================================
-tzNormal::tzNormal(double _x, double _y, double _z)	 
+tzNormal::tzNormal(float _x, float _y, float _z)	 
 	: x(_x), y(_y), z(_z)
 {}
 
@@ -67,7 +67,7 @@ tzNormal& tzNormal::operator= (const tzPoint3D& rhs) {
 
 //===================================================================================
 void tzNormal::normalize(void) {	
-	double length = sqrt(x * x + y * y + z * z);
+	float length = sqrtf(x * x + y * y + z * z);
 	x /= length; y /= length; z /= length;
 }
 

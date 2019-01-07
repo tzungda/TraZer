@@ -9,13 +9,13 @@
 class tzNormal {	
 	public:
 	
-		double	x, y, z;
+		float	x, y, z;
 				
 	public:
 	
 		tzNormal(void);
-		tzNormal(double a);
-		tzNormal(double _x, double _y, double _z);
+		tzNormal(float a);
+		tzNormal(float _x, float _y, float _z);
 		tzNormal(const tzNormal& n);
 		tzNormal(const tzVector3D& v);
 		
@@ -33,9 +33,9 @@ class tzNormal {
 		
 		tzNormal& operator+= (const tzNormal& n);
 		
-		double operator* (const tzVector3D& v) const;
+		float operator* (const tzVector3D& v) const;
 		
-		tzNormal operator* (const double a) const;
+		tzNormal operator* (const float a) const;
 
 		tzNormal operator* ( const tzMatrix& mat);
 				
@@ -67,7 +67,7 @@ tzNormal::operator+= (const tzNormal& n) {
 
 
 //===================================================================================
-inline double
+inline float
 tzNormal::operator* (const tzVector3D& v) const {
 	return (x * v.x + y * v.y + z * v.z);
 }
@@ -75,7 +75,7 @@ tzNormal::operator* (const tzVector3D& v) const {
 
 //===================================================================================
 inline tzNormal
-tzNormal::operator* (const double a) const {
+tzNormal::operator* (const float a) const {
 	return (tzNormal(x * a, y * a, z * a));
 }
 
@@ -83,10 +83,10 @@ tzNormal::operator* (const double a) const {
 
 //===================================================================================
 tzNormal											
-operator* (const double a, const tzNormal& n);
+operator* (const float a, const tzNormal& n);
 
 inline tzNormal
-operator*(const double f, const tzNormal& n) {
+operator*(const float f, const tzNormal& n) {
 	return (tzNormal(f * n.x, f * n.y,f * n.z));
 }
 
@@ -112,10 +112,10 @@ operator- (const tzVector3D& v, const tzNormal& n) {
 
 
 //===================================================================================
-double
+float
 operator* (const tzVector3D& v, const tzNormal& n);
 
-inline double
+inline float
 operator* (const tzVector3D& v, const tzNormal& n) {
 	return (v.x * n.x + v.y * n.y + v.z * n.z);     
 }

@@ -8,12 +8,15 @@ class tzMatrix {
 	
 	public:
 	
-		double	m[4][4];								
+		float	m[4][4];								
 	
 		
 		tzMatrix(void);									
 
 		tzMatrix(const tzMatrix& mat);			
+
+		tzMatrix(	float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13,
+					float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33);
 		
 		~tzMatrix(void);
 			
@@ -25,11 +28,13 @@ class tzMatrix {
 
 		tzPoint3D operator* (const tzPoint3D& p) const; // m*vector
 
-		tzMatrix operator/ (const double d);
+		tzMatrix operator/ (const float d);
+
+		bool	invert( tzMatrix &invertMatrix ) const;
 
 		void	setIdentity(void);	
 
-		void	initializeWithAValue( double v );
+		void	initializeWithAValue( float v );
 };
 
 #endif
