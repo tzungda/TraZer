@@ -344,7 +344,7 @@ void addMeshesToScene( tzCoreScene *scene, const tinyobj::attrib_t &attrib, cons
 		//
 		tzCoreMesh *newMesh = new tzCoreMesh();
 		newMesh->setName( shapes[i].name );
-		newMesh->setNumTriangles( shapes[i].mesh.indices.size()/3 );
+		newMesh->setNumTriangles( (int)shapes[i].mesh.indices.size()/3 );
 
 		// get number of verts
 		int numVerts = (int)std::max((int)attrib.vertices.size()/3, (int)attrib.texcoords.size()/2);
@@ -656,8 +656,9 @@ void My_Init(tzCoreScene *scene)
 	glDepthFunc(GL_LEQUAL);
 
 	//m_camera.SetCamera(vec3(-800.0f, 100.0f, -40.0f), vec3(10.0f, 100.0f, -40.0f));
-	m_camera.SetCamera(vec3(0.0f, 0.0f, -200.0f), vec3(0.0f, 0.0f, 0.0f));
-	m_camera.Zoom(3.0f);
+	//m_camera.SetCamera(vec3(0.0f, 0.0f, -200.0f), vec3(0.0f, 0.0f, 0.0f));
+	m_camera.SetCamera(vec3(100.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f));
+	//m_camera.Zoom(3.0f);
 
 	setupShaders();
 	setupModels( scene );
@@ -666,7 +667,7 @@ void My_Init(tzCoreScene *scene)
 // GLUT callback. Called to draw the scene.
 void My_Display()
 {
-	glClearColor(0.243f, 0.36f, 0.459f, 1.0f); // 124, 184, 234
+	glClearColor(0.3f, 0.3f, 0.3f, 1.0f); // 124, 184, 234
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	/*glUseProgram(0);
@@ -677,12 +678,28 @@ void My_Display()
 	lightView = glm::lookAt(m_lightPos, vec3(0.0f), vec3(0.0, 1.0, 0.0));
 	lightSpaceMatrix = lightProjection * lightView;
 
+	tzMatrix view = m_camera.invertedTransformMatrix();
+
 	glUseProgram(phongShaderProgram);
 	{
 		glUniform3fv(phongShaderPrograms.lightPos, 1, value_ptr(m_lightPos));
 		glUniform3fv(phongShaderPrograms.viewPos, 1, value_ptr(m_camera.GetWorldEyePosition()));
 		glUniformMatrix4fv(phongShaderPrograms.light_matrix, 1, GL_FALSE, value_ptr(lightSpaceMatrix));
-		glUniformMatrix4fv(phongShaderPrograms.view_matrix, 1, GL_FALSE, value_ptr(m_camera.GetViewMatrix() * m_camera.GetModelMatrix()));
+
+		
+		/*
+		float mm[4][4];
+		glm::mat4 vw = m_camera.GetViewMatrix();
+		for( int i = 0; i < 4; i++ )
+		{
+			for ( int j = 0; j < 4; j++ )
+			{
+				mm[i][j] = vw[i][j];
+			}
+		}
+		*/
+
+		glUniformMatrix4fv(phongShaderPrograms.view_matrix, 1, GL_FALSE, (GLfloat*)view.m);//value_ptr(m_camera.GetViewMatrix() * m_camera.GetModelMatrix()));
 		glUniformMatrix4fv(phongShaderPrograms.projection_matrix, 1, GL_FALSE, value_ptr(m_camera.GetProjectionMatrix(aspect)));
 		//mesh->Draw();
 
@@ -698,7 +715,7 @@ void My_Display()
 	glUseProgram(lineShaderProgram);
 	{
 		glm::mat4 mtx; // identical matrix
-		glUniformMatrix4fv(lineShaderPrograms.view_matrix, 1, GL_FALSE, value_ptr(m_camera.GetViewMatrix() * m_camera.GetModelMatrix()));
+		glUniformMatrix4fv(lineShaderPrograms.view_matrix, 1, GL_FALSE, (GLfloat*)view.m);//value_ptr(m_camera.GetViewMatrix() * m_camera.GetModelMatrix()));
 		glUniformMatrix4fv(lineShaderPrograms.projection_matrix, 1, GL_FALSE, value_ptr(m_camera.GetProjectionMatrix(aspect)));
 		glUniformMatrix4fv(lineShaderPrograms.model_matrix, 1, GL_FALSE, value_ptr(mtx));
 
@@ -846,7 +863,7 @@ int main(int argc, char *argv[])
 #endif
 
 	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(640, 480);
+	glutInitWindowSize(/*640, 480*/400, 400);
 	m_mainWindow = glutCreateWindow("TraZer - GL View"); // You cannot use OpenGL functions before this line; The OpenGL context must be created first by glutCreateWindow()!
 #ifdef _MSC_VER
 	glewInit();
