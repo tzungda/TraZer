@@ -37,7 +37,7 @@ tzIMaterial::shade(tzShadeRec& sr) {
 }
 
 //===================================================================================
-tzRGBColor tzIMaterial::area_light_shade(tzShadeRec& sr)
+tzRGBColor tzIMaterial::area_light_shade( tzShadeRec& sr) const
 {
 	return black;
 }

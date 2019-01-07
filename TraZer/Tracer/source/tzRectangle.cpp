@@ -1,7 +1,7 @@
 
 #include "../include/tzRectangle.h"
 
-const double tzRectangle::kEpsilon = 0.001;
+const float tzRectangle::kEpsilon = 0.001f;
 
 // ----------------------------------------------------------------  default constructor
 
@@ -129,7 +129,7 @@ tzRectangle::~tzRectangle(void) {
 
 tzBBox
 tzRectangle::get_bounding_box(void) {
-	double delta = 0.0001; 
+	float delta = 0.0001f;
 
 	return(tzBBox(fmin(p0.x, p0.x + a.x + b.x) - delta, fmax(p0.x, p0.x + a.x + b.x) + delta,
 				fmin(p0.y, p0.y + a.y + b.y) - delta, fmax(p0.y, p0.y + a.y + b.y) + delta, 
@@ -140,9 +140,9 @@ tzRectangle::get_bounding_box(void) {
 //------------------------------------------------------------------ hit 
 
 bool 												 
-tzRectangle::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {
+tzRectangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
 	
-	double t = (p0 - ray.o) * normal / (ray.d * normal); 
+	float t = (p0 - ray.o) * normal / (ray.d * normal);
 	
 	if (t <= kEpsilon)
 		return (false);
@@ -150,12 +150,12 @@ tzRectangle::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {
 	tzPoint3D p = ray.o + t * ray.d;
 	tzVector3D d = p - p0;
 	
-	double ddota = d * a;
+	float ddota = d * a;
 	
 	if (ddota < 0.0 || ddota > a_len_squared)
 		return (false);
 		
-	double ddotb = d * b;
+	float ddotb = d * b;
 	
 	if (ddotb < 0.0 || ddotb > b_len_squared)
 		return (false);

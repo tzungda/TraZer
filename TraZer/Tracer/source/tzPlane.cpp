@@ -1,7 +1,7 @@
 
 #include "../include/tzPlane.h"
 
-const double tzPlane::kEpsilon = 0.001;
+const float tzPlane::kEpsilon = 0.001f;
 
 // ----------------------------------------------------------------------  default constructor
 
@@ -79,7 +79,7 @@ bool tzPlane::shadowHit(const tzRay &ray, float &tmin) const
 // ----------------------------------------------------------------- hit
 
 bool 															 
-tzPlane::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {
+tzPlane::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
 	float t = (float)((a - ray.o) * n / (ray.d * n)); 
 														
 	if (t > kEpsilon) {

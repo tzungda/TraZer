@@ -1,8 +1,7 @@
 
 #include "../include/tzAreaLight.h"
 
-// ---------------------------------------------------------------- default constructor
-	
+//===================================================================================	
 tzAreaLight::tzAreaLight(void)
 	: 	tzILight(),
 		object_ptr(NULL),
@@ -10,10 +9,10 @@ tzAreaLight::tzAreaLight(void)
 {}	
 
 
-// ---------------------------------------------------------------- copy constructor 
-	
+//===================================================================================	
 tzAreaLight::tzAreaLight(const tzAreaLight& al)
-	: 	tzILight(al) {
+	: 	tzILight(al) 
+{
 	if(al.object_ptr)
 		object_ptr = al.object_ptr->clone(); 
 	else  object_ptr = NULL;
@@ -24,16 +23,13 @@ tzAreaLight::tzAreaLight(const tzAreaLight& al)
 }
 
 
-// ---------------------------------------------------------------- clone
-
-tzILight*
-tzAreaLight::clone(void) const {
+//===================================================================================
+tzILight* tzAreaLight::clone(void) const {
 	return (new tzAreaLight(*this));
 }					
 
 
-// ---------------------------------------------------------------- destructor
- 								
+//===================================================================================								
 tzAreaLight::~tzAreaLight(void) 
 {
 	/*
@@ -52,10 +48,8 @@ tzAreaLight::~tzAreaLight(void)
 }
 
 
-// --------------------------------------------------------------- assignment operator
-
-tzAreaLight&
-tzAreaLight::operator= (const tzAreaLight& rhs) {
+//===================================================================================
+tzAreaLight& tzAreaLight::operator= (const tzAreaLight& rhs) {
 	if (this == &rhs)
 		return (*this);
 		
@@ -81,10 +75,9 @@ tzAreaLight::operator= (const tzAreaLight& rhs) {
 }
 
 
-// --------------------------------------------------------------- get_direction
-
-tzVector3D
-tzAreaLight::get_direction(tzShadeRec& sr) {
+//===================================================================================
+tzVector3D tzAreaLight::getDirection(tzShadeRec& sr)
+{
 	sample_point = object_ptr->sample();    // used in the G function
 	light_normal = object_ptr->get_normal(sample_point); 
 	wi = sample_point - sr.mHitPoint;  		// used in the G function
@@ -94,10 +87,9 @@ tzAreaLight::get_direction(tzShadeRec& sr) {
 }
 
 
-// --------------------------------------------------------------- L
-
-tzRGBColor
-tzAreaLight::L(tzShadeRec& sr) {
+//===================================================================================
+tzRGBColor tzAreaLight::L(tzShadeRec& sr)
+{
 	float ndotd = (float)( -light_normal * wi ); 
 	
 	if (ndotd > 0.0)		
@@ -107,10 +99,8 @@ tzAreaLight::L(tzShadeRec& sr) {
 }
 
 
-// ---------------------------------------------------------------- in_shadow	
-
-bool									
-tzAreaLight::inShadow(const tzRay& ray, const tzShadeRec& sr) const 
+//===================================================================================
+bool tzAreaLight::inShadow(const tzRay& ray, const tzShadeRec& sr) const 
 {
 	float t;
 	int num_objects = (int)sr.mWorld.mObjects.size();
@@ -128,11 +118,8 @@ tzAreaLight::inShadow(const tzRay& ray, const tzShadeRec& sr) const
 }
 
 
-// ---------------------------------------------------------------- G
-// G is part of the geometric factor
-
-float
-tzAreaLight::G(const tzShadeRec& sr) const {
+//===================================================================================
+float tzAreaLight::G(const tzShadeRec& sr) const {
 	float ndotd = (float)(-light_normal * wi);
 	float d2 	= (float)sample_point.d_squared(sr.mHitPoint);
 		
@@ -140,10 +127,8 @@ tzAreaLight::G(const tzShadeRec& sr) const {
 }
 
 
-// ---------------------------------------------------------------- pdf
-
-float									
-tzAreaLight::pdf(const tzShadeRec& sr) const {
+//===================================================================================
+float tzAreaLight::pdf(const tzShadeRec& sr) const {
 	return (object_ptr->pdf(sr));
 }
 

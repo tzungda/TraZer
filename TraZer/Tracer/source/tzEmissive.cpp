@@ -55,9 +55,9 @@ tzRGBColor tzEmissive::shade(tzShadeRec& sr)
 }
 
 //===================================================================================
-tzRGBColor tzEmissive::area_light_shade(tzShadeRec& sr)
+tzRGBColor tzEmissive::area_light_shade( tzShadeRec& sr) const
 {
-	if ( -sr.mNormal * sr.mRay.d > 0.0 )
+	if ( -sr.mNormal * sr.mRay.d > 0.0f )
 	{
 		return ls*ce;
 	}

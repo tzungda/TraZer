@@ -68,7 +68,7 @@ tzRGBColor
 tzLambertian::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const {
 	
 	tzVector3D w = sr.mNormal;
-	tzVector3D v = tzVector3D(0.0034, 1, 0.0071) ^ w;
+	tzVector3D v = tzVector3D(0.0034f, 1.0f, 0.0071f) ^ w;
 	v.normalize();
 	tzVector3D u = v ^ w;
 	

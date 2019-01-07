@@ -2,8 +2,7 @@
 
 #include "../include/tzAmbient.h"
 
-// ---------------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzAmbient::tzAmbient(void)
 	: 	tzILight(),
 		ls(1.0),
@@ -11,8 +10,7 @@ tzAmbient::tzAmbient(void)
 {}
 
 
-// ---------------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzAmbient::tzAmbient(const tzAmbient& a)
 	: 	tzILight(a),
 		ls(a.ls),
@@ -20,18 +18,16 @@ tzAmbient::tzAmbient(const tzAmbient& a)
 {}
 
 
-// ---------------------------------------------------------------------- clone
-
-tzILight* 
-tzAmbient::clone(void) const {
+//===================================================================================
+tzILight* tzAmbient::clone(void) const
+{
 	return (new tzAmbient(*this));
 }	
 
 
-// ---------------------------------------------------------------------- assignment operator
-
-tzAmbient&
-tzAmbient::operator= (const tzAmbient& rhs) {
+//===================================================================================
+tzAmbient& tzAmbient::operator= (const tzAmbient& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 			
@@ -44,27 +40,24 @@ tzAmbient::operator= (const tzAmbient& rhs) {
 }
 
 
-// ---------------------------------------------------------------------- destructor																			
-
+//===================================================================================
 tzAmbient::~tzAmbient(void) {}
 
 
-// ---------------------------------------------------------------------- get_direction	
-
-tzVector3D
-tzAmbient::get_direction(tzShadeRec& s) {
+//===================================================================================
+tzVector3D tzAmbient::getDirection(  tzShadeRec& s)
+{
 	return (tzVector3D(0.0));
 }
 
 
-// ---------------------------------------------------------------------- L
-
-tzRGBColor
-tzAmbient::L(tzShadeRec& sr) {
+//===================================================================================
+tzRGBColor tzAmbient::L(  tzShadeRec& sr) 
+{
 	return (ls * color);
 }
 
 
 
 
-
+

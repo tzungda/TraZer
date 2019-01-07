@@ -35,8 +35,8 @@ typedef enum {
 } TriangleType;
 
 /*
-double
-_clamp(const double x, const double min, const double max) {
+float
+_clamp(const float x, const float min, const float max) {
 	return (x < min ? min : (x > max ? max : x));
 }
 */
@@ -128,13 +128,13 @@ tzGrid::setup_cells(void) {
 	
 	// dimensions of the grid in the x, y, and z directions
 	
-	double wx = p1.x - p0.x;
-	double wy = p1.y - p0.y;
-	double wz = p1.z - p0.z;  
+	float wx = p1.x - p0.x;
+	float wy = p1.y - p0.y;
+	float wz = p1.z - p0.z;
 	
-	double multiplier = 2.0;  	// multiplyer scales the number of grid cells relative to the number of objects
+	float multiplier = 2.0f;  	// multiplyer scales the number of grid cells relative to the number of objects
 								
-	double s = pow(wx * wy * wz / num_objects, 0.3333333);    
+	float s = pow(wx * wy * wz / num_objects, 0.3333333f);
 	nx = (int)(multiplier * wx / s) + 1;
 	ny = (int)(multiplier * wy / s) + 1;
 	nz = (int)(multiplier * wz / s) + 1;
@@ -563,7 +563,7 @@ tzGrid::compute_mesh_normals(void) {
 
 void												
 tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_steps) {
-	double pi = 3.1415926535897932384;
+	float pi = 3.1415926535897932384f;
 		
 	// define the top triangles which all touch the north pole
 	
@@ -662,7 +662,7 @@ tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_st
 
 void												
 tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_steps) {
-	double pi = 3.1415926535897932384;
+	float pi = 3.1415926535897932384f;
 	
 	// define the top triangles
 	
@@ -773,27 +773,27 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 // The first part is the same as the code in BBox::hit
 
 bool 							 
-tzGrid::hit(const tzRay& ray, double& t, tzShadeRec& sr) const {
-	double ox = ray.o.x;
-	double oy = ray.o.y;
-	double oz = ray.o.z;
-	double dx = ray.d.x;
-	double dy = ray.d.y;
-	double dz = ray.d.z;
+tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
+	float ox = ray.o.x;
+	float oy = ray.o.y;
+	float oz = ray.o.z;
+	float dx = ray.d.x;
+	float dy = ray.d.y;
+	float dz = ray.d.z;
 
-	double x0 = bbox.x0;
-	double y0 = bbox.y0;
-	double z0 = bbox.z0;
-	double x1 = bbox.x1;
-	double y1 = bbox.y1;
-	double z1 = bbox.z1;
+	float x0 = bbox.x0;
+	float y0 = bbox.y0;
+	float z0 = bbox.z0;
+	float x1 = bbox.x1;
+	float y1 = bbox.y1;
+	float z1 = bbox.z1;
 	
-	double tx_min, ty_min, tz_min;
-	double tx_max, ty_max, tz_max; 
+	float tx_min, ty_min, tz_min;
+	float tx_max, ty_max, tz_max;
 	
 	// the following code includes modifications from Shirley and Morley (2003)
 	
-	double a = 1.0 / dx;
+	float a = 1.0 / dx;
 	if (a >= 0) {
 		tx_min = (x0 - ox) * a;
 		tx_max = (x1 - ox) * a;
@@ -803,7 +803,7 @@ tzGrid::hit(const tzRay& ray, double& t, tzShadeRec& sr) const {
 		tx_max = (x0 - ox) * a;
 	}
 	
-	double b = 1.0 / dy;
+	float b = 1.0 / dy;
 	if (b >= 0) {
 		ty_min = (y0 - oy) * b;
 		ty_max = (y1 - oy) * b;
@@ -813,7 +813,7 @@ tzGrid::hit(const tzRay& ray, double& t, tzShadeRec& sr) const {
 		ty_max = (y0 - oy) * b;
 	}
 	
-	double c = 1.0 / dz;
+	float c = 1.0 / dz;
 	if (c >= 0) {
 		tz_min = (z0 - oz) * c;
 		tz_max = (z1 - oz) * c;
@@ -823,7 +823,7 @@ tzGrid::hit(const tzRay& ray, double& t, tzShadeRec& sr) const {
 		tz_max = (z0 - oz) * c;
 	}
 	
-	double t0, t1;
+	float t0, t1;
 	
 	if (tx_min > ty_min)
 		t0 = tx_min;
@@ -863,11 +863,11 @@ tzGrid::hit(const tzRay& ray, double& t, tzShadeRec& sr) const {
 	
 	// ray parameter increments per cell in the x, y, and z directions
 	
-	double dtx = (tx_max - tx_min) / nx;
-	double dty = (ty_max - ty_min) / ny;
-	double dtz = (tz_max - tz_min) / nz;
+	float dtx = (tx_max - tx_min) / nx;
+	float dty = (ty_max - ty_min) / ny;
+	float dtz = (tz_max - tz_min) / nz;
 		
-	double 	tx_next, ty_next, tz_next;
+	float 	tx_next, ty_next, tz_next;
 	int 	ix_step, iy_step, iz_step;
 	int 	ix_stop, iy_stop, iz_stop;
 	
@@ -973,26 +973,26 @@ tzGrid::hit(const tzRay& ray, double& t, tzShadeRec& sr) const {
 	//===================================================================================
 bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 {
-	double ox = ray.o.x;
-	double oy = ray.o.y;
-	double oz = ray.o.z;
-	double dx = ray.d.x;
-	double dy = ray.d.y;
-	double dz = ray.d.z;
+	float ox = ray.o.x;
+	float oy = ray.o.y;
+	float oz = ray.o.z;
+	float dx = ray.d.x;
+	float dy = ray.d.y;
+	float dz = ray.d.z;
 
-	double x0 = bbox.x0;
-	double y0 = bbox.y0;
-	double z0 = bbox.z0;
-	double x1 = bbox.x1;
-	double y1 = bbox.y1;
-	double z1 = bbox.z1;
+	float x0 = bbox.x0;
+	float y0 = bbox.y0;
+	float z0 = bbox.z0;
+	float x1 = bbox.x1;
+	float y1 = bbox.y1;
+	float z1 = bbox.z1;
 
-	double tx_min, ty_min, tz_min;
-	double tx_max, ty_max, tz_max;
+	float tx_min, ty_min, tz_min;
+	float tx_max, ty_max, tz_max;
 
 	// the following code includes modifications from Shirley and Morley (2003)
 
-	double a = 1.0 / dx;
+	float a = 1.0f / dx;
 	if (a >= 0) {
 		tx_min = (x0 - ox) * a;
 		tx_max = (x1 - ox) * a;
@@ -1002,7 +1002,7 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 		tx_max = (x0 - ox) * a;
 	}
 
-	double b = 1.0 / dy;
+	float b = 1.0f / dy;
 	if (b >= 0) {
 		ty_min = (y0 - oy) * b;
 		ty_max = (y1 - oy) * b;
@@ -1012,7 +1012,7 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 		ty_max = (y0 - oy) * b;
 	}
 
-	double c = 1.0 / dz;
+	float c = 1.0 / dz;
 	if (c >= 0) {
 		tz_min = (z0 - oz) * c;
 		tz_max = (z1 - oz) * c;
@@ -1022,7 +1022,7 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 		tz_max = (z0 - oz) * c;
 	}
 
-	double t0, t1;
+	float t0, t1;
 
 	if (tx_min > ty_min)
 		t0 = tx_min;
@@ -1062,11 +1062,11 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 
 	// ray parameter increments per cell in the x, y, and z directions
 
-	double dtx = (tx_max - tx_min) / nx;
-	double dty = (ty_max - ty_min) / ny;
-	double dtz = (tz_max - tz_min) / nz;
+	float dtx = (tx_max - tx_min) / nx;
+	float dty = (ty_max - ty_min) / ny;
+	float dtz = (tz_max - tz_min) / nz;
 
-	double 	tx_next, ty_next, tz_next;
+	float 	tx_next, ty_next, tz_next;
 	int 	ix_step, iy_step, iz_step;
 	int 	ix_stop, iy_stop, iz_stop;
 

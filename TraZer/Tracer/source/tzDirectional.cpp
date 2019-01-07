@@ -2,8 +2,7 @@
 
 #include "../include/tzDirectional.h"
 
-// ---------------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzDirectional::tzDirectional(void)
 	:   tzILight(),
 		ls(1.0),
@@ -12,8 +11,7 @@ tzDirectional::tzDirectional(void)
 {}
 
 
-// ---------------------------------------------------------------------- dopy constructor
-
+//===================================================================================
 tzDirectional::tzDirectional(const tzDirectional& dl)
 	: 	tzILight(dl),
 		ls(dl.ls),
@@ -22,18 +20,15 @@ tzDirectional::tzDirectional(const tzDirectional& dl)
 {}
 
 
-// ---------------------------------------------------------------------- clone
-
-tzILight* 
-tzDirectional::clone(void) const {
+//===================================================================================
+tzILight* tzDirectional::clone(void) const 
+{
 	return (new tzDirectional(*this));
 }
 
 
-// ---------------------------------------------------------------------- assignment operator
-
-tzDirectional&
-tzDirectional::operator= (const tzDirectional& rhs)
+//===================================================================================
+tzDirectional& tzDirectional::operator= (const tzDirectional& rhs)
 {
 	if (this == &rhs)
 		return (*this);
@@ -48,23 +43,21 @@ tzDirectional::operator= (const tzDirectional& rhs)
 }
 
 
-// ---------------------------------------------------------------------- destructor																			
+//===================================================================================
+tzDirectional::~tzDirectional(void) 
+{
+}
 
-tzDirectional::~tzDirectional(void) {}
 
-
-// ---------------------------------------------------------------------- get_direction
-// as this function is virtual, it shouldn't be inlined 
-
-tzVector3D
-tzDirectional::get_direction(tzShadeRec& sr) {
+//===================================================================================
+tzVector3D tzDirectional::getDirection(tzShadeRec& sr)
+{
 	return (dir);
 }	
 
-// ------------------------------------------------------------------------------  L
-
-tzRGBColor
-tzDirectional::L(tzShadeRec& s) {
+//===================================================================================
+tzRGBColor tzDirectional::L(tzShadeRec& s) 
+{
 	return (ls * color);
 }
 

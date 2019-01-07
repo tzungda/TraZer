@@ -56,10 +56,10 @@ tzPerfectTransmitter::tir(const tzShadeRec& sr) const {
 	float cos_thetai = sr.mNormal * wo;  
 	float eta = ior;
 	
-	if (cos_thetai < 0.0) 
-		eta = 1.0 / eta; 
+	if (cos_thetai < 0.0f) 
+		eta = 1.0f / eta; 
 		
-	return (1.0 - (1.0 - cos_thetai * cos_thetai) / (eta * eta) < 0.0);
+	return (1.0f - (1.0f - cos_thetai * cos_thetai) / (eta * eta) < 0.0);
 }	
 
 
@@ -83,17 +83,17 @@ tzPerfectTransmitter::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVec
 	float cos_thetai = n * wo;
 	float eta = ior;	
 		
-	if (cos_thetai < 0.0) {			// transmitted ray is outside     
+	if (cos_thetai < 0.0f) {			// transmitted ray is outside     
 		cos_thetai = -cos_thetai;
 		n = -n;  					// reverse direction of normal
-		eta = 1.0 / eta; 			// invert ior 
+		eta = 1.0f / eta; 			// invert ior 
 	}
 
-	float temp = 1.0 - (1.0 - cos_thetai * cos_thetai) / (eta * eta);
-	float cos_theta2 = sqrt(temp);
+	float temp = 1.0f - (1.0f - cos_thetai * cos_thetai) / (eta * eta);
+	float cos_theta2 = sqrtf(temp);
 	wt = -wo / eta - (cos_theta2 - cos_thetai / eta) * n;   
 	
-	return (kt / (eta * eta) * white / fabs(sr.mNormal * wt));
+	return (kt / (eta * eta) * white / fabsf(sr.mNormal * wt));
 }
 
 

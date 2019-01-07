@@ -32,7 +32,7 @@ tzSingleSphere::~tzSingleSphere(void) {}
 tzRGBColor
 tzSingleSphere::trace_ray(const tzRay& ray) const {
 	tzShadeRec	sr(*world_ptr); 	// not used
-	double    	t;  				// not used
+	float    	t;  				// not used
 	
 	if (world_ptr->mSphere.hit(ray, t, sr))		
 		return (red);  

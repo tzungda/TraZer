@@ -104,8 +104,8 @@ tzCompound::copy_objects(const std::vector<tzIGeometricObject*>& rhs_ojects) {
 //------------------------------------------------------------------ hit
 
 bool 															 
-tzCompound::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {
-	double		t; 
+tzCompound::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
+	float		t;
 	tzNormal		normal;
 	tzPoint3D		local_hit_point;
 	bool		hit 		= false;

@@ -3,7 +3,7 @@
 #include "../include/tzSphere.h"
 #include "math.h"
 
-const double tzSphere::kEpsilon = 0.001;
+const float tzSphere::kEpsilon = 0.001f;
 					
 // ---------------------------------------------------------------- default constructor
 
@@ -16,7 +16,7 @@ tzSphere::tzSphere(void)
 
 // ---------------------------------------------------------------- constructor
 
-tzSphere::tzSphere(tzPoint3D c, double r)
+tzSphere::tzSphere(tzPoint3D c, float r)
 	: 	tzIGeometricObject(),
 		center(c),
 		radius(r)
@@ -65,18 +65,18 @@ tzSphere::~tzSphere(void)
 
 bool tzSphere::shadowHit(const tzRay &ray, float &tmin) const
 {
-	double 		t;
+	float 		t;
 	tzVector3D	temp = ray.o - center;
-	double 		a = ray.d * ray.d;
-	double 		b = 2.0 * temp * ray.d;
-	double 		c = temp * temp - radius * radius;
-	double 		disc = b * b - 4.0 * a * c;
+	float 		a = ray.d * ray.d;
+	float 		b = 2.0f * temp * ray.d;
+	float 		c = temp * temp - radius * radius;
+	float 		disc = b * b - 4.0f * a * c;
 
 	if (disc < 0.0)
 		return(false);
 	else {
-		double e = sqrt(disc);
-		double denom = 2.0 * a;
+		float e = sqrt(disc);
+		float denom = 2.0f * a;
 		t = (-b - e) / denom;    // smaller root
 
 		if (t > kEpsilon) {
@@ -97,19 +97,19 @@ bool tzSphere::shadowHit(const tzRay &ray, float &tmin) const
 
 //---------------------------------------------------------------- hit
 
-bool tzSphere::hit(const tzRay& ray, double& tmin, tzShadeRec& sr) const {
-	double 		t;
+bool tzSphere::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
+	float 		t;
 	tzVector3D	temp 	= ray.o - center;
-	double 		a 		= ray.d * ray.d;
-	double 		b 		= 2.0 * temp * ray.d;
-	double 		c 		= temp * temp - radius * radius;
-	double 		disc	= b * b - 4.0 * a * c;
+	float 		a 		= ray.d * ray.d;
+	float 		b 		= 2.0f * temp * ray.d;
+	float 		c 		= temp * temp - radius * radius;
+	float 		disc	= b * b - 4.0f * a * c;
 	
 	if (disc < 0.0)
 		return(false);
 	else {	
-		double e = sqrt(disc);
-		double denom = 2.0 * a;
+		float e = sqrtf(disc);
+		float denom = 2.0f * a;
 		t = (-b - e) / denom;    // smaller root
 	
 		if (t > kEpsilon) {

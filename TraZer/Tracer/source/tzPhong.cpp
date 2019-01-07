@@ -109,15 +109,15 @@ tzPhong::~tzPhong(void) {
 
 // ---------------------------------------------------------------- shade
 
-tzRGBColor
-tzPhong::shade(tzShadeRec& sr) {
+tzRGBColor tzPhong::shade(tzShadeRec& sr) 
+{
 	tzVector3D 	wo 			= -sr.mRay.d;
 	tzRGBColor	ambientColor = ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
 	tzRGBColor 	L 			= ambientColor;
 	int 		num_lights	= (int)sr.mWorld.mLights.size();
 	
 	for (int j = 0; j < num_lights; j++) {
-		tzVector3D wi = sr.mWorld.mLights[j]->get_direction(sr);
+		tzVector3D wi = sr.mWorld.mLights[j]->getDirection(sr);
 		float ndotwi = (float)(sr.mNormal * wi);
 	
 		if (ndotwi > 0.0) 
@@ -143,7 +143,7 @@ tzPhong::shade(tzShadeRec& sr) {
 }
 
 //===================================================================================
-tzRGBColor tzPhong::area_light_shade(tzShadeRec &sr)
+tzRGBColor tzPhong::area_light_shade( tzShadeRec &sr) const
 {
 	tzVector3D 	wo = -sr.mRay.d;
 	tzRGBColor	ambientColor = ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
@@ -152,7 +152,7 @@ tzRGBColor tzPhong::area_light_shade(tzShadeRec &sr)
 
 	for (int j = 0; j < num_lights; j++) 
 	{
-		tzVector3D wi = sr.mWorld.mLights[j]->get_direction(sr);
+		tzVector3D wi = sr.mWorld.mLights[j]->getDirection(sr);
 		float ndotwi = (float)(sr.mNormal * wi);
 
 		if (ndotwi > 0.0)

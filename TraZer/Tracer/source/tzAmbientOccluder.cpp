@@ -2,8 +2,7 @@
 #include "../include/tzWorld.h"
 #include "../include/tzAmbientOccluder.h"
 
-// ---------------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzAmbientOccluder::tzAmbientOccluder(void)
 	: 	tzILight(),
 		ls(1.0),
@@ -13,8 +12,7 @@ tzAmbientOccluder::tzAmbientOccluder(void)
 {}
 
 
-// ---------------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzAmbientOccluder::tzAmbientOccluder(const tzAmbientOccluder& a)
 	: 	tzILight(a),
 		ls(a.ls),
@@ -24,18 +22,16 @@ tzAmbientOccluder::tzAmbientOccluder(const tzAmbientOccluder& a)
 {}
 
 
-// ---------------------------------------------------------------------- clone
-
-tzILight* 
-tzAmbientOccluder::clone(void) const {
+//===================================================================================
+tzILight* tzAmbientOccluder::clone(void) const 
+{
 	return (new tzAmbientOccluder(*this));
 }	
 
 
-// ---------------------------------------------------------------------- assignment operator
-
-tzAmbientOccluder&
-tzAmbientOccluder::operator= (const tzAmbientOccluder& rhs) {
+//===================================================================================
+tzAmbientOccluder& tzAmbientOccluder::operator= (const tzAmbientOccluder& rhs)
+{
 	if (this == &rhs)
 		return (*this);
 			
@@ -48,8 +44,7 @@ tzAmbientOccluder::operator= (const tzAmbientOccluder& rhs) {
 }
 
 
-// ---------------------------------------------------------------------- destructor																			
-
+//===================================================================================
 tzAmbientOccluder::~tzAmbientOccluder(void) 
 {
 	if ( mSamplerPtr )
@@ -60,19 +55,16 @@ tzAmbientOccluder::~tzAmbientOccluder(void)
 }
 
 
-// ---------------------------------------------------------------------- get_direction	
-
-tzVector3D
-tzAmbientOccluder::get_direction(tzShadeRec& s) 
+//===================================================================================
+tzVector3D tzAmbientOccluder::getDirection(  tzShadeRec& s)
 {
 	tzPoint3D sp = mSamplerPtr->sample_hemisphere();
 	return ( sp.x*u + sp.y*v + sp.z*w );
 }
 
 
-// ---------------------------------------------------------------------- L
-
-tzRGBColor tzAmbientOccluder::L(tzShadeRec& sr) 
+//===================================================================================
+tzRGBColor tzAmbientOccluder::L( tzShadeRec& sr) 
 {
 	w = sr.mNormal;
 	// jitter up vector in case normal is vertical
@@ -82,7 +74,7 @@ tzRGBColor tzAmbientOccluder::L(tzShadeRec& sr)
 
 	tzRay shadowRay;
 	shadowRay.o = sr.mHitPoint;
-	shadowRay.d = get_direction( sr );
+	shadowRay.d = getDirection( sr );
 
 	if (inShadow( shadowRay, sr ) )
 	{

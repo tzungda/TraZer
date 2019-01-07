@@ -147,8 +147,8 @@ Interfaces
 tzShadeRec tzWorld::hitBareBonesObject(const tzRay &ray)
 {
 	tzShadeRec sr( *this );
-	double t;
-	double tmin = kHugeValue;
+	float t;
+	float tmin = kHugeValue;
 	int numObjects = (int)mObjects.size();
 
 	for ( int j = 0; j < numObjects; j++ )
@@ -168,7 +168,7 @@ tzShadeRec tzWorld::hitBareBonesObject(const tzRay &ray)
 void tzWorld::build()
 {
 	// area light & bunny------------------------------------------------------------------------------
-	int num_samples = 100;
+	int num_samples = 16;
 
 	tzISampler* sampler_ptr = new tzMultiJittered(num_samples);
 
@@ -194,12 +194,12 @@ void tzWorld::build()
 	emissive_ptr->set_ce(white);
 
 	//
-	float width = 8.0;				// for Figure 18.4(a) & (b)
-	float height = 8.0;
+	float width = 8.0f;				// for Figure 18.4(a) & (b)
+	float height = 8.0f;
 	//	float width = 2.0;				// for Figure 18.4(c)
 	//	float height = 2.0;
-	tzPoint3D center(0.0, 7.0, -7.0);	// center of each area light (rectangular, disk, and spherical)
-	tzPoint3D p0(-0.5 * width, center.y - 0.5 * height - 1.0, center.z);
+	tzPoint3D center(0.0f, 7.0f, -7.0f);	// center of each area light (rectangular, disk, and spherical)
+	tzPoint3D p0(-0.5f * width, center.y - 0.5f * height - 1.0f, center.z);
 	tzVector3D a(width, 0.0, 0.0);
 	tzVector3D b(0.0, height, 0.0);
 	tzNormal normal(0, 0, 1);
@@ -220,7 +220,7 @@ void tzWorld::build()
 	// point light
 	tzPointLight* lightPtr = new tzPointLight();
 	lightPtr->set_location(tzVector3D(0, 7, 7));
-	lightPtr->scale_radiance(0.2);
+	lightPtr->scale_radiance(0.2f);
 	lightPtr->setCastsShadows(false);
 	addLight(lightPtr);
 
@@ -233,7 +233,7 @@ void tzWorld::build()
 	texture_ptr->set_image(image_ptr);
 
 	tzMatteSV* sv_matte_ptr = new tzMatteSV;
-	sv_matte_ptr->set_ka(0.1);
+	sv_matte_ptr->set_ka(0.1f);
 	sv_matte_ptr->set_kd(4/*0.75*/);
 	sv_matte_ptr->set_cd(texture_ptr);
 	//tzMatte* mattePtr1 = new tzMatte();
@@ -243,8 +243,8 @@ void tzWorld::build()
 
 	//
 	tzMatte* mattePtr2 = new tzMatte();
-	mattePtr2->set_ka(0.1);
-	mattePtr2->set_kd(0.9);
+	mattePtr2->set_ka(0.1f);
+	mattePtr2->set_kd(0.9f);
 	mattePtr2->set_cd(white);
 
 	//
@@ -651,8 +651,8 @@ void tzWorld::renderScene() const
 	std::vector< glm::vec4 > pixelColorArray;
 	tzRGBColor pixelColor;
 	tzRay ray;
-	double zw = 100.0;
-//	double x, y;
+	float zw = 100.0f;
+//	float x, y;
 	pixelColorArray.resize(mVp.mHres*mVp.mVres);
 
 	ray.d = tzVector3D( 0.0f, 0.0f, -1.0f );
@@ -732,7 +732,7 @@ void tzWorld::addLight(tzILight *lightPtr)
 tzShadeRec tzWorld::hitObjects(const tzRay &ray, float &tmin) 
 {
 	tzShadeRec sr( *this );
-	double t;
+	float t;
 	tzNormal normal;
 	tzPoint3D localHitPoint;
 	tmin = kHugeValue;

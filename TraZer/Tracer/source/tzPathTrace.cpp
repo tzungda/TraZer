@@ -45,7 +45,7 @@ tzPathTrace::trace_ray(const tzRay ray, const int depth) const {
 // for color filtering
 
 tzRGBColor	
-tzPathTrace::trace_ray(const tzRay ray, double& tmin, const int depth) const {
+tzPathTrace::trace_ray(const tzRay ray, float& tmin, const int depth) const {
 	float t = 0.0f;
 	if (depth > world_ptr->mVp.mMaxDepth)
 		return (black);

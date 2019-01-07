@@ -91,7 +91,7 @@ tzMatteSV::shade(tzShadeRec& sr)
 	for (int j = 0; j < num_lights; j++) 
 	{
 		tzILight* light_ptr = sr.mWorld.mLights[j];
-		tzVector3D wi = light_ptr->get_direction( sr );
+		tzVector3D wi = light_ptr->getDirection( sr );
 		wi.normalize();
 		float ndotwi = (float)(sr.mNormal * wi);
 		float ndotwo = (float)(sr.mNormal * wo);
@@ -117,14 +117,14 @@ tzMatteSV::shade(tzShadeRec& sr)
 }
 
 //===================================================================================
-tzRGBColor tzMatteSV::area_light_shade(tzShadeRec &sr)
+tzRGBColor tzMatteSV::area_light_shade( tzShadeRec &sr) const
 {
 	tzVector3D 	wo = -sr.mRay.d;
 	tzRGBColor 	L = ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
 	int 		num_lights = (int)sr.mWorld.mLights.size();
 
 	for (int j = 0; j < num_lights; j++) {
-		tzVector3D wi = sr.mWorld.mLights[j]->get_direction(sr);
+		tzVector3D wi = sr.mWorld.mLights[j]->getDirection(sr);
 		float ndotwi = (float)(sr.mNormal * wi);
 
 		if (ndotwi > 0.0)

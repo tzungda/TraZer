@@ -72,7 +72,7 @@ tzGlossySpecular::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3
 	tzVector3D r = -wo + 2.0 * sr.mNormal * ndotwo;     // direction of mirror reflection
 	
 	tzVector3D w = r;
-	tzVector3D u = tzVector3D(0.00424, 1, 0.00764) ^ w;
+	tzVector3D u = tzVector3D(0.00424f, 1.0f, 0.00764f) ^ w;
 	u.normalize();
 	tzVector3D v = u ^ w;
 		

@@ -3,8 +3,7 @@
 #include "../include/tzPointLight.h"
 
 
-// ---------------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzPointLight::tzPointLight(void)
 	: 	tzILight(),
 		ls(1.0),
@@ -12,8 +11,7 @@ tzPointLight::tzPointLight(void)
 {}
 
 
-// ---------------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzPointLight::tzPointLight(const tzPointLight& a)
 	: 	tzILight(a),
 		ls(a.ls),
@@ -21,18 +19,16 @@ tzPointLight::tzPointLight(const tzPointLight& a)
 {}
 
 
-// ---------------------------------------------------------------------- clone
-
-tzILight* 
-tzPointLight::clone(void) const {
+//===================================================================================
+tzILight* tzPointLight::clone(void) const 
+{
 	return (new tzPointLight(*this));
 }	
 
 
-// ---------------------------------------------------------------------- assignment operator
-
-tzPointLight&
-tzPointLight::operator= (const tzPointLight& rhs) {
+//===================================================================================
+tzPointLight& tzPointLight::operator= (const tzPointLight& rhs)
+{
 	if (this == &rhs)
 		return (*this);
 			
@@ -45,15 +41,14 @@ tzPointLight::operator= (const tzPointLight& rhs) {
 }
 
 
-// ---------------------------------------------------------------------- destructor																			
+//===================================================================================
+tzPointLight::~tzPointLight(void) 
+{}
 
-tzPointLight::~tzPointLight(void) {}
 
-
-// ---------------------------------------------------------------------- get_direction	
-
-tzVector3D
-tzPointLight::get_direction(tzShadeRec& s) {
+//===================================================================================
+tzVector3D tzPointLight::getDirection(tzShadeRec& s)
+{
 	return ((location - s.mHitPoint).hat() );
 }
 
@@ -76,12 +71,13 @@ bool tzPointLight::inShadow(const tzRay &ray, const tzShadeRec &sr) const
 	return false; 
 }
 
-// ---------------------------------------------------------------------- L
-
-tzRGBColor tzPointLight::L(tzShadeRec& sr) {
+//===================================================================================
+tzRGBColor tzPointLight::L(tzShadeRec& sr) 
+{
 	return (ls * color);
 }
 
+//===================================================================================
 void tzPointLight::set_location(const tzVector3D &loc)
 {
 	location = loc;

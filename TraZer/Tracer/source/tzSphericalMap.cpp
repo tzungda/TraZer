@@ -49,15 +49,15 @@ tzSphericalMap::get_texel_coordinates(	const 	tzPoint3D& 	local_hit_point,
 	
 	// first, compute theta and phi
 	
-	float theta = acos(local_hit_point.y);
-	float phi   = atan2(local_hit_point.x, local_hit_point.z);
+	float theta = (float)acos(local_hit_point.y);
+	float phi   = (float)atan2(local_hit_point.x, local_hit_point.z);
 	if (phi < 0.0)
-		phi += TWO_PI;
+		phi += (float)TWO_PI;
 	
 	// next, map theta and phi to (u, v) in [0, 1] X [0, 1]
 		
-	float u = phi * invTWO_PI;    
-	float v = 1.0 - theta * invPI;           
+	float u = (float)phi * invTWO_PI;    
+	float v = 1.0f - (float)theta * invPI;           
 			
 	// finally, map u and v to the texel coordinates
 		

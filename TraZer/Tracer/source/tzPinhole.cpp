@@ -68,7 +68,7 @@ tzPinhole::~tzPinhole(void)
 
 // ----------------------------------------------------------------------------- get_direction
 
-tzVector3D tzPinhole::get_direction(const tzPoint2D& p) const 
+tzVector3D tzPinhole::getDirection(const tzPoint2D& p) const
 {
 	tzVector3D dir = p.x * u + p.y * v - d * w;
 	dir.normalize();
@@ -80,7 +80,7 @@ tzVector3D tzPinhole::get_direction(const tzPoint2D& p) const
 
 // ----------------------------------------------------------------------------- render_scene
 
-void tzPinhole::renderScene(const tzWorld& w) 
+void tzPinhole::renderScene(const tzWorld& w) const
 {
 	tzViewPlane	vp(w.mVp);
 	const int n = (int)sqrt((float)vp.mNumSamples);
@@ -99,6 +99,7 @@ void tzPinhole::renderScene(const tzWorld& w)
 	colorBuffer.resize(vp.mVres*vp.mHres);
 
 	const float invNumSamples = 1.0f/(float)vp.mNumSamples;
+	const float invN = 1.0f / (float)n;
 		
 	clock_t t = clock();
 
@@ -106,12 +107,12 @@ void tzPinhole::renderScene(const tzWorld& w)
 	{
 
 #ifdef _OPENMP
+		//omp_lock_t writelock;
+		//omp_init_lock(&writelock);
 		int maxThreads = omp_get_max_threads();
-		omp_set_num_threads(maxThreads);
-		int threadnum = omp_get_thread_num();
-		int a = 0;
-		a = 1;
-		omp_set_num_threads(maxThreads);
+		omp_set_num_threads(1);
+		//int threadnum = omp_get_thread_num();
+		//omp_set_num_threads(maxThreads);
 		#pragma omp parallel for
 #endif
 
@@ -120,17 +121,21 @@ void tzPinhole::renderScene(const tzWorld& w)
 #ifndef _OPENMP
 			L = black; 
 #else
-			int threadnumX = omp_get_thread_num();
+			//int threadnumX = omp_get_thread_num();
 			tzRGBColor	threadL( black );
+			int 		depth = 0;
+			tzPoint2D 	pp;
+			tzRay ray;
+			ray.o = eye;
 #endif
 
 //----------------------------------------------------------------------
 #ifndef _OPENMP			
 			for (int p = 0; p < n; p++)			// up pixel
 				for (int q = 0; q < n; q++) {	// across pixel
-					pp.x = vp.mS * (c - 0.5f * vp.mHres + (q + 0.5f) / n); 
-					pp.y = vp.mS * (r - 0.5f * vp.mVres + (p + 0.5f) / n);
-					ray.d = get_direction(pp);
+					pp.x = vp.mS * (c - 0.5f * vp.mHres + (q + 0.5f)*invN);
+					pp.y = vp.mS * (r - 0.5f * vp.mVres + (p + 0.5f)*invN);
+					ray.d = getDirection(pp);
 					L += w.mTracerPtr->trace_ray(ray, depth);
 				}	
 											
@@ -154,18 +159,16 @@ void tzPinhole::renderScene(const tzWorld& w)
 			w.writeToBuffer(colorBuffer, r, c, L);
 #else
 			//tzRay			ray;
-			int 		depth = 0;
+			
 			//tzPoint2D 	pp;		// sample point on a pixel
 			//ray.o = eye;
 
 			for (int p = 0; p < n; p++)			// up pixel
 				for (int q = 0; q < n; q++) {	// across pixel
-					tzPoint2D 	pp;
-					tzRay ray;
-					ray.o = eye;
-					pp.x = vp.mS * (c - 0.5f * vp.mHres + (q + 0.5f) / n);
-					pp.y = vp.mS * (r - 0.5f * vp.mVres + (p + 0.5f) / n);
-					ray.d = get_direction(pp);
+					
+					pp.x = vp.mS * (c - 0.5f * vp.mHres + (q + 0.5f)*invN);
+					pp.y = vp.mS * (r - 0.5f * vp.mVres + (p + 0.5f)*invN);
+					ray.d = getDirection(pp);
 					threadL += w.mTracerPtr->trace_ray(ray, depth);
 				}
 
@@ -186,9 +189,18 @@ void tzPinhole::renderScene(const tzWorld& w)
 				threadL.b = 1.0f;
 			}
 			// 
+			//omp_set_lock(&writelock);
+
 			w.writeToBuffer(colorBuffer, r, c, threadL);
+
+			//omp_unset_lock(&writelock);
 #endif
 		} 
+/*
+#ifdef _OPENMP
+		omp_destroy_lock(&writelock);
+#endif
+*/
 	}
 
 	//-------------

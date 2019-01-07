@@ -89,7 +89,7 @@ tzRGBColor tzMatte::shade(tzShadeRec& sr)
 	
 	for (int j = 0; j < num_lights; j++) 
 	{
-		tzVector3D wi = sr.mWorld.mLights[j]->get_direction(sr);
+		tzVector3D wi = sr.mWorld.mLights[j]->getDirection(sr);
 		float ndotwi = (float)(sr.mNormal * wi);
 	
 		if (ndotwi > 0.0) 
@@ -113,7 +113,7 @@ tzRGBColor tzMatte::shade(tzShadeRec& sr)
 }
 
 //===================================================================================
-tzRGBColor tzMatte::area_light_shade(tzShadeRec &sr)
+tzRGBColor tzMatte::area_light_shade( tzShadeRec &sr) const
 {
 	tzVector3D 	wo = -sr.mRay.d;
 	tzRGBColor 	L = ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
@@ -121,7 +121,7 @@ tzRGBColor tzMatte::area_light_shade(tzShadeRec &sr)
 
 	for (int j = 0; j < num_lights; j++) 
 	{
-		tzVector3D wi = sr.mWorld.mLights[j]->get_direction(sr);
+		tzVector3D wi = sr.mWorld.mLights[j]->getDirection(sr);
 		float ndotwi = (float)(sr.mNormal * wi);
 
 		if (ndotwi > 0.0)

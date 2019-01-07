@@ -44,7 +44,8 @@ tzImage::~tzImage(void)	{}
 // ---------------------------------------------------- read_ppm_file
 
 void										
-tzImage::read_ppm_file(const char* file_name) {
+tzImage::read_ppm_file(const char* file_name)
+{
 
     // read-only binary sequential access
     
@@ -101,7 +102,7 @@ tzImage::read_ppm_file(const char* file_name) {
 		cout << "Invalid max value" << endl;
 	}
 
-	float inv_max_value = 1.0 / (float)max_value;
+	float inv_max_value = 1.0f / (float)max_value;
 
     // allocate memory
     
@@ -109,8 +110,8 @@ tzImage::read_ppm_file(const char* file_name) {
 
     // read pixel data
     
-    for (unsigned int y = 0; y < vres; y++) {
-        for (unsigned int x = 0; x < hres; x++) {
+    for ( int y = 0; y < vres; y++) {
+        for ( int x = 0; x < hres; x++) {
             unsigned char red;
             unsigned char green;
             unsigned char blue;
