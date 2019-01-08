@@ -166,12 +166,12 @@ tzGrid::setup_cells(void) {
 				
 		// compute the cell indices at the corners of the bounding box of the object
 		
-		int ixmin = (int)clamp((obj_bBox.x0 - p0.x) * nx / (p1.x - p0.x), 0, nx - 1);
-		int iymin = (int)clamp((obj_bBox.y0 - p0.y) * ny / (p1.y - p0.y), 0, ny - 1);
-		int izmin = (int)clamp((obj_bBox.z0 - p0.z) * nz / (p1.z - p0.z), 0, nz - 1);
-		int ixmax = (int)clamp((obj_bBox.x1 - p0.x) * nx / (p1.x - p0.x), 0, nx - 1);
-		int iymax = (int)clamp((obj_bBox.y1 - p0.y) * ny / (p1.y - p0.y), 0, ny - 1);
-		int izmax = (int)clamp((obj_bBox.z1 - p0.z) * nz / (p1.z - p0.z), 0, nz - 1);
+		int ixmin = (int)clamp((obj_bBox.x0 - p0.x) * (float)(nx) / (p1.x - p0.x), 0.0f, (float)(nx) - 1.0f);
+		int iymin = (int)clamp((obj_bBox.y0 - p0.y) * (float)(ny) / (p1.y - p0.y), 0.0f, (float)(ny) - 1.0f);
+		int izmin = (int)clamp((obj_bBox.z0 - p0.z) * (float)(nz) / (p1.z - p0.z), 0.0f, (float)(nz) - 1.0f);
+		int ixmax = (int)clamp((obj_bBox.x1 - p0.x) * (float)(nx) / (p1.x - p0.x), 0.0f, (float)(nx) - 1.0f);
+		int iymax = (int)clamp((obj_bBox.y1 - p0.y) * (float)(ny) / (p1.y - p0.y), 0.0f, (float)(ny) - 1.0f);
+		int izmax = (int)clamp((obj_bBox.z1 - p0.z) * (float)(nz) / (p1.z - p0.z), 0.0f, (float)(nz) - 1.0f);
 				
 		// add the object to the cells
 				
@@ -574,13 +574,13 @@ tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_st
 		
 		tzPoint3D v0(	0, 1, 0);																		// top (north pole)
 		
-		tzPoint3D v1(	sin(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 			// bottom left
+		tzPoint3D v1(	sin(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 			// bottom left
 					cos(pi * k / vertical_steps), 
-					cos(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
+					cos(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
 					
-		tzPoint3D v2(	sin(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 		// bottom  right
+		tzPoint3D v2(	sin(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 		// bottom  right
 					cos(pi * k / vertical_steps), 
-					cos(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
+					cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
 	
 		tzTriangle* triangle_ptr = new tzTriangle(v0, v1, v2);
 		objects.push_back(triangle_ptr); 							
@@ -594,15 +594,15 @@ tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_st
 	for (int j = 0; j <= horizontal_steps - 1; j++) {
 		// define vertices
 		
-		tzPoint3D v0(	sin(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 			// top left
+		tzPoint3D v0(	sin(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 			// top left
 					cos(pi * k / vertical_steps), 
-					cos(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
+					cos(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
 						
-		tzPoint3D v1(	0, -1, 0);																		// bottom (south pole)		
+		tzPoint3D v1(	0.0f, -1.0f, 0.0f);																		// bottom (south pole)		
 												
-		tzPoint3D v2(	sin(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 		// top right 
+		tzPoint3D v2(	sin(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 		// top right 
 					cos(pi * k / vertical_steps), 
-					cos(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
+					cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
 	
 		tzTriangle* triangle_ptr = new tzTriangle(v0, v1, v2);
 		objects.push_back(triangle_ptr);  						
@@ -618,17 +618,17 @@ tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_st
 		
 			// vertices
 			
-			tzPoint3D v0(	sin(2.0 * pi * j / horizontal_steps) * sin(pi * (k + 1) / vertical_steps), 				// bottom left, use k + 1, j
+			tzPoint3D v0(	sin(2.0f * pi * j / horizontal_steps) * sin(pi * (k + 1) / vertical_steps), 				// bottom left, use k + 1, j
 						cos(pi * (k + 1) / vertical_steps), 
-						cos(2.0 * pi * j / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
+						cos(2.0f * pi * j / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
 				
-			tzPoint3D v1(	sin(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps), 		// bottom  right, use k + 1, j + 1
+			tzPoint3D v1(	sin(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps), 		// bottom  right, use k + 1, j + 1
 						cos(pi * (k + 1) / vertical_steps), 
-						cos(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
+						cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
 				
-			tzPoint3D v2(	sin(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 					// top left, 	use k, j
+			tzPoint3D v2(	sin(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 					// top left, 	use k, j
 						cos(pi * k / vertical_steps), 
-						cos(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
+						cos(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
 		
 			tzTriangle* triangle_ptr1 = new tzTriangle(v0, v1, v2);
 			objects.push_back(triangle_ptr1); 	
@@ -638,17 +638,17 @@ tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_st
 		
 			// vertices
 			
-			v0 = tzPoint3D(	sin(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 			// top right, use k, j + 1
+			v0 = tzPoint3D(	sin(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 			// top right, use k, j + 1
 							cos(pi * k / vertical_steps), 
-							cos(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps) );
+							cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps) );
 							
-			v1 = tzPoint3D (	sin(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 				// top left, 	use k, j
+			v1 = tzPoint3D (	sin(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 				// top left, 	use k, j
 							cos(pi * k / vertical_steps), 
-							cos(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
+							cos(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
 							
-			v2 = tzPoint3D (	sin(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps), 	// bottom  right, use k + 1, j + 1
+			v2 = tzPoint3D (	sin(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps), 	// bottom  right, use k + 1, j + 1
 							cos(pi * (k + 1) / vertical_steps), 
-							cos(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
+							cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
 		
 			tzTriangle* triangle_ptr2 = new tzTriangle(v0, v1, v2); 
 			objects.push_back(triangle_ptr2); 						
@@ -673,13 +673,13 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 		
 		tzPoint3D v0(	0, 1, 0);																		// top
 		
-		tzPoint3D v1(	sin(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 			// bottom left
+		tzPoint3D v1(	sin(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 			// bottom left
 					cos(pi * k / vertical_steps), 
-					cos(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
+					cos(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
 					
-		tzPoint3D v2(	sin(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 		// bottom  right
+		tzPoint3D v2(	sin(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 		// bottom  right
 					cos(pi * k / vertical_steps), 
-					cos(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
+					cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
 	
 		tzSmoothTriangle* triangle_ptr = new tzSmoothTriangle(v0, v1, v2);
 		triangle_ptr->n0 = v0;
@@ -696,15 +696,15 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 	for (int j = 0; j <= horizontal_steps - 1; j++) {
 		// define vertices
 		
-		tzPoint3D v0(	sin(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 			// top left
+		tzPoint3D v0(	sin(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 			// top left
 					cos(pi * k / vertical_steps), 
-					cos(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
+					cos(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
 						
 		tzPoint3D v1(	0, -1, 0);																		// bottom			
 												
-		tzPoint3D v2(	sin(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 		// top right 
+		tzPoint3D v2(	sin(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 		// top right 
 					cos(pi * k / vertical_steps), 
-					cos(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
+					cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
 	
 		tzSmoothTriangle* triangle_ptr = new tzSmoothTriangle(v0, v1, v2);
 		triangle_ptr->n0 = v0;
@@ -722,17 +722,17 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 		
 			// vertices
 			
-			tzPoint3D v0(	sin(2.0 * pi * j / horizontal_steps) * sin(pi * (k + 1) / vertical_steps), 				// bottom left, use k + 1, j
+			tzPoint3D v0(	sin(2.0f * pi * j / horizontal_steps) * sin(pi * (k + 1) / vertical_steps), 				// bottom left, use k + 1, j
 						cos(pi * (k + 1) / vertical_steps), 
-						cos(2.0 * pi * j / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
+						cos(2.0f * pi * j / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
 				
-			tzPoint3D v1(	sin(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps), 		// bottom  right, use k + 1, j + 1
+			tzPoint3D v1(	sin(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps), 		// bottom  right, use k + 1, j + 1
 						cos(pi * (k + 1) / vertical_steps), 
-						cos(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
+						cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
 				
-			tzPoint3D v2(	sin(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 					// top left, 	use k, j
+			tzPoint3D v2(	sin(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 					// top left, 	use k, j
 						cos(pi * k / vertical_steps), 
-						cos(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
+						cos(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
 		
 			tzSmoothTriangle* triangle_ptr1 = new tzSmoothTriangle(v0, v1, v2);
 			triangle_ptr1->n0 = v0;
@@ -745,17 +745,17 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 		
 			// vertices
 			
-			v0 = tzPoint3D(	sin(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 			// top right, use k, j + 1
+			v0 = tzPoint3D(	sin(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 			// top right, use k, j + 1
 							cos(pi * k / vertical_steps), 
-							cos(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps) );
+							cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps) );
 							
-			v1 = tzPoint3D (	sin(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 				// top left, 	use k, j
+			v1 = tzPoint3D (	sin(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 				// top left, 	use k, j
 							cos(pi * k / vertical_steps), 
-							cos(2.0 * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
+							cos(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
 							
-			v2 = tzPoint3D (	sin(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps), 	// bottom  right, use k + 1, j + 1
+			v2 = tzPoint3D (	sin(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps), 	// bottom  right, use k + 1, j + 1
 							cos(pi * (k + 1) / vertical_steps), 
-							cos(2.0 * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
+							cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
 		
 			tzSmoothTriangle* triangle_ptr2 = new tzSmoothTriangle(v0, v1, v2); 
 			triangle_ptr2->n0 = v0;
@@ -793,8 +793,8 @@ tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
 	
 	// the following code includes modifications from Shirley and Morley (2003)
 	
-	float a = 1.0 / dx;
-	if (a >= 0) {
+	float a = 1.0f / dx;
+	if (a >= 0.0f) {
 		tx_min = (x0 - ox) * a;
 		tx_max = (x1 - ox) * a;
 	}
@@ -803,7 +803,7 @@ tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
 		tx_max = (x0 - ox) * a;
 	}
 	
-	float b = 1.0 / dy;
+	float b = 1.0f / dy;
 	if (b >= 0) {
 		ty_min = (y0 - oy) * b;
 		ty_max = (y1 - oy) * b;
@@ -813,7 +813,7 @@ tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
 		ty_max = (y0 - oy) * b;
 	}
 	
-	float c = 1.0 / dz;
+	float c = 1.0f / dz;
 	if (c >= 0) {
 		tz_min = (z0 - oz) * c;
 		tz_max = (z1 - oz) * c;
@@ -850,15 +850,15 @@ tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
 	int ix, iy, iz;
 	
 	if (bbox.inside(ray.o)) {  			// does the ray start inside the grid?
-		ix = (int)clamp((ox - x0) * nx / (x1 - x0), 0, nx - 1);
-		iy = (int)clamp((oy - y0) * ny / (y1 - y0), 0, ny - 1);
-		iz = (int)clamp((oz - z0) * nz / (z1 - z0), 0, nz - 1);
+		ix = (int)clamp((ox - x0) * (float)(nx) / (x1 - x0), 0.0f, (float)(nx - 1));
+		iy = (int)clamp((oy - y0) * (float)(ny) / (y1 - y0), 0.0f, (float)(ny - 1));
+		iz = (int)clamp((oz - z0) * (float)(nz) / (z1 - z0), 0.0f, (float)(nz - 1));
 	}
 	else {
 		tzPoint3D p = ray.o + t0 * ray.d;  // initial hit point with grid's bounding box
-		ix = (int)clamp((p.x - x0) * nx / (x1 - x0), 0, nx - 1);
-		iy = (int)clamp((p.y - y0) * ny / (y1 - y0), 0, ny - 1);
-		iz = (int)clamp((p.z - z0) * nz / (z1 - z0), 0, nz - 1);
+		ix = (int)clamp((p.x - x0) * (float)(nx) / (x1 - x0), 0.0f, (float)(nx - 1));
+		iy = (int)clamp((p.y - y0) * (float)(ny) / (y1 - y0), 0.0f, (float)(ny - 1));
+		iz = (int)clamp((p.z - z0) * (float)(nz) / (z1 - z0), 0.0f, (float)(nz - 1));
 	}
 	
 	// ray parameter increments per cell in the x, y, and z directions
@@ -1012,7 +1012,7 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 		ty_max = (y0 - oy) * b;
 	}
 
-	float c = 1.0 / dz;
+	float c = 1.0f / dz;
 	if (c >= 0) {
 		tz_min = (z0 - oz) * c;
 		tz_max = (z1 - oz) * c;
@@ -1049,15 +1049,15 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 	int ix, iy, iz;
 
 	if (bbox.inside(ray.o)) {  			// does the ray start inside the grid?
-		ix = (int)clamp((ox - x0) * nx / (x1 - x0), 0, nx - 1);
-		iy = (int)clamp((oy - y0) * ny / (y1 - y0), 0, ny - 1);
-		iz = (int)clamp((oz - z0) * nz / (z1 - z0), 0, nz - 1);
+		ix = (int)clamp((ox - x0) * (float)(nx) / (x1 - x0), 0, (float)(nx - 1));
+		iy = (int)clamp((oy - y0) * (float)(ny) / (y1 - y0), 0, (float)(ny - 1));
+		iz = (int)clamp((oz - z0) * (float)(nz) / (z1 - z0), 0, (float)(nz - 1));
 	}
 	else {
 		tzPoint3D p = ray.o + t0 * ray.d;  // initial hit point with grid's bounding box
-		ix = (int)clamp((p.x - x0) * nx / (x1 - x0), 0, nx - 1);
-		iy = (int)clamp((p.y - y0) * ny / (y1 - y0), 0, ny - 1);
-		iz = (int)clamp((p.z - z0) * nz / (z1 - z0), 0, nz - 1);
+		ix = (int)clamp((p.x - x0) * (float)(nx) / (x1 - x0), 0, (float)(nx - 1));
+		iy = (int)clamp((p.y - y0) * (float)(ny) / (y1 - y0), 0, (float)(ny - 1));
+		iz = (int)clamp((p.z - z0) * (float)(nz) / (z1 - z0), 0, (float)(nz - 1));
 	}
 
 	// ray parameter increments per cell in the x, y, and z directions
