@@ -10,9 +10,9 @@ bool tzTool::writePng(const std::vector<glm::vec4>& buffer, unsigned int w, unsi
 	my_image.resize(_h * _w * 4);
 	glm::vec4 buf;
 	//int bufferIndex = 0;
-	for (unsigned y = 0; y < _h; y++)
+	for (int y = 0; y < _h; y++)
 	{
-		for (unsigned x = 0; x < _w; x++)
+		for (int x = 0; x < _w; x++)
 		{
 			unsigned newpos = 4 * y * _w + 4 * x;
 			int buffIndex = x + (_h - y - 1)*_w;
