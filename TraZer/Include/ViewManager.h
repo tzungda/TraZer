@@ -23,6 +23,10 @@
 #include <string>
 #include <algorithm>
 
+#include "../Include/tzCoreTransform.h"
+//#include "tzMatrix.h"
+//#include "tzVector3D.h"
+
 class tzNormal;
 
 /**
@@ -39,7 +43,7 @@ class tzNormal;
  * properties.
  */
 
-class ViewManager
+class ViewManager: public tzCoreTransform
 {
 public:
     ViewManager();
@@ -75,18 +79,23 @@ public:
     void Reset();
 
 	//
-	glm::vec3	faceDir( ) const;
-	glm::vec3	upDir() const;
-	glm::vec3	rightDir() const;
+	tzVector3D	faceDir( ) const;
+	tzVector3D	upDir() const;
+	tzVector3D	rightDir() const;
 
 	//
-	glm::mat4	rotateMatrixAlongVector( float angle, const glm::vec3 &v );
-	glm::mat4	roatateX( float deltaAngle );
-	glm::mat4	roatateY( float deltaAngle );
-	glm::mat4	roatateZ( float deltaAngle );
-	glm::mat4	updateTransformMatrix( );
-	void		setPosition( const glm::vec3& position );
-	glm::vec3	move( float deltaX, float deltaY, float deltaZ );
+	/*
+	tzMatrix	rotateMatrixAlongVector( float angle, const tzVector3D &v );
+	tzMatrix	roatateX( float deltaAngle );
+	tzMatrix	roatateY( float deltaAngle );
+	tzMatrix	roatateZ( float deltaAngle );
+	tzMatrix	updateTransformMatrix( );
+	void		setPosition( const tzVector3D& position );
+	*/
+	virtual tzVector3D	move( float deltaX, float deltaY, float deltaZ );
+	//
+	//tzMatrix invertedTransformMatrix( ) const;
+	
 
 private:
     bool ortho = false;
@@ -104,14 +113,25 @@ private:
 	glm::vec3 eyeLookPosition;
 
 	//----------------------------------
-	glm::mat4 mTransform;
-	glm::mat4 mXRotationMatrix;
-	glm::mat4 mYRotationMatrix;
-	glm::mat4 mZRotationMatrix;
-	float mXAxisAngle;// degree
-	float mYAxisAngle;// degree
-	float mZAxisAngle;// degree
-	glm::vec3 mPosition;
+	//glm::mat4 mTransform;
+	//glm::mat4 mXRotationMatrix;
+	//glm::mat4 mYRotationMatrix;
+	//glm::mat4 mZRotationMatrix;
+	//float mXAxisAngle;// degree
+	//float mYAxisAngle;// degree
+	//float mZAxisAngle;// degree
+	//tzVector3D mPosition;
+	//glm::vec3	mFace;
+	//glm::vec3	mUp;
+	//glm::vec3	mRight;
+	// mine
+	//tzMatrix	mTransform;
+	tzVector3D	mFace;
+	tzVector3D	mUp;
+	tzVector3D	mRight;
+	//tzMatrix mXRotationMatrix;
+	//tzMatrix mYRotationMatrix;
+	//tzMatrix mZRotationMatrix;
 	//----------------------------------
 
     bool lmbDown = false;
@@ -124,11 +144,6 @@ private:
 	int w_width;
 	int w_height;
 	float wheel_val;
-
-	//
-	glm::vec3	mFace;
-	glm::vec3	mUp;
-	glm::vec3	mRight;
 };
 
 
