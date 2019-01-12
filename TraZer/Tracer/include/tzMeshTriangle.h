@@ -9,7 +9,9 @@ class tzMeshTriangle: public tzIGeometricObject {
 	public:
 
 		tzMesh* 	mesh_ptr;					// stores all the data
-		int			index0, index1, index2;  	// indices into the vertices array in the mesh
+		int			indexV0, indexV1, indexV2;  	// indices into the vertices array in the mesh
+		int			indexN0, indexN1, indexN2;  	// indices into the normals array in the mesh
+		int			indexUV0, indexUV1, indexUV2;  	// indices into the UVs array in the mesh
 		tzNormal	normal;					
 		float		area;						// required for translucency
 	
@@ -18,6 +20,8 @@ class tzMeshTriangle: public tzIGeometricObject {
 		tzMeshTriangle(void);
 		
 		tzMeshTriangle(tzMesh* _mesh_ptr, const int i1, const int i2, const int i3);
+
+		tzMeshTriangle(tzMesh* _mesh_ptr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2);
 
 		virtual tzMeshTriangle*
 		clone(void) const = 0;

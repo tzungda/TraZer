@@ -20,8 +20,9 @@ class tzImage {
 
 		~tzImage(void) ;
 		
-		void										
-		read_ppm_file(const char* file_name);
+		void read_ppm_file(const char* file_name);
+
+		void readPng( const char* fileName );
 		
 		int
 		get_hres(void);	

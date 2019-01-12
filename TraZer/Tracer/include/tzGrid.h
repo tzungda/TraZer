@@ -4,6 +4,7 @@
 
 #include "../include/tzCompound.h"
 #include "../include/tzShadeRec.h"
+#include "../include/tzCoreMesh.h"
 #include "tzMesh.h"
 
 
@@ -68,7 +69,7 @@ class tzGrid: public tzCompound {
 						const vector<float> &u,
 						const vector<float> &v,
 						const vector<vector<int> > &vertex_faces,
-						const vector<vector<int> > &face_vertices,
+						const vector<tzCoreMesh::index > &face_vertices,
 						const int &num_vertices,
 						const int &num_triangles );
 

@@ -10,6 +10,8 @@ class tzFlatUVMeshTriangle: public tzFlatMeshTriangle {
 		
 		tzFlatUVMeshTriangle(tzMesh* _meshPtr, const int i0, const int i1, const int i2);
 
+		tzFlatUVMeshTriangle(tzMesh* _meshPtr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2);
+
 		virtual tzFlatUVMeshTriangle* clone(void) const;
 	
 		tzFlatUVMeshTriangle(const tzFlatUVMeshTriangle& fmt);
