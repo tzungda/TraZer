@@ -18,6 +18,12 @@ class tzCoreMesh : public tzCoreObject
 public:
 	tzCoreMesh( );
 	virtual ~tzCoreMesh();
+
+	typedef struct {
+		int vertex_index;
+		int normal_index;
+		int texcoord_index;
+	} index;
 	
 private: // member data
 	vector<tzPoint3D> 			mVertices;				// mesh vertices 
@@ -27,7 +33,7 @@ private: // member data
 	vector<vector<int> > 		mVertexFaces;			// the triangles shared by each vertex
 	int 						mNumVertices; 			// number of vertices
 	int 						mNumTriangles; 			// number of triangles
-	vector<int>					mIndices;				// indices of the vertices
+	vector<index>				mIndices;				// indices of the vertices
 	vector<float>				mPositions;				// 
 	vector<vector<int>>			mFaceVertices;
 
@@ -42,7 +48,7 @@ public: //
 	void							setVertexFaces( const vector<vector<int> > vertexFaces);
 	void							setNumVertices( int numVertices );
 	void							setNumTriangles(int numVertices);
-	void							setIndices( const vector< int > &indices );
+	void							setIndices( const vector< index > &indices );
 	void							setFaceVertices( const vector<vector<int>> &faceVertices );
 	
 	
@@ -55,7 +61,7 @@ public: //
 	const vector<vector<int> >		vertexFaces( ) const;
 	int								numVertices( ) const;
 	int								numTriangles( ) const;
-	const vector< int >&			indices( ) const;
+	const vector< index >&			indices( ) const;
 	const vector<vector<int>>&		faceVertices() const;
 };
 
