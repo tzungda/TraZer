@@ -105,7 +105,7 @@ void tzCoreMesh::setNumTriangles(int numTriangles)
 }
 
 //===================================================================================
-void tzCoreMesh::setIndices(const vector< int > &indices)
+void tzCoreMesh::setIndices(const vector< tzCoreMesh::index > &indices)
 {
 	mIndices = indices;
 }
@@ -169,7 +169,7 @@ int tzCoreMesh::numTriangles() const
 }
 
 //===================================================================================
-const vector< int >& tzCoreMesh::indices() const
+const vector< tzCoreMesh::index >& tzCoreMesh::indices() const
 {
 	return mIndices;
 }

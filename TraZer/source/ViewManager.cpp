@@ -285,12 +285,13 @@ void ViewManager::SetCamera(glm::vec3 cameraPos, glm::vec3 focusPos) {
 	T const & x2, T const & y2, T const & z2, T const & w2,
 	T const & x3, T const & y3, T const & z3, T const & w3);
 	*/
-	setPosition(tzVector3D(50.0f, 70.0f, 50.0f));
+	//setPosition(tzVector3D(50.0f, 70.0f, 50.0f));
+	setPosition(tzVector3D(0.0f, 0.0f, 60.0f));
 	mXAxisAngle = mYAxisAngle = mZAxisAngle = 0.0f;
-	tzMatrix rotXMatrixX = roatateX( -45.0f );
+/*	tzMatrix rotXMatrixX = roatateX( -45.0f );
 	tzMatrix r0 = rotateAlongVector( -45.0f, tzVector3D( 1.0f, 0.0f, 0.0f ) );
 	tzMatrix rotYXMatrix = roatateY(45.0f);
-	tzMatrix r1 = rotateAlongVector(45.0f, tzVector3D(0.0f, 1.0f, 0.0f));
+	tzMatrix r1 = rotateAlongVector(45.0f, tzVector3D(0.0f, 1.0f, 0.0f));*/
 	updateTransformMatrix();
 
 	float angleX = atan2( mTransform.m[1][2], mTransform.m[2][2] )/degreeToRadian;
