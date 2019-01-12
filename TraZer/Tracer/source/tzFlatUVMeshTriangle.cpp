@@ -17,6 +17,10 @@ tzFlatUVMeshTriangle::tzFlatUVMeshTriangle(tzMesh* _mesh_ptr, const int i0, cons
 	: tzFlatMeshTriangle(_mesh_ptr, i0, i1, i2)
 {}
 
+tzFlatUVMeshTriangle::tzFlatUVMeshTriangle(tzMesh* _meshPtr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2)
+	: tzFlatMeshTriangle(_meshPtr, v0, v1, v2, n0, n1, n2, uv0, uv1, uv2)
+{
+}
 
 // ---------------------------------------------------------------- clone
 
@@ -55,9 +59,9 @@ tzFlatUVMeshTriangle::~tzFlatUVMeshTriangle(void) {}
 
 bool 															 
 tzFlatUVMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
-	tzPoint3D v0(mesh_ptr->vertices[index0]);
-	tzPoint3D v1(mesh_ptr->vertices[index1]);
-	tzPoint3D v2(mesh_ptr->vertices[index2]);
+	tzPoint3D v0(mesh_ptr->vertices[indexV0]);
+	tzPoint3D v1(mesh_ptr->vertices[indexV1]);
+	tzPoint3D v2(mesh_ptr->vertices[indexV2]);
 	
 	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.d.x, d = v0.x - ray.o.x;
 	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.d.y, h = v0.y - ray.o.y;

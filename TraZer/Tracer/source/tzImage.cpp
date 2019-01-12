@@ -4,17 +4,16 @@
 
 #include "../include/tzConstants.h"   // defines red
 #include "../include/tzImage.h"
+#include "lodepng/lodepng.h"
 
-// ---------------------------------------------------- default constructor
-
+//===================================================================================
 tzImage::tzImage(void)
 	:	hres(100),
 		vres(100)
 {}
 
 
-// ---------------------------------------------------- copy constructor								
-
+//===================================================================================
 tzImage::tzImage(const tzImage& image)
 	:	hres(image.hres),
 		vres(image.vres),
@@ -22,10 +21,9 @@ tzImage::tzImage(const tzImage& image)
 {}		
 
 
-// ---------------------------------------------------- assignment operator	
-
-tzImage&
-tzImage::operator= (const tzImage& rhs) {
+//===================================================================================
+tzImage& tzImage::operator= (const tzImage& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 	
@@ -36,15 +34,13 @@ tzImage::operator= (const tzImage& rhs) {
 	return (*this);
 }		
 
-// ---------------------------------------------------- destructor	
-
-tzImage::~tzImage(void)	{}
+//===================================================================================
+tzImage::~tzImage(void)	
+{}
 	
 
-// ---------------------------------------------------- read_ppm_file
-
-void										
-tzImage::read_ppm_file(const char* file_name)
+//===================================================================================
+void tzImage::read_ppm_file(const char* file_name)
 {
 
     // read-only binary sequential access
@@ -144,12 +140,38 @@ tzImage::read_ppm_file(const char* file_name)
 	cout << "finished reading PPM file" << endl;
 }
 
+//===================================================================================
+void tzImage::readPng(const char* fileName)
+{
+	std::vector<unsigned char> png;
+	std::vector<unsigned char> image; //the raw pixels
+	unsigned width, height;
+	lodepng::State state; //optionally customize this one
 
+	unsigned error = lodepng::load_file(png, fileName); //load the image file with given filename
+	if (!error) error = lodepng::decode(image, width, height, state, png);
 
-// --------------------------------------------------------------------------------------------- get_color 
+	// set pixels
+	vres = (int)width;
+	hres = (int)height;
+	pixels.resize(width*height);
+	unsigned int len = width*height;
+	for ( int i = 0; i < len; i++ )
+	{
+		int index = i*4;
+		float r = ((float)image[index]) / 255.0f;
+		float g = ((float)image[index+1]) / 255.0f;
+		float b = ((float)image[index+2]) / 255.0f;
+		float a = ((float)image[index+3]) / 255.0f;
 
-tzRGBColor									
-tzImage::get_color(const int row, const int column) const {
+		//
+		pixels[i] = tzRGBColor( r, g, b, a );
+	}
+}
+
+//===================================================================================
+tzRGBColor tzImage::get_color(const int row, const int column) const 
+{
 	int index = column + hres * (vres - row - 1);
 	int pixels_size = pixels.size();
 	

@@ -182,7 +182,7 @@ void tzWorld::build()
 	mTracerPtr = new tzAreaLighting(this);
 
 	tzPinhole* camera = new tzPinhole();
-	camera->set_eye(200, 200, 200);
+	camera->set_eye(0, 0, -200);
 	camera->set_lookat(0, 0, 0);
 	camera->set_view_distance(16000);
 	camera->compute_uvw();
@@ -227,7 +227,9 @@ void tzWorld::build()
 	// material matte sv
 	tzImage* image_ptr = new tzImage;
 	const char* texPath = "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\images.ppm";
-	image_ptr->read_ppm_file(texPath);
+	//image_ptr->read_ppm_file(texPath);
+
+	image_ptr->readPng( "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\TraZer\\commonData\\torusTexture.png" );
 
 	tzImageTexture* texture_ptr = new tzImageTexture;
 	texture_ptr->set_image(image_ptr);
@@ -253,10 +255,11 @@ void tzWorld::build()
 	const char* file_name = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Stanford_Bunny\\Bunny10K.ply";//"TwoTriangles.ply"; Horse2K
 	//checkFileEnd(file_name, file_name);
 	tzGrid* grid_ptr = new tzGrid(new tzMesh);
+	grid_ptr->setScale(0.25f);
 	if (mScenePtr && mScenePtr->meshList().size() > 0)
 	{
 		tzCoreMesh *ptrCoreMesh = mScenePtr->meshList()[0];
-		grid_ptr->addMesh(ptrCoreMesh->vertices(), ptrCoreMesh->vertexNormals(), ptrCoreMesh->us(), ptrCoreMesh->vs(), ptrCoreMesh->vertexFaces(), ptrCoreMesh->faceVertices(), ptrCoreMesh->numVertices(), ptrCoreMesh->numTriangles());
+		grid_ptr->addMesh(ptrCoreMesh->vertices(), ptrCoreMesh->vertexNormals(), ptrCoreMesh->us(), ptrCoreMesh->vs(), ptrCoreMesh->vertexFaces(), ptrCoreMesh->indices(), ptrCoreMesh->numVertices(), ptrCoreMesh->numTriangles());
 	}
 	else
 	{
@@ -274,7 +277,7 @@ void tzWorld::build()
 	//addObject(spherePtr);
 
 	// plane
-	tzPlane* planePtr = new tzPlane(tzPoint3D(0, 0.5, 0), tzNormal(0, 1, 0));
+	tzPlane* planePtr = new tzPlane(tzPoint3D(0, -1, 0), tzNormal(0, 1, 0));
 	planePtr->set_material(mattePtr2);
 	addObject(planePtr);
 	

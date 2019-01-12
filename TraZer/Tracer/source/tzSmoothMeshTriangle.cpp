@@ -54,9 +54,9 @@ tzSmoothMeshTriangle::~tzSmoothMeshTriangle(void) {}
 
 tzNormal 
 tzSmoothMeshTriangle::interpolate_normal(const float beta, const float gamma) const {
-	tzNormal normal((1 - beta - gamma) * mesh_ptr->normals[index0] 
-						+ beta * mesh_ptr->normals[index1] 
-								+ gamma * mesh_ptr->normals[index2]);
+	tzNormal normal((1 - beta - gamma) * mesh_ptr->normals[indexV0] 
+						+ beta * mesh_ptr->normals[indexV1] 
+								+ gamma * mesh_ptr->normals[indexV2]);
 	normal.normalize();
 	
 	return(normal);
@@ -66,9 +66,9 @@ tzSmoothMeshTriangle::interpolate_normal(const float beta, const float gamma) co
 
 bool 															 
 tzSmoothMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
-	tzPoint3D v0(mesh_ptr->vertices[index0]);
-	tzPoint3D v1(mesh_ptr->vertices[index1]);
-	tzPoint3D v2(mesh_ptr->vertices[index2]);
+	tzPoint3D v0(mesh_ptr->vertices[indexV0]);
+	tzPoint3D v1(mesh_ptr->vertices[indexV1]);
+	tzPoint3D v2(mesh_ptr->vertices[indexV2]);
 	
 	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.d.x, d = v0.x - ray.o.x;
 	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.d.y, h = v0.y - ray.o.y;

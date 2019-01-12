@@ -9,7 +9,9 @@
 tzMeshTriangle::tzMeshTriangle(void)
 	: 	tzIGeometricObject(),
 		mesh_ptr(NULL),
-		index0(0), index1(0), index2(0),
+		indexV0(0), indexV1(0), indexV2(0),
+		indexN0(0), indexN1(0), indexN2(0),
+		indexUV0(0), indexUV1(0), indexUV2(0),
 		normal()
 {}
 
@@ -20,18 +22,30 @@ tzMeshTriangle::tzMeshTriangle(void)
 tzMeshTriangle::tzMeshTriangle(tzMesh* _mesh_ptr, const int i0, const int i1, const int i2)
 	: 	tzIGeometricObject(),
 		mesh_ptr(_mesh_ptr),
-		index0(i0), index1(i1), index2(i2) 
+		indexV0(i0), indexV1(i1), indexV2(i2),
+		indexN0(i0), indexN1(i1), indexN2(i2),
+		indexUV0(i0), indexUV1(i1), indexUV2(i2)
 {}
 
+tzMeshTriangle::tzMeshTriangle(tzMesh* _mesh_ptr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2)
+	: tzIGeometricObject(),
+	mesh_ptr(_mesh_ptr),
+	indexV0(v0), indexV1(v1), indexV2(v2),
+	indexN0(n0), indexN1(n1), indexN2(n2),
+	indexUV0(uv0), indexUV1(uv1), indexUV2(uv2)
+{
+}
 
 // ---------------------------------------------------------------- copy constructor
 
 tzMeshTriangle::tzMeshTriangle(const tzMeshTriangle& mt)
 	:	tzIGeometricObject(mt),
 		mesh_ptr(mt.mesh_ptr), // just the pointer
-		index0(mt.index0), 
-		index1(mt.index1), 
-		index2(mt.index2),
+		indexV0(mt.indexV0), 
+		indexV1(mt.indexV1), 
+		indexV2(mt.indexV2),
+		indexN0(mt.indexN0), indexN1(mt.indexN1), indexN2(mt.indexN2),
+		indexUV0(mt.indexUV0), indexUV1(mt.indexUV1), indexUV2(mt.indexUV2),
 		normal(mt.normal)
 {}
 
@@ -46,9 +60,15 @@ tzMeshTriangle::operator= (const tzMeshTriangle& rhs) {
 	tzIGeometricObject::operator= (rhs);
 	
 	mesh_ptr 	= rhs.mesh_ptr; // just the pointer
-	index0 		= rhs.index0;
-	index1 		= rhs.index1;
-	index2 		= rhs.index2;
+	indexV0 		= rhs.indexV0;
+	indexV1 		= rhs.indexV1;
+	indexV2 		= rhs.indexV2;
+	indexN0 = rhs.indexN0;
+	indexN1 = rhs.indexN1;
+	indexN2 = rhs.indexN2;
+	indexUV0 = rhs.indexUV0;
+	indexUV1 = rhs.indexUV1;
+	indexUV2 = rhs.indexUV2;
 	normal 		= rhs.normal;
 	
 	return (*this);
@@ -69,8 +89,8 @@ tzMeshTriangle::~tzMeshTriangle(void) {
 
 void 
 tzMeshTriangle::compute_normal(const bool reverse_normal) {
-	normal = (mesh_ptr->vertices[index1] - mesh_ptr->vertices[index0]) ^
-			 (mesh_ptr->vertices[index2] - mesh_ptr->vertices[index0]);
+	normal = (mesh_ptr->vertices[indexV1] - mesh_ptr->vertices[indexV0]) ^
+			 (mesh_ptr->vertices[indexV2] - mesh_ptr->vertices[indexV0]);
 	normal.normalize();
 	
 	//normal = -normal;
@@ -95,9 +115,9 @@ tzBBox
 tzMeshTriangle::get_bounding_box(void) {
 	float delta = 0.0001f;  // to avoid degenerate bounding boxes
 	
-	tzPoint3D v1(mesh_ptr->vertices[index0]);
-	tzPoint3D v2(mesh_ptr->vertices[index1]);
-	tzPoint3D v3(mesh_ptr->vertices[index2]);
+	tzPoint3D v1(mesh_ptr->vertices[indexV0]);
+	tzPoint3D v2(mesh_ptr->vertices[indexV1]);
+	tzPoint3D v3(mesh_ptr->vertices[indexV2]);
 	
 	return(tzBBox(fmin(fmin(v1.x, v2.x), v3.x) - delta, fmax(fmax(v1.x, v2.x), v3.x) + delta, 
 				fmin(fmin(v1.y, v2.y), v3.y) - delta, fmax(fmax(v1.y, v2.y), v3.y) + delta, 
@@ -110,9 +130,9 @@ tzMeshTriangle::get_bounding_box(void) {
 // flat, smooth, flat uv, smooth uv
 
 bool tzMeshTriangle::shadowHit(const tzRay& ray, float& tmin) const {
-	tzPoint3D v0(mesh_ptr->vertices[index0]);
-	tzPoint3D v1(mesh_ptr->vertices[index1]);
-	tzPoint3D v2(mesh_ptr->vertices[index2]);
+	tzPoint3D v0(mesh_ptr->vertices[indexV0]);
+	tzPoint3D v1(mesh_ptr->vertices[indexV1]);
+	tzPoint3D v2(mesh_ptr->vertices[indexV2]);
 
 	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.d.x, d = v0.x - ray.o.x;
 	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.d.y, h = v0.y - ray.o.y;
@@ -156,9 +176,9 @@ bool tzMeshTriangle::shadowHit(const tzRay& ray, float& tmin) const {
 
 float 
 tzMeshTriangle::interpolate_u(const float beta, const float gamma) const {
-	return( (1 - beta - gamma) * mesh_ptr->u[index0] 
-				+ beta * mesh_ptr->u[index1] 
-					+ gamma * mesh_ptr->u[index2] );
+	return( (1 - beta - gamma) * mesh_ptr->u[indexUV0] 
+				+ beta * mesh_ptr->u[indexUV1]
+					+ gamma * mesh_ptr->u[indexUV2] );
 }
 
 
@@ -167,9 +187,9 @@ tzMeshTriangle::interpolate_u(const float beta, const float gamma) const {
 
 float 
 tzMeshTriangle::interpolate_v(const float beta, const float gamma) const {
-	return( (1 - beta - gamma) * mesh_ptr->v[index0] 
-				+ beta * mesh_ptr->v[index1] 
-					+ gamma * mesh_ptr->v[index2] );
+	return( (1 - beta - gamma) * mesh_ptr->v[indexUV0]
+				+ beta * mesh_ptr->v[indexUV1]
+					+ gamma * mesh_ptr->v[indexUV2] );
 }
 
 

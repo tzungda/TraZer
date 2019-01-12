@@ -75,7 +75,7 @@ bool tzSphere::shadowHit(const tzRay &ray, float &tmin) const
 	if (disc < 0.0)
 		return(false);
 	else {
-		float e = sqrt(disc);
+		float e = sqrtf(disc);
 		float denom = 2.0f * a;
 		t = (-b - e) / denom;    // smaller root
 

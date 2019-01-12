@@ -1395,7 +1395,7 @@ void tzGrid::addMesh(const vector<tzPoint3D> &vertices,
 	const vector<float> &u,
 	const vector<float> &v,
 	const vector<vector<int> > &vertex_faces,
-	const vector<vector<int> > &face_vertices,
+	const vector<tzCoreMesh::index  > &face_vertices,
 	const int &num_vertices,
 	const int &num_triangles)
 {
@@ -1417,7 +1417,18 @@ void tzGrid::addMesh(const vector<tzPoint3D> &vertices,
 	// create triangles
 	for ( int tr = 0; tr < num_triangles; tr++ )
 	{
-		tzFlatUVMeshTriangle* triangle_ptr = new tzFlatUVMeshTriangle(mesh_ptr, face_vertices[tr][0], face_vertices[tr][1], face_vertices[tr][2]);
+		int index = tr*3;
+		int v0 = face_vertices[index].vertex_index;
+		int v1 = face_vertices[index+1].vertex_index;
+		int v2 = face_vertices[index+2].vertex_index;
+		int n0 = face_vertices[index].normal_index;
+		int n1 = face_vertices[index + 1].normal_index;
+		int n2 = face_vertices[index + 2].normal_index;
+		int uv0 = face_vertices[index].texcoord_index;
+		int uv1 = face_vertices[index + 1].texcoord_index;
+		int uv2 = face_vertices[index + 2].texcoord_index;
+		//
+		tzFlatUVMeshTriangle* triangle_ptr = new tzFlatUVMeshTriangle(mesh_ptr, v0, v1, v2, n0, n1, n2, uv0, uv1, uv2);
 		triangle_ptr->compute_normal(reverse_normal);
 		objects.push_back(triangle_ptr);
 	}
