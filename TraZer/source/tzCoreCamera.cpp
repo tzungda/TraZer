@@ -1,5 +1,5 @@
 #include "../Include/tzCoreCamera.h"
-
+#include "../Include/tzConstants.h"
 /*
 Constructor/Destructor
 */
@@ -7,7 +7,15 @@ Constructor/Destructor
 //===================================================================================
 tzCoreCamera::tzCoreCamera()
 {
-	mNumVertices = mNumTriangles = 0;
+	mFace.x = 0.0f, mFace.y = 0.0f, mFace.z = -1.0f;
+	mUp.x = 0.0f, mUp.y = 1.0f, mUp.z = 0.0f;
+	mRight.x = 1.0f, mRight.y = 0.0f, mRight.z = 0.0f;
+
+	mAspect = 1.0f;
+	mFov = 45.0f;
+
+	mNearPlane = 0.1f;
+	mFarPlane = 10000.0f;
 }
 
 //===================================================================================
@@ -20,162 +28,96 @@ tzCoreCamera::~tzCoreCamera()
 Interfaces
 */
 
-/*
--- set
-*/
 
 //===================================================================================
-void tzCoreCamera::setVertices(const vector< tzPoint3D > &vertices)
+tzVector3D tzCoreCamera::faceDir() const
 {
-	int numVertices = (int)vertices.size();
-	if (numVertices == 0 )
-	{
-		printf(" the length of the vertices is 0 \n");
-		return;
-	}
-	mVertices = vertices;
+	tzVector3D face = mFace*mXRotationMatrix*mYRotationMatrix*mZRotationMatrix;
+	face.normalize();
 
-	//
-	mPositions.resize(numVertices * 3);
-	float *ptrP = &mPositions[0];
-	for ( int i = 0; i < numVertices; i++ )
-	{
-		(*ptrP) = vertices[i].x, ptrP++;
-		(*ptrP) = vertices[i].y, ptrP++;
-		(*ptrP) = vertices[i].z, ptrP++;
-	}
+	return face;
 }
 
 //===================================================================================
-void tzCoreCamera::setVertices(const vector< float > &positions)
+tzVector3D tzCoreCamera::upDir() const
 {
-	int numPositions = (int)positions.size();
-	if (numPositions == 0 || numPositions % 3 != 0)
-	{
-		printf(" the length of the positions needs to be a multiple of 3 \n");
-		return;
-	}
-	mPositions = positions;
+	tzVector3D up = mUp*mXRotationMatrix*mYRotationMatrix*mZRotationMatrix;
+	up.normalize();
 
-	//
-	mVertices.resize(numPositions / 3);
-	int idx = 0;
-	for (int i = 0; i < (int)mVertices.size(); i++)
-	{
-		mVertices[i].x = mPositions[idx], idx++;
-		mVertices[i].y = mPositions[idx], idx++;
-		mVertices[i].z = mPositions[idx], idx++;
-	}
+	return up;
 }
 
 //===================================================================================
-void tzCoreCamera::setVertexNormals(const vector< tzNormal > &normals)
+tzVector3D tzCoreCamera::rightDir() const
 {
-	mVertexNormals = normals;
+	tzVector3D right = mRight*mXRotationMatrix*mYRotationMatrix*mZRotationMatrix;
+	right.normalize();
+
+	return right;
 }
 
 //===================================================================================
-void tzCoreCamera::setUs(const vector< float > &us)
+float tzCoreCamera::aspect() const
 {
-	mU = us;
+	return mAspect;
 }
 
 //===================================================================================
-void tzCoreCamera::setVs(const vector< float > &vs)
+float tzCoreCamera::fov() const
 {
-	mV = vs;
+	return mFov;
 }
 
 //===================================================================================
-void tzCoreCamera::setVertexFaces(const vector<vector<int> > vertexFaces)
+float tzCoreCamera::nearPlane() const
 {
-	mVertexFaces = vertexFaces;
+	return mNearPlane;
 }
 
 //===================================================================================
-void tzCoreCamera::setNumVertices(int numVertices)
+float tzCoreCamera::farPlane() const
 {
-	mNumVertices = numVertices;
+	return mFarPlane;
 }
 
 //===================================================================================
-void tzCoreCamera::setNumTriangles(int numTriangles)
+void tzCoreCamera::setAspect(float _aspect)
 {
-	mNumTriangles = numTriangles;
+	mAspect = _aspect;
 }
 
 //===================================================================================
-void tzCoreCamera::setIndices(const vector< tzCoreCamera::index > &indices)
+void tzCoreCamera::setFov( float _fov )
 {
-	mIndices = indices;
+	mFov = _fov;
 }
 
 //===================================================================================
-void tzCoreCamera::setFaceVertices(const vector<vector<int>> &faceVertices)
+void tzCoreCamera::setNearPlane(float _nearPlane)
 {
-	mFaceVertices = faceVertices;
-}
-
-/*
--- get
-*/
-
-//===================================================================================
-const vector< float >& tzCoreCamera::floatPositions() const
-{
-	return mPositions;
+	mNearPlane = _nearPlane;
 }
 
 //===================================================================================
-const vector< tzPoint3D >& tzCoreCamera::vertices() const
+void tzCoreCamera::setFarPlane(float _farPlane)
 {
-	return mVertices;
+	mFarPlane = _farPlane;
 }
 
 //===================================================================================
-const vector< tzNormal >& tzCoreCamera::vertexNormals() const
+tzMatrix tzCoreCamera::perspectiveProjection() const
 {
-	return mVertexNormals;
+	//assert(abs(aspect - std::numeric_limits<T>::epsilon()) > static_cast<T>(0));
+
+	const float tanHalfFovy = tan( mFov * degreeToRadian / 2.0f);
+
+	tzMatrix result;
+	result.initializeWithAValue( 0.0f );
+	result.m[0][0] = 1.0f/ (mAspect * tanHalfFovy);
+	result.m[1][1] = 1.0f / (tanHalfFovy);
+	result.m[2][2] = -(mFarPlane + mNearPlane) / (mFarPlane - mNearPlane);
+	result.m[2][3] = -1.0f;
+	result.m[3][2] = -(2.0f * mFarPlane * mNearPlane) / (mFarPlane - mNearPlane);
+	return result;
 }
 
-//===================================================================================
-const vector< float >& tzCoreCamera::us() const
-{
-	return mU;
-}
-
-//===================================================================================
-const vector< float >& tzCoreCamera::vs() const
-{
-	return mV;
-}
-
-//===================================================================================
-const vector<vector<int> > tzCoreCamera::vertexFaces() const
-{
-	return mVertexFaces;
-}
-
-//===================================================================================
-int tzCoreCamera::numVertices() const
-{
-	return mNumVertices;
-}
-
-//===================================================================================
-int tzCoreCamera::numTriangles() const
-{
-	return mNumTriangles;
-}
-
-//===================================================================================
-const vector< tzCoreCamera::index >& tzCoreCamera::indices() const
-{
-	return mIndices;
-}
-
-//===================================================================================
-const vector<vector<int>>& tzCoreCamera::faceVertices() const
-{
-	return mFaceVertices;
-}
