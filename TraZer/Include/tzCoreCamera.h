@@ -1,5 +1,5 @@
-#ifndef TZ_MESH
-#define TZ_MESH
+#ifndef TZ_CORE_CAMERA
+#define TZ_CORE_CAMERA
 
 /*
  This class is for the triangulated object
@@ -14,12 +14,12 @@
 
 using namespace std;
 
-class tzCoreMesh : public tzCoreObject,
+class tzCoreCamera : public tzCoreObject,
 				   public tzCoreTransform
 {
 public:
-	tzCoreMesh( );
-	virtual ~tzCoreMesh();
+	tzCoreCamera( );
+	virtual ~tzCoreCamera();
 
 	typedef struct {
 		int vertex_index;
