@@ -8,15 +8,15 @@
 
 //===================================================================================
 tzImage::tzImage(void)
-	:	hres(100),
-		vres(100)
+	:	mHeight(100),
+		mWidth(100)
 {}
 
 
 //===================================================================================
 tzImage::tzImage(const tzImage& image)
-	:	hres(image.hres),
-		vres(image.vres),
+	:	mHeight(image.mHeight),
+		mWidth(image.mWidth),
 		pixels(image.pixels)
 {}		
 
@@ -27,8 +27,8 @@ tzImage& tzImage::operator= (const tzImage& rhs)
 	if (this == &rhs)
 		return (*this);
 	
-	hres 		= rhs.hres;
-	vres 		= rhs.vres;
+	mHeight 		= rhs.mHeight;
+	mWidth 		= rhs.mWidth;
 	pixels 		= rhs.pixels;
 
 	return (*this);
@@ -75,20 +75,20 @@ void tzImage::read_ppm_file(const char* file_name)
 
     // read image size
     
-    if (fscanf_s(file, "%d %d\n", &hres, &vres) != 2){
+    if (fscanf_s(file, "%d %d\n", &mHeight, &mWidth) != 2){
 		cout << "Invalid image size" << endl;
 	}
 
-    if (hres <= 0)
+    if (mHeight <= 0)
 		cout << "Invalid image width" << endl;
 	else
-		cout << "hres = " << hres << endl;
+		cout << "mHeight = " << mHeight << endl;
 
     
-	if (vres <= 0)
+	if (mWidth <= 0)
 		cout << "Invalid image height" << endl;
 	else
-		cout << "vres = " << vres << endl;
+		cout << "mWidth = " << mWidth << endl;
 
 
     // maximum value to be found in the PPM file (usually 255)
@@ -102,12 +102,12 @@ void tzImage::read_ppm_file(const char* file_name)
 
     // allocate memory
     
-	pixels.reserve(hres * vres);
+	pixels.reserve(mHeight * mWidth);
 
     // read pixel data
     
-    for ( int y = 0; y < vres; y++) {
-        for ( int x = 0; x < hres; x++) {
+    for ( int y = 0; y < mWidth; y++) {
+        for ( int x = 0; x < mHeight; x++) {
             unsigned char red;
             unsigned char green;
             unsigned char blue;
@@ -152,8 +152,8 @@ void tzImage::readPng(const char* fileName)
 	if (!error) error = lodepng::decode(image, width, height, state, png);
 
 	// set pixels
-	vres = (int)width;
-	hres = (int)height;
+	mWidth = (int)width;
+	mHeight = (int)height;
 	pixels.resize(width*height);
 	unsigned int len = width*height;
 	for ( int i = 0; i < len; i++ )
@@ -170,9 +170,9 @@ void tzImage::readPng(const char* fileName)
 }
 
 //===================================================================================
-tzRGBColor tzImage::get_color(const int row, const int column) const 
+tzRGBColor tzImage::getColor(const int row, const int column) const 
 {
-	int index = column + hres * (vres - row - 1);
+	int index = column + mHeight * (mWidth - row - 1);
 	int pixels_size = pixels.size();
 	
 	if (index < pixels_size)

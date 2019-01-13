@@ -86,10 +86,10 @@ tzSmoothTriangle::interpolate_normal(const float beta, const float gamma) const 
 }
 
 
-//---------------------------------------------------------------- get_bounding_box
+//---------------------------------------------------------------- getBoundingBox
 
 tzBBox
-tzSmoothTriangle::get_bounding_box(void) {
+tzSmoothTriangle::getBoundingBox(void) {
 	float delta = 0.0001f;
 	
 	return(tzBBox(fminf(fminf(v0.x, v1.x), v2.x) - delta, fmaxf(fmaxf(v0.x, v1.x), v2.x) + delta, 

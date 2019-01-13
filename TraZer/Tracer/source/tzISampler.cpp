@@ -1,77 +1,73 @@
 
 
-#include <algorithm>   // for random_shuffle in Sampler::setup_shuffled_indices
+#include <algorithm>   // for random_shuffle in Sampler::setupShuffledIndices
 
 #include "../include/tzConstants.h"
 #include "../include/tzISampler.h"
 
-// ------------------------------------------------------------------ default constructor
-	
+//===================================================================================
 tzISampler::tzISampler(void)
-	: 	num_samples(1),
-		num_sets(83),
-		count(0),
-		jump(0) {
-	samples.reserve(num_samples * num_sets);
-	setup_shuffled_indices();
+	: 	mNumSamples(1),
+	mNumSets(83),
+		mCount(0),
+		mJump(0) {
+	mSamples.reserve(mNumSamples * mNumSets);
+	setupShuffledIndices();
 }
 
 
-// ------------------------------------------------------------------ constructor
-
+//===================================================================================
 tzISampler::tzISampler(const int ns)
-	: 	num_samples(ns),
-		num_sets(83),
-		count(0),
-		jump(0) {
-	samples.reserve(num_samples * num_sets);
-	setup_shuffled_indices();
+	: 	mNumSamples(ns),
+	mNumSets(83),
+		mCount(0),
+		mJump(0) 
+{
+	mSamples.reserve(mNumSamples * mNumSets);
+	setupShuffledIndices();
 }
 
-
-// ------------------------------------------------------------------ constructor
-
+//===================================================================================
 tzISampler::tzISampler(const int ns, const int n_sets)
-	: 	num_samples(ns),
-		num_sets(n_sets),
-		count(0),
-		jump(0) {
-	samples.reserve(num_samples * num_sets);
-	setup_shuffled_indices();
+	: 	mNumSamples(ns),
+		mNumSets(n_sets),
+		mCount(0),
+		mJump(0) 
+{
+	mSamples.reserve(mNumSamples * mNumSets);
+	setupShuffledIndices();
 }
 
 
-// ------------------------------------------------------------------ copy constructor
-
+//===================================================================================
 tzISampler::tzISampler(const tzISampler& s)
-	: 	num_samples(s.num_samples),
-		num_sets(s.num_sets),
-		samples(s.samples),
-		shuffled_indices(s.shuffled_indices),
-		disk_samples(s.disk_samples),
-		hemisphere_samples(s.hemisphere_samples),
-		sphere_samples(s.sphere_samples),
-		count(s.count),
-		jump(s.jump)
+	: 	mNumSamples(s.mNumSamples),
+		mNumSets(s.mNumSets),
+		mSamples(s.mSamples),
+		mShuffledIndices(s.mShuffledIndices),
+		mDiskSamples(s.mDiskSamples),
+		mHemisphereSamples(s.mHemisphereSamples),
+		mSphereSamples(s.mSphereSamples),
+		mCount(s.mCount),
+		mJump(s.mJump)
 {}
 
 
-// ------------------------------------------------------------------ assignment operator
-
-tzISampler&
-tzISampler::operator= (const tzISampler& rhs)	{
+//===================================================================================
+tzISampler& tzISampler::operator= (const tzISampler& rhs)	
+{
 	if (this == &rhs)
 		return (*this);
 	
-	num_samples 		= rhs.num_samples;
-	num_sets			= rhs.num_sets;
-	samples				= rhs.samples;
-	shuffled_indices	= rhs.shuffled_indices;
-	disk_samples		= rhs.disk_samples;
-	hemisphere_samples	= rhs.hemisphere_samples;
-	sphere_samples		= rhs.sphere_samples;
-	count				= rhs.count;
-	jump				= rhs.jump;
+	mNumSamples 		= rhs.mNumSamples;
+	mNumSets			= rhs.mNumSets;
+	mSamples = rhs.mSamples;
+	mShuffledIndices	= rhs.mShuffledIndices;
+	mDiskSamples		= rhs.mDiskSamples;
+	mHemisphereSamples	= rhs.mHemisphereSamples;
+	mSphereSamples		= rhs.mSphereSamples;
+	mCount				= rhs.mCount;
+	mJump				= rhs.mJump;
 	
 	return (*this);
 }
@@ -79,90 +75,83 @@ tzISampler::operator= (const tzISampler& rhs)	{
 tzISampler::~tzISampler(void) {}
 
 
-// ------------------------------------------------------------------- set_num_sets
-
-void
-tzISampler::set_num_sets(const int np) {
-	num_sets = np;
+//===================================================================================
+void tzISampler::setNumSets(const int np) 
+{
+	mNumSets = np;
 }
 
 
-// ------------------------------------------------------------------- get_num_samples
-
-int
-tzISampler::get_num_samples(void) {
-	return (num_samples);
+//===================================================================================
+int tzISampler::getNumSamples(void) 
+{
+	return mNumSamples;
 }
 
 
-// ------------------------------------------------------------------- shuffle_x_coordinates
-// shuffle the x coordinates of the points within each set
-
-void
-tzISampler::shuffle_x_coordinates(void) {
-	for (int p = 0; p < num_sets; p++)
-		for (int i = 0; i <  num_samples - 1; i++) {
-			int target = rand_int() % num_samples + p * num_samples;
-			float temp = samples[i + p * num_samples + 1].x;
-			samples[i + p * num_samples + 1].x = samples[target].x;
-			samples[target].x = temp;
+//===================================================================================
+void tzISampler::shuffleXCoordinates(void)
+{
+	for (int p = 0; p < mNumSets; p++)
+	{
+		for (int i = 0; i <  mNumSamples - 1; i++) 
+		{
+			int target = rand_int() % mNumSamples + p * mNumSamples;
+			float temp = mSamples[i + p * mNumSamples + 1].x;
+			mSamples[i + p * mNumSamples + 1].x = mSamples[target].x;
+			mSamples[target].x = temp;
 		}
+	}
 }
 
 
-// ------------------------------------------------------------------- shuffle_y_coordinates
-// shuffle the y coordinates of the points within set
-
-void
-tzISampler::shuffle_y_coordinates(void) {
-	for (int p = 0; p < num_sets; p++)
-		for (int i = 0; i <  num_samples - 1; i++) {
-			int target = rand_int() % num_samples + p * num_samples;
-			float temp = samples[i + p * num_samples + 1].y;
-			samples[i + p * num_samples + 1].y = samples[target].y;
-			samples[target].y = temp;
+//===================================================================================
+void tzISampler::shuffleYCoordinates(void) 
+{
+	for (int p = 0; p < mNumSets; p++)
+	{
+		for (int i = 0; i <  mNumSamples - 1; i++) {
+			int target = rand_int() % mNumSamples + p * mNumSamples;
+			float temp = mSamples[i + p * mNumSamples + 1].y;
+			mSamples[i + p * mNumSamples + 1].y = mSamples[target].y;
+			mSamples[target].y = temp;
 		}	
+	}
 }
 
 
-// ------------------------------------------------------------------- setup_shuffled_indices
-// sets up randomly shuffled indices for the samples array
-
-void											
-tzISampler::setup_shuffled_indices(void) {
-	shuffled_indices.reserve(num_samples * num_sets);
+//===================================================================================
+void tzISampler::setupShuffledIndices(void) 
+{
+	mShuffledIndices.reserve(mNumSamples * mNumSets);
 	vector<int> indices;
 	
-	for (int j = 0; j < num_samples; j++)
+	for (int j = 0; j < mNumSamples; j++)
 		indices.push_back(j);
 	
-	for (int p = 0; p < num_sets; p++) { 
+	for (int p = 0; p < mNumSets; p++) { 
 		random_shuffle(indices.begin(), indices.end());	
 		
-		for (int j = 0; j < num_samples; j++)
-			shuffled_indices.push_back(indices[j]);
+		for (int j = 0; j < mNumSamples; j++)
+			mShuffledIndices.push_back(indices[j]);
 	}	
 }
 
 
-// ------------------------------------------------------------------- map_samples_to_unit_disk
-
-// Maps the 2D sample points in the square [-1,1] X [-1,1] to a unit disk, using Peter Shirley's
-// concentric map function
-
-void
-tzISampler::map_samples_to_unit_disk(void) {
-	int size = (int)samples.size();
+//===================================================================================
+void tzISampler::mapSamplesToUnitDisk(void) 
+{
+	int size = (int)mSamples.size();
 	float r, phi;		// polar coordinates
 	tzPoint2D sp; 		// sample point on unit disk
 	
-	disk_samples.reserve(size);
+	mDiskSamples.reserve(size);
 		
 	for (int j = 0; j < size; j++) {
 		 // map sample point to [-1, 1] X [-1,1]
 		 	
-		sp.x = 2.0f * samples[j].x - 1.0f;	
-		sp.y = 2.0f * samples[j].y - 1.0f;
+		sp.x = 2.0f * mSamples[j].x - 1.0f;
+		sp.y = 2.0f * mSamples[j].y - 1.0f;
 			
 		if (sp.x > -sp.y) {			// sectors 1 and 2
 			if (sp.x > sp.y) {		// sector 1
@@ -190,73 +179,62 @@ tzISampler::map_samples_to_unit_disk(void) {
 		
 		phi *= ((float)PI) / 4.0f;
 				
-		disk_samples[j].x = r * cos(phi);
-		disk_samples[j].y = r * sin(phi);
+		mDiskSamples[j].x = r * cos(phi);
+		mDiskSamples[j].y = r * sin(phi);
 	}
 	
-	samples.erase(samples.begin(), samples.end());
+	mSamples.erase(mSamples.begin(), mSamples.end());
 }
 
 
-// ------------------------------------------------------------------- map_samples_to_hemisphere
-
-// Maps the 2D sample points to 3D points on a unit hemisphere with a cosine power
-// density distribution in the polar angle
-
-void
-tzISampler::map_samples_to_hemisphere(const float exp) {
-	int size = (int)samples.size();
-	hemisphere_samples.reserve(num_samples * num_sets);
+//===================================================================================
+void tzISampler::mapSamplesToHemisphere(const float exp) 
+{
+	int size = (int)mSamples.size();
+	mHemisphereSamples.reserve(mNumSamples * mNumSets);
 		
 	for (int j = 0; j < size; j++) {
-		float cos_phi = cos(2.0f * (float)PI * samples[j].x);
-		float sin_phi = sin(2.0f * (float)PI * samples[j].x);
-		float cos_theta = pow((1.0f - samples[j].y), 1.0f / (exp + 1.0f));
+		float cos_phi = cos(2.0f * (float)PI * mSamples[j].x);
+		float sin_phi = sin(2.0f * (float)PI * mSamples[j].x);
+		float cos_theta = pow((1.0f - mSamples[j].y), 1.0f / (exp + 1.0f));
 		float sin_theta = sqrt (1.0f - cos_theta * cos_theta);
 		float pu = sin_theta * cos_phi;
 		float pv = sin_theta * sin_phi;
 		float pw = cos_theta;
-		hemisphere_samples.push_back(tzPoint3D(pu, pv, pw));
+		mHemisphereSamples.push_back(tzPoint3D(pu, pv, pw));
 	}
 }
 
 
-// ------------------------------------------------------------------- map_samples_to_sphere
-
-// Maps the 2D sample points to 3D points on a unit sphere with a uniform density 
-// distribution over the surface
-// this is used for modelling a spherical light
-
-void
-tzISampler::map_samples_to_sphere(void) {
+//===================================================================================
+void tzISampler::mapSamplesToSphere(void) 
+{
 	float r1, r2;
 	float x, y, z;
 	float r, phi;
 		
-	sphere_samples.reserve(num_samples * num_sets);   
+	mSphereSamples.reserve(mNumSamples * mNumSets);   
 		
-	for (int j = 0; j < num_samples * num_sets; j++) {
-		r1 	= samples[j].x;
-    	r2 	= samples[j].y;
+	for (int j = 0; j < mNumSamples * mNumSets; j++) {
+		r1 	= mSamples[j].x;
+    	r2 	= mSamples[j].y;
     	z 	= 1.0f - 2.0f * r1;
     	r 	= sqrt(1.0f - z * z);
     	phi = (float)TWO_PI * r2;
     	x 	= r * cos(phi);
     	y 	= r * sin(phi);
-		sphere_samples.push_back(tzPoint3D(x, y, z));
+		mSphereSamples.push_back(tzPoint3D(x, y, z));
 	}
 }
 
 
-// ------------------------------------------------------------------- sample_unit_square
-// the final version in Listing 5.13
+//===================================================================================
+tzPoint2D tzISampler::sampleUnitSquare(void) 
+{
+	if (mCount % mNumSamples == 0)  									// start of a new pixel
+		mJump = (rand_int() % mNumSets) * mNumSamples;				// random index jump initialised to zero in constructor
 
-tzPoint2D
-tzISampler::sample_unit_square(void) {
-	if (count % num_samples == 0)  									// start of a new pixel
-		jump = (rand_int() % num_sets) * num_samples;				// random index jump initialised to zero in constructor
-
-	return (samples[jump + shuffled_indices[jump + count++ % num_samples]]);  
+	return (mSamples[mJump + mShuffledIndices[mJump + mCount++ % mNumSamples]]);
 }
 
 
@@ -264,15 +242,15 @@ tzISampler::sample_unit_square(void) {
 
 /*
 
-// ------------------------------------------------------------------- sample_unit_square
+// ------------------------------------------------------------------- sampleUnitSquare
 // the first revised version in Listing in Listing 5.8
 
 Point2D
-Sampler::sample_unit_square(void) {
-	if (count % num_samples == 0)  									// start of a new pixel
-		jump = (rand_int() % num_sets) * num_samples;				// random index jump initialised to zero in constructor
+Sampler::sampleUnitSquare(void) {
+	if (count % mNumSamples == 0)  									// start of a new pixel
+		jump = (rand_int() % mNumSets) * mNumSamples;				// random index jump initialised to zero in constructor
 	
-	return (samples[jump + count++ % num_samples]);	
+	return (samples[jump + count++ % mNumSamples]);	
 }
 
 */
@@ -281,61 +259,51 @@ Sampler::sample_unit_square(void) {
 
 /*
 
-// ------------------------------------------------------------------- sample_unit_square
+// ------------------------------------------------------------------- sampleUnitSquare
 // the original version in Listing 5.7
 
 Point2D
-Sampler::sample_unit_square(void) {
-	return (samples[count++ % (num_samples * num_sets)]);
+Sampler::sampleUnitSquare(void) {
+	return (samples[count++ % (mNumSamples * mNumSets)]);
 }
 
 */
 
 
 
-// ------------------------------------------------------------------- sample_unit_disk
-
-tzPoint2D
-tzISampler::sample_unit_disk(void) {
-	if (count % num_samples == 0)  									// start of a new pixel
-		jump = (rand_int() % num_sets) * num_samples;
+//===================================================================================
+tzPoint2D tzISampler::sampleUnitDisk(void)
+{
+	if (mCount % mNumSamples == 0)  									// start of a new pixel
+		mJump = (rand_int() % mNumSets) * mNumSamples;
 	
-	return (disk_samples[jump + shuffled_indices[jump + count++ % num_samples]]);
+	return (mDiskSamples[mJump + mShuffledIndices[mJump + mCount++ % mNumSamples]]);
 }
 
-
-
-// ------------------------------------------------------------------- sample_hemisphere
-
-tzPoint3D
-tzISampler::sample_hemisphere(void) {
-	if (count % num_samples == 0)  									// start of a new pixel
-		jump = (rand_int() % num_sets) * num_samples;
+//===================================================================================
+tzPoint3D tzISampler::sampleHemisphere(void) 
+{
+	if (mCount % mNumSamples == 0)  									// start of a new pixel
+		mJump = (rand_int() % mNumSets) * mNumSamples;
 		
-	return (hemisphere_samples[jump + shuffled_indices[jump + count++ % num_samples]]);		
+	return (mHemisphereSamples[mJump + mShuffledIndices[mJump + mCount++ % mNumSamples]]);
 }
 
 
-
-// ------------------------------------------------------------------- sample_sphere
-
-tzPoint3D
-tzISampler::sample_sphere(void) {
-	if (count % num_samples == 0)  									// start of a new pixel
-		jump = (rand_int() % num_sets) * num_samples;
+//===================================================================================
+tzPoint3D tzISampler::sampleSphere(void) 
+{
+	if (mCount % mNumSamples == 0)  									// start of a new pixel
+		mJump = (rand_int() % mNumSets) * mNumSamples;
 		
-	return (sphere_samples[jump + shuffled_indices[jump + count++ % num_samples]]);		
+	return (mSphereSamples[mJump + mShuffledIndices[mJump + mCount++ % mNumSamples]]);
 }
 
 
-
-// ------------------------------------------------------------------- sample_one_set
-// This is a specialised function called in LatticeNoise::init_vector_table
-// It doesn't shuffle the indices
-
-tzPoint2D
-tzISampler::sample_one_set(void) {
-	return(samples[count++ % num_samples]);  
+//===================================================================================
+tzPoint2D tzISampler::sampleOneSet(void) 
+{
+	return(mSamples[mCount++ % mNumSamples]);
 }
 
 

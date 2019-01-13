@@ -54,7 +54,7 @@ tzIBRDF::~tzIBRDF(void) {
 void
 tzIBRDF::set_sampler(tzISampler* sPtr) {
 	sampler_ptr = sPtr;
-	sampler_ptr->map_samples_to_hemisphere(1);  // for perfect diffuse
+	sampler_ptr->mapSamplesToHemisphere(1);  // for perfect diffuse
 }
 
 

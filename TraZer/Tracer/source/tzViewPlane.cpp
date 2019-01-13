@@ -63,7 +63,7 @@ void tzViewPlane::setSampler(tzISampler* sp)
 		mSamplerPtr = NULL;
 	}
 
-	mNumSamples = sp->get_num_samples();
+	mNumSamples = sp->getNumSamples();
 	mSamplerPtr = sp;
 }
 

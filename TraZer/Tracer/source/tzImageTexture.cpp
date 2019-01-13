@@ -16,8 +16,8 @@ tzImageTexture::tzImageTexture(void)
 
 tzImageTexture::tzImageTexture(tzImage* _image_ptr)
 	:	tzITexture(),
-		hres(_image_ptr->get_hres()),
-		vres(_image_ptr->get_vres()),
+		hres(_image_ptr->getHeight()),
+		vres(_image_ptr->getWidth()),
 		image_ptr(_image_ptr),
 		mapping_ptr(NULL)
 {}
@@ -98,7 +98,7 @@ tzImageTexture::~tzImageTexture(void) {
 }
 
 
-// ---------------------------------------------------------------- get_color
+// ---------------------------------------------------------------- getColor
 
 // When we ray trace a triangle mesh object with uv mapping, the mapping pointer may be NULL
 // because we can define uv coordinates on an arbitrary triangle mesh.
@@ -107,7 +107,7 @@ tzImageTexture::~tzImageTexture(void) {
 // See, for example, Listing 29.12.
 
 tzRGBColor														
-tzImageTexture::get_color(const tzShadeRec& sr) const {
+tzImageTexture::getColor(const tzShadeRec& sr) const {
 	int row;
 	int column;
 		
@@ -118,7 +118,7 @@ tzImageTexture::get_color(const tzShadeRec& sr) const {
 		column 	= (int)(sr.u * (hres - 1));	
 	}
 	
-	return (image_ptr->get_color(row, column));
+	return (image_ptr->getColor(row, column));
 }  
 
 

@@ -4,44 +4,41 @@
 #include "../include/tzIGeometricObject.h"
 
 
-// ---------------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzIGeometricObject::tzIGeometricObject(void)
-	: 	color(black),
-		material_ptr(NULL)
+	: mColor(black),
+		mMaterialPtr(NULL)
 		//shadows(true)
 {}
 
 
-// ---------------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzIGeometricObject::tzIGeometricObject (const tzIGeometricObject& object)
-	: 	color(object.color)
+	: mColor(object.mColor)
 		/*shadows(object.shadows)*/ 
 {
-	if(object.material_ptr)
-		material_ptr = object.material_ptr->clone(); 
+	if(object.mMaterialPtr)
+		mMaterialPtr = object.mMaterialPtr->clone(); 
 	else  
-		material_ptr = NULL;
+		mMaterialPtr = NULL;
 }	
 
 
-// ---------------------------------------------------------------------- assignment operator
-
-tzIGeometricObject&														
-tzIGeometricObject::operator= (const tzIGeometricObject& rhs) {
+//===================================================================================
+tzIGeometricObject& tzIGeometricObject::operator= (const tzIGeometricObject& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 		
-	color = rhs.color;
+	mColor = rhs.mColor;
 	
-	if (material_ptr) {
-		delete material_ptr;
-		material_ptr = NULL;
+	if (mMaterialPtr) {
+		delete mMaterialPtr;
+		mMaterialPtr = NULL;
 	}
 
-	if (rhs.material_ptr)
-		material_ptr = rhs.material_ptr->clone();
+	if (rhs.mMaterialPtr)
+		mMaterialPtr = rhs.mMaterialPtr->clone();
 
 	//shadows = rhs.shadows;
 
@@ -49,37 +46,32 @@ tzIGeometricObject::operator= (const tzIGeometricObject& rhs) {
 }
 
 
-// ---------------------------------------------------------------------- destructor
-
+//===================================================================================
 tzIGeometricObject::~tzIGeometricObject (void) 
 {	
-	if (material_ptr) {
-		delete material_ptr;
-		material_ptr = NULL;
+	if (mMaterialPtr) {
+		delete mMaterialPtr;
+		mMaterialPtr = NULL;
 	}
 }
 
 
-// ---------------------------------------------------------------------- add_object
-// required for Compound objects 
+//===================================================================================
+void tzIGeometricObject::addObject(tzIGeometricObject* object_ptr) 
+{
+}
 
-void 												
-tzIGeometricObject::add_object(tzIGeometricObject* object_ptr) {}
 
-
-// ----------------------------------------------------------------------- get_normal
-
-tzNormal
-tzIGeometricObject::get_normal(void) const{
+//===================================================================================
+tzNormal tzIGeometricObject::getNormal(void) const
+{
 	return (tzNormal());
 } 
 
-
-// ----------------------------------------------------------------------- set_material
-
-void 
-tzIGeometricObject::set_material(tzIMaterial* mPtr) {
-	material_ptr = mPtr;
+//===================================================================================
+void tzIGeometricObject::setMaterial(tzIMaterial* mPtr) 
+{
+	mMaterialPtr = mPtr;
 }
 
 
@@ -89,51 +81,42 @@ bool tzIGeometricObject::shadowHit(const tzRay &ray, float &tmin) const
 	return false;
 }
 
-// ----------------------------------------------------------------------- get_material
-
-tzIMaterial*
-tzIGeometricObject::get_material(void) const {
-	return (material_ptr);
+//===================================================================================
+tzIMaterial* tzIGeometricObject::getMaterial(void) const 
+{
+	return (mMaterialPtr);
 }
 
 
-// ----------------------------------------------------------------------- compute_normal
-
-tzNormal
-tzIGeometricObject::get_normal(const tzPoint3D& p) {
+//===================================================================================
+tzNormal tzIGeometricObject::getNormal(const tzPoint3D& p) 
+{
 	return (tzNormal());
 }  
 
 
-// ----------------------------------------------------------------------- set_bounding_box
-
-void 
-tzIGeometricObject::set_bounding_box (void) {}
+//===================================================================================
+void tzIGeometricObject::setBoundingBox (void) {}
 
 
-// ----------------------------------------------------------------------- set_bounding_box
-
-tzBBox 
-tzIGeometricObject::get_bounding_box (void) {
+//===================================================================================
+tzBBox tzIGeometricObject::getBoundingBox (void) 
+{
 	return tzBBox();
 }
 
 
-
-// ----------------------------------------------------------------------- sample
-// returns a sample point on the object for area light shading
-
-tzPoint3D
-tzIGeometricObject::sample(void) {
+//===================================================================================
+tzPoint3D tzIGeometricObject::sample(void) 
+{
 	return (tzPoint3D(0.0));
 }
 
 
-// ----------------------------------------------------------------------- pdf
-// returns the probability density function for area light shading
-		
+//===================================================================================		
 float
-tzIGeometricObject::pdf(const tzShadeRec& sr) {
+tzIGeometricObject::pdf(const tzShadeRec& sr)
+{
 	return (1.0);
 }  	
 

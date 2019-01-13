@@ -3,8 +3,7 @@
 #include "../include/tzTriangle.h"
 #include <math.h>
 
-// ----------------------------------------------------------------  default constructor
-
+//===================================================================================
 tzTriangle::tzTriangle(void)
 	: 	tzIGeometricObject(),
 		v0(0, 0, 0), 
@@ -13,28 +12,25 @@ tzTriangle::tzTriangle(void)
 		normal(0, 1, 0)
 {}
 
-// ---------------------------------------------------------------- constructor
-
+//===================================================================================
 tzTriangle::tzTriangle(const tzPoint3D& a, const tzPoint3D& b, const tzPoint3D& c)
 	: 	tzIGeometricObject(),
 		v0(a),
 		v1(b),
 		v2(c)
 {
-	compute_normal();	
+	computeNormal();	
 }
 
 
-// ---------------------------------------------------------------- clone
-
-tzTriangle*
-tzTriangle::clone(void) const {
+//===================================================================================
+tzTriangle* tzTriangle::clone(void) const 
+{
 	return (new tzTriangle(*this));
 }
 
 
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzTriangle::tzTriangle(const tzTriangle& triangle)
 	:	tzIGeometricObject(triangle),
 		v0(triangle.v0),
@@ -44,10 +40,9 @@ tzTriangle::tzTriangle(const tzTriangle& triangle)
 {}
 
 
-// ---------------------------------------------------------------- assignment operator
-
-tzTriangle&
-tzTriangle::operator= (const tzTriangle& rhs) {
+//===================================================================================
+tzTriangle& tzTriangle::operator= (const tzTriangle& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
@@ -62,23 +57,20 @@ tzTriangle::operator= (const tzTriangle& rhs) {
 }
 
 
-// ---------------------------------------------------------------- destructor
-
+//===================================================================================
 tzTriangle::~tzTriangle(void) {}
 
 
-
-// ---------------------------------------------------------------- compute_normal
-
-void 
-tzTriangle::compute_normal(void) {
+//===================================================================================
+void tzTriangle::computeNormal(void) 
+{
 	normal = (v1 - v0) ^ (v2 - v0);  
 	normal.normalize();
 }
 
-
-tzBBox
-tzTriangle::get_bounding_box(void) {
+//===================================================================================
+tzBBox tzTriangle::getBoundingBox(void) 
+{
 	float delta = 0.000001f; 
 	
 	return (tzBBox(fminf(fminf(v0.x, v1.x), v2.x) - delta, fmaxf(fmaxf(v0.x, v1.x), v2.x) + delta, 
@@ -87,10 +79,9 @@ tzTriangle::get_bounding_box(void) {
 }
 
 
-// ------------------------------------------------------------------------------ hit
-
-bool 
-tzTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
+//===================================================================================
+bool tzTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
+{
 	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.d.x, d = v0.x - ray.o.x; 
 	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.d.y, h = v0.y - ray.o.y;
 	float i = v0.z - v1.z, j = v0.z - v2.z, k = ray.d.z, l = v0.z - ray.o.z;
@@ -130,8 +121,7 @@ tzTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
 }  		
 
 
-// ------------------------------------------------------------------------------ shadow_hit
-
+//===================================================================================
 bool tzTriangle::shadowHit(const tzRay& ray, float& tmin) const 
 {
 	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.d.x, d = v0.x - ray.o.x; 

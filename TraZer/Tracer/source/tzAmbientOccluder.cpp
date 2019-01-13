@@ -5,9 +5,9 @@
 //===================================================================================
 tzAmbientOccluder::tzAmbientOccluder(void)
 	: 	tzILight(),
-		ls(1.0),
-		color(1.0),
-		min_amount( 0.0f ),
+		mLs(1.0),
+		mColor(1.0),
+		mMinAmount( 0.0f ),
 		mSamplerPtr( NULL )
 {}
 
@@ -15,9 +15,9 @@ tzAmbientOccluder::tzAmbientOccluder(void)
 //===================================================================================
 tzAmbientOccluder::tzAmbientOccluder(const tzAmbientOccluder& a)
 	: 	tzILight(a),
-		ls(a.ls),
-		color(a.color) ,
-		min_amount(0.0f),
+		mLs(a.mLs),
+		mColor(a.mColor) ,
+		mMinAmount(0.0f),
 		mSamplerPtr(NULL)
 {}
 
@@ -37,8 +37,8 @@ tzAmbientOccluder& tzAmbientOccluder::operator= (const tzAmbientOccluder& rhs)
 			
 	tzILight::operator= (rhs);
 	
-	ls 		= rhs.ls;
-	color 	= rhs.color;
+	mLs 	= rhs.mLs;
+	mColor 	= rhs.mColor;
 	
 	return (*this);
 }
@@ -58,7 +58,7 @@ tzAmbientOccluder::~tzAmbientOccluder(void)
 //===================================================================================
 tzVector3D tzAmbientOccluder::getDirection(  tzShadeRec& s)
 {
-	tzPoint3D sp = mSamplerPtr->sample_hemisphere();
+	tzPoint3D sp = mSamplerPtr->sampleHemisphere();
 	return ( sp.x*u + sp.y*v + sp.z*w );
 }
 
@@ -78,10 +78,10 @@ tzRGBColor tzAmbientOccluder::L( tzShadeRec& sr)
 
 	if (inShadow( shadowRay, sr ) )
 	{
-		return (min_amount * ls * color);
+		return (mMinAmount * mLs * mColor);
 	}
 	
-	return (ls*color);
+	return (mLs*mColor);
 }
 
 //===================================================================================
@@ -111,13 +111,13 @@ void tzAmbientOccluder::setSampler( tzISampler *samplerPtr )
 	}
 
 	mSamplerPtr = samplerPtr;
-	mSamplerPtr->map_samples_to_hemisphere( 1 );
+	mSamplerPtr->mapSamplesToHemisphere( 1 );
 }
 
 // ================================================================================
 void tzAmbientOccluder::setMinAmount(float minAmount)
 {
-	min_amount = minAmount;
+	mMinAmount = minAmount;
 }
 
 

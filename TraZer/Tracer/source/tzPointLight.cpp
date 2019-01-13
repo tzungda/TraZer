@@ -6,16 +6,16 @@
 //===================================================================================
 tzPointLight::tzPointLight(void)
 	: 	tzILight(),
-		ls(1.0),
-		color(1.0)			
+		mLs(1.0),
+		mColor(1.0)
 {}
 
 
 //===================================================================================
 tzPointLight::tzPointLight(const tzPointLight& a)
 	: 	tzILight(a),
-		ls(a.ls),
-		color(a.color) 		
+		mLs(a.mLs),
+		mColor(a.mColor)
 {}
 
 
@@ -34,8 +34,8 @@ tzPointLight& tzPointLight::operator= (const tzPointLight& rhs)
 			
 	tzILight::operator= (rhs);
 	
-	ls 		= rhs.ls;
-	color 	= rhs.color;
+	mLs 	= rhs.mLs;
+	mColor = rhs.mColor;
 	
 	return (*this);
 }
@@ -49,7 +49,7 @@ tzPointLight::~tzPointLight(void)
 //===================================================================================
 tzVector3D tzPointLight::getDirection(tzShadeRec& s)
 {
-	return ((location - s.mHitPoint).hat() );
+	return ((mLocation - s.mHitPoint).hat() );
 }
 
 
@@ -58,7 +58,7 @@ bool tzPointLight::inShadow(const tzRay &ray, const tzShadeRec &sr) const
 {
 	float t = 0.0f;
 	int numObjects = (int)sr.mWorld.mObjects.size();
-	float d = (float)(location - ray.o).length();
+	float d = (float)(mLocation - ray.o).length();
 
 	for (int j = 0; j < numObjects; j++)
 	{
@@ -74,12 +74,12 @@ bool tzPointLight::inShadow(const tzRay &ray, const tzShadeRec &sr) const
 //===================================================================================
 tzRGBColor tzPointLight::L(tzShadeRec& sr) 
 {
-	return (ls * color);
+	return (mLs * mColor);
 }
 
 //===================================================================================
 void tzPointLight::set_location(const tzVector3D &loc)
 {
-	location = loc;
+	mLocation = loc;
 }
 

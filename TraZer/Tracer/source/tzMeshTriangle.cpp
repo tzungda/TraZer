@@ -4,8 +4,7 @@
 #include <math.h>
 						
 
-// ----------------------------------------------------------------  default constructor
-
+//===================================================================================
 tzMeshTriangle::tzMeshTriangle(void)
 	: 	tzIGeometricObject(),
 		mesh_ptr(NULL),
@@ -16,9 +15,7 @@ tzMeshTriangle::tzMeshTriangle(void)
 {}
 
 
-// ---------------------------------------------------------------- constructor
-// the normal is computed in Grid::read_ply_file
-
+//===================================================================================
 tzMeshTriangle::tzMeshTriangle(tzMesh* _mesh_ptr, const int i0, const int i1, const int i2)
 	: 	tzIGeometricObject(),
 		mesh_ptr(_mesh_ptr),
@@ -27,6 +24,7 @@ tzMeshTriangle::tzMeshTriangle(tzMesh* _mesh_ptr, const int i0, const int i1, co
 		indexUV0(i0), indexUV1(i1), indexUV2(i2)
 {}
 
+//===================================================================================
 tzMeshTriangle::tzMeshTriangle(tzMesh* _mesh_ptr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2)
 	: tzIGeometricObject(),
 	mesh_ptr(_mesh_ptr),
@@ -36,8 +34,7 @@ tzMeshTriangle::tzMeshTriangle(tzMesh* _mesh_ptr, const int v0, const int v1, co
 {
 }
 
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzMeshTriangle::tzMeshTriangle(const tzMeshTriangle& mt)
 	:	tzIGeometricObject(mt),
 		mesh_ptr(mt.mesh_ptr), // just the pointer
@@ -50,10 +47,9 @@ tzMeshTriangle::tzMeshTriangle(const tzMeshTriangle& mt)
 {}
 
 
-// ---------------------------------------------------------------- assignment operator
-
-tzMeshTriangle&
-tzMeshTriangle::operator= (const tzMeshTriangle& rhs) {
+//===================================================================================
+tzMeshTriangle& tzMeshTriangle::operator= (const tzMeshTriangle& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
@@ -75,9 +71,9 @@ tzMeshTriangle::operator= (const tzMeshTriangle& rhs) {
 }
 
 
-// ---------------------------------------------------------------- destructor
-
-tzMeshTriangle::~tzMeshTriangle(void) {
+//===================================================================================
+tzMeshTriangle::~tzMeshTriangle(void) 
+{
 	if (mesh_ptr) {
 		delete mesh_ptr;
 		mesh_ptr = NULL;
@@ -85,10 +81,9 @@ tzMeshTriangle::~tzMeshTriangle(void) {
 }
 
 
-// ---------------------------------------------------------------- compute_normal
-
-void 
-tzMeshTriangle::compute_normal(const bool reverse_normal) {
+//===================================================================================
+void tzMeshTriangle::computeNormal(const bool reverse_normal) 
+{
 	normal = (mesh_ptr->vertices[indexV1] - mesh_ptr->vertices[indexV0]) ^
 			 (mesh_ptr->vertices[indexV2] - mesh_ptr->vertices[indexV0]);
 	normal.normalize();
@@ -100,19 +95,16 @@ tzMeshTriangle::compute_normal(const bool reverse_normal) {
 }
 
 
-// ---------------------------------------------------------------- get_normal
-// this is called in Grid::compute_mesh_normals
-
-tzNormal
-tzMeshTriangle::get_normal(void) const {
+//===================================================================================
+tzNormal tzMeshTriangle::getNormal(void) const 
+{
 	return (normal);
 }	
 
 
-//---------------------------------------------------------------- get_bounding_box
-
-tzBBox
-tzMeshTriangle::get_bounding_box(void) {
+//===================================================================================
+tzBBox tzMeshTriangle::getBoundingBox(void) 
+{
 	float delta = 0.0001f;  // to avoid degenerate bounding boxes
 	
 	tzPoint3D v1(mesh_ptr->vertices[indexV0]);
@@ -125,11 +117,9 @@ tzMeshTriangle::get_bounding_box(void) {
 }
 
 
-// ------------------------------------------------------------------------------ shadow_hit
-// this function is independent of the derived triangle type:
-// flat, smooth, flat uv, smooth uv
-
-bool tzMeshTriangle::shadowHit(const tzRay& ray, float& tmin) const {
+//===================================================================================
+bool tzMeshTriangle::shadowHit(const tzRay& ray, float& tmin) const 
+{
 	tzPoint3D v0(mesh_ptr->vertices[indexV0]);
 	tzPoint3D v1(mesh_ptr->vertices[indexV1]);
 	tzPoint3D v2(mesh_ptr->vertices[indexV2]);
@@ -170,23 +160,18 @@ bool tzMeshTriangle::shadowHit(const tzRay& ray, float& tmin) const {
 	return (true);	
 }   
 
-
-// ---------------------------------------------------------------- interpolate_u
-// this is used for texture mapping in Chapter 29
-
-float 
-tzMeshTriangle::interpolate_u(const float beta, const float gamma) const {
+//===================================================================================
+float  tzMeshTriangle::interpolate_u(const float beta, const float gamma) const
+{
 	return( (1 - beta - gamma) * mesh_ptr->u[indexUV0] 
 				+ beta * mesh_ptr->u[indexUV1]
 					+ gamma * mesh_ptr->u[indexUV2] );
 }
 
 
-// ---------------------------------------------------------------- interpolate_v
-// this is used for texture mapping in Chapter 29
-
-float 
-tzMeshTriangle::interpolate_v(const float beta, const float gamma) const {
+//===================================================================================
+float tzMeshTriangle::interpolate_v(const float beta, const float gamma) const 
+{
 	return( (1 - beta - gamma) * mesh_ptr->v[indexUV0]
 				+ beta * mesh_ptr->v[indexUV1]
 					+ gamma * mesh_ptr->v[indexUV2] );

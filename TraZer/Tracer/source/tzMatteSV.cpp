@@ -117,7 +117,7 @@ tzMatteSV::shade(tzShadeRec& sr)
 }
 
 //===================================================================================
-tzRGBColor tzMatteSV::area_light_shade( tzShadeRec &sr) const
+tzRGBColor tzMatteSV::areaLightShade( tzShadeRec &sr) const
 {
 	tzVector3D 	wo = -sr.mRay.d;
 	tzRGBColor 	L = ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
@@ -148,7 +148,7 @@ tzRGBColor tzMatteSV::area_light_shade( tzShadeRec &sr) const
 }
 
 //===================================================================================
-tzRGBColor tzMatteSV::path_shade(tzShadeRec &sr)
+tzRGBColor tzMatteSV::pathShade(tzShadeRec &sr)
 {
 	tzVector3D 	wo = -sr.mRay.d;
 	tzVector3D 	wi;
@@ -157,5 +157,5 @@ tzRGBColor tzMatteSV::path_shade(tzShadeRec &sr)
 	float 		ndotwi = (float)(sr.mNormal * wi);
 	tzRay 		reflected_ray(sr.mHitPoint, wi);
 
-	return (f * sr.mWorld.mTracerPtr->trace_ray(reflected_ray, sr.mDepth + 1) * ndotwi / pdf);
+	return (f * sr.mWorld.mTracerPtr->traceRay(reflected_ray, sr.mDepth + 1) * ndotwi / pdf);
 }

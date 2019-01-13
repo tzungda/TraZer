@@ -4,34 +4,30 @@
 #include "../include/tzShadeRec.h"
 #include "../include/tzIMaterial.h"
 
-// -------------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzWhitted::tzWhitted(void)
 	: tzITracer()
 {}
 
 
-// -------------------------------------------------------------------- constructor
-		
+//===================================================================================		
 tzWhitted::tzWhitted(tzWorld* _worldPtr)
 	: tzITracer(_worldPtr)
 {}
 
 
-// -------------------------------------------------------------------- destructor
-
+//===================================================================================
 tzWhitted::~tzWhitted(void) {}
 
 
-// -------------------------------------------------------------------- trace_ray
-
-tzRGBColor	
-tzWhitted::trace_ray(const tzRay ray, const int depth) const {
+//===================================================================================
+tzRGBColor tzWhitted::traceRay(const tzRay ray, const int depth) const
+{
 	float tmin = 0.0f;
-	if (depth > world_ptr->mVp.mMaxDepth)
+	if (depth > mWorldPtr->mVp.mMaxDepth)
 		return(black);
 	else {
-		tzShadeRec sr(world_ptr->hitObjects(ray, tmin));
+		tzShadeRec sr(mWorldPtr->hitObjects(ray, tmin));
 					
 		if (sr.mHitAnObject) {
 			sr.mDepth = depth;
@@ -39,6 +35,6 @@ tzWhitted::trace_ray(const tzRay ray, const int depth) const {
 			return (sr.mMaterialPtr->shade(sr));   
 		}
 		else
-			return (world_ptr->mBackgroundColor);
+			return (mWorldPtr->mBackgroundColor);
 	}																																			
 }

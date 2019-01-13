@@ -4,42 +4,38 @@
 #include "../include/tzFlatMeshTriangle.h"
 						
 
-// ----------------------------------------------------------------  default constructor
-
+//===================================================================================
 tzFlatMeshTriangle::tzFlatMeshTriangle(void)
 	: 	tzMeshTriangle()
 {}
 
 
-// ---------------------------------------------------------------- constructor
-
-tzFlatMeshTriangle::tzFlatMeshTriangle (tzMesh* _mesh_ptr, const int i0, const int i1, const int i2)
-	: 	tzMeshTriangle(_mesh_ptr, i0, i1, i2)
+//===================================================================================
+tzFlatMeshTriangle::tzFlatMeshTriangle (tzMesh* _meshPtr, const int i0, const int i1, const int i2)
+	: 	tzMeshTriangle(_meshPtr, i0, i1, i2)
 {}
 
+//===================================================================================
 tzFlatMeshTriangle::tzFlatMeshTriangle(tzMesh* _meshPtr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2)
 	: tzMeshTriangle(_meshPtr, v0, v1, v2, n0, n1, n2, uv0, uv1, uv2)
 {
 }
 
-// ---------------------------------------------------------------- clone
-
-tzFlatMeshTriangle* tzFlatMeshTriangle::clone(void) const {
+//===================================================================================
+tzFlatMeshTriangle* tzFlatMeshTriangle::clone(void) const 
+{
 	return (new tzFlatMeshTriangle(*this));
 }
 
-
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzFlatMeshTriangle::tzFlatMeshTriangle(const tzFlatMeshTriangle& fmt)
 	:	tzMeshTriangle(fmt)
 {}
 
 
-// ---------------------------------------------------------------- assignment operator
-
-tzFlatMeshTriangle& 
-tzFlatMeshTriangle::operator= (const tzFlatMeshTriangle& rhs) {
+//===================================================================================
+tzFlatMeshTriangle& tzFlatMeshTriangle::operator= (const tzFlatMeshTriangle& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
@@ -49,15 +45,13 @@ tzFlatMeshTriangle::operator= (const tzFlatMeshTriangle& rhs) {
 }
 
 
-// ---------------------------------------------------------------- destructor
-
+//===================================================================================
 tzFlatMeshTriangle::~tzFlatMeshTriangle(void) {}
 
 
-// ---------------------------------------------------------------- hit
-
-bool 															 
-tzFlatMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
+//===================================================================================
+bool tzFlatMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const
+{
 	tzPoint3D v0(mesh_ptr->vertices[indexV0]);
 	tzPoint3D v1(mesh_ptr->vertices[indexV1]);
 	tzPoint3D v2(mesh_ptr->vertices[indexV2]);

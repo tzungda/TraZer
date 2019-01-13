@@ -5,79 +5,69 @@
 #include "../include/tzCompound.h"
 					
 
-// ----------------------------------------------------------------  default constructor
-
+//===================================================================================
 tzCompound::tzCompound(void)
 	: 	tzIGeometricObject()
 {}
 
 
-// ---------------------------------------------------------------- clone
-
-tzCompound*
-tzCompound::clone(void) const {
+//===================================================================================
+tzCompound* tzCompound::clone(void) const 
+{
 	return (new tzCompound(*this));
 }
 
 
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzCompound::tzCompound(const tzCompound& c)
-	: tzIGeometricObject(c) {
+	: tzIGeometricObject(c) 
+{
 	
-	copy_objects(c.objects);					
+	copyObjects(c.objects);					
 }
 
 
-
-// ---------------------------------------------------------------- assignment operator
-
-tzCompound&
-tzCompound::operator= (const tzCompound& rhs) {
+//===================================================================================
+tzCompound& tzCompound::operator= (const tzCompound& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
 	tzIGeometricObject::operator= (rhs);						
 	
-	copy_objects(rhs.objects);				
+	copyObjects(rhs.objects);				
 
 	return (*this);
 }
 
 
-// ---------------------------------------------------------------- destructor
-
-tzCompound::~tzCompound(void) {
-	delete_objects();				
+//===================================================================================
+tzCompound::~tzCompound(void)
+{
+	deleteObjects();				
 }
 
 
-// ---------------------------------------------------------------- add_object
-
-void 
-tzCompound::add_object(tzIGeometricObject* object_ptr) {
+//===================================================================================
+void tzCompound::addObject(tzIGeometricObject* object_ptr)
+{
 	objects.push_back(object_ptr);	
 }
 
 
-//------------------------------------------------------------------ set_material
-// sets the same material on all objects
-
-void 
-tzCompound::set_material(tzIMaterial* material_ptr) {
+//===================================================================================
+void tzCompound::setMaterial(tzIMaterial* mMaterialPtr) 
+{
 	int num_objects = (int)objects.size();
 
 	for (int j = 0; j < num_objects; j++)
-		objects[j]->set_material(material_ptr);
+		objects[j]->setMaterial(mMaterialPtr);
 }
 
 
-//------------------------------------------------------------------ delete_objects
-// Deletes the objects in the objects array, and erases the array.
-// The array still exists, because it'ss an automatic variable, but it's empty 
-
-void
-tzCompound::delete_objects(void) {
+//===================================================================================
+void tzCompound::deleteObjects(void) 
+{
 	int num_objects = (int)objects.size();
 	
 	for (int j = 0; j < num_objects; j++) {
@@ -89,11 +79,10 @@ tzCompound::delete_objects(void) {
 }
 
 
-//------------------------------------------------------------------ copy_objects
-
-void
-tzCompound::copy_objects(const std::vector<tzIGeometricObject*>& rhs_ojects) {
-	delete_objects();    	
+//===================================================================================
+void tzCompound::copyObjects(const std::vector<tzIGeometricObject*>& rhs_ojects) 
+{
+	deleteObjects();    	
 	int num_objects = (int)rhs_ojects.size();
 	
 	for (int j = 0; j < num_objects; j++)
@@ -101,10 +90,9 @@ tzCompound::copy_objects(const std::vector<tzIGeometricObject*>& rhs_ojects) {
 }
 
 
-//------------------------------------------------------------------ hit
-
-bool 															 
-tzCompound::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
+//===================================================================================
+bool tzCompound::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
+{
 	float		t;
 	tzNormal		normal;
 	tzPoint3D		local_hit_point;
@@ -116,7 +104,7 @@ tzCompound::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
 		if (objects[j]->hit(ray, t, sr) && (t < tmin)) {
 			hit				= true;
 			tmin 			= t;
-			material_ptr	= objects[j]->get_material();	// lhs is GeometricObject::material_ptr
+			mMaterialPtr	= objects[j]->getMaterial();	// lhs is GeometricObject::mMaterialPtr
 			normal			= sr.mNormal;
 			local_hit_point	= sr.mLocalHitPoint;  
 		}
@@ -130,7 +118,7 @@ tzCompound::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
 	return (hit);
 }
 
-
+//===================================================================================
 bool tzCompound::shadowHit(const tzRay& ray, float& tmin) const {
 	float		t;
 	tzNormal		normal;

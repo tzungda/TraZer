@@ -5,16 +5,16 @@
 //===================================================================================
 tzAmbient::tzAmbient(void)
 	: 	tzILight(),
-		ls(1.0),
-		color(1.0)			
+		mLs(1.0),
+		mColor(1.0)
 {}
 
 
 //===================================================================================
 tzAmbient::tzAmbient(const tzAmbient& a)
 	: 	tzILight(a),
-		ls(a.ls),
-		color(a.color) 		
+		mLs(a.mLs),
+		mColor(a.mColor)
 {}
 
 
@@ -33,8 +33,8 @@ tzAmbient& tzAmbient::operator= (const tzAmbient& rhs)
 			
 	tzILight::operator= (rhs);
 	
-	ls 		= rhs.ls;
-	color 	= rhs.color;
+	mLs = rhs.mLs;
+	mColor = rhs.mColor;
 	
 	return (*this);
 }
@@ -54,7 +54,7 @@ tzVector3D tzAmbient::getDirection(  tzShadeRec& s)
 //===================================================================================
 tzRGBColor tzAmbient::L(  tzShadeRec& sr) 
 {
-	return (ls * color);
+	return (mLs * mColor);
 }
 
 

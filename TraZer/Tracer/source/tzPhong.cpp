@@ -143,7 +143,7 @@ tzRGBColor tzPhong::shade(tzShadeRec& sr)
 }
 
 //===================================================================================
-tzRGBColor tzPhong::area_light_shade( tzShadeRec &sr) const
+tzRGBColor tzPhong::areaLightShade( tzShadeRec &sr) const
 {
 	tzVector3D 	wo = -sr.mRay.d;
 	tzRGBColor	ambientColor = ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);

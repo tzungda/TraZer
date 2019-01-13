@@ -157,7 +157,7 @@ tzShadeRec tzWorld::hitBareBonesObject(const tzRay &ray)
 		{
 			sr.mHitAnObject = true;
 			tmin = t;
-			sr.mColor = mObjects[j]->get_color();
+			sr.mColor = mObjects[j]->getColor();
 		}
 	}
 
@@ -168,9 +168,9 @@ tzShadeRec tzWorld::hitBareBonesObject(const tzRay &ray)
 void tzWorld::build()
 {
 	// area light & bunny------------------------------------------------------------------------------
-	int num_samples = 16;
+	int numSamples = 16;
 
-	tzISampler* sampler_ptr = new tzMultiJittered(num_samples);
+	tzISampler* sampler_ptr = new tzMultiJittered(numSamples);
 
 	mVp.setHres(400);
 	mVp.setVres(400);
@@ -182,15 +182,15 @@ void tzWorld::build()
 	mTracerPtr = new tzAreaLighting(this);
 
 	tzPinhole* camera = new tzPinhole();
-	camera->set_eye(0, 0, -200);
-	camera->set_lookat(0, 0, 0);
+	camera->setEye(0, 0, -200);
+	camera->setLookAt(0, 0, 0);
 	camera->set_view_distance(16000);
-	camera->compute_uvw();
+	camera->computeUVW();
 	setCamera(camera);
 
 
 	tzEmissive* emissive_ptr = new tzEmissive;
-	emissive_ptr->scale_radiance(300);
+	emissive_ptr->scaleRadiance(300);
 	emissive_ptr->set_ce(white);
 
 	//
@@ -206,21 +206,21 @@ void tzWorld::build()
 
 	// rectangle emit object
 	tzRectangle* rectangle_ptr = new tzRectangle(p0, a, b, normal);
-	rectangle_ptr->set_material(emissive_ptr);
+	rectangle_ptr->setMaterial(emissive_ptr);
 	rectangle_ptr->set_sampler(sampler_ptr);
 	//rectangle_ptr->set_shadows(false);
 	addObject(rectangle_ptr);
 
 	// area light
 	tzAreaLight* area_light_ptr = new tzAreaLight;
-	area_light_ptr->set_object(rectangle_ptr);
+	area_light_ptr->setObject(rectangle_ptr);
 	area_light_ptr->setCastsShadows(true);
 	addLight(area_light_ptr);
 
 	// point light
 	tzPointLight* lightPtr = new tzPointLight();
 	lightPtr->set_location(tzVector3D(0, 7, 7));
-	lightPtr->scale_radiance(0.2f);
+	lightPtr->scaleRadiance(0.2f);
 	lightPtr->setCastsShadows(false);
 	addLight(lightPtr);
 
@@ -267,23 +267,23 @@ void tzWorld::build()
 																	//	grid_ptr->read_smooth_uv_triangles(file_name);		// for Figure 29.22(b)
 	}
 	//grid_ptr->read_flat_triangles((char*)file_name);
-	grid_ptr->set_material(sv_matte_ptr);
+	grid_ptr->setMaterial(sv_matte_ptr);
 	grid_ptr->setup_cells();
 	addObject(grid_ptr);
 
 	// sphere
 	//tzSphere *spherePtr = new tzSphere(tzPoint3D(0, 2, 0), 1);
-	//spherePtr->set_material(phongPtr);
+	//spherePtr->setMaterial(phongPtr);
 	//addObject(spherePtr);
 
 	// plane
 	tzPlane* planePtr = new tzPlane(tzPoint3D(0, -1, 0), tzNormal(0, 1, 0));
-	planePtr->set_material(mattePtr2);
+	planePtr->setMaterial(mattePtr2);
 	addObject(planePtr);
 	
 
 	/*----------------------------------------------------------------
-	int num_samples = 16;
+	int numSamples = 16;
 
 	mVp.setHres(400);
 	mVp.setVres(400);
@@ -294,16 +294,16 @@ void tzWorld::build()
 	mBackgroundColor = black;
 
 	tzPinhole* pinhole_ptr = new tzPinhole;
-	pinhole_ptr->set_eye(80, 80, 80);
+	pinhole_ptr->setEye(80, 80, 80);
 	pinhole_ptr->set_view_distance(1600.0);
-	pinhole_ptr->set_lookat(0, -0.5, 0);
-	pinhole_ptr->compute_uvw();
+	pinhole_ptr->setLookAt(0, -0.5, 0);
+	pinhole_ptr->computeUVW();
 	setCamera(pinhole_ptr);
 
 
 	tzDirectional* directional_ptr = new tzDirectional;
-	directional_ptr->set_direction(0.75, 1, -0.15);
-	directional_ptr->scale_radiance(4.5);
+	directional_ptr->setDirection(0.75, 1, -0.15);
+	directional_ptr->scaleRadiance(4.5);
 	directional_ptr->setCastsShadows(true);
 	addLight(directional_ptr);
 
@@ -334,7 +334,7 @@ void tzWorld::build()
 														//	grid_ptr->read_smooth_uv_triangles(file_name);		// for Figure 29.22(b)
 	}
 
-	grid_ptr->set_material(sv_matte_ptr);
+	grid_ptr->setMaterial(sv_matte_ptr);
 	grid_ptr->setup_cells();
 	addObject(grid_ptr);
 
@@ -345,13 +345,13 @@ void tzWorld::build()
 	matte_ptr->set_kd(0.4);
 
 	tzPlane* plane_ptr1 = new tzPlane(tzPoint3D(0, -2.0, 0), tzNormal(0, 1, 0));
-	plane_ptr1->set_material(matte_ptr);
+	plane_ptr1->setMaterial(matte_ptr);
 	addObject(plane_ptr1);
 	*/
 
 	//--------------------------------------------------------------------------
 	/*
-	int num_samples = 16;
+	int numSamples = 16;
 
 	mVp.setHres(400);
 	mVp.setVres(400);
@@ -362,15 +362,15 @@ void tzWorld::build()
 	mBackgroundColor = black;
 
 	tzPinhole* pinhole_ptr = new tzPinhole;
-	pinhole_ptr->set_eye(0, 15, 15);
-	pinhole_ptr->set_lookat(0, 0, 0);
+	pinhole_ptr->setEye(0, 15, 15);
+	pinhole_ptr->setLookAt(0, 0, 0);
 	pinhole_ptr->set_view_distance(16000);
-	pinhole_ptr->compute_uvw();
+	pinhole_ptr->computeUVW();
 	setCamera(pinhole_ptr);
 
 	tzDirectional* directional_ptr = new tzDirectional;
-	directional_ptr->set_direction(0.75, 1, -0.15);
-	directional_ptr->scale_radiance(4.5);
+	directional_ptr->setDirection(0.75, 1, -0.15);
+	directional_ptr->scaleRadiance(4.5);
 	directional_ptr->setCastsShadows(true);
 	addLight(directional_ptr);
 
@@ -384,7 +384,7 @@ void tzWorld::build()
 	tzGrid* grid_ptr = new tzGrid(new tzMesh);
 	grid_ptr->read_flat_triangles((char*)file_name);		// for Figure 23.7(a)
 													//	grid_ptr->read_smooth_triangles(file_name);		// for Figure 23.7(b)
-	grid_ptr->set_material(matte_ptr1);
+	grid_ptr->setMaterial(matte_ptr1);
 	grid_ptr->setup_cells();
 	addObject(grid_ptr);
 
@@ -394,14 +394,14 @@ void tzWorld::build()
 	matte_ptr2->set_kd(0.4);
 
 	tzPlane* plane_ptr1 = new tzPlane(tzPoint3D(0, -2.0, 0), tzNormal(0, 1, 0));
-	plane_ptr1->set_material(matte_ptr2);
+	plane_ptr1->setMaterial(matte_ptr2);
 	addObject(plane_ptr1);
 	*/
 	
 
 	// area light & bunny------------------------------------------------------------------------------
 	/*
-	int num_samples = 100;
+	int numSamples = 100;
 
 	tzISampler* sampler_ptr = new tzMultiJittered(num_samples);
 
@@ -415,15 +415,15 @@ void tzWorld::build()
 	mTracerPtr = new tzAreaLighting(this);
 
 	tzPinhole* camera = new tzPinhole();
-	camera->set_eye(200, 200, 200);
-	camera->set_lookat(0, 0, 0);
+	camera->setEye(200, 200, 200);
+	camera->setLookAt(0, 0, 0);
 	camera->set_view_distance(16000);
-	camera->compute_uvw();
+	camera->computeUVW();
 	setCamera(camera);
 
 
 	tzEmissive* emissive_ptr = new tzEmissive;
-	emissive_ptr->scale_radiance(300);
+	emissive_ptr->scaleRadiance(300);
 	emissive_ptr->set_ce(white);
 
 	//
@@ -440,20 +440,20 @@ void tzWorld::build()
 	// point light
 	//tzPointLight* lightPtr = new tzPointLight();
 	//lightPtr->set_location(tzVector3D(50, 100, 0));
-	//lightPtr->scale_radiance(3.0);
+	//lightPtr->scaleRadiance(3.0);
 	//lightPtr->setCastsShadows(true);
 	//addLight(lightPtr);
 	
 	// rectangle emit object
 	tzRectangle* rectangle_ptr = new tzRectangle(p0, a, b, normal);
-	rectangle_ptr->set_material(emissive_ptr);
+	rectangle_ptr->setMaterial(emissive_ptr);
 	rectangle_ptr->set_sampler(sampler_ptr);
 	//rectangle_ptr->set_shadows(false);
 	addObject(rectangle_ptr);
 
 	// area light
 	tzAreaLight* area_light_ptr = new tzAreaLight;
-	area_light_ptr->set_object(rectangle_ptr);
+	area_light_ptr->setObject(rectangle_ptr);
 	area_light_ptr->setCastsShadows(true);
 	addLight(area_light_ptr);
 	
@@ -484,18 +484,18 @@ void tzWorld::build()
 	tzGrid* grid_ptr = new tzGrid(new tzMesh);
 	grid_ptr->setScale( 10.0f );
 	grid_ptr->read_flat_triangles((char*)file_name);
-	grid_ptr->set_material(mattePtr1);
+	grid_ptr->setMaterial(mattePtr1);
 	grid_ptr->setup_cells();
 	addObject(grid_ptr);
 
 	// sphere
 	//tzSphere *spherePtr = new tzSphere(tzPoint3D(0, 2, 0), 1);
-	//spherePtr->set_material(phongPtr);
+	//spherePtr->setMaterial(phongPtr);
 	//addObject(spherePtr);
 
 	// plane
 	tzPlane* planePtr = new tzPlane(tzPoint3D(0, 0.5, 0), tzNormal(0, 1, 0));
-	planePtr->set_material(mattePtr2);
+	planePtr->setMaterial(mattePtr2);
 	addObject(planePtr);
 	*/
 
@@ -515,18 +515,18 @@ void tzWorld::build()
 
 	// ao
 	tzAmbientOccluder *aoPtr = new tzAmbientOccluder();
-	aoPtr->scale_radiance(1.0f);
-	aoPtr->set_color( white );
+	aoPtr->scaleRadiance(1.0f);
+	aoPtr->setColor( white );
 	aoPtr->setMinAmount( 0.0f );
 	aoPtr->setSampler( samplerPtr );
 	setAmbientLight(aoPtr);
 
 	// set camera
 	tzPinhole *pinHolePtr = new tzPinhole();
-	pinHolePtr->set_eye(25, 20, 45);
-	pinHolePtr->set_lookat(0, 1, 0);
+	pinHolePtr->setEye(25, 20, 45);
+	pinHolePtr->setLookAt(0, 1, 0);
 	pinHolePtr->set_view_distance(5000);
-	pinHolePtr->compute_uvw();
+	pinHolePtr->computeUVW();
 	setCamera(pinHolePtr);
 
 	// material matte
@@ -542,12 +542,12 @@ void tzWorld::build()
 
 	// sphere
 	tzSphere *spherePtr = new tzSphere(Point3D(0, 1, 0), 1);
-	spherePtr->set_material(mattePtr1);
+	spherePtr->setMaterial(mattePtr1);
 	addObject(spherePtr);
 
 	// plane
 	tzPlane* planePtr = new tzPlane(Point3D(0), Normal(0, 1, 0));
-	planePtr->set_material(mattePtr2);
+	planePtr->setMaterial(mattePtr2);
 	addObject(planePtr);
 	*/
 
@@ -561,21 +561,21 @@ void tzWorld::build()
 	mTracerPtr = new tzRayCast(this);
 
 	tzAmbient *ambientPtr = new tzAmbient();
-	ambientPtr->scale_radiance( 1.0f );
+	ambientPtr->scaleRadiance( 1.0f );
 	setAmbientLight( ambientPtr );
 
 	// set camera
 	tzPinhole *pinHolePtr = new tzPinhole();
-	pinHolePtr->set_eye(0, 200, 500);
-	pinHolePtr->set_lookat(0, 0, 0);
+	pinHolePtr->setEye(0, 200, 500);
+	pinHolePtr->setLookAt(0, 0, 0);
 	pinHolePtr->set_view_distance(850.0f );
-	pinHolePtr->compute_uvw();
+	pinHolePtr->computeUVW();
 	setCamera(pinHolePtr);
 
 	// point light
 	tzPointLight* lightPtr = new tzPointLight();
 	lightPtr->set_location( Vector3D( 50, 100, 0) );
-	lightPtr->scale_radiance( 3.0 );
+	lightPtr->scaleRadiance( 3.0 );
 	lightPtr->setCastsShadows( true );
 	addLight( lightPtr );
 
@@ -595,12 +595,12 @@ void tzWorld::build()
 
 	// sphere
 	tzSphere *spherePtr = new tzSphere(Point3D(0, 50, 0), 25);
-	spherePtr->set_material(phongPtr);
+	spherePtr->setMaterial(phongPtr);
 	addObject(spherePtr);
 
 	// plane
 	tzPlane* planePtr = new tzPlane(Point3D(0), Normal(0, 1, 0));
-	planePtr->set_material(mattePtr);
+	planePtr->setMaterial(mattePtr);
 	addObject(planePtr);
 	*/
 	
@@ -618,10 +618,10 @@ void tzWorld::build()
 
 	// set camera
 	tzPinhole *pinHolePtr = new tzPinhole();
-	pinHolePtr->set_eye(0, 0, 500);
-	pinHolePtr->set_lookat(0);
+	pinHolePtr->setEye(0, 0, 500);
+	pinHolePtr->setLookAt(0);
 	pinHolePtr->set_view_distance(500);
-	pinHolePtr->compute_uvw();
+	pinHolePtr->computeUVW();
 	setCamera(pinHolePtr );
 
 	// background color
@@ -631,11 +631,11 @@ void tzWorld::build()
 	tzSphere *spherePtr = new tzSphere();
 	spherePtr->set_center( 0.0f, -25.0f, 0.0f );
 	spherePtr->set_radius( 80 );
-	spherePtr->set_color( 1.0f, 0.0f, 0.0f );
+	spherePtr->setColor( 1.0f, 0.0f, 0.0f );
 	addObject( spherePtr );
 	//
 	spherePtr = new tzSphere(Point3D(-45, 45, 40), 50);
-	spherePtr->set_color( 1.0f, 1.0f, 0.0f );
+	spherePtr->setColor( 1.0f, 1.0f, 0.0f );
 	addObject( spherePtr );
 */
 }
@@ -677,11 +677,11 @@ void tzWorld::renderScene() const
 			pixelColor = black;
 			for ( int j = 0; j < mVp.mNumSamples; j++ )
 			{
-				sp = mVp.mSamplerPtr->sample_unit_square();
+				sp = mVp.mSamplerPtr->sampleUnitSquare();
 				pp.x = mVp.mS * (fC - 0.5f*h + sp.x);
 				pp.y = mVp.mS * (fR - 0.5f*v + sp.y);
 				ray.o = tzPoint3D( pp.x, pp.y, zw );
-				pixelColor += mTracerPtr->trace_ray( ray );
+				pixelColor += mTracerPtr->traceRay( ray );
 			}
 			pixelColor *= invNumSamples;
 
@@ -748,7 +748,7 @@ tzShadeRec tzWorld::hitObjects(const tzRay &ray, float &tmin)
 		{
 			sr.mHitAnObject = true;
 			tmin = (float)t;
-			sr.mMaterialPtr = mObjects[j]->get_material();
+			sr.mMaterialPtr = mObjects[j]->getMaterial();
 			sr.mHitPoint = ray.o + tmin * ray.d;
 			normal = sr.mNormal;
 			localHitPoint = sr.mLocalHitPoint;

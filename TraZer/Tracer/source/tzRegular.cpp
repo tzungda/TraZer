@@ -52,11 +52,18 @@ tzRegular::~tzRegular(void) {}
 // ---------------------------------------------------------------- generate_samples	
 
 void
-tzRegular::generate_samples(void) {
-	int n = (int) sqrt((float)num_samples);
+tzRegular::generate_samples(void) 
+{
+	int n = (int) sqrt((float)mNumSamples);
 
-	for (int j = 0; j < num_sets; j++)
+	for (int j = 0; j < mNumSets; j++)
+	{
 		for (int p = 0; p < n; p++)		
+		{
 			for (int q = 0; q < n; q++)
-				samples.push_back(tzPoint2D((q + 0.5f) / n, (p + 0.5f) / n));
+			{
+				mSamples.push_back(tzPoint2D((q + 0.5f) / n, (p + 0.5f) / n));
+			}
+		}
+	}
 }

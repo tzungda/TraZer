@@ -18,49 +18,49 @@ tzPathTrace::tzPathTrace(tzWorld* _worldPtr)
 {}
 
 
-// -------------------------------------------------------------------- trace_ray
+// -------------------------------------------------------------------- traceRay
 
 tzRGBColor	
-tzPathTrace::trace_ray(const tzRay ray, const int depth) const {
+tzPathTrace::traceRay(const tzRay ray, const int depth) const {
 	float tmin = 0.0f;
-	if (depth > world_ptr->mVp.mMaxDepth)
+	if (depth > mWorldPtr->mVp.mMaxDepth)
 		return (black);
 	else {
-		tzShadeRec sr(world_ptr->hitObjects(ray, tmin));
+		tzShadeRec sr(mWorldPtr->hitObjects(ray, tmin));
 					
 		if (sr.mHitAnObject) {
 			sr.mDepth = depth;
 			sr.mRay = ray;
 			
-			return (sr.mMaterialPtr->path_shade(sr));   
+			return (sr.mMaterialPtr->pathShade(sr));   
 		}
 		else
-			return (world_ptr->mBackgroundColor);
+			return (mWorldPtr->mBackgroundColor);
 	}	
 }
 
 
-// -------------------------------------------------------------------- trace_ray
+// -------------------------------------------------------------------- traceRay
 // this version has tmin as an argument, and is used only with the Dielectric material
 // for color filtering
 
 tzRGBColor	
-tzPathTrace::trace_ray(const tzRay ray, float& tmin, const int depth) const {
+tzPathTrace::traceRay(const tzRay ray, float& tmin, const int depth) const {
 	float t = 0.0f;
-	if (depth > world_ptr->mVp.mMaxDepth)
+	if (depth > mWorldPtr->mVp.mMaxDepth)
 		return (black);
 	else {
-		tzShadeRec sr(world_ptr->hitObjects(ray, t));  
+		tzShadeRec sr(mWorldPtr->hitObjects(ray, t));  
 					
 		if (sr.mHitAnObject) {
 			sr.mDepth 	= depth;
 			sr.mRay 		= ray;
 			tmin		= sr.mT;     // required for colored transparency
-			return (sr.mMaterialPtr->path_shade(sr));   
+			return (sr.mMaterialPtr->pathShade(sr));   
 		}
 		else{
 			tmin = kHugeValue;
-			return (world_ptr->mBackgroundColor);
+			return (mWorldPtr->mBackgroundColor);
 		}
 	}	
 }

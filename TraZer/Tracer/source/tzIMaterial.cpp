@@ -37,19 +37,19 @@ tzIMaterial::shade(tzShadeRec& sr) {
 }
 
 //===================================================================================
-tzRGBColor tzIMaterial::area_light_shade( tzShadeRec& sr) const
+tzRGBColor tzIMaterial::areaLightShade( tzShadeRec& sr) const
 {
 	return black;
 }
 
 //===================================================================================
-tzRGBColor tzIMaterial::get_Le(tzShadeRec &sr)
+tzRGBColor tzIMaterial::getLe(tzShadeRec &sr)
 {
 	return black;
 }
 
 //===================================================================================
-tzRGBColor tzIMaterial::path_shade(tzShadeRec& sr)
+tzRGBColor tzIMaterial::pathShade(tzShadeRec& sr)
 {
 	return black;
 }

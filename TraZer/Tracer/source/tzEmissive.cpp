@@ -55,7 +55,7 @@ tzRGBColor tzEmissive::shade(tzShadeRec& sr)
 }
 
 //===================================================================================
-tzRGBColor tzEmissive::area_light_shade( tzShadeRec& sr) const
+tzRGBColor tzEmissive::areaLightShade( tzShadeRec& sr) const
 {
 	if ( -sr.mNormal * sr.mRay.d > 0.0f )
 	{
@@ -66,7 +66,7 @@ tzRGBColor tzEmissive::area_light_shade( tzShadeRec& sr) const
 }
 
 //===================================================================================
-tzRGBColor tzEmissive::get_Le( tzShadeRec &sr )
+tzRGBColor tzEmissive::getLe( tzShadeRec &sr )
 {
 	return ls*ce;
 }
@@ -85,7 +85,7 @@ tzRGBColor tzEmissive::emissiveColor() const
 }
 
 //===================================================================================
-void tzEmissive::scale_radiance(const float k)
+void tzEmissive::scaleRadiance(const float k)
 {
 	ls = k;
 }

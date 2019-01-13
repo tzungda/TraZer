@@ -136,7 +136,7 @@ void tzPinhole::renderScene(const tzWorld& w) const
 					pp.x = vp.mS * (c - 0.5f * vp.mHres + (q + 0.5f)*invN);
 					pp.y = vp.mS * (r - 0.5f * vp.mVres + (p + 0.5f)*invN);
 					ray.d = getDirection(pp);
-					L += w.mTracerPtr->trace_ray(ray, depth);
+					L += w.mTracerPtr->traceRay(ray, depth);
 				}	
 											
 			L *= invNumSamples;
@@ -169,7 +169,7 @@ void tzPinhole::renderScene(const tzWorld& w) const
 					pp.x = vp.mS * (c - 0.5f * vp.mHres + (q + 0.5f)*invN);
 					pp.y = vp.mS * (r - 0.5f * vp.mVres + (p + 0.5f)*invN);
 					ray.d = getDirection(pp);
-					threadL += w.mTracerPtr->trace_ray(ray, depth);
+					threadL += w.mTracerPtr->traceRay(ray, depth);
 				}
 
 			threadL *= invNumSamples;

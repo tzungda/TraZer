@@ -4,43 +4,39 @@
 #include "../include/tzFlatUVMeshTriangle.h"
 						
 
-// ----------------------------------------------------------------  default constructor
-
+//===================================================================================
 tzFlatUVMeshTriangle::tzFlatUVMeshTriangle(void)
 	: tzFlatMeshTriangle()
 {}
 
 
-// ---------------------------------------------------------------- constructor
-
+//===================================================================================
 tzFlatUVMeshTriangle::tzFlatUVMeshTriangle(tzMesh* _mesh_ptr, const int i0, const int i1, const int i2)
 	: tzFlatMeshTriangle(_mesh_ptr, i0, i1, i2)
 {}
 
+//===================================================================================
 tzFlatUVMeshTriangle::tzFlatUVMeshTriangle(tzMesh* _meshPtr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2)
 	: tzFlatMeshTriangle(_meshPtr, v0, v1, v2, n0, n1, n2, uv0, uv1, uv2)
 {
 }
 
-// ---------------------------------------------------------------- clone
-
+//===================================================================================
 tzFlatUVMeshTriangle* tzFlatUVMeshTriangle::clone(void) const 
 {
 	return (new tzFlatUVMeshTriangle(*this));
 }
 
 
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzFlatUVMeshTriangle::tzFlatUVMeshTriangle(const tzFlatUVMeshTriangle& fmt)
 	: tzFlatMeshTriangle(fmt)
 {}
 
 
-// ---------------------------------------------------------------- assignment operator
-
-tzFlatUVMeshTriangle&
-tzFlatUVMeshTriangle::operator= (const tzFlatUVMeshTriangle& rhs) {
+//===================================================================================
+tzFlatUVMeshTriangle& tzFlatUVMeshTriangle::operator= (const tzFlatUVMeshTriangle& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
@@ -50,15 +46,13 @@ tzFlatUVMeshTriangle::operator= (const tzFlatUVMeshTriangle& rhs) {
 }
 
 
-// ---------------------------------------------------------------- destructor
-
+//===================================================================================
 tzFlatUVMeshTriangle::~tzFlatUVMeshTriangle(void) {}
 
 
-// ---------------------------------------------------------------- hit
-
-bool 															 
-tzFlatUVMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
+//===================================================================================
+bool tzFlatUVMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
+{
 	tzPoint3D v0(mesh_ptr->vertices[indexV0]);
 	tzPoint3D v1(mesh_ptr->vertices[indexV1]);
 	tzPoint3D v2(mesh_ptr->vertices[indexV2]);

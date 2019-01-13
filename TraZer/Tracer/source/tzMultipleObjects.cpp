@@ -21,29 +21,29 @@ tzMultipleObjects::tzMultipleObjects (tzWorld* _worldPtr)
 tzMultipleObjects::~tzMultipleObjects(void) {}
 
 
-// -------------------------------------------------------------------- trace_ray
+// -------------------------------------------------------------------- traceRay
 
 tzRGBColor
-tzMultipleObjects::trace_ray(const tzRay& ray) const {
-	tzShadeRec sr(world_ptr->hitBareBonesObject(ray)); 
+tzMultipleObjects::traceRay(const tzRay& ray) const {
+	tzShadeRec sr(mWorldPtr->hitBareBonesObject(ray)); 
 		
 	if (sr.mHitAnObject)   
 		return (sr.mColor);   
 	else
-		return (world_ptr->mBackgroundColor);
+		return (mWorldPtr->mBackgroundColor);
 }
 
 tzRGBColor
-tzMultipleObjects::trace_ray(const tzRay ray, const int depth) const {
-	if (depth > world_ptr->mVp.mMaxDepth)
+tzMultipleObjects::traceRay(const tzRay ray, const int depth) const {
+	if (depth > mWorldPtr->mVp.mMaxDepth)
 		return (black);
 
-	tzShadeRec sr(world_ptr->hitBareBonesObject(ray));
+	tzShadeRec sr(mWorldPtr->hitBareBonesObject(ray));
 
 	if (sr.mHitAnObject)
 		return (sr.mColor);
 	else
-		return (world_ptr->mBackgroundColor);
+		return (mWorldPtr->mBackgroundColor);
 }
 
 

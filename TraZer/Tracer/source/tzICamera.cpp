@@ -60,12 +60,12 @@ tzICamera::~tzICamera(void) {}
 
 
 
-//-------------------------------------------------------------- compute_uvw
+//-------------------------------------------------------------- computeUVW
 
 // This computes an orthornormal basis given the view point, lookat point, and up vector
 
 void
-tzICamera::compute_uvw(void) {
+tzICamera::computeUVW(void) {
 	w = eye - lookat;
 	w.normalize();
 	u = up ^ w; 

@@ -102,7 +102,7 @@ tzGrid::~tzGrid(void) {}
 
 
 tzBBox 
-tzGrid::get_bounding_box(void) {
+tzGrid::getBoundingBox(void) {
 	return (bbox);
 }
 
@@ -162,7 +162,7 @@ tzGrid::setup_cells(void) {
 	int index;  	// cell's array index
 			
 	for (int j = 0; j < num_objects; j++) {
-		obj_bBox =  objects[j]->get_bounding_box();
+		obj_bBox =  objects[j]->getBoundingBox();
 				
 		// compute the cell indices at the corners of the bounding box of the object
 		
@@ -187,13 +187,13 @@ tzGrid::setup_cells(void) {
 					else {
 						if (counts[index] == 1) {
 							tzCompound* compound_ptr = new tzCompound;	// construct a compound object
-							compound_ptr->add_object(cells[index]); // add object already in cell
-							compound_ptr->add_object(objects[j]);  	// add the new object
+							compound_ptr->addObject(cells[index]); // add object already in cell
+							compound_ptr->addObject(objects[j]);  	// add the new object
 							cells[index] = compound_ptr;			// store compound in current cell
 							counts[index] += 1;  					// now = 2
 						}						
 						else {										// counts[index] > 1
-							cells[index]->add_object(objects[j]);	// just add current object
+							cells[index]->addObject(objects[j]);	// just add current object
 							counts[index] += 1;						// for statistics only
 						}
 					}
@@ -251,7 +251,7 @@ tzGrid::find_min_bounds(void) {
 	int num_objects = (int)objects.size();
 	
 	for (int j = 0; j < num_objects; j++) {
-		object_box = objects[j]->get_bounding_box();
+		object_box = objects[j]->getBoundingBox();
 				
 		if (object_box.x0 < p0.x)
 			p0.x = object_box.x0;
@@ -279,7 +279,7 @@ tzGrid::find_max_bounds(void) {
 	int num_objects = (int)objects.size();
 	
 	for (int j = 0; j < num_objects; j++) {
-		object_box = objects[j]->get_bounding_box();
+		object_box = objects[j]->getBoundingBox();
 				
 		if (object_box.x1 > p1.x)
 			p1.x = object_box.x1;
@@ -468,13 +468,13 @@ tzGrid::read_ply_file(char* file_name, const int triangle_type) {
 			    
 			    if (triangle_type == flat) {
 			    	tzFlatMeshTriangle* triangle_ptr = new tzFlatMeshTriangle(mesh_ptr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
-					triangle_ptr->compute_normal(reverse_normal);		
+					triangle_ptr->computeNormal(reverse_normal);		
 					objects.push_back(triangle_ptr); 
 				} 
 			    	
 			    if (triangle_type == smooth) {
 			    	tzSmoothMeshTriangle* triangle_ptr = new tzSmoothMeshTriangle(mesh_ptr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
-					triangle_ptr->compute_normal(reverse_normal); 	// the "flat triangle" normal is used to compute the average normal at each mesh vertex
+					triangle_ptr->computeNormal(reverse_normal); 	// the "flat triangle" normal is used to compute the average normal at each mesh vertex
 					objects.push_back(triangle_ptr); 				// it's quicker to do it once here, than have to do it on average 6 times in compute_mesh_normals
 					
 					// the following code stores a list of all faces that share a vertex
@@ -533,7 +533,7 @@ tzGrid::compute_mesh_normals(void) {
 		tzNormal normal;    // is zero at this point	
 			
 		for (int j = 0; j < mesh_ptr->vertex_faces[index].size(); j++)
-			normal += objects[mesh_ptr->vertex_faces[index][j]]->get_normal();  
+			normal += objects[mesh_ptr->vertex_faces[index][j]]->getNormal();  
 	
 		// The following code attempts to avoid (nan, nan, nan) normalised normals when all components = 0
 		
@@ -931,7 +931,7 @@ tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
 		
 		if (tx_next < ty_next && tx_next < tz_next) {
 			if (object_ptr && object_ptr->hit(ray, t, sr) && t < tx_next) {
-				material_ptr = object_ptr->get_material();
+				mMaterialPtr = object_ptr->getMaterial();
 				return (true);
 			}
 			
@@ -944,7 +944,7 @@ tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
 		else { 	
 			if (ty_next < tz_next) {
 				if (object_ptr && object_ptr->hit(ray, t, sr) && t < ty_next) {
-					material_ptr = object_ptr->get_material();
+					mMaterialPtr = object_ptr->getMaterial();
 					return (true);
 				}
 				
@@ -956,7 +956,7 @@ tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
 		 	}
 		 	else {		
 				if (object_ptr && object_ptr->hit(ray, t, sr) && t < tz_next) {
-					material_ptr = object_ptr->get_material();
+					mMaterialPtr = object_ptr->getMaterial();
 					return (true);
 				}
 				
@@ -1130,7 +1130,7 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 
 		if (object_ptr )
 		{
-			if (object_ptr->get_material( ) )
+			if (object_ptr->getMaterial( ) )
 			{
 				int a = 0;
 				a = 1;
@@ -1139,7 +1139,7 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 
 		if (tx_next < ty_next && tx_next < tz_next) {
 			if (object_ptr && object_ptr->shadowHit(ray, tmin) && tmin < tx_next) {
-				//material_ptr = object_ptr->get_material();
+				//mMaterialPtr = object_ptr->getMaterial();
 				return (true);
 			}
 
@@ -1152,7 +1152,7 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 		else {
 			if (ty_next < tz_next) {
 				if (object_ptr && object_ptr->shadowHit(ray, tmin) && tmin < ty_next) {
-					//material_ptr = object_ptr->get_material();
+					//mMaterialPtr = object_ptr->getMaterial();
 					return (true);
 				}
 
@@ -1164,7 +1164,7 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 			}
 			else {
 				if (object_ptr && object_ptr->shadowHit(ray, tmin) && tmin < tz_next) {
-					//material_ptr = object_ptr->get_material();
+					//mMaterialPtr = object_ptr->getMaterial();
 					return (true);
 				}
 
@@ -1340,13 +1340,13 @@ void tzGrid::read_uv_ply_file(char* file_name, const int triangle_type)
 
 				if (triangle_type == flat) {
 					tzFlatUVMeshTriangle* triangle_ptr = new tzFlatUVMeshTriangle(mesh_ptr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
-					triangle_ptr->compute_normal(reverse_normal);
+					triangle_ptr->computeNormal(reverse_normal);
 					objects.push_back(triangle_ptr);
 				}
 
 				if (triangle_type == smooth) {
 					tzSmoothUVMeshTriangle* triangle_ptr = new tzSmoothUVMeshTriangle(mesh_ptr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
-					triangle_ptr->compute_normal(reverse_normal);
+					triangle_ptr->computeNormal(reverse_normal);
 					objects.push_back(triangle_ptr);
 
 					mesh_ptr->vertex_faces[face_ptr->verts[0]].push_back(count);
@@ -1429,7 +1429,7 @@ void tzGrid::addMesh(const vector<tzPoint3D> &vertices,
 		int uv2 = face_vertices[index + 2].texcoord_index;
 		//
 		tzFlatUVMeshTriangle* triangle_ptr = new tzFlatUVMeshTriangle(mesh_ptr, v0, v1, v2, n0, n1, n2, uv0, uv1, uv2);
-		triangle_ptr->compute_normal(reverse_normal);
+		triangle_ptr->computeNormal(reverse_normal);
 		objects.push_back(triangle_ptr);
 	}
 }

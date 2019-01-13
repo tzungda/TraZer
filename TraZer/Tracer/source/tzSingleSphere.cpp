@@ -27,14 +27,14 @@ tzSingleSphere::tzSingleSphere(tzWorld* _worldPtr)
 tzSingleSphere::~tzSingleSphere(void) {}
 
 
-// -------------------------------------------------------------------- trace_ray
+// -------------------------------------------------------------------- traceRay
 
 tzRGBColor
-tzSingleSphere::trace_ray(const tzRay& ray) const {
-	tzShadeRec	sr(*world_ptr); 	// not used
+tzSingleSphere::traceRay(const tzRay& ray) const {
+	tzShadeRec	sr(*mWorldPtr); 	// not used
 	float    	t;  				// not used
 	
-	if (world_ptr->mSphere.hit(ray, t, sr))		
+	if (mWorldPtr->mSphere.hit(ray, t, sr))		
 		return (red);  
 	else
 		return (black);   

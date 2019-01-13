@@ -54,14 +54,14 @@ tzLambertianSV::clone(void) const {
 
 tzRGBColor
 tzLambertianSV::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const {
-	return (kd * cd->get_color(sr) * (float)invPI);
+	return (kd * cd->getColor(sr) * (float)invPI);
 }
 
 
 // ---------------------------------------------------------------------- sample_f
 
 // this generates a direction by sampling the hemisphere with a cosine distribution
-// this is called in path_shade for any material with a diffuse shading component
+// this is called in pathShade for any material with a diffuse shading component
 // the samples have to be stored with a cosine distribution
 
 tzRGBColor
@@ -72,13 +72,13 @@ tzLambertianSV::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D&
 	v.normalize();
 	tzVector3D u = v ^ w;
 	
-	tzPoint3D sp = sampler_ptr->sample_hemisphere();
+	tzPoint3D sp = sampler_ptr->sampleHemisphere();
 	wi = sp.x * u + sp.y * v + sp.z * w;
 	wi.normalize(); 	
 	
 	pdf = (float)(sr.mNormal * wi * invPI);
 	
-	return (kd * cd->get_color(sr) * (float)invPI);
+	return (kd * cd->getColor(sr) * (float)invPI);
 }
 
 
@@ -87,7 +87,7 @@ tzLambertianSV::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D&
 
 tzRGBColor
 tzLambertianSV::rho(const tzShadeRec& sr, const tzVector3D& wo) const {
-	return (kd * cd->get_color(sr));
+	return (kd * cd->getColor(sr));
 }
 
 

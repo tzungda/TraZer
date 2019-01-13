@@ -5,18 +5,18 @@
 //===================================================================================
 tzDirectional::tzDirectional(void)
 	:   tzILight(),
-		ls(1.0),
-		color(1.0),
-		dir(0, 1, 0)			
+		mLs(1.0),
+		mColor(1.0),
+		mDir(0, 1, 0)			
 {}
 
 
 //===================================================================================
 tzDirectional::tzDirectional(const tzDirectional& dl)
 	: 	tzILight(dl),
-		ls(dl.ls),
-		color(dl.color),
-		dir(dl.dir)  		
+		mLs(dl.mLs),
+		mColor(dl.mColor),
+		mDir(dl.mDir)  		
 {}
 
 
@@ -35,9 +35,9 @@ tzDirectional& tzDirectional::operator= (const tzDirectional& rhs)
 			
 	tzILight::operator= (rhs);
 	
-	ls		= rhs.ls;
-	color 	= rhs.color;
-	dir 	= rhs.dir;
+	mLs		= rhs.mLs;
+	mColor 	= rhs.mColor;
+	mDir 	= rhs.mDir;
 
 	return (*this);
 }
@@ -52,13 +52,13 @@ tzDirectional::~tzDirectional(void)
 //===================================================================================
 tzVector3D tzDirectional::getDirection(tzShadeRec& sr)
 {
-	return (dir);
+	return (mDir);
 }	
 
 //===================================================================================
 tzRGBColor tzDirectional::L(tzShadeRec& s) 
 {
-	return (ls * color);
+	return (mLs * mColor);
 }
 
 //===================================================================================

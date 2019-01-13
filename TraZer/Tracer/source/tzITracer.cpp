@@ -4,14 +4,14 @@
 // -------------------------------------------------------------------- default constructor
 
 tzITracer::tzITracer(void)
-	: world_ptr(NULL)
+	: mWorldPtr(NULL)
 {}
 
 
 // -------------------------------------------------------------------- constructor
 
 tzITracer::tzITracer(tzWorld* _worldPtr)
-	: world_ptr(_worldPtr)
+	: mWorldPtr(_worldPtr)
 {}
 
 
@@ -19,23 +19,23 @@ tzITracer::tzITracer(tzWorld* _worldPtr)
 // -------------------------------------------------------------------- destructor
 
 tzITracer::~tzITracer(void) {
-	if (world_ptr)
-		world_ptr = NULL;
+	if (mWorldPtr)
+		mWorldPtr = NULL;
 }
 
 
-// -------------------------------------------------------------------- trace_ray
+// -------------------------------------------------------------------- traceRay
 
 tzRGBColor
-tzITracer::trace_ray(const tzRay& ray) const {
+tzITracer::traceRay(const tzRay& ray) const {
 	return (black);
 }
 
 
-// -------------------------------------------------------------------- trace_ray
+// -------------------------------------------------------------------- traceRay
 
 tzRGBColor
-tzITracer::trace_ray(const tzRay ray, const int depth) const {
+tzITracer::traceRay(const tzRay ray, const int depth) const {
 	return (black);
 }
 

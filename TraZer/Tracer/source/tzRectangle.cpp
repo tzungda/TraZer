@@ -125,10 +125,10 @@ tzRectangle::~tzRectangle(void) {
 	}
 }
 
-//------------------------------------------------------------------ get_bounding_box 
+//------------------------------------------------------------------ getBoundingBox 
 
 tzBBox
-tzRectangle::get_bounding_box(void) {
+tzRectangle::getBoundingBox(void) {
 	float delta = 0.0001f;
 
 	return(tzBBox(fmin(p0.x, p0.x + a.x + b.x) - delta, fmax(p0.x, p0.x + a.x + b.x) + delta,
@@ -181,15 +181,15 @@ tzRectangle::set_sampler(tzISampler* sampler) {
 
 tzPoint3D
 tzRectangle::sample(void) {
-	tzPoint2D sample_point = sampler_ptr->sample_unit_square();
+	tzPoint2D sample_point = sampler_ptr->sampleUnitSquare();
 	return (p0 + sample_point.x * a + sample_point.y * b);
 }
 
 
-//------------------------------------------------------------------ get_normal 
+//------------------------------------------------------------------ getNormal 
 					 
 tzNormal 										
-tzRectangle::get_normal(const tzPoint3D& p) {
+tzRectangle::getNormal(const tzPoint3D& p) {
 	return (normal);
 }
 

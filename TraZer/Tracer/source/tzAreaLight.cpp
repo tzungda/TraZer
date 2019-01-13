@@ -5,7 +5,7 @@
 tzAreaLight::tzAreaLight(void)
 	: 	tzILight(),
 		object_ptr(NULL),
-		material_ptr(NULL)
+		mMaterialPtr(NULL)
 {}	
 
 
@@ -17,9 +17,9 @@ tzAreaLight::tzAreaLight(const tzAreaLight& al)
 		object_ptr = al.object_ptr->clone(); 
 	else  object_ptr = NULL;
 	
-	if(al.material_ptr)
-		material_ptr = al.material_ptr->clone(); 
-	else  material_ptr = NULL;
+	if(al.mMaterialPtr)
+		mMaterialPtr = al.mMaterialPtr->clone(); 
+	else  mMaterialPtr = NULL;
 }
 
 
@@ -40,9 +40,9 @@ tzAreaLight::~tzAreaLight(void)
 	}
 	*/
 	/*
-	if (material_ptr) {
-		delete material_ptr;
-		material_ptr = NULL;
+	if (mMaterialPtr) {
+		delete mMaterialPtr;
+		mMaterialPtr = NULL;
 	}
 	*/
 }
@@ -63,13 +63,13 @@ tzAreaLight& tzAreaLight::operator= (const tzAreaLight& rhs) {
 	if (rhs.object_ptr)
 		object_ptr = rhs.object_ptr->clone();
 		
-	if (material_ptr) {
-		delete material_ptr;
-		material_ptr = NULL;
+	if (mMaterialPtr) {
+		delete mMaterialPtr;
+		mMaterialPtr = NULL;
 	}
 
-	if (rhs.material_ptr)
-		material_ptr = rhs.material_ptr->clone();
+	if (rhs.mMaterialPtr)
+		mMaterialPtr = rhs.mMaterialPtr->clone();
 
 	return (*this);
 }
@@ -79,7 +79,7 @@ tzAreaLight& tzAreaLight::operator= (const tzAreaLight& rhs) {
 tzVector3D tzAreaLight::getDirection(tzShadeRec& sr)
 {
 	sample_point = object_ptr->sample();    // used in the G function
-	light_normal = object_ptr->get_normal(sample_point); 
+	light_normal = object_ptr->getNormal(sample_point); 
 	wi = sample_point - sr.mHitPoint;  		// used in the G function
 	wi.normalize();
 	
@@ -93,7 +93,7 @@ tzRGBColor tzAreaLight::L(tzShadeRec& sr)
 	float ndotd = (float)( -light_normal * wi ); 
 	
 	if (ndotd > 0.0)		
-		return (material_ptr->get_Le(sr)); 
+		return (mMaterialPtr->getLe(sr)); 
 	else
 		return (black);
 }
@@ -119,7 +119,8 @@ bool tzAreaLight::inShadow(const tzRay& ray, const tzShadeRec& sr) const
 
 
 //===================================================================================
-float tzAreaLight::G(const tzShadeRec& sr) const {
+float tzAreaLight::G(const tzShadeRec& sr) const 
+{
 	float ndotd = (float)(-light_normal * wi);
 	float d2 	= (float)sample_point.d_squared(sr.mHitPoint);
 		
@@ -128,7 +129,8 @@ float tzAreaLight::G(const tzShadeRec& sr) const {
 
 
 //===================================================================================
-float tzAreaLight::pdf(const tzShadeRec& sr) const {
+float tzAreaLight::pdf(const tzShadeRec& sr) const 
+{
 	return (object_ptr->pdf(sr));
 }
 
