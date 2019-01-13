@@ -3,59 +3,55 @@
 
 #include "tzRGBColor.h"
 
-// -------------------------------------------------------- default constructor
-
+//===================================================================================
 tzRGBColor::tzRGBColor(void)
-	: r(0.0), g(0.0), b(0.0) 							
+	: r(0.0f), g(0.0f), b(0.0f), a(1.0f) 							
 {}
 
 
-// -------------------------------------------------------- constructor
-
+//===================================================================================
 tzRGBColor::tzRGBColor(float c)
-	: r(c), g(c), b(c) 							
+	: r(c), g(c), b(c), a(1.0f) 							
 {}
 								
 
-// -------------------------------------------------------- constructor
-
+//===================================================================================
 tzRGBColor::tzRGBColor(float _r, float _g, float _b)
-	: r(_r), g(_g), b(_b)
+	: r(_r), g(_g), b(_b), a(1.0f)
 {}
 
+//===================================================================================
+tzRGBColor::tzRGBColor(float _r, float _g, float _b, float _a)
+:r(_r), g(_g), b(_b), a(_a)
+{
+}
 
-// -------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzRGBColor::tzRGBColor(const tzRGBColor& c)
-	: r(c.r), g(c.g), b(c.b)
+	: r(c.r), g(c.g), b(c.b), a(c.a)
 {} 				 
 		
 
-// -------------------------------------------------------- destructor
-
+//===================================================================================
 tzRGBColor::~tzRGBColor(void)
 {}
 
 
-// --------------------------------------------------------assignment operator
-
-tzRGBColor&
-tzRGBColor::operator= (const tzRGBColor& rhs) {
+//===================================================================================
+tzRGBColor& tzRGBColor::operator= (const tzRGBColor& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
-	r = rhs.r; g = rhs.g; b = rhs.b;
+	r = rhs.r; g = rhs.g; b = rhs.b, a = rhs.a;
 
 	return (*this);
 }
  
 
-// -------------------------------------------------------- powc
-// raise each component to the specified power
-// used for color filtering in Chapter 28
-
-tzRGBColor
-tzRGBColor::powc(float p) const {
+//===================================================================================
+tzRGBColor tzRGBColor::powc(float p) const 
+{
 	return (tzRGBColor((float)pow(r, p), (float)pow(g, p), (float)pow(b, p)));
 }
 

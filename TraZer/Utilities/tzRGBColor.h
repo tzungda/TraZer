@@ -7,13 +7,14 @@ class tzRGBColor {
 	
 	public:
 	
-		float	r, g, b;									
+		float	r, g, b, a;									
 				
 	public:
 	
 		tzRGBColor(void);										// default constructor
 		tzRGBColor(float c);									// constructor
 		tzRGBColor(float _r, float _g, float _b);				// constructor
+		tzRGBColor(float _r, float _g, float _b, float _a);		// constructor
 		tzRGBColor(const tzRGBColor& c); 						// copy constructor
 		
 		~tzRGBColor(void);									// destructor
