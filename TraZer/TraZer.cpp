@@ -10,13 +10,14 @@
 #endif
 */
 #include "Common.h"
-#include "ViewManager.h"
+
 
 // core
 #include "../Include/tzCoreScene.h"
 
 // headers
 #include "../glView/include/tzGLWorldCentre.h"
+#include "../glView/include/tzGLCamera.h"
 #include "../Include/tzTool.h"
 
 #include "Tracer\include\tzWorld.h"
@@ -89,7 +90,7 @@ vec3			m_lightPos = vec3(5, 5, 0);
 
 GLuint			m_mainWindow;
 vec2			m_screenSize;
-ViewManager		m_camera;
+tzGLCamera		m_camera;
 
 // create a scene
 tzCoreScene myScene;
@@ -325,6 +326,25 @@ void setupShaders()
 // add meshes to scene
 void addMeshesToScene( tzCoreScene *scene, const tinyobj::attrib_t &attrib, const std::vector<tinyobj::shape_t>& shapes )
 {
+	/*
+	m_shape.name = model_names[i];
+	m_shape.indexCount = (int)shapes[j].mesh.indices.size();
+
+	positions.resize(3 * shapes[j].mesh.indices.size());
+	texcoords.resize(2 * shapes[j].mesh.indices.size());
+	normals.resize(3 * shapes[j].mesh.indices.size());
+	for (int idx = 0; idx < m_shape.indexCount; idx++)
+	{
+	for (int channel = 0; channel < 3; channel++)
+	{
+	positions[3 * idx + channel] = attrib.vertices[3 * shapes[j].mesh.indices[idx].vertex_index + channel];
+	normals[3 * idx + channel] = attrib.normals[3 * shapes[j].mesh.indices[idx].normal_index + channel];
+	}
+	for (int channel = 0; channel < 2; channel++)
+	texcoords[2 * idx + channel] = attrib.texcoords[2 * shapes[j].mesh.indices[idx].texcoord_index + channel];
+	}
+	*/
+
 	int numShapes = (int)shapes.size();
 	for ( int i = 0; i < numShapes; i++ )
 	{
@@ -405,56 +425,43 @@ void addMeshesToScene( tzCoreScene *scene, const tinyobj::attrib_t &attrib, cons
 		newMesh->setVs(vs);
 		newMesh->setVertexNormals(normals);
 
-		// normals
-		/*
-		std::vector<tzNormal> normals(numVerts);
-		int idx = 0;
-		for ( int j = 0; j < numVerts; j++ )
-		{
-			if (j >= (int)(attrib.normals.size()/3) - 1)
-			{
-				normals[j].x = attrib.normals[idx];
-				normals[j].y = attrib.normals[idx+1];
-				normals[j].z = attrib.normals[idx+2];
-			}
-			else
-			{
-				normals[j].x = attrib.normals[idx], idx++;
-				normals[j].y = attrib.normals[idx], idx++;
-				normals[j].z = attrib.normals[idx], idx++;
-			}
-		}
-		newMesh->setVertexNormals( normals );
-		*/
 		// vertex faces & indices
 		std::vector< std::vector< int > > vertexFaces(newMesh->numVertices());
 		std::vector< std::vector< int > > faceVertices(newMesh->numTriangles());
 		int idx = 0;
-		std::vector< int > indices(shapes[i].mesh.indices.size());
 		for (int j = 0; j < newMesh->numTriangles(); j++)
 		{
 			int vid = shapes[i].mesh.indices[idx].vertex_index;
 			vertexFaces[vid].push_back( j );
-			indices[idx] = vid;
+			//indices[idx] = vid;
 			faceVertices[j].push_back(vid);
 			idx++;
 
 			vid = shapes[i].mesh.indices[idx].vertex_index;
 			vertexFaces[vid].push_back( j );
-			indices[idx] = vid;
+			//indices[idx] = vid;
 			faceVertices[j].push_back(vid);
 			idx++;
 
 			vid = shapes[i].mesh.indices[idx].vertex_index;
 			vertexFaces[vid].push_back( j );
-			indices[idx] = vid;
+			//indices[idx] = vid;
 			faceVertices[j].push_back(vid);
 			idx++;
 			//
 		}
-		newMesh->setIndices(indices);
-		newMesh->setFaceVertices(faceVertices );
+		newMesh->setFaceVertices(faceVertices);
 		newMesh->setVertexFaces(vertexFaces);
+		//
+		std::vector< tzCoreMesh::index > indices( shapes[i].mesh.indices.size() );
+		for ( int ind = 0; ind < (int)indices.size(); ind++ )
+		{
+			indices[ind].vertex_index = shapes[i].mesh.indices[ind].vertex_index;
+			indices[ind].normal_index = shapes[i].mesh.indices[ind].normal_index;
+			indices[ind].texcoord_index = shapes[i].mesh.indices[ind].texcoord_index;
+		}
+		newMesh->setIndices(indices);
+		
 		// uv
 		/*
 		std::vector< float > us(newMesh->numVertices());
@@ -494,7 +501,7 @@ void setupModels(tzCoreScene *scene)
 	//
 	vector<string> model_names =
 	{
-		dirPath+"happynewyear.obj",//"sponza.obj",
+		dirPath+"sphere.obj",//"torus.obj",//"happynewyear.obj",//"sponza.obj",
 	};
 
 	map<string, vector<tinyobj::shape_t>> model_cache;
@@ -599,12 +606,50 @@ void setupModels(tzCoreScene *scene)
 		for (int j = 0; j < shapes.size(); ++j)
 		{
 			Shape m_shape;
-			m_shape.name = model_names[i];
-			m_shape.indexCount = (int)shapes[j].mesh.indices.size();
-
 			std::vector<float> positions;
 			std::vector<float> texcoords;
 			std::vector<float> normals;
+			
+			
+			//------------------------------------------------------------------------------
+			tzCoreMesh *msh = myScene.meshList()[0];
+			//
+			int indexLen = (int)msh->indices().size();
+			positions.resize(indexLen *3);
+			normals.resize(indexLen *3);
+			texcoords.resize(indexLen *2);
+			//
+			m_shape.indexCount = indexLen;//->numVertices();
+			//
+			//int index = 0;
+			for ( int ind = 0; ind < indexLen; ind++ )
+			{
+				int index = ind*3;
+				int index2 = ind*2;
+				int vid = msh->indices()[ind].vertex_index;
+				int nid = msh->indices()[ind].normal_index;
+				int uvid = msh->indices()[ind].texcoord_index;
+				//
+				tzPoint3D p = msh->vertices()[vid];
+				positions[index] = p.x;
+				positions[index+1] = p.y;
+				positions[index+2] = p.z;
+				//
+				tzNormal n = msh->vertexNormals()[nid];
+				normals[index] = n.x;
+				normals[index+1] = n.y;
+				normals[index+2] = n.z;
+				//
+				texcoords[index2] = msh->us()[uvid];
+				texcoords[index2+1] = msh->vs()[uvid];
+			}
+			
+
+			//------------------------------------------------------------------------------
+			m_shape.name = model_names[i];
+			/*
+			m_shape.indexCount = (int)shapes[j].mesh.indices.size();
+
 			positions.resize(3 * shapes[j].mesh.indices.size());
 			texcoords.resize(2 * shapes[j].mesh.indices.size());
 			normals.resize(3 * shapes[j].mesh.indices.size());
@@ -618,6 +663,8 @@ void setupModels(tzCoreScene *scene)
 				for (int channel = 0; channel < 2; channel++)
 					texcoords[2 * idx + channel] = attrib.texcoords[2 * shapes[j].mesh.indices[idx].texcoord_index + channel];
 			}
+			*/
+			
 			glGenVertexArrays(1, &m_shape.vao);
 			glBindVertexArray(m_shape.vao);
 
@@ -699,7 +746,12 @@ void My_Display()
 		}
 		*/
 
-		glUniformMatrix4fv(phongShaderPrograms.view_matrix, 1, GL_FALSE, (GLfloat*)view.m);//value_ptr(m_camera.GetViewMatrix() * m_camera.GetModelMatrix()));
+		tzMatrix modelTransform( 1.0f, 0.0f, 0.0f, 0.0f,
+								 0.0f, 1.0f, 0.0f, 0.0f,
+								 0.0f, 0.0f, 1.0f, 0.0f,
+								 0.0f, 0.0f, 0.0f, 1.0f);
+
+		glUniformMatrix4fv(phongShaderPrograms.view_matrix, 1, GL_FALSE, (GLfloat*)(view*modelTransform).m);//value_ptr(m_camera.GetViewMatrix() * m_camera.GetModelMatrix()));
 		glUniformMatrix4fv(phongShaderPrograms.projection_matrix, 1, GL_FALSE, value_ptr(m_camera.GetProjectionMatrix(aspect)));
 		//mesh->Draw();
 

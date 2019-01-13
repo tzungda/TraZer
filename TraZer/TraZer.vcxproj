@@ -156,15 +156,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\external\lodepng\lodepng.cpp" />
+    <ClCompile Include="glView\source\tzGLCamera.cpp" />
     <ClCompile Include="glView\source\tzGLLine.cpp" />
     <ClCompile Include="glView\source\tzGLWorldCentre.cpp" />
     <ClCompile Include="ImageExport\source\bmp-utils.c" />
+    <ClCompile Include="source\tzCoreCamera.cpp" />
     <ClCompile Include="source\tzCoreMesh.cpp" />
     <ClCompile Include="source\tzCoreObject.cpp" />
     <ClCompile Include="source\tzCoreScene.cpp" />
     <ClCompile Include="source\tzTool.cpp" />
     <ClCompile Include="source\tzCoreTransform.cpp" />
-    <ClCompile Include="source\ViewManager.cpp" />
     <ClCompile Include="Tracer\source\tzAmbient.cpp" />
     <ClCompile Include="Tracer\source\tzAmbientOccluder.cpp" />
     <ClCompile Include="Tracer\source\tzAreaLight.cpp" />
@@ -231,17 +232,19 @@
     <ClCompile Include="Utilities\tzVector3D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="glView\include\tzGLCamera.h" />
     <ClInclude Include="glView\include\tzGLLine.h" />
     <ClInclude Include="glView\include\tzGLWorldCentre.h" />
     <ClInclude Include="ImageExport\include\bmp-utils.h" />
     <ClInclude Include="Include\Common.h" />
+    <ClInclude Include="Include\tzConstants.h" />
+    <ClInclude Include="Include\tzCoreCamera.h" />
     <ClInclude Include="Include\tzCoreMaterial.h" />
     <ClInclude Include="Include\tzCoreMesh.h" />
     <ClInclude Include="Include\tzCoreObject.h" />
     <ClInclude Include="Include\tzCoreScene.h" />
     <ClInclude Include="Include\tzTool.h" />
     <ClInclude Include="Include\tzCoreTransform.h" />
-    <ClInclude Include="Include\ViewManager.h" />
     <ClInclude Include="Interfaces\tzIGLDraw.h" />
     <ClInclude Include="Tracer\include\tzAmbient.h" />
     <ClInclude Include="Tracer\include\tzAmbientOccluder.h" />
@@ -249,7 +252,6 @@
     <ClInclude Include="Tracer\include\tzAreaLighting.h" />
     <ClInclude Include="Tracer\include\tzIBTDF.h" />
     <ClInclude Include="Tracer\include\tzCompound.h" />
-    <ClInclude Include="Tracer\include\tzConstants.h" />
     <ClInclude Include="Tracer\include\tzDirectional.h" />
     <ClInclude Include="Tracer\include\tzEmissive.h" />
     <ClInclude Include="Tracer\include\tzFlatMeshTriangle.h" />
