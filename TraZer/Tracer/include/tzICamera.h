@@ -18,39 +18,29 @@ class tzICamera
 
 		tzICamera(const tzICamera& tzICamera);			// copy constructor
 		
-		virtual tzICamera*							// virtual copy constructor
-		clone(void) const = 0;
+		virtual tzICamera* clone(void) const = 0;
 		
-		virtual
-		~tzICamera();   							
+		virtual ~tzICamera();   							
 
 		virtual void renderScene(const tzWorld& w) const = 0;
 		
-		void
-		set_eye(const tzPoint3D& p);
+		void setEye(const tzPoint3D& p);
 
-		void
-		set_eye(const float x, const float y, const float z);
+		void setEye(const float x, const float y, const float z);
 		
-		void
-		set_lookat(const tzPoint3D& p);
+		void setLookAt(const tzPoint3D& p);
 
-		void
-		set_lookat(const float x, const float y, const float z);
+		void setLookAt(const float x, const float y, const float z);
 
-		void
-		set_up_vector(const tzVector3D& u);
+		void setUpVector(const tzVector3D& u);
 
-		void
-		set_up_vector(const float x, const float y, const float z);
+		void setUpVector(const float x, const float y, const float z);
 
-		void
-		set_roll(const float ra);
+		void setRoll(const float ra);
 		
 		void setExposureTime(const float exposure);
 		
-		void									
-		compute_uvw(void);
+		void computeUVW(void);
 
 		void setOutputPath( const std::string &outputPath );
 		
@@ -74,58 +64,58 @@ class tzICamera
 // inlined access functions
 
 
-// ----------------------------------------------------------------- set_eye
+// ----------------------------------------------------------------- setEye
 
 inline void
-tzICamera::set_eye(const tzPoint3D& p) {
+tzICamera::setEye(const tzPoint3D& p) {
 	eye = p;
 }
 
 
-// ----------------------------------------------------------------- set_eye
+// ----------------------------------------------------------------- setEye
 
 inline void
-tzICamera::set_eye(const float x, const float y, const float z) {
+tzICamera::setEye(const float x, const float y, const float z) {
 	eye.x = x; eye.y = y; eye.z = z;
 }
 
 
-// ----------------------------------------------------------------- set_lookat
+// ----------------------------------------------------------------- setLookAt
 
 inline void
-tzICamera::set_lookat(const tzPoint3D& p) {
+tzICamera::setLookAt(const tzPoint3D& p) {
 	lookat = p;
 }
 
 
-// ----------------------------------------------------------------- set_lookat
+// ----------------------------------------------------------------- setLookAt
 
 inline void
-tzICamera::set_lookat(const float x, const float y, const float z) {
+tzICamera::setLookAt(const float x, const float y, const float z) {
 	lookat.x = x; lookat.y = y; lookat.z = z;
 }
 
 
-// ----------------------------------------------------------------- set_up_vector
+// ----------------------------------------------------------------- setUpVector
 
 inline void
-tzICamera::set_up_vector(const tzVector3D& u) {
+tzICamera::setUpVector(const tzVector3D& u) {
 	up = u;
 }
 
 
-// ----------------------------------------------------------------- set_up_vector
+// ----------------------------------------------------------------- setUpVector
 
 inline void
-tzICamera::set_up_vector(const float x, const float y, const float z) {
+tzICamera::setUpVector(const float x, const float y, const float z) {
 	up.x = x; up.y = y; up.z = z;
 }
 
 
-// ----------------------------------------------------------------- set_roll
+// ----------------------------------------------------------------- setRoll
 
 inline void
-tzICamera::set_roll(const float r) {
+tzICamera::setRoll(const float r) {
 	ra = r;
 }
 

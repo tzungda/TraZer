@@ -20,8 +20,7 @@ class tzITexture {
 		virtual 											
 		~tzITexture(void);
 		
-		virtual tzRGBColor																			
-		get_color(const tzShadeRec& sr) const = 0;
+		virtual tzRGBColor getColor(const tzShadeRec& sr) const = 0;
 				
 	protected:
 	

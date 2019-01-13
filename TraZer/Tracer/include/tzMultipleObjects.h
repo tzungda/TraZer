@@ -10,13 +10,13 @@ class tzMultipleObjects: public tzITracer {
 		
 		tzMultipleObjects(void);
 		
-		tzMultipleObjects( tzWorld* _world_ptr);
+		tzMultipleObjects( tzWorld* _mWorldPtr);
 	
 		virtual											
 		~tzMultipleObjects(void);
 						
-		virtual tzRGBColor trace_ray(const tzRay& ray) const;
-		virtual tzRGBColor trace_ray(const tzRay ray, const int depth) const;
+		virtual tzRGBColor traceRay(const tzRay& ray) const;
+		virtual tzRGBColor traceRay(const tzRay ray, const int depth) const;
 };
 
 #endif

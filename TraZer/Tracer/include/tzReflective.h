@@ -35,7 +35,7 @@ class tzReflective: public tzPhong {
 		virtual tzRGBColor										
 		shade(tzShadeRec& s);
 
-		virtual tzRGBColor path_shade(tzShadeRec& sr);
+		virtual tzRGBColor pathShade(tzShadeRec& sr);
 		
 	private:
 	

@@ -11,11 +11,9 @@ class tzWhitted: public tzITracer {
 		
 		tzWhitted(tzWorld* _worldPtr);
 		
-		virtual											
-		~tzWhitted(void);
+		virtual	~tzWhitted(void);
 	
-		virtual tzRGBColor	
-		trace_ray(const tzRay ray, const int depth) const;
+		virtual tzRGBColor traceRay(const tzRay ray, const int depth) const;
 };
 
 #endif

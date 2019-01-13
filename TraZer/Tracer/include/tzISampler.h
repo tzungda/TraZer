@@ -17,76 +17,59 @@ class tzISampler {
 		
 		tzISampler(const int num);
 		
-		tzISampler(const int num, const int num_sets);
+		tzISampler(const int num, const int numSets);
 
 		tzISampler(const tzISampler& s);
 
-		tzISampler&
-		operator= (const tzISampler& rhs);
+		tzISampler& operator= (const tzISampler& rhs);
 
-		virtual tzISampler*
-		clone(void) const = 0;			
+		virtual tzISampler* clone(void) const = 0;			
 
-		virtual
-		~tzISampler(void);
+		virtual ~tzISampler(void);
 		
-		void
-		set_num_sets(const int np);					
+		void setNumSets(const int np);					
 		
-		virtual void							// generate sample patterns in a unit square
-		generate_samples(void) = 0;
+		virtual void generate_samples(void) = 0;
 
-		int 											
-		get_num_samples(void);							
+		int getNumSamples(void);							
 		
-		void
-		shuffle_x_coordinates(void);
+		void shuffleXCoordinates(void);
 		
-		void
-		shuffle_y_coordinates(void);
+		void shuffleYCoordinates(void);
 			
-		void											
-		setup_shuffled_indices(void);
+		void setupShuffledIndices(void);
 		
-		void											
-		map_samples_to_unit_disk(void);
+		void mapSamplesToUnitDisk(void);
 		
-		void
-		map_samples_to_hemisphere(const float p);		
+		void mapSamplesToHemisphere(const float p);		
 		
-		void
-		map_samples_to_sphere(void);					
+		void mapSamplesToSphere(void);					
 		
 		
 		// the following functions are not const because they change count and jump
 		
-		tzPoint2D											// get next sample on unit square
-		sample_unit_square(void);
+		tzPoint2D sampleUnitSquare(void);
 		
-		tzPoint2D											// get next sample on unit disk
-		sample_unit_disk(void);
+		tzPoint2D sampleUnitDisk(void);
 		
-		tzPoint3D											// get next sample on unit hemisphere
-		sample_hemisphere(void);
+		tzPoint3D sampleHemisphere(void);
 		
-		tzPoint3D											// get next sample on unit sphere
-		sample_sphere(void);
+		tzPoint3D sampleSphere(void);
 		
-		tzPoint2D											// only used to set up a vector noise table
-		sample_one_set(void);							// this is not discussed in the book, but see the
+		tzPoint2D sampleOneSet(void);							// this is not discussed in the book, but see the
 														// file LatticeNoise.cpp in Chapter 31
 		
 	protected:
 	
-		int 					num_samples;     		// the number of sample points in a set
-		int 					num_sets;				// the number of sample sets
-		vector<tzPoint2D>		samples;				// sample points on a unit square
-		vector<int>				shuffled_indices;		// shuffled samples array indices
-		vector<tzPoint2D>		disk_samples;			// sample points on a unit disk
-		vector<tzPoint3D> 		hemisphere_samples;		// sample points on a unit hemisphere
-		vector<tzPoint3D> 		sphere_samples;			// sample points on a unit sphere
-		unsigned long 			count;					// the current number of sample points used
-		int 					jump;					// random index jump
+		int 					mNumSamples;     		// the number of sample points in a set
+		int 					mNumSets;				// the number of sample sets
+		vector<tzPoint2D>		mSamples;				// sample points on a unit square
+		vector<int>				mShuffledIndices;		// shuffled samples array indices
+		vector<tzPoint2D>		mDiskSamples;			// sample points on a unit disk
+		vector<tzPoint3D> 		mHemisphereSamples;		// sample points on a unit hemisphere
+		vector<tzPoint3D> 		mSphereSamples;			// sample points on a unit sphere
+		unsigned long 			mCount;					// the current number of sample points used
+		int 					mJump;					// random index jump
 };
 
 #endif

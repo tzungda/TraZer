@@ -15,8 +15,7 @@ class tzImage {
 
 		tzImage(const tzImage& image);
 
-		tzImage&
-		operator= (const tzImage& image);
+		tzImage& operator= (const tzImage& image);
 
 		~tzImage(void) ;
 		
@@ -24,35 +23,30 @@ class tzImage {
 
 		void readPng( const char* fileName );
 		
-		int
-		get_hres(void);	
+		int getHeight(void);	
 		
-		int
-		get_vres(void);	
+		int getWidth(void);	
 				
-		tzRGBColor									
-		get_color(const int row, const int col) const;		
+		tzRGBColor getColor(const int row, const int col) const;		
 		
 	private:
-		int 				hres;			// horizontal resolution of image
-		int					vres;			// vertical resolution of image
+		int 				mWidth;			// horizontal resolution of image
+		int					mHeight;			// vertical resolution of image
 		vector<tzRGBColor> 	pixels;
 };
 
 
-//--------------------------------------------------------------------- get_hres
-
-inline int
-tzImage::get_hres(void) {
-	return (hres);
+//===================================================================================
+inline int tzImage::getHeight(void)
+{
+	return (mHeight);
 }
 
 
-//--------------------------------------------------------------------- get_vres
-
-inline int
-tzImage::get_vres(void) {
-	return (vres);
+//===================================================================================
+inline int tzImage::getWidth(void) 
+{
+	return (mWidth);
 }
 
 #endif

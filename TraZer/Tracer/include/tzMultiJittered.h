@@ -9,9 +9,9 @@ class tzMultiJittered: public tzISampler {
 		
 		tzMultiJittered(void);
 		
-		tzMultiJittered(const int num_samples);
+		tzMultiJittered(const int numSamples);
 		
-		tzMultiJittered(const int num_samples, const int m);
+		tzMultiJittered(const int numSamples, const int m);
 
 		tzMultiJittered(const tzMultiJittered& mjs);
 

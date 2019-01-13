@@ -23,38 +23,29 @@ class tzMeshTriangle: public tzIGeometricObject {
 
 		tzMeshTriangle(tzMesh* _mesh_ptr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2);
 
-		virtual tzMeshTriangle*
-		clone(void) const = 0;
+		virtual tzMeshTriangle* clone(void) const = 0;
 	
 		tzMeshTriangle(const tzMeshTriangle& mt);
 
-		virtual
-		~tzMeshTriangle(void);
+		virtual ~tzMeshTriangle(void);
 
-		tzMeshTriangle&
-		operator= (const tzMeshTriangle& rhs);
+		tzMeshTriangle& operator= (const tzMeshTriangle& rhs);
 		
-		virtual bool 												 
-		hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const = 0;
+		virtual bool hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const = 0;
 		
 		virtual	bool shadowHit(const tzRay& ray, float& tmin) const;
 		
-		void 
-		compute_normal(const bool reverse_normal);
+		void computeNormal(const bool reverse_normal);
 				
-		virtual tzNormal
-		get_normal(void) const;				
+		virtual tzNormal getNormal(void) const;				
 
-		virtual tzBBox
-		get_bounding_box(void);
+		virtual tzBBox getBoundingBox(void);
 		
 	protected:
 	
-		float  
-		interpolate_u(const float beta, const float gamma) const;
+		float interpolate_u(const float beta, const float gamma) const;
 		
-		float  
-		interpolate_v(const float beta, const float gamma) const;			
+		float interpolate_v(const float beta, const float gamma) const;			
 };
 
 #endif

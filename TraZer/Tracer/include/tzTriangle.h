@@ -12,24 +12,19 @@ class tzTriangle: public tzIGeometricObject {
 				
 		tzTriangle(const tzPoint3D& a, const tzPoint3D& b, const tzPoint3D& c);
 
-		virtual tzTriangle*
-		clone(void) const;
+		virtual tzTriangle* clone(void) const;
 	
 		tzTriangle(const tzTriangle& triangle);
 
 		~tzTriangle(void);
 
-		tzTriangle&
-		operator= (const tzTriangle& rhs);
+		tzTriangle& operator= (const tzTriangle& rhs);
 		
-		virtual tzBBox															
-		get_bounding_box(void);
+		virtual tzBBox getBoundingBox(void);
 
-		void 
-		compute_normal(void);
+		void  computeNormal(void);
 		
-		virtual bool 
-		hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;
+		virtual bool hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;
 		
 		virtual bool shadowHit(const tzRay& ray, float& tmin) const;
 		

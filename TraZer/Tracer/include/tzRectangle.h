@@ -25,7 +25,7 @@ class tzRectangle: public tzIGeometricObject {
 		operator= (const tzRectangle& rhs);
 		
 		tzBBox
-		get_bounding_box(void);				
+		getBoundingBox(void);				
 	
 		virtual bool 												 
 		hit(const tzRay& ray, float& t, tzShadeRec& s) const;
@@ -40,7 +40,7 @@ class tzRectangle: public tzIGeometricObject {
 		sample(void);
 		
 		virtual tzNormal
-		get_normal(const tzPoint3D& p);
+		getNormal(const tzPoint3D& p);
 		
 		virtual float												
 		pdf(tzShadeRec& sr);

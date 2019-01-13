@@ -4,32 +4,27 @@
 
 #include "../include/tzILight.h"
 
-class tzAmbient: public tzILight {
+class tzAmbient: public tzILight 
+{
 	public:
 	
 		tzAmbient(void);
 
 		tzAmbient(const tzAmbient& a);
 	
-		virtual tzILight*
-		clone(void) const;	
+		virtual tzILight* clone(void) const;	
 		
-		tzAmbient&
-		operator= (const tzAmbient& rhs);
+		tzAmbient& operator= (const tzAmbient& rhs);
 		
 		virtual ~tzAmbient(void);
 				
-		void
-		scale_radiance(const float b);
+		void scaleRadiance(const float b);
 		
-		void
-		set_color(const float c);
+		void setColor(const float c);
 		
-		void
-		set_color(const tzRGBColor& c);
+		void setColor(const tzRGBColor& c);
 		
-		void
-		set_color(const float r, const float g, const float b); 
+		void setColor(const float r, const float g, const float b); 
 		
 		virtual tzVector3D getDirection(  tzShadeRec& s) ; 
 		
@@ -37,43 +32,35 @@ class tzAmbient: public tzILight {
 	
 	private:
 	
-		float		ls;
-		tzRGBColor	color;
+		float		mLs;
+		tzRGBColor	mColor;
 };
 
 
-
-
-// ------------------------------------------------------------------------------- scale_radiance
-
-inline void
-tzAmbient::scale_radiance(const float b) {
-	ls = b;
+//===================================================================================
+inline void tzAmbient::scaleRadiance(const float b) 
+{
+	mLs = b;
 }
 
-// ------------------------------------------------------------------------------- set_color
-
-inline void
-tzAmbient::set_color(const float c) {
-	color.r = c; color.g = c; color.b = c;
+//===================================================================================
+inline void tzAmbient::setColor(const float c) 
+{
+	mColor.r = c; mColor.g = c; mColor.b = c;
 }
 
-
-// ------------------------------------------------------------------------------- set_color
-
-inline void
-tzAmbient::set_color(const tzRGBColor& c) {
-	color = c;
+//===================================================================================
+inline void tzAmbient::setColor(const tzRGBColor& c) 
+{
+	mColor = c;
 }
 
-
-// ------------------------------------------------------------------------------- set_color
-
-inline void
-tzAmbient::set_color(const float r, const float g, const float b) {
-	color.r = r; color.g = g; color.b = b;
+//===================================================================================
+inline void tzAmbient::setColor(const float r, const float g, const float b) 
+{
+	mColor.r = r; mColor.g = g; mColor.b = b;
 }
 
 
 #endif
-
+

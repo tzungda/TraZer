@@ -21,16 +21,16 @@ class tzPointLight: public tzILight {
 		virtual ~tzPointLight(void);
 				
 		void
-		scale_radiance(const float b);
+		scaleRadiance(const float b);
 		
 		void
-		set_color(const float c);
+		setColor(const float c);
 		
 		void
-		set_color(const tzRGBColor& c);
+		setColor(const tzRGBColor& c);
 		
 		void
-		set_color(const float r, const float g, const float b); 
+		setColor(const float r, const float g, const float b); 
 		
 		virtual tzVector3D getDirection( tzShadeRec& s) ;
 		
@@ -44,42 +44,35 @@ class tzPointLight: public tzILight {
 	
 	private:
 	
-		float		ls;
-		tzRGBColor	color;
-		tzVector3D	location;
+		float		mLs;
+		tzRGBColor	mColor;
+		tzVector3D	mLocation;
 };
 
 
 
-
-// ------------------------------------------------------------------------------- scale_radiance
-
-inline void
-tzPointLight::scale_radiance(const float b) {
-	ls = b;
+//===================================================================================
+inline void tzPointLight::scaleRadiance(const float b) 
+{
+	mLs = b;
 }
 
-// ------------------------------------------------------------------------------- set_color
-
-inline void
-tzPointLight::set_color(const float c) {
-	color.r = c; color.g = c; color.b = c;
+//===================================================================================
+inline void tzPointLight::setColor(const float c) 
+{
+	mColor.r = c; mColor.g = c; mColor.b = c;
 }
 
-
-// ------------------------------------------------------------------------------- set_color
-
-inline void
-tzPointLight::set_color(const tzRGBColor& c) {
-	color = c;
+//===================================================================================
+inline void tzPointLight::setColor(const tzRGBColor& c) 
+{
+	mColor = c;
 }
 
-
-// ------------------------------------------------------------------------------- set_color
-
-inline void
-tzPointLight::set_color(const float r, const float g, const float b) {
-	color.r = r; color.g = g; color.b = b;
+//===================================================================================
+inline void tzPointLight::setColor(const float r, const float g, const float b) 
+{
+	mColor.r = r; mColor.g = g; mColor.b = b;
 }
 
 

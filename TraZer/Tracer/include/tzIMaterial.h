@@ -12,20 +12,18 @@ class tzIMaterial {
 		
 		tzIMaterial(const tzIMaterial& material);
 		
-		virtual tzIMaterial*
-		clone(void) const = 0;	
+		virtual tzIMaterial* clone(void) const = 0;	
 				
 		virtual ~tzIMaterial(void);
 				
-		virtual tzRGBColor
-		shade(tzShadeRec& sr);	
+		virtual tzRGBColor shade(tzShadeRec& sr);	
 
-		virtual tzRGBColor area_light_shade( tzShadeRec& sr) const;
+		virtual tzRGBColor areaLightShade( tzShadeRec& sr) const;
 
-		virtual tzRGBColor get_Le( tzShadeRec &sr );
+		virtual tzRGBColor getLe( tzShadeRec &sr );
 
 		// for path trace
-		virtual tzRGBColor path_shade(tzShadeRec& sr);
+		virtual tzRGBColor pathShade(tzShadeRec& sr);
 		
 	protected:
 	

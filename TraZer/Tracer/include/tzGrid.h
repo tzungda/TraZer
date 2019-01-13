@@ -29,7 +29,7 @@ class tzGrid: public tzCompound {
 		~tzGrid(void);
 
 		virtual tzBBox 
-		get_bounding_box(void);
+		getBoundingBox(void);
 
 		void												
 		read_flat_triangles(char* file_name);
@@ -112,8 +112,8 @@ tzGrid::reverse_mesh_normals(void) {
 // this is called from the Rosette and Archway classes, which inherit from Grid
 
 inline void
-tzGrid::store_material(tzIMaterial* material_ptr, const int index) {
-	objects[index]->set_material(material_ptr); 
+tzGrid::store_material(tzIMaterial* mMaterialPtr, const int index) {
+	objects[index]->setMaterial(mMaterialPtr); 
 }
 
 inline void

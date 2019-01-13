@@ -24,8 +24,7 @@ class tzAreaLight: public tzILight {
 		
 		tzAreaLight& operator= (const tzAreaLight& rhs);
 		
-		void 									
-		set_object(tzIGeometricObject* obj_ptr);
+		void  setObject(tzIGeometricObject* obj_ptr);
 		
 		virtual tzVector3D getDirection( tzShadeRec& s) ;
 		
@@ -40,7 +39,7 @@ class tzAreaLight: public tzILight {
 	private:
 		
 		tzIGeometricObject* 	object_ptr;
-		tzIMaterial* 			material_ptr;	 // will be an emissive material
+		tzIMaterial* 			mMaterialPtr;	 // will be an emissive material
 		tzPoint3D				sample_point;
 		tzNormal				light_normal;    // assigned in get_direction - which therefore can't be const for any light
 		tzVector3D				wi;			     // unit direction from hit point being shaded to sample point on light surface			
@@ -48,13 +47,11 @@ class tzAreaLight: public tzILight {
 };
 
 
-// --------------------------------------------------------------- set_object
-
-inline void 									
-tzAreaLight::set_object(tzIGeometricObject* obj_ptr) 
+//===================================================================================
+inline void tzAreaLight::setObject(tzIGeometricObject* obj_ptr) 
 {
 	object_ptr = obj_ptr;
-	material_ptr = object_ptr->get_material();	
+	mMaterialPtr = object_ptr->getMaterial();	
 }
 
 #endif

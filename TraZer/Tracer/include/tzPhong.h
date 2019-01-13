@@ -58,7 +58,7 @@ class tzPhong: public tzIMaterial {
 		shade(tzShadeRec& sr);
 
 		//
-		virtual tzRGBColor area_light_shade( tzShadeRec &sr) const;
+		virtual tzRGBColor areaLightShade( tzShadeRec &sr) const;
 		
 	private:
 		

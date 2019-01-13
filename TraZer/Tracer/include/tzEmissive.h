@@ -28,7 +28,7 @@ class tzEmissive: public tzIMaterial {
 		tzRGBColor	emissiveColor() const;
 
 		void 													
-		scale_radiance(const float k);
+		scaleRadiance(const float k);
 		
 		void													
 		set_ce(const tzRGBColor &c);
@@ -41,9 +41,9 @@ class tzEmissive: public tzIMaterial {
 				
 		virtual tzRGBColor shade(tzShadeRec& sr);
 
-		virtual tzRGBColor area_light_shade( tzShadeRec& sr) const;
+		virtual tzRGBColor areaLightShade( tzShadeRec& sr) const;
 
-		virtual tzRGBColor get_Le(tzShadeRec &sr);
+		virtual tzRGBColor getLe(tzShadeRec &sr);
 		
 };
 

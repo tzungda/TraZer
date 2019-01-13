@@ -41,7 +41,7 @@ class tzGlossySpecular: public tzIBRDF {
 		set_sampler(tzISampler* sp, const float exp);   			// any type of sampling
 		
 		void
-		set_samples(const int num_samples, const float exp); 	// multi jittered sampling
+		set_samples(const int numSamples, const float exp); 	// multi jittered sampling
 		
 		void
 		set_normal(const tzNormal& n);

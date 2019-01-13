@@ -16,11 +16,9 @@ class tzFlatUVMeshTriangle: public tzFlatMeshTriangle {
 	
 		tzFlatUVMeshTriangle(const tzFlatUVMeshTriangle& fmt);
 
-		virtual
-		~tzFlatUVMeshTriangle(void);
+		virtual ~tzFlatUVMeshTriangle(void);
 
-		tzFlatUVMeshTriangle&
-		operator= (const tzFlatUVMeshTriangle& rhs);
+		tzFlatUVMeshTriangle& operator= (const tzFlatUVMeshTriangle& rhs);
 				
 		virtual	bool hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;
 

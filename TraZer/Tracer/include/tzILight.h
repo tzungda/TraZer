@@ -7,10 +7,8 @@
 
 class tzShadeRec;
 
-
-//-------------------------------------------------------------------- class Light
-
-class tzILight {	
+class tzILight 
+{	
 	public:
 	
 		tzILight(void);

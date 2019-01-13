@@ -13,20 +13,20 @@ class tzITracer {
 	
 		tzITracer(void);									
 		
-		tzITracer( tzWorld* _world_ptr);						
+		tzITracer( tzWorld* _mWorldPtr);						
 				
 		virtual											
 		~tzITracer(void);									
 
 		virtual tzRGBColor			// only overridden in the tzITracers SingleSphere and MultipleObjects
-		trace_ray(const tzRay& ray) const;
+		traceRay(const tzRay& ray) const;
 
 		virtual tzRGBColor
-		trace_ray(const tzRay ray, const int depth) const;
+		traceRay(const tzRay ray, const int depth) const;
 				
 	protected:
 	
-		tzWorld* world_ptr;
+		tzWorld* mWorldPtr;
 };
 
 #endif

@@ -24,7 +24,7 @@ class tzSmoothTriangle: public tzIGeometricObject {
 		operator= (const tzSmoothTriangle& rhs);
 		
 		virtual tzBBox
-		get_bounding_box(void);
+		getBoundingBox(void);
 		
 		virtual bool 
 		hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;

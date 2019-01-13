@@ -24,7 +24,7 @@ class tzImageTexture: public tzITexture {
 		~tzImageTexture(void) ;
 		
 		virtual tzRGBColor																				
-		get_color(const tzShadeRec& sr) const;
+		getColor(const tzShadeRec& sr) const;
 						
 		void
 		set_image(tzImage* _image_ptr);
@@ -46,8 +46,8 @@ class tzImageTexture: public tzITexture {
 inline void
 tzImageTexture::set_image(tzImage* _image_ptr) {
 	image_ptr = _image_ptr;
-	hres = image_ptr->get_hres();
-	vres = image_ptr->get_vres();
+	hres = image_ptr->getHeight();
+	vres = image_ptr->getWidth();
 }
 
 

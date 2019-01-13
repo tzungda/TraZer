@@ -9,38 +9,31 @@
 #include "tzShadeRec.h"
 
 
-class tzDirectional: public tzILight {
+class tzDirectional: public tzILight 
+{
 	public:
 	
 		tzDirectional(void);
 
 		tzDirectional(const tzDirectional& dl);
 		
-		virtual tzILight* 									
-		clone(void) const;			
+		virtual tzILight* clone(void) const;			
 
-		tzDirectional&
-		operator= (const tzDirectional& rhs);
+		tzDirectional& operator= (const tzDirectional& rhs);
 			
 		virtual ~tzDirectional(void);
 				
-		void
-		scale_radiance(const float b);
+		void scaleRadiance(const float b);
 		
-		void
-		set_color(const float c);
+		void setColor(const float c);
 		
-		void
-		set_color(const tzRGBColor& c);
+		void setColor(const tzRGBColor& c);
 		
-		void
-		set_color(const float r, const float g, const float b); 		
+		void setColor(const float r, const float g, const float b); 		
 			
-		void
-		set_direction(tzVector3D d);
+		void setDirection(tzVector3D d);
 		
-		void
-		set_direction(float dx, float dy, float dz);
+		void setDirection(float dx, float dy, float dz);
 		
 		virtual tzVector3D getDirection( tzShadeRec& sr) ;
 				
@@ -50,61 +43,51 @@ class tzDirectional: public tzILight {
 		
 	private:
 
-		float		ls;			
-		tzRGBColor	color;
-		tzVector3D	dir;		// direction the light comes from
+		float		mLs;			
+		tzRGBColor	mColor;
+		tzVector3D	mDir;		// direction the light comes from
 };
 
 
 // inlined access functions
 
 
-// ------------------------------------------------------------------------------- scale_radiance
-
-inline void
-tzDirectional::scale_radiance(const float b) {
-	ls = b;
+//===================================================================================
+inline void tzDirectional::scaleRadiance(const float b) 
+{
+	mLs = b;
 }
 
-// ------------------------------------------------------------------------------- set_color
-
-inline void
-tzDirectional::set_color(const float c) {
-	color.r = c; color.g = c; color.b = c;
+//===================================================================================
+inline void tzDirectional::setColor(const float c) 
+{
+	mColor.r = c; mColor.g = c; mColor.b = c;
 }
 
-
-// ------------------------------------------------------------------------------- set_color
-
-inline void
-tzDirectional::set_color(const tzRGBColor& c) {
-	color = c;
+//===================================================================================
+inline void tzDirectional::setColor(const tzRGBColor& c) 
+{
+	mColor = c;
 }
 
-
-// ------------------------------------------------------------------------------- set_color
-
-inline void
-tzDirectional::set_color(const float r, const float g, const float b) {
-	color.r = r; color.g = g; color.b = b;
+//===================================================================================
+inline void tzDirectional::setColor(const float r, const float g, const float b) 
+{
+	mColor.r = r; mColor.g = g; mColor.b = b;
 }
 
-
-// ---------------------------------------------------------------------- set_direction
-
-inline void
-tzDirectional::set_direction(tzVector3D d) {
-	dir = d;
-	dir.normalize();
+//===================================================================================
+inline void tzDirectional::setDirection(tzVector3D d) 
+{
+	mDir = d;
+	mDir.normalize();
 }
 
-
-// ---------------------------------------------------------------------- set_direction 
-
-inline void
-tzDirectional::set_direction(float dx, float dy, float dz) {
-	dir.x = dx; dir.y = dy; dir.z = dz;
-	dir.normalize();
+//===================================================================================
+inline void tzDirectional::setDirection(float dx, float dy, float dz) 
+{
+	mDir.x = dx; mDir.y = dy; mDir.z = dz;
+	mDir.normalize();
 }
 
 

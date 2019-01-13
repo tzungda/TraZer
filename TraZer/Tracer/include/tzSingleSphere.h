@@ -14,7 +14,7 @@ class tzSingleSphere: public tzITracer {
 		~tzSingleSphere(void);
 		
 		virtual tzRGBColor
-		trace_ray(const tzRay& ray) const;
+		traceRay(const tzRay& ray) const;
 };
 
 #endif

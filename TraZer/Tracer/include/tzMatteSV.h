@@ -34,9 +34,9 @@ class tzMatteSV: public tzIMaterial {
 		virtual tzRGBColor
 		shade(tzShadeRec& sr);
 
-		virtual tzRGBColor area_light_shade( tzShadeRec &sr ) const;
+		virtual tzRGBColor areaLightShade( tzShadeRec &sr ) const;
 
-		virtual tzRGBColor path_shade(tzShadeRec& sr);
+		virtual tzRGBColor pathShade(tzShadeRec& sr);
 		
 	private:
 		

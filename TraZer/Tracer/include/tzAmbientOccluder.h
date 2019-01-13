@@ -20,16 +20,16 @@ class tzAmbientOccluder: public tzILight {
 		virtual ~tzAmbientOccluder(void);
 				
 		void
-		scale_radiance(const float b);
+		scaleRadiance(const float b);
 		
 		void
-		set_color(const float c);
+		setColor(const float c);
 		
 		void
-		set_color(const tzRGBColor& c);
+		setColor(const tzRGBColor& c);
 		
 		void
-		set_color(const float r, const float g, const float b); 
+		setColor(const float r, const float g, const float b); 
 		
 		virtual tzVector3D getDirection( tzShadeRec& s);
 		
@@ -46,44 +46,37 @@ class tzAmbientOccluder: public tzILight {
 	
 	private:
 	
-		float		ls;
-		tzRGBColor	color;
+		float		mLs;
+		tzRGBColor	mColor;
 		tzISampler	*mSamplerPtr;
 		tzVector3D	u, v, w;
-		tzRGBColor	min_amount;
+		tzRGBColor	mMinAmount;
 };
 
 
 
-
-// ------------------------------------------------------------------------------- scale_radiance
-
-inline void
-tzAmbientOccluder::scale_radiance(const float b) {
-	ls = b;
+//===================================================================================
+inline void tzAmbientOccluder::scaleRadiance(const float b) 
+{
+	mLs = b;
 }
 
-// ------------------------------------------------------------------------------- set_color
-
-inline void
-tzAmbientOccluder::set_color(const float c) {
-	color.r = c; color.g = c; color.b = c;
+//===================================================================================
+inline void tzAmbientOccluder::setColor(const float c) 
+{
+	mColor.r = c; mColor.g = c; mColor.b = c;
 }
 
-
-// ------------------------------------------------------------------------------- set_color
-
-inline void
-tzAmbientOccluder::set_color(const tzRGBColor& c) {
-	color = c;
+//===================================================================================
+inline void tzAmbientOccluder::setColor(const tzRGBColor& c) 
+{
+	mColor = c;
 }
 
-
-// ------------------------------------------------------------------------------- set_color
-
-inline void
-tzAmbientOccluder::set_color(const float r, const float g, const float b) {
-	color.r = r; color.g = g; color.b = b;
+//===================================================================================
+inline void tzAmbientOccluder::setColor(const float r, const float g, const float b) 
+{
+	mColor.r = r; mColor.g = g; mColor.b = b;
 }
 
 

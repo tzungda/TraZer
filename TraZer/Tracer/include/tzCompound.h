@@ -1,44 +1,32 @@
 #ifndef TZ_TRACER_COMPOUND
 #define TZ_TRACER_COMPOUND
 
-// 	Copyright (C) Kevin Suffern 2000-2007.
-//	This C++ code is for non-commercial purposes only.
-//	This C++ code is licensed under the GNU General Public License Version 2.
-//	See the file COPYING.txt for the full license.
-
 
 #include <vector> 
 
 #include "../include/tzIGeometricObject.h"
 
-//-------------------------------------------------------------------------------- class Compound
 
 class tzCompound: public tzIGeometricObject {
 	public:
 		
 		tzCompound(void);
 
-		virtual tzCompound*
-		clone(void) const;
+		virtual tzCompound* clone(void) const;
 	
 		tzCompound(const tzCompound& c);
 
 		~tzCompound(void);
 
-		tzCompound&
-		operator= (const tzCompound& c);
+		tzCompound& operator= (const tzCompound& c);
 		
-		virtual void 
-		set_material(tzIMaterial* material_ptr);
+		virtual void  setMaterial(tzIMaterial* mMaterialPtr);
 		
-		virtual void 											
-		add_object(tzIGeometricObject* object_ptr);  
+		virtual void  addObject(tzIGeometricObject* object_ptr);  
 		
-		int
-		get_num_objects(void);						
+		int getNumObjects(void);						
 
-		virtual bool 															 
-		hit(const tzRay& ray, float& tmin, tzShadeRec& s) const;
+		virtual bool hit(const tzRay& ray, float& tmin, tzShadeRec& s) const;
 
 		virtual	bool shadowHit(const tzRay& ray, float& tmin) const;
 			
@@ -48,19 +36,17 @@ class tzCompound: public tzIGeometricObject {
 		
 	private:
 	
-		void 													
-		delete_objects(void);								
+		void deleteObjects(void);								
 
-		void												
-		copy_objects(const std::vector<tzIGeometricObject*>& rhs_objects);
+		void copyObjects(const std::vector<tzIGeometricObject*>& rhs_objects);
 	
 };
 
 
-// ------------------------------------------------------------------------------- get_num_objects
+// ------------------------------------------------------------------------------- getNumObjects
 
-inline int
-tzCompound::get_num_objects(void) {
+inline int tzCompound::getNumObjects(void) 
+{
 	return ((int)objects.size());
 }
 

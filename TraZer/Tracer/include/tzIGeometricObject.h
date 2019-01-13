@@ -34,82 +34,67 @@ class tzIGeometricObject {
 		//
 		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
 		
-		virtual void 							// This needs to be virtual so that it can be overridden in Compound
-		set_material(tzIMaterial* mPtr); 			// It therefore shouldn't be inlined
+		virtual void  setMaterial(tzIMaterial* mPtr); 
 		
-		tzIMaterial*					
-		get_material(void) const;
+		tzIMaterial* getMaterial(void) const;
 
 				   
 		// The following three functions are only required for Chapter 3
 		
-		void
-		set_color(const tzRGBColor& c);
+		void setColor(const tzRGBColor& c);
 				
-		void
-		set_color(const float r, const float g, const float b);
+		void setColor(const float r, const float g, const float b);
 		
-		tzRGBColor
-		get_color(void);
+		tzRGBColor getColor(void);
 		
-		virtual void 
-		set_bounding_box(void);
+		virtual void setBoundingBox(void);
 		
-		virtual tzBBox 
-		get_bounding_box(void);
+		virtual tzBBox getBoundingBox(void);
 
-		virtual void 										// required for compound objects
-		add_object(tzIGeometricObject* object_ptr);
+		virtual void addObject(tzIGeometricObject* object_ptr);
 				
 		
 		// The following two functions are only required for objects that are light sources, eg disks, rectangles, and spheres
 		 
-		virtual tzPoint3D
-		sample(void);
+		virtual tzPoint3D sample(void);
 		
 		virtual float pdf(const tzShadeRec& sr); 
 				
 		
 		// The following two functions allow us to simplify the code for smooth shaded triangle meshes
 		
-		virtual tzNormal
-		get_normal(void) const; 
+		virtual tzNormal getNormal(void) const; 
 		
-		virtual tzNormal
-		get_normal(const tzPoint3D& p);
+		virtual tzNormal getNormal(const tzPoint3D& p);
 
 	
 	protected:
 	
-		mutable tzIMaterial*   material_ptr;   	// mutable allows the const functions Compound::hit, Instance::hit, and RegularGrid::hit to assign to material_ptr
-		tzRGBColor   			color;				// only used for Bare Bones ray tracing
+		mutable tzIMaterial*   mMaterialPtr;   	// mutable allows the const functions Compound::hit, Instance::hit, and RegularGrid::hit to assign to mMaterialPtr
+		tzRGBColor   		   mColor;				// only used for Bare Bones ray tracing
 	
-		tzIGeometricObject&						
-		operator= (const tzIGeometricObject& rhs);
+		tzIGeometricObject& operator= (const tzIGeometricObject& rhs);
 };
 
 
-// --------------------------------------------------------------------  set_color
-
-inline void
-tzIGeometricObject::set_color(const tzRGBColor& c) {
-	color = c;
+//===================================================================================
+inline void tzIGeometricObject::setColor(const tzRGBColor& c) 
+{
+	mColor = c;
 }
 
-// --------------------------------------------------------------------  set_color
-
-inline void 
-tzIGeometricObject::set_color(const float r, const float g, const float b) {
-	color.r = r;
-	color.b = b;
-	color.g = g;
+//===================================================================================
+inline void tzIGeometricObject::setColor(const float r, const float g, const float b) 
+{
+	mColor.r = r;
+	mColor.b = b;
+	mColor.g = g;
 }
 
-// --------------------------------------------------------------------  get_color
-
-inline tzRGBColor
-tzIGeometricObject::get_color(void) {
-	return (color);
+//===================================================================================
+inline tzRGBColor tzIGeometricObject::getColor(void) 
+{
+	return (mColor);
 }
 
 #endif
