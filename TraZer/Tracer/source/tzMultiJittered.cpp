@@ -10,7 +10,7 @@ tzMultiJittered::tzMultiJittered(void)
 
 //===================================================================================
 tzMultiJittered::tzMultiJittered(const int numSamples)
-	: tzISampler(mNumSamples) 
+	: tzISampler(numSamples)
 {
 //	count = 0;
 //	jump = 0;
@@ -19,7 +19,7 @@ tzMultiJittered::tzMultiJittered(const int numSamples)
 
 //===================================================================================
 tzMultiJittered::tzMultiJittered(const int numSamples, const int m)
-	: tzISampler(mNumSamples, m) 
+	: tzISampler(numSamples, m)
 {
 	generate_samples();
 }
