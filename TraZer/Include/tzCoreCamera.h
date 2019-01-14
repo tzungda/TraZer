@@ -47,6 +47,9 @@ public: //
 	void		setNearPlane( float nearPlane);
 	void		setFarPlane(float farPlane);
 	tzMatrix	perspectiveProjection( ) const;
+
+	//
+	//virtual tzVector3D	move(float deltaX, float deltaY, float deltaZ);
 	
 };
 

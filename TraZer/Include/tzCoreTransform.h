@@ -41,9 +41,10 @@ public:
 	void			setPosition(const tzVector3D& position);
 	tzMatrix		transformMatrix( ) const;
 	tzMatrix		invertedTransformMatrix() const;
+	tzVector3D		position( ) const;
 	//
 	virtual tzVector3D		move(float deltaX, float deltaY, float deltaZ);
-	
+	virtual tzVector3D		move(tzVector3D offset);
 };
 
 #endif
