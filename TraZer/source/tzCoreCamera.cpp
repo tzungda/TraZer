@@ -121,3 +121,17 @@ tzMatrix tzCoreCamera::perspectiveProjection() const
 	return result;
 }
 
+//===================================================================================
+/*
+tzVector3D tzCoreCamera::move(float deltaX, float deltaY, float deltaZ)
+{
+	tzVector3D up = upDir();
+	tzVector3D face = faceDir();
+	tzVector3D right = rightDir();
+	mPosition += right*deltaX + up*deltaY + face*deltaZ;
+
+	updateTransformMatrix();
+
+	return mPosition;
+}
+*/

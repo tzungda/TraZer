@@ -95,6 +95,7 @@ tzMatrix  tzCoreTransform::updateTransformMatrix()
 void tzCoreTransform::setPosition(const tzVector3D &position)
 {
 	mPosition = position;
+	updateTransformMatrix();
 }
 
 //===================================================================================
@@ -116,11 +117,28 @@ tzMatrix tzCoreTransform::invertedTransformMatrix() const
 }
 
 //===================================================================================
-tzVector3D  tzCoreTransform::move(float deltaX, float deltaY, float deltaZ)
+tzVector3D tzCoreTransform::position() const
 {
-	mPosition += tzVector3D(deltaX, deltaY, deltaZ);
-
 	return mPosition;
 }
 
+//===================================================================================
+tzVector3D  tzCoreTransform::move(float deltaX, float deltaY, float deltaZ)
+{
+	mPosition += tzVector3D(deltaX, deltaY, deltaZ);
+	mTransform.m[3][0] = mPosition.x;
+	mTransform.m[3][1] = mPosition.y;
+	mTransform.m[3][2] = mPosition.z;
+	return mPosition;
+}
+
+//===================================================================================
+tzVector3D tzCoreTransform::move(tzVector3D offset)
+{
+	mPosition += offset;
+	mTransform.m[3][0] = mPosition.x;
+	mTransform.m[3][1] = mPosition.y;
+	mTransform.m[3][2] = mPosition.z;
+	return mPosition;
+}
 
