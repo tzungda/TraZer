@@ -704,7 +704,8 @@ void My_Init(tzCoreScene *scene)
 
 	//m_camera.SetCamera(vec3(-800.0f, 100.0f, -40.0f), vec3(10.0f, 100.0f, -40.0f));
 	//m_camera.SetCamera(vec3(0.0f, 0.0f, -200.0f), vec3(0.0f, 0.0f, 0.0f));
-	m_camera.SetCamera(vec3(100.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f));
+	//m_camera.SetCamera(vec3(0.0f, 0.0f, 60.0f), vec3(0.0f, 0.0f, 0.0f));
+	m_camera.setCamPosition( tzVector3D(0.0f, 0.0f, 60.0f) );
 	//m_camera.Zoom(3.0f);
 
 	setupShaders();
@@ -725,12 +726,15 @@ void My_Display()
 	lightView = glm::lookAt(m_lightPos, vec3(0.0f), vec3(0.0, 1.0, 0.0));
 	lightSpaceMatrix = lightProjection * lightView;
 
-	tzMatrix view = m_camera.invertedTransformMatrix();
+	tzMatrix view = m_camera.viewMatrix();//.invertedTransformMatrix();
 
 	glUseProgram(phongShaderProgram);
 	{
+		tzVector3D pos( 100.0f, 10.0f, 0.0f );
+
+
 		glUniform3fv(phongShaderPrograms.lightPos, 1, value_ptr(m_lightPos));
-		glUniform3fv(phongShaderPrograms.viewPos, 1, value_ptr(m_camera.GetWorldEyePosition()));
+		glUniform3fv(phongShaderPrograms.viewPos, 1, (GLfloat*)(&pos.x) );//value_ptr(m_camera.GetWorldEyePosition()));
 		glUniformMatrix4fv(phongShaderPrograms.light_matrix, 1, GL_FALSE, value_ptr(lightSpaceMatrix));
 
 		
@@ -746,13 +750,10 @@ void My_Display()
 		}
 		*/
 
-		tzMatrix modelTransform( 1.0f, 0.0f, 0.0f, 0.0f,
-								 0.0f, 1.0f, 0.0f, 0.0f,
-								 0.0f, 0.0f, 1.0f, 0.0f,
-								 0.0f, 0.0f, 0.0f, 1.0f);
 
-		glUniformMatrix4fv(phongShaderPrograms.view_matrix, 1, GL_FALSE, (GLfloat*)(view*modelTransform).m);//value_ptr(m_camera.GetViewMatrix() * m_camera.GetModelMatrix()));
-		glUniformMatrix4fv(phongShaderPrograms.projection_matrix, 1, GL_FALSE, value_ptr(m_camera.GetProjectionMatrix(aspect)));
+
+		glUniformMatrix4fv(phongShaderPrograms.view_matrix, 1, GL_FALSE, (GLfloat*)(view).m);//value_ptr(m_camera.GetViewMatrix() * m_camera.GetModelMatrix()));
+		glUniformMatrix4fv(phongShaderPrograms.projection_matrix, 1, GL_FALSE, (GLfloat*)(m_camera.projectionMatrix(1.0f).m));//value_ptr(m_camera.GetProjectionMatrix(aspect)));
 		//mesh->Draw();
 
 
@@ -768,7 +769,7 @@ void My_Display()
 	{
 		glm::mat4 mtx; // identical matrix
 		glUniformMatrix4fv(lineShaderPrograms.view_matrix, 1, GL_FALSE, (GLfloat*)view.m);//value_ptr(m_camera.GetViewMatrix() * m_camera.GetModelMatrix()));
-		glUniformMatrix4fv(lineShaderPrograms.projection_matrix, 1, GL_FALSE, value_ptr(m_camera.GetProjectionMatrix(aspect)));
+		glUniformMatrix4fv(lineShaderPrograms.projection_matrix, 1, GL_FALSE, (GLfloat*)m_camera.projectionMatrix(1.0f).m );//value_ptr(m_camera.GetProjectionMatrix(aspect)));
 		glUniformMatrix4fv(lineShaderPrograms.model_matrix, 1, GL_FALSE, value_ptr(mtx));
 
 		//glutSolidTeapot(30.0);
@@ -798,7 +799,7 @@ void My_Reshape(int width, int height)
 	m_screenSize = vec2(width, height);
 
 	aspect = width * 1.0f / height;
-	m_camera.SetWindowSize(width, height);
+	m_camera.setWindowSize(width, height);
 	glViewport(0, 0, width, height);
 
 	//TwWindowSize(width, height);
