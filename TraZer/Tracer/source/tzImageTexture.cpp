@@ -106,7 +106,7 @@ tzImageTexture::~tzImageTexture(void) {
 // from the uv coordinates stored in the ShadeRec object in the uv triangles' hit functions
 // See, for example, Listing 29.12.
 
-tzRGBColor														
+tzColor														
 tzImageTexture::getColor(const tzShadeRec& sr) const {
 	int row;
 	int column;

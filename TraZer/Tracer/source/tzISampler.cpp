@@ -8,34 +8,47 @@
 //===================================================================================
 tzISampler::tzISampler(void)
 	: 	mNumSamples(1),
-	mNumSets(83),
-		mCount(0),
-		mJump(0) {
+	mNumSets(83)
+{
 	mSamples.reserve(mNumSamples * mNumSets);
 	setupShuffledIndices();
+
+	for ( int i = 0; i < MAX_THREADS; i++ )
+	{
+		mCount[i] = 0;
+		mJump[i] = 0;
+	}
 }
 
 
 //===================================================================================
 tzISampler::tzISampler(const int ns)
 	: 	mNumSamples(ns),
-	mNumSets(83),
-		mCount(0),
-		mJump(0) 
+	mNumSets(83)
 {
 	mSamples.reserve(mNumSamples * mNumSets);
 	setupShuffledIndices();
+
+	for (int i = 0; i < MAX_THREADS; i++)
+	{
+		mCount[i] = 0;
+		mJump[i] = 0;
+	}
 }
 
 //===================================================================================
 tzISampler::tzISampler(const int ns, const int n_sets)
 	: 	mNumSamples(ns),
-		mNumSets(n_sets),
-		mCount(0),
-		mJump(0) 
+		mNumSets(n_sets)
 {
 	mSamples.reserve(mNumSamples * mNumSets);
 	setupShuffledIndices();
+
+	for (int i = 0; i < MAX_THREADS; i++)
+	{
+		mCount[i] = 0;
+		mJump[i] = 0;
+	}
 }
 
 
@@ -47,10 +60,14 @@ tzISampler::tzISampler(const tzISampler& s)
 		mShuffledIndices(s.mShuffledIndices),
 		mDiskSamples(s.mDiskSamples),
 		mHemisphereSamples(s.mHemisphereSamples),
-		mSphereSamples(s.mSphereSamples),
-		mCount(s.mCount),
-		mJump(s.mJump)
-{}
+		mSphereSamples(s.mSphereSamples)
+{
+	for (int i = 0; i < MAX_THREADS; i++)
+	{
+		mCount[i] = s.mCount[i];
+		mJump[i] = s.mJump[i];
+	}
+}
 
 
 //===================================================================================
@@ -66,8 +83,12 @@ tzISampler& tzISampler::operator= (const tzISampler& rhs)
 	mDiskSamples		= rhs.mDiskSamples;
 	mHemisphereSamples	= rhs.mHemisphereSamples;
 	mSphereSamples		= rhs.mSphereSamples;
-	mCount				= rhs.mCount;
-	mJump				= rhs.mJump;
+	
+	for (int i = 0; i < MAX_THREADS; i++)
+	{
+		mCount[i] = rhs.mCount[i];
+		mJump[i] = rhs.mJump[i];
+	}
 	
 	return (*this);
 }
@@ -229,12 +250,12 @@ void tzISampler::mapSamplesToSphere(void)
 
 
 //===================================================================================
-tzPoint2D tzISampler::sampleUnitSquare(void) 
+tzPoint2D tzISampler::sampleUnitSquare(const tzRay &ray) //ooxx
 {
-	if (mCount % mNumSamples == 0)  									// start of a new pixel
-		mJump = (rand_int() % mNumSets) * mNumSamples;				// random index jump initialised to zero in constructor
+	if (mCount[ray.mThreadId] % mNumSamples == 0)  									// start of a new pixel
+		mJump[ray.mThreadId] = (rand_int() % mNumSets) * mNumSamples;				// random index jump initialised to zero in constructor
 
-	return (mSamples[mJump + mShuffledIndices[mJump + mCount++ % mNumSamples]]);
+	return (mSamples[mJump[ray.mThreadId] + mShuffledIndices[mJump[ray.mThreadId] + mCount[ray.mThreadId]++ % mNumSamples]]);
 }
 
 
@@ -272,38 +293,38 @@ Sampler::sampleUnitSquare(void) {
 
 
 //===================================================================================
-tzPoint2D tzISampler::sampleUnitDisk(void)
+tzPoint2D tzISampler::sampleUnitDisk(const tzRay &ray)
 {
-	if (mCount % mNumSamples == 0)  									// start of a new pixel
-		mJump = (rand_int() % mNumSets) * mNumSamples;
+	if (mCount[ray.mThreadId] % mNumSamples == 0)  									// start of a new pixel
+		mJump[ray.mThreadId] = (rand_int() % mNumSets) * mNumSamples;
 	
-	return (mDiskSamples[mJump + mShuffledIndices[mJump + mCount++ % mNumSamples]]);
+	return (mDiskSamples[mJump[ray.mThreadId] + mShuffledIndices[mJump[ray.mThreadId] + mCount[ray.mThreadId]++ % mNumSamples]]);
 }
 
 //===================================================================================
-tzPoint3D tzISampler::sampleHemisphere(void) 
+tzPoint3D tzISampler::sampleHemisphere(const tzRay &ray)
 {
-	if (mCount % mNumSamples == 0)  									// start of a new pixel
-		mJump = (rand_int() % mNumSets) * mNumSamples;
+	if (mCount[ray.mThreadId] % mNumSamples == 0)  									// start of a new pixel
+		mJump[ray.mThreadId] = (rand_int() % mNumSets) * mNumSamples;
 		
-	return (mHemisphereSamples[mJump + mShuffledIndices[mJump + mCount++ % mNumSamples]]);
+	return (mHemisphereSamples[mJump[ray.mThreadId] + mShuffledIndices[mJump[ray.mThreadId] + mCount[ray.mThreadId]++ % mNumSamples]]);
 }
 
 
 //===================================================================================
-tzPoint3D tzISampler::sampleSphere(void) 
+tzPoint3D tzISampler::sampleSphere(const tzRay &ray)
 {
-	if (mCount % mNumSamples == 0)  									// start of a new pixel
-		mJump = (rand_int() % mNumSets) * mNumSamples;
+	if (mCount[ray.mThreadId] % mNumSamples == 0)  									// start of a new pixel
+		mJump[ray.mThreadId] = (rand_int() % mNumSets) * mNumSamples;
 		
-	return (mSphereSamples[mJump + mShuffledIndices[mJump + mCount++ % mNumSamples]]);
+	return (mSphereSamples[mJump[ray.mThreadId] + mShuffledIndices[mJump[ray.mThreadId] + mCount[ray.mThreadId]++ % mNumSamples]]);
 }
 
 
 //===================================================================================
-tzPoint2D tzISampler::sampleOneSet(void) 
+tzPoint2D tzISampler::sampleOneSet(const tzRay &ray)
 {
-	return(mSamples[mCount++ % mNumSamples]);
+	return(mSamples[mCount[ray.mThreadId]++ % mNumSamples]);
 }
 
 

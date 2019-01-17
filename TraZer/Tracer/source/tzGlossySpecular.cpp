@@ -22,7 +22,7 @@ tzGlossySpecular* tzGlossySpecular::clone (void) const
 
 
 //===================================================================================
-void tzGlossySpecular::set_sampler(tzISampler* sp, const float exp) 
+void tzGlossySpecular::setSampler(tzISampler* sp, const float exp) 
 {
 	sampler_ptr = sp;
 	sampler_ptr->mapSamplesToHemisphere(exp);
@@ -30,7 +30,7 @@ void tzGlossySpecular::set_sampler(tzISampler* sp, const float exp)
 
 
 //===================================================================================
-void tzGlossySpecular::set_samples(const int numSamples, const float exp) 
+void tzGlossySpecular::setSamples(const int numSamples, const float exp) 
 {
 	sampler_ptr = new tzMultiJittered(numSamples);
 	sampler_ptr->mapSamplesToHemisphere(exp);
@@ -38,9 +38,9 @@ void tzGlossySpecular::set_samples(const int numSamples, const float exp)
 		
 
 //===================================================================================
-tzRGBColor tzGlossySpecular::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const 
+tzColor tzGlossySpecular::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const 
 {
-	tzRGBColor 	L;
+	tzColor 	L;
 	float 		ndotwi = (float)(sr.mNormal * wi);
 	tzVector3D 	r(-wi + 2.0 * sr.mNormal * ndotwi); // mirror reflection direction
 	float 		rdotwo = (float)(r * wo);
@@ -53,7 +53,7 @@ tzRGBColor tzGlossySpecular::f(const tzShadeRec& sr, const tzVector3D& wo, const
 
 
 //===================================================================================
-tzRGBColor tzGlossySpecular::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const 
+tzColor tzGlossySpecular::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const 
 {
 	
 	float ndotwo = (float)(sr.mNormal * wo);
@@ -64,7 +64,7 @@ tzRGBColor tzGlossySpecular::sample_f(const tzShadeRec& sr, const tzVector3D& wo
 	u.normalize();
 	tzVector3D v = u ^ w;
 		
-	tzPoint3D sp = sampler_ptr->sampleHemisphere();
+	tzPoint3D sp = sampler_ptr->sampleHemisphere(sr.mRay);
 	wi = sp.x * u + sp.y * v + sp.z * w;			// reflected ray direction
 	
 	if (sr.mNormal * wi < 0.0) 						// reflected ray is below tangent plane
@@ -78,7 +78,7 @@ tzRGBColor tzGlossySpecular::sample_f(const tzShadeRec& sr, const tzVector3D& wo
 
 
 //===================================================================================
-tzRGBColor
+tzColor
 tzGlossySpecular::rho(const tzShadeRec& sr, const tzVector3D& wo) const 
 {
 	return (black);

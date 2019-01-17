@@ -63,13 +63,13 @@ tzReflective::~tzReflective(void) {
 
 // ------------------------------------------------------------------------------------ shade 
 
-tzRGBColor
+tzColor
 tzReflective::shade(tzShadeRec& sr) {
-	tzRGBColor L(tzPhong::shade(sr));  // direct illumination
+	tzColor L(tzPhong::shade(sr));  // direct illumination
 	
 	tzVector3D wo = -sr.mRay.d;
 	tzVector3D wi;	
-	tzRGBColor fr = reflective_brdf->sample_f(sr, wo, wi); 
+	tzColor fr = reflective_brdf->sampleF(sr, wo, wi); 
 	tzRay reflected_ray(sr.mHitPoint, wi); 
 	reflected_ray.depth = sr.mDepth + 1;
 	
@@ -79,12 +79,12 @@ tzReflective::shade(tzShadeRec& sr) {
 }
 
 //===================================================================================
-tzRGBColor tzReflective::pathShade(tzShadeRec& sr)
+tzColor tzReflective::pathShade(tzShadeRec& sr)
 {
 	tzVector3D 	wo = -sr.mRay.d;
 	tzVector3D 	wi;
 	float 		pdf;
-	tzRGBColor 	fr = reflective_brdf->sample_f(sr, wo, wi, pdf);
+	tzColor 	fr = reflective_brdf->sampleF(sr, wo, wi, pdf);
 	tzRay 		reflected_ray(sr.mHitPoint, wi);
 
 	return (fr * sr.mWorld.mTracerPtr->traceRay(reflected_ray, sr.mDepth + 1) * (sr.mNormal * wi) / pdf);

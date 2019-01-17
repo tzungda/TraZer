@@ -107,7 +107,7 @@ tzBBox tzIGeometricObject::getBoundingBox (void)
 
 
 //===================================================================================
-tzPoint3D tzIGeometricObject::sample(void) 
+tzPoint3D tzIGeometricObject::sample(const tzShadeRec& sr)
 {
 	return (tzPoint3D(0.0));
 }

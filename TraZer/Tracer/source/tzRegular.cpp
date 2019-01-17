@@ -13,7 +13,7 @@ tzRegular::tzRegular(void)
 tzRegular::tzRegular(const int num)
 	: tzISampler(num)
 {
-	generate_samples();
+	generateSamples();
 }
 
 
@@ -22,7 +22,7 @@ tzRegular::tzRegular(const int num)
 tzRegular::tzRegular(const tzRegular& u)
 	: tzISampler(u)
 {
-	generate_samples();
+	generateSamples();
 }
 
 // ---------------------------------------------------------------- assignment operator
@@ -49,10 +49,10 @@ tzRegular::clone(void) const {
 tzRegular::~tzRegular(void) {}
 
 
-// ---------------------------------------------------------------- generate_samples	
+// ---------------------------------------------------------------- generateSamples	
 
 void
-tzRegular::generate_samples(void) 
+tzRegular::generateSamples(void) 
 {
 	int n = (int) sqrt((float)mNumSamples);
 

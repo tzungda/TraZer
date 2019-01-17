@@ -34,23 +34,23 @@ tzIBTDF::operator= (const tzIBTDF& rhs) {
 
 // ------------------------------------------------------------------------ f
 
-tzRGBColor
+tzColor
 tzIBTDF::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const {
 	return (black);
 }
 
 
-// ------------------------------------------------------------------------ sample_f
+// ------------------------------------------------------------------------ sampleF
 
-tzRGBColor
-tzIBTDF::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi) const {
+tzColor
+tzIBTDF::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi) const {
 	return (black);
 }
 
 
 // ------------------------------------------------------------------------ rho	
 	
-tzRGBColor
+tzColor
 tzIBTDF::rho(const tzShadeRec& sr, const tzVector3D& wo) const {
 	return (black);
 }

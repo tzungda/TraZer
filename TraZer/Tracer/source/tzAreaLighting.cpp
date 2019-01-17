@@ -21,13 +21,15 @@ tzAreaLighting::~tzAreaLighting(void) {}
 
 
 //===================================================================================
-tzRGBColor tzAreaLighting::traceRay(const tzRay ray, const int depth) const 
+tzColor tzAreaLighting::traceRay(const tzRay ray, const int depth) const 
 {
 	if (depth > mWorldPtr->mVp.mMaxDepth)
 		return (black);
 	else {
 		float tmin;
 		tzShadeRec sr(mWorldPtr->hitObjects(ray, tmin));   
+		sr.mThreadId = ray.mThreadId;
+		sr.mMaxThreads = ray.mMaxThreads;
 					
 		if (sr.mHitAnObject) {
 			sr.mDepth = depth;

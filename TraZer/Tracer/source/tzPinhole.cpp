@@ -88,14 +88,14 @@ void tzPinhole::renderScene(const tzWorld& w) const
 	vp.mS /= zoom;
 	
 #ifndef _OPENMP
-	tzRGBColor	L;
+	tzColor	L;
 	tzRay			ray;
 	int 		depth = 0;
 	tzPoint2D 	pp;		// sample point on a pixel
 	ray.o = eye;
 #endif
 
-	std::vector<glm::vec4> colorBuffer;
+	std::vector<tzColor> colorBuffer;
 	colorBuffer.resize(vp.mVres*vp.mHres);
 
 	const float invNumSamples = 1.0f/(float)vp.mNumSamples;
@@ -110,9 +110,9 @@ void tzPinhole::renderScene(const tzWorld& w) const
 		//omp_lock_t writelock;
 		//omp_init_lock(&writelock);
 		int maxThreads = omp_get_max_threads();
-		omp_set_num_threads(1);
+		//omp_set_num_threads(1);
 		//int threadnum = omp_get_thread_num();
-		//omp_set_num_threads(maxThreads);
+		omp_set_num_threads(maxThreads);
 		#pragma omp parallel for
 #endif
 
@@ -122,11 +122,13 @@ void tzPinhole::renderScene(const tzWorld& w) const
 			L = black; 
 #else
 			//int threadnumX = omp_get_thread_num();
-			tzRGBColor	threadL( black );
+			tzColor	threadL( black );
 			int 		depth = 0;
 			tzPoint2D 	pp;
 			tzRay ray;
 			ray.o = eye;
+			ray.mMaxThreads = maxThreads;
+			ray.mThreadId = omp_get_thread_num();
 #endif
 
 //----------------------------------------------------------------------
@@ -163,14 +165,21 @@ void tzPinhole::renderScene(const tzWorld& w) const
 			//tzPoint2D 	pp;		// sample point on a pixel
 			//ray.o = eye;
 
+			//omp_set_lock(&writelock);//-------------------------
+
 			for (int p = 0; p < n; p++)			// up pixel
-				for (int q = 0; q < n; q++) {	// across pixel
+			{
+				for (int q = 0; q < n; q++) // across pixel
+				{	
 					
 					pp.x = vp.mS * (c - 0.5f * vp.mHres + (q + 0.5f)*invN);
 					pp.y = vp.mS * (r - 0.5f * vp.mVres + (p + 0.5f)*invN);
 					ray.d = getDirection(pp);
 					threadL += w.mTracerPtr->traceRay(ray, depth);
 				}
+			}
+
+			//omp_unset_lock(&writelock);//-------------------------
 
 			threadL *= invNumSamples;
 			threadL *= mExposureTime;
@@ -196,11 +205,11 @@ void tzPinhole::renderScene(const tzWorld& w) const
 			//omp_unset_lock(&writelock);
 #endif
 		} 
-/*
+
 #ifdef _OPENMP
-		omp_destroy_lock(&writelock);
+		//omp_destroy_lock(&writelock);
 #endif
-*/
+
 	}
 
 	//-------------

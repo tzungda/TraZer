@@ -20,7 +20,7 @@ tzPathTrace::tzPathTrace(tzWorld* _worldPtr)
 
 // -------------------------------------------------------------------- traceRay
 
-tzRGBColor	
+tzColor	
 tzPathTrace::traceRay(const tzRay ray, const int depth) const {
 	float tmin = 0.0f;
 	if (depth > mWorldPtr->mVp.mMaxDepth)
@@ -44,7 +44,7 @@ tzPathTrace::traceRay(const tzRay ray, const int depth) const {
 // this version has tmin as an argument, and is used only with the Dielectric material
 // for color filtering
 
-tzRGBColor	
+tzColor	
 tzPathTrace::traceRay(const tzRay ray, float& tmin, const int depth) const {
 	float t = 0.0f;
 	if (depth > mWorldPtr->mVp.mMaxDepth)

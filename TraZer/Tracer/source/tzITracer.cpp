@@ -26,7 +26,7 @@ tzITracer::~tzITracer(void) {
 
 // -------------------------------------------------------------------- traceRay
 
-tzRGBColor
+tzColor
 tzITracer::traceRay(const tzRay& ray) const {
 	return (black);
 }
@@ -34,7 +34,7 @@ tzITracer::traceRay(const tzRay& ray) const {
 
 // -------------------------------------------------------------------- traceRay
 
-tzRGBColor
+tzColor
 tzITracer::traceRay(const tzRay ray, const int depth) const {
 	return (black);
 }

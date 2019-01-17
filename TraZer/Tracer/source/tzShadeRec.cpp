@@ -12,12 +12,16 @@ tzShadeRec::~tzShadeRec( )
 tzShadeRec::tzShadeRec( tzWorld& w )
 : mHitAnObject( false ), mLocalHitPoint(), mNormal(), mColor( 0.0f, 0.0f, 0.0f ), mWorld( w ), mT(0.0f), mHitPoint(), mMaterialPtr(NULL), mDepth(0), mDir(), mRay(), u(0.0f), v( 0.0f )
 {
+	mThreadId = 0;
+	mMaxThreads = 1;
 }
 
 // ================================================================================
 tzShadeRec::tzShadeRec(const tzShadeRec &sr)
 :mHitAnObject( sr.mHitAnObject ), mLocalHitPoint( sr.mLocalHitPoint ), mNormal(sr.mNormal), mT(0.0f), mColor( sr.mColor ), mWorld( sr.mWorld), mHitPoint(sr.mHitPoint), mMaterialPtr(sr.mMaterialPtr), mDepth(sr.mDepth), mDir(sr.mDir), mRay(sr.mRay), u(sr.u), v(sr.v)
 {
+	mThreadId = sr.mThreadId;
+	mMaxThreads = sr.mMaxThreads;
 }
 
 // ================================================================================
@@ -40,6 +44,9 @@ tzShadeRec::operator= (const tzShadeRec& sr) {
 	mMaterialPtr = sr.mMaterialPtr;
 	mDepth = sr.mDepth;
 	mDir = sr.mDir;
+
+	mThreadId = sr.mThreadId;
+	mMaxThreads = sr.mMaxThreads;
 
 	return (*this);
 }

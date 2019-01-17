@@ -72,7 +72,7 @@ bool tzPointLight::inShadow(const tzRay &ray, const tzShadeRec &sr) const
 }
 
 //===================================================================================
-tzRGBColor tzPointLight::L(tzShadeRec& sr) 
+tzColor tzPointLight::L(tzShadeRec& sr) 
 {
 	return (mLs * mColor);
 }

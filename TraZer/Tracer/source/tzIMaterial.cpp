@@ -31,25 +31,25 @@ tzIMaterial::~tzIMaterial(void)
 
 // ---------------------------------------------------------------- shade
 
-tzRGBColor
+tzColor
 tzIMaterial::shade(tzShadeRec& sr) {
 	return (black);
 }
 
 //===================================================================================
-tzRGBColor tzIMaterial::areaLightShade( tzShadeRec& sr) const
+tzColor tzIMaterial::areaLightShade( tzShadeRec& sr) const
 {
 	return black;
 }
 
 //===================================================================================
-tzRGBColor tzIMaterial::getLe(tzShadeRec &sr)
+tzColor tzIMaterial::getLe(tzShadeRec &sr)
 {
 	return black;
 }
 
 //===================================================================================
-tzRGBColor tzIMaterial::pathShade(tzShadeRec& sr)
+tzColor tzIMaterial::pathShade(tzShadeRec& sr)
 {
 	return black;
 }

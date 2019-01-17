@@ -78,19 +78,19 @@ tzAreaLight& tzAreaLight::operator= (const tzAreaLight& rhs) {
 //===================================================================================
 tzVector3D tzAreaLight::getDirection(tzShadeRec& sr)
 {
-	sample_point = object_ptr->sample();    // used in the G function
-	light_normal = object_ptr->getNormal(sample_point); 
-	wi = sample_point - sr.mHitPoint;  		// used in the G function
-	wi.normalize();
+	samplePoint[sr.mThreadId] = object_ptr->sample( sr );    // used in the G function
+	light_normal[sr.mThreadId] = object_ptr->getNormal(samplePoint[sr.mThreadId]);
+	wi[sr.mThreadId] = samplePoint[sr.mThreadId] - sr.mHitPoint;  		// used in the G function
+	wi[sr.mThreadId].normalize();
 	
-	return (wi);
+	return (wi[sr.mThreadId]);
 }
 
 
 //===================================================================================
-tzRGBColor tzAreaLight::L(tzShadeRec& sr)
+tzColor tzAreaLight::L(tzShadeRec& sr)
 {
-	float ndotd = (float)( -light_normal * wi ); 
+	float ndotd = (float)( -light_normal[sr.mThreadId] * wi[sr.mThreadId]);
 	
 	if (ndotd > 0.0)		
 		return (mMaterialPtr->getLe(sr)); 
@@ -104,7 +104,7 @@ bool tzAreaLight::inShadow(const tzRay& ray, const tzShadeRec& sr) const
 {
 	float t;
 	int num_objects = (int)sr.mWorld.mObjects.size();
-	float ts = (float)((sample_point - ray.o) * ray.d);
+	float ts = (float)((samplePoint[sr.mThreadId] - ray.o) * ray.d);
 	
 	for (int j = 0; j < num_objects; j++)
 	{
@@ -121,8 +121,8 @@ bool tzAreaLight::inShadow(const tzRay& ray, const tzShadeRec& sr) const
 //===================================================================================
 float tzAreaLight::G(const tzShadeRec& sr) const 
 {
-	float ndotd = (float)(-light_normal * wi);
-	float d2 	= (float)sample_point.d_squared(sr.mHitPoint);
+	float ndotd = (float)(-light_normal[sr.mThreadId] * wi[sr.mThreadId]);
+	float d2 	= (float)samplePoint[sr.mThreadId].d_squared(sr.mHitPoint);
 		
 	return (ndotd / d2);
 }

@@ -21,7 +21,7 @@ tzWhitted::~tzWhitted(void) {}
 
 
 //===================================================================================
-tzRGBColor tzWhitted::traceRay(const tzRay ray, const int depth) const
+tzColor tzWhitted::traceRay(const tzRay ray, const int depth) const
 {
 	float tmin = 0.0f;
 	if (depth > mWorldPtr->mVp.mMaxDepth)

@@ -14,14 +14,14 @@ tzMultiJittered::tzMultiJittered(const int numSamples)
 {
 //	count = 0;
 //	jump = 0;
-	generate_samples();
+	generateSamples();
 }
 
 //===================================================================================
 tzMultiJittered::tzMultiJittered(const int numSamples, const int m)
 	: tzISampler(numSamples, m)
 {
-	generate_samples();
+	generateSamples();
 }
 
 
@@ -29,7 +29,7 @@ tzMultiJittered::tzMultiJittered(const int numSamples, const int m)
 tzMultiJittered::tzMultiJittered(const tzMultiJittered& mjs)
 	: tzISampler(mjs)
 {
-	generate_samples();
+	generateSamples();
 }
 
 //===================================================================================
@@ -74,7 +74,7 @@ MultiJittered::shuffleXCoordinates(void) {
 
 
 //===================================================================================
-void tzMultiJittered::generate_samples(void) 
+void tzMultiJittered::generateSamples(void) 
 {
 	// mNumSamples needs to be a perfect square
 			

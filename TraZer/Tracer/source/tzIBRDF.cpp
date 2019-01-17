@@ -49,10 +49,10 @@ tzIBRDF::~tzIBRDF(void) {
 
 
 
-// ---------------------------------------------------------- set_sampler
+// ---------------------------------------------------------- setSampler
 
 void
-tzIBRDF::set_sampler(tzISampler* sPtr) {
+tzIBRDF::setSampler(tzISampler* sPtr) {
 	sampler_ptr = sPtr;
 	sampler_ptr->mapSamplesToHemisphere(1);  // for perfect diffuse
 }
@@ -60,31 +60,31 @@ tzIBRDF::set_sampler(tzISampler* sPtr) {
 
 // ------------------------------------------------------------------------ f
 
-tzRGBColor
+tzColor
 tzIBRDF::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const {
 	return (black);
 }
 
 
-// ------------------------------------------------------------------------ sample_f
+// ------------------------------------------------------------------------ sampleF
 
-tzRGBColor
-tzIBRDF::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi) const {
+tzColor
+tzIBRDF::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi) const {
 	return (black);
 }
 
 
-// ------------------------------------------------------------------------ sample_f
+// ------------------------------------------------------------------------ sampleF
 
-tzRGBColor
-tzIBRDF::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const {
+tzColor
+tzIBRDF::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const {
 	return (black);
 }
 
 
 // ------------------------------------------------------------------------ rho	
 	
-tzRGBColor
+tzColor
 tzIBRDF::rho(const tzShadeRec& sr, const tzVector3D& wo) const {
 	return (black);
 }

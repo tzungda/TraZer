@@ -3,8 +3,7 @@
 
 const float tzRectangle::kEpsilon = 0.001f;
 
-// ----------------------------------------------------------------  default constructor
-
+//===================================================================================
 tzRectangle::tzRectangle(void)
 	: 	tzIGeometricObject(),
 		p0(-1, 0, -1), 
@@ -18,9 +17,7 @@ tzRectangle::tzRectangle(void)
 {}
 
 
-// ----------------------------------------------------------------  constructor
-// this constructs the normal
-
+//===================================================================================
 tzRectangle::tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVector3D& _b)
 	:	tzIGeometricObject(),
 		p0(_p0),
@@ -36,10 +33,7 @@ tzRectangle::tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVec
 	normal.normalize();
 }
 
-
-// ----------------------------------------------------------------  constructor
-// this has the normal as an argument
-
+//===================================================================================
 tzRectangle::tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVector3D& _b, const tzNormal& n)
 	:	tzIGeometricObject(),
 		p0(_p0),
@@ -56,17 +50,13 @@ tzRectangle::tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVec
 }
 
 
-
-// ---------------------------------------------------------------- clone
-
-tzRectangle*
-tzRectangle::clone(void) const {
+//===================================================================================
+tzRectangle* tzRectangle::clone(void) const
+{
 	return (new tzRectangle(*this));
 }
 
-
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzRectangle::tzRectangle(const tzRectangle& r)
 	:	tzIGeometricObject(r),
 		p0(r.p0), 
@@ -84,11 +74,9 @@ tzRectangle::tzRectangle(const tzRectangle& r)
 }
 
 
-
-// ---------------------------------------------------------------- assignment operator
-
-tzRectangle&
-tzRectangle::operator= (const tzRectangle& rhs) {
+//===================================================================================
+tzRectangle& tzRectangle::operator= (const tzRectangle& rhs)
+{
 	if (this == &rhs)
 		return (*this);
 
@@ -114,10 +102,9 @@ tzRectangle::operator= (const tzRectangle& rhs) {
 	return (*this);
 }
 
-
-// ---------------------------------------------------------------- destructor
-
-tzRectangle::~tzRectangle(void) {
+//===================================================================================
+tzRectangle::~tzRectangle(void)
+{
 
 	if (sampler_ptr) {
 		delete sampler_ptr;
@@ -125,10 +112,9 @@ tzRectangle::~tzRectangle(void) {
 	}
 }
 
-//------------------------------------------------------------------ getBoundingBox 
-
-tzBBox
-tzRectangle::getBoundingBox(void) {
+//===================================================================================
+tzBBox tzRectangle::getBoundingBox(void) 
+{
 	float delta = 0.0001f;
 
 	return(tzBBox(fmin(p0.x, p0.x + a.x + b.x) - delta, fmax(p0.x, p0.x + a.x + b.x) + delta,
@@ -137,10 +123,9 @@ tzRectangle::getBoundingBox(void) {
 }
 																			
 
-//------------------------------------------------------------------ hit 
-
-bool 												 
-tzRectangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
+//===================================================================================
+bool tzRectangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
+{
 	
 	float t = (p0 - ray.o) * normal / (ray.d * normal);
 	
@@ -168,36 +153,31 @@ tzRectangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
 }
 
 
-// ---------------------------------------------------------------- setSampler
-
-void 								
-tzRectangle::set_sampler(tzISampler* sampler) {
+//===================================================================================
+void tzRectangle::setSampler(tzISampler* sampler) 
+{
 	sampler_ptr = sampler;
 }
 
 
-// ---------------------------------------------------------------- sample
-// returns a sample point on the rectangle
-
-tzPoint3D
-tzRectangle::sample(void) {
-	tzPoint2D sample_point = sampler_ptr->sampleUnitSquare();
-	return (p0 + sample_point.x * a + sample_point.y * b);
+//===================================================================================
+tzPoint3D tzRectangle::sample(const tzShadeRec& sr) 
+{
+	tzPoint2D samplePoint = sampler_ptr->sampleUnitSquare( sr.mRay );
+	return (p0 + samplePoint.x * a + samplePoint.y * b);
 }
 
 
-//------------------------------------------------------------------ getNormal 
-					 
-tzNormal 										
-tzRectangle::getNormal(const tzPoint3D& p) {
+//===================================================================================					 
+tzNormal tzRectangle::getNormal(const tzPoint3D& p) 
+{
 	return (normal);
 }
 
 
-// ---------------------------------------------------------------- pdf
-
-float
-tzRectangle::pdf(tzShadeRec& sr) {
+//===================================================================================
+float tzRectangle::pdf(tzShadeRec& sr) 
+{
 	return (inv_area);
 } 
 

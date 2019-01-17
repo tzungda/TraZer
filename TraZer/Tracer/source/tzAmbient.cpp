@@ -52,7 +52,7 @@ tzVector3D tzAmbient::getDirection(  tzShadeRec& s)
 
 
 //===================================================================================
-tzRGBColor tzAmbient::L(  tzShadeRec& sr) 
+tzColor tzAmbient::L(  tzShadeRec& sr) 
 {
 	return (mLs * mColor);
 }

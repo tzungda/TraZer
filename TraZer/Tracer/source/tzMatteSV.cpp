@@ -5,8 +5,8 @@
 
 tzMatteSV::tzMatteSV(void)
 	:	tzIMaterial(),
-		ambient_brdf(new tzLambertianSV),
-		diffuse_brdf(new tzLambertianSV)
+		mAmbientBRDF(new tzLambertianSV),
+		mDiffuseBRDF(new tzLambertianSV)
 {}
 
 
@@ -16,13 +16,13 @@ tzMatteSV::tzMatteSV(void)
 tzMatteSV::tzMatteSV(const tzMatteSV& m)
 	: 	tzIMaterial(m)
 {
-	if(m.ambient_brdf)
-		ambient_brdf = m.ambient_brdf->clone(); 
-	else  ambient_brdf = NULL;
+	if(m.mAmbientBRDF)
+		mAmbientBRDF = m.mAmbientBRDF->clone(); 
+	else  mAmbientBRDF = NULL;
 	
-	if(m.diffuse_brdf)
-		diffuse_brdf = m.diffuse_brdf->clone(); 
-	else  diffuse_brdf = NULL;
+	if(m.mDiffuseBRDF)
+		mDiffuseBRDF = m.mDiffuseBRDF->clone(); 
+	else  mDiffuseBRDF = NULL;
 }
 
 
@@ -43,21 +43,21 @@ tzMatteSV::operator= (const tzMatteSV& rhs) {
 		
 	tzIMaterial::operator=(rhs);
 	
-	if (ambient_brdf) {
-		delete ambient_brdf;
-		ambient_brdf = NULL;
+	if (mAmbientBRDF) {
+		delete mAmbientBRDF;
+		mAmbientBRDF = NULL;
 	}
 
-	if (rhs.ambient_brdf)
-		ambient_brdf = rhs.ambient_brdf->clone();
+	if (rhs.mAmbientBRDF)
+		mAmbientBRDF = rhs.mAmbientBRDF->clone();
 		
-	if (diffuse_brdf) {
-		delete diffuse_brdf;
-		diffuse_brdf = NULL;
+	if (mDiffuseBRDF) {
+		delete mDiffuseBRDF;
+		mDiffuseBRDF = NULL;
 	}
 
-	if (rhs.diffuse_brdf)
-		diffuse_brdf = rhs.diffuse_brdf->clone();
+	if (rhs.mDiffuseBRDF)
+		mDiffuseBRDF = rhs.mDiffuseBRDF->clone();
 
 	return (*this);
 }
@@ -67,25 +67,25 @@ tzMatteSV::operator= (const tzMatteSV& rhs) {
 
 tzMatteSV::~tzMatteSV(void) {
 
-	if (ambient_brdf) {
-		delete ambient_brdf;
-		ambient_brdf = NULL;
+	if (mAmbientBRDF) {
+		delete mAmbientBRDF;
+		mAmbientBRDF = NULL;
 	}
 	
-	if (diffuse_brdf) {
-		delete diffuse_brdf;
-		diffuse_brdf = NULL;
+	if (mDiffuseBRDF) {
+		delete mDiffuseBRDF;
+		mDiffuseBRDF = NULL;
 	}
 }
 
 
 // ---------------------------------------------------------------- shade
 
-tzRGBColor
+tzColor
 tzMatteSV::shade(tzShadeRec& sr) 
 {
 	tzVector3D 	wo 			= -sr.mRay.d;
-	tzRGBColor 	L 			= ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
+	tzColor 	L 			= mAmbientBRDF->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
 	int 		num_lights	= (int)sr.mWorld.mLights.size();
 	
 	for (int j = 0; j < num_lights; j++) 
@@ -108,7 +108,7 @@ tzMatteSV::shade(tzShadeRec& sr)
 
 			if ( !inShadow )
 			{
-				L += diffuse_brdf->f(sr, wo, wi) * sr.mWorld.mLights[j]->L(sr) * sr.mWorld.mLights[j]->G(sr) * ndotwi;
+				L += mDiffuseBRDF->f(sr, wo, wi) * sr.mWorld.mLights[j]->L(sr) * sr.mWorld.mLights[j]->G(sr) * ndotwi;
 			}
 		}
 	}
@@ -117,10 +117,10 @@ tzMatteSV::shade(tzShadeRec& sr)
 }
 
 //===================================================================================
-tzRGBColor tzMatteSV::areaLightShade( tzShadeRec &sr) const
+tzColor tzMatteSV::areaLightShade( tzShadeRec &sr) const
 {
 	tzVector3D 	wo = -sr.mRay.d;
-	tzRGBColor 	L = ambient_brdf->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
+	tzColor 	L = mAmbientBRDF->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
 	int 		num_lights = (int)sr.mWorld.mLights.size();
 
 	for (int j = 0; j < num_lights; j++) {
@@ -139,7 +139,7 @@ tzRGBColor tzMatteSV::areaLightShade( tzShadeRec &sr) const
 
 			if (!inShadow)
 			{
-				L += diffuse_brdf->f(sr, wo, wi) * sr.mWorld.mLights[j]->L(sr) * sr.mWorld.mLights[j]->G(sr) * ndotwi / sr.mWorld.mLights[j]->pdf(sr);
+				L += mDiffuseBRDF->f(sr, wo, wi) * sr.mWorld.mLights[j]->L(sr) * sr.mWorld.mLights[j]->G(sr) * ndotwi / sr.mWorld.mLights[j]->pdf(sr);
 			}
 		}
 	}
@@ -148,12 +148,12 @@ tzRGBColor tzMatteSV::areaLightShade( tzShadeRec &sr) const
 }
 
 //===================================================================================
-tzRGBColor tzMatteSV::pathShade(tzShadeRec &sr)
+tzColor tzMatteSV::pathShade(tzShadeRec &sr)
 {
 	tzVector3D 	wo = -sr.mRay.d;
 	tzVector3D 	wi;
 	float 		pdf;
-	tzRGBColor 	f = diffuse_brdf->sample_f(sr, wo, wi, pdf);
+	tzColor 	f = mDiffuseBRDF->sampleF(sr, wo, wi, pdf);
 	float 		ndotwi = (float)(sr.mNormal * wi);
 	tzRay 		reflected_ray(sr.mHitPoint, wi);
 

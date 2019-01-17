@@ -129,7 +129,7 @@ void tzImage::read_ppm_file(const char* file_name)
 			float g = green * inv_max_value;
 			float b = blue  * inv_max_value;
 
-			pixels.push_back(tzRGBColor(r, g, b));
+			pixels.push_back(tzColor(r, g, b));
         }
     }
 
@@ -165,12 +165,12 @@ void tzImage::readPng(const char* fileName)
 		float a = ((float)image[index+3]) / 255.0f;
 
 		//
-		pixels[i] = tzRGBColor( r, g, b, a );
+		pixels[i] = tzColor( r, g, b, a );
 	}
 }
 
 //===================================================================================
-tzRGBColor tzImage::getColor(const int row, const int column) const 
+tzColor tzImage::getColor(const int row, const int column) const 
 {
 	int index = column + mHeight * (mWidth - row - 1);
 	int pixels_size = pixels.size();

@@ -65,19 +65,19 @@ tzPerfectTransmitter::tir(const tzShadeRec& sr) const {
 
 // ------------------------------------------------------------------- f
 
-tzRGBColor
+tzColor
 tzPerfectTransmitter::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const {
 	return (black);
 }
 
 
-// ------------------------------------------------------------------- sample_f
+// ------------------------------------------------------------------- sampleF
 // this computes the direction wt for perfect transmission
 // and returns the transmission coefficient
 // this is only called when there is no total internal reflection
 
-tzRGBColor
-tzPerfectTransmitter::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wt) const {
+tzColor
+tzPerfectTransmitter::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wt) const {
 	
 	tzNormal n(sr.mNormal);
 	float cos_thetai = n * wo;
@@ -99,7 +99,7 @@ tzPerfectTransmitter::sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVec
 
 // ------------------------------------------------------------------- rho
 
-tzRGBColor
+tzColor
 tzPerfectTransmitter::rho(const tzShadeRec& sr, const tzVector3D& wo) const {
 	return (black);
 }

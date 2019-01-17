@@ -168,7 +168,7 @@ tzShadeRec tzWorld::hitBareBonesObject(const tzRay &ray)
 void tzWorld::build()
 {
 	// area light & bunny------------------------------------------------------------------------------
-	int numSamples = 16;
+	int numSamples = 100;
 
 	tzISampler* sampler_ptr = new tzMultiJittered(numSamples);
 
@@ -177,12 +177,12 @@ void tzWorld::build()
 	//mVp.setMaxDepth(0);
 	mVp.setSampler(sampler_ptr);
 
-	mBackgroundColor = tzRGBColor(0.5);
+	mBackgroundColor = tzColor(0.5);
 
 	mTracerPtr = new tzAreaLighting(this);
 
 	tzPinhole* camera = new tzPinhole();
-	camera->setEye(0, 0, -200);
+	camera->setEye(200, 200, 200);
 	camera->setLookAt(0, 0, 0);
 	camera->set_view_distance(16000);
 	camera->computeUVW();
@@ -207,7 +207,7 @@ void tzWorld::build()
 	// rectangle emit object
 	tzRectangle* rectangle_ptr = new tzRectangle(p0, a, b, normal);
 	rectangle_ptr->setMaterial(emissive_ptr);
-	rectangle_ptr->set_sampler(sampler_ptr);
+	rectangle_ptr->setSampler(sampler_ptr);
 	//rectangle_ptr->set_shadows(false);
 	addObject(rectangle_ptr);
 
@@ -218,11 +218,11 @@ void tzWorld::build()
 	addLight(area_light_ptr);
 
 	// point light
-	tzPointLight* lightPtr = new tzPointLight();
-	lightPtr->set_location(tzVector3D(0, 7, 7));
-	lightPtr->scaleRadiance(0.2f);
-	lightPtr->setCastsShadows(false);
-	addLight(lightPtr);
+	//tzPointLight* lightPtr = new tzPointLight();
+	//lightPtr->set_location(tzVector3D(0, 7, 7));
+	//lightPtr->scaleRadiance(0.2f);
+	//lightPtr->setCastsShadows(false);
+	//addLight(lightPtr);
 
 	// material matte sv
 	tzImage* image_ptr = new tzImage;
@@ -235,19 +235,19 @@ void tzWorld::build()
 	texture_ptr->set_image(image_ptr);
 
 	tzMatteSV* sv_matte_ptr = new tzMatteSV;
-	sv_matte_ptr->set_ka(0.1f);
-	sv_matte_ptr->set_kd(4/*0.75*/);
-	sv_matte_ptr->set_cd(texture_ptr);
+	sv_matte_ptr->setKa(0.1f);
+	sv_matte_ptr->setKd(4/*0.75*/);
+	sv_matte_ptr->setCd(texture_ptr);
 	//tzMatte* mattePtr1 = new tzMatte();
-	//mattePtr1->set_ka(0.25);
-	//mattePtr1->set_kd(0.75);
-	//mattePtr1->set_cd(0.4, 0.7, 0.4);
+	//mattePtr1->setKa(0.25);
+	//mattePtr1->setKd(0.75);
+	//mattePtr1->setCd(0.4, 0.7, 0.4);
 
 	//
 	tzMatte* mattePtr2 = new tzMatte();
-	mattePtr2->set_ka(0.1f);
-	mattePtr2->set_kd(0.9f);
-	mattePtr2->set_cd(white);
+	mattePtr2->setKa(0.1f);
+	mattePtr2->setKd(0.9f);
+	mattePtr2->setCd(white);
 
 	//
 	// "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Stanford_Bunny\\Bunny10K.ply"
@@ -315,9 +315,9 @@ void tzWorld::build()
 	texture_ptr->set_image(image_ptr);
 
 	tzMatteSV* sv_matte_ptr = new tzMatteSV;
-	sv_matte_ptr->set_ka(0.1);
-	sv_matte_ptr->set_kd(0.75);
-	sv_matte_ptr->set_cd(texture_ptr);
+	sv_matte_ptr->setKa(0.1);
+	sv_matte_ptr->setKd(0.75);
+	sv_matte_ptr->setCd(texture_ptr);
 
 	const char* file_name = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\Chapter29\\TwoUVTriangles.ply";//"TwoUVTriangles.ply";
 	checkFileEnd(file_name, file_name);
@@ -340,9 +340,9 @@ void tzWorld::build()
 
 
 	tzMatte* matte_ptr = new tzMatte;
-	matte_ptr->set_cd(1, 0.9, 0.6);
-	matte_ptr->set_ka(0.25);
-	matte_ptr->set_kd(0.4);
+	matte_ptr->setCd(1, 0.9, 0.6);
+	matte_ptr->setKa(0.25);
+	matte_ptr->setKd(0.4);
 
 	tzPlane* plane_ptr1 = new tzPlane(tzPoint3D(0, -2.0, 0), tzNormal(0, 1, 0));
 	plane_ptr1->setMaterial(matte_ptr);
@@ -375,9 +375,9 @@ void tzWorld::build()
 	addLight(directional_ptr);
 
 	tzMatte* matte_ptr1 = new tzMatte;
-	matte_ptr1->set_ka(0.1);
-	matte_ptr1->set_kd(0.75);
-	matte_ptr1->set_cd(0.1, 0.5, 1.0);
+	matte_ptr1->setKa(0.1);
+	matte_ptr1->setKd(0.75);
+	matte_ptr1->setCd(0.1, 0.5, 1.0);
 
 	const char* file_name = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Stanford_Bunny\\Bunny10K.ply";//"TwoTriangles.ply"; Horse2K
 	checkFileEnd( file_name, file_name);
@@ -389,9 +389,9 @@ void tzWorld::build()
 	addObject(grid_ptr);
 
 	tzMatte* matte_ptr2 = new tzMatte;
-	matte_ptr2->set_cd(1, 0.9, 0.6);
-	matte_ptr2->set_ka(0.25);
-	matte_ptr2->set_kd(0.4);
+	matte_ptr2->setCd(1, 0.9, 0.6);
+	matte_ptr2->setKa(0.25);
+	matte_ptr2->setKd(0.4);
 
 	tzPlane* plane_ptr1 = new tzPlane(tzPoint3D(0, -2.0, 0), tzNormal(0, 1, 0));
 	plane_ptr1->setMaterial(matte_ptr2);
@@ -410,7 +410,7 @@ void tzWorld::build()
 	//mVp.setMaxDepth(0);
 	mVp.setSampler(sampler_ptr);
 
-	mBackgroundColor = tzRGBColor(0.5);
+	mBackgroundColor = tzColor(0.5);
 
 	mTracerPtr = new tzAreaLighting(this);
 
@@ -447,7 +447,7 @@ void tzWorld::build()
 	// rectangle emit object
 	tzRectangle* rectangle_ptr = new tzRectangle(p0, a, b, normal);
 	rectangle_ptr->setMaterial(emissive_ptr);
-	rectangle_ptr->set_sampler(sampler_ptr);
+	rectangle_ptr->setSampler(sampler_ptr);
 	//rectangle_ptr->set_shadows(false);
 	addObject(rectangle_ptr);
 
@@ -460,21 +460,21 @@ void tzWorld::build()
 
 	// material matte
 	tzMatte* mattePtr1 = new tzMatte();
-	mattePtr1->set_ka(0.25);
-	mattePtr1->set_kd(0.75);
-	mattePtr1->set_cd(0.4, 0.7, 0.4);
+	mattePtr1->setKa(0.25);
+	mattePtr1->setKd(0.75);
+	mattePtr1->setCd(0.4, 0.7, 0.4);
 	//tzPhong* phongPtr = new tzPhong();
-	//phongPtr->set_ka(0.25);
-	//phongPtr->set_kd(0.75);
-	//phongPtr->set_cd(0.4, 0.7, 0.4);  	// light green
+	//phongPtr->setKa(0.25);
+	//phongPtr->setKd(0.75);
+	//phongPtr->setCd(0.4, 0.7, 0.4);  	// light green
 	//phongPtr->set_ks(0.005);
 	//phongPtr->set_exp(500);
 
 	//
 	tzMatte* mattePtr2 = new tzMatte();
-	mattePtr2->set_ka(0.1);
-	mattePtr2->set_kd(0.9);
-	mattePtr2->set_cd(white);
+	mattePtr2->setKa(0.1);
+	mattePtr2->setKd(0.9);
+	mattePtr2->setCd(white);
 
 	//
 	// "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Stanford_Bunny\\Bunny10K.ply"
@@ -531,14 +531,14 @@ void tzWorld::build()
 
 	// material matte
 	tzMatte* mattePtr1 = new tzMatte();
-	mattePtr1->set_ka(0.75);
-	mattePtr1->set_kd(0.0);
-	mattePtr1->set_cd(white);
+	mattePtr1->setKa(0.75);
+	mattePtr1->setKd(0.0);
+	mattePtr1->setCd(white);
 	//
 	tzMatte* mattePtr2 = new tzMatte();
-	mattePtr2->set_ka(0.75);
-	mattePtr2->set_kd(0.0);
-	mattePtr2->set_cd(white);
+	mattePtr2->setKa(0.75);
+	mattePtr2->setKd(0.0);
+	mattePtr2->setCd(white);
 
 	// sphere
 	tzSphere *spherePtr = new tzSphere(Point3D(0, 1, 0), 1);
@@ -581,17 +581,17 @@ void tzWorld::build()
 
 	// material phong
 	tzPhong* phongPtr = new tzPhong();
-	phongPtr->set_ka(0.25);
-	phongPtr->set_kd(0.75);
-	phongPtr->set_cd(0.75, 0.75, 0);  	// dark yellow
+	phongPtr->setKa(0.25);
+	phongPtr->setKd(0.75);
+	phongPtr->setCd(0.75, 0.75, 0);  	// dark yellow
 	phongPtr->set_ks(0.25);
 	phongPtr->set_exp(50);
 
 	// material matte
 	tzMatte* mattePtr = new tzMatte();
-	mattePtr->set_ka(0.20);
-	mattePtr->set_kd(0.97);
-	mattePtr->set_cd(white);
+	mattePtr->setKa(0.20);
+	mattePtr->setKd(0.97);
+	mattePtr->setCd(white);
 
 	// sphere
 	tzSphere *spherePtr = new tzSphere(Point3D(0, 50, 0), 25);
@@ -651,8 +651,8 @@ void tzWorld::renderScene() const
 	}
 	
 
-	std::vector< glm::vec4 > pixelColorArray;
-	tzRGBColor pixelColor;
+	std::vector< tzColor > pixelColorArray;
+	tzColor pixelColor;
 	tzRay ray;
 	float zw = 100.0f;
 //	float x, y;
@@ -677,7 +677,7 @@ void tzWorld::renderScene() const
 			pixelColor = black;
 			for ( int j = 0; j < mVp.mNumSamples; j++ )
 			{
-				sp = mVp.mSamplerPtr->sampleUnitSquare();
+				sp = mVp.mSamplerPtr->sampleUnitSquare(ray);
 				pp.x = mVp.mS * (fC - 0.5f*h + sp.x);
 				pp.y = mVp.mS * (fR - 0.5f*v + sp.y);
 				ray.o = tzPoint3D( pp.x, pp.y, zw );
@@ -704,7 +704,7 @@ void tzWorld::openWindow(const int hres, const int vres) const
 }
 
 //===================================================================================
-void tzWorld::writeToBuffer(std::vector<glm::vec4>& buffer, const int row, const int column, const tzRGBColor& pixel_color) const
+void tzWorld::writeToBuffer(std::vector<tzColor>& buffer, const int row, const int column, const tzColor& pixel_color) const
 {
 	int index = column + row*mVp.mHres;
 	buffer[index].r = pixel_color.r;
@@ -714,7 +714,7 @@ void tzWorld::writeToBuffer(std::vector<glm::vec4>& buffer, const int row, const
 }
 
 //===================================================================================
-void tzWorld::writeImage( const std::vector<glm::vec4>& buffer, const std::string &imagePath) const
+void tzWorld::writeImage( const std::vector<tzColor>& buffer, const std::string &imagePath) const
 {
 	tzTool::writePng(buffer, mVp.mHres, mVp.mVres, (std::string)imagePath);
 }
