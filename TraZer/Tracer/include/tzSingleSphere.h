@@ -13,7 +13,7 @@ class tzSingleSphere: public tzITracer {
 		virtual											
 		~tzSingleSphere(void);
 		
-		virtual tzRGBColor
+		virtual tzColor
 		traceRay(const tzRay& ray) const;
 };
 

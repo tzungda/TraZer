@@ -23,7 +23,7 @@ class tzImageTexture: public tzITexture {
 		virtual
 		~tzImageTexture(void) ;
 		
-		virtual tzRGBColor																				
+		virtual tzColor																				
 		getColor(const tzShadeRec& sr) const;
 						
 		void

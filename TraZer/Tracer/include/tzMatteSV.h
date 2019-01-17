@@ -14,63 +14,57 @@ class tzMatteSV: public tzIMaterial {
 
 		tzMatteSV(const tzMatteSV& m);
 		
-		virtual tzIMaterial*										
-		clone(void) const;									
+		virtual tzIMaterial* clone(void) const;									
 
-		tzMatteSV&
-		operator= (const tzMatteSV& rhs);
+		tzMatteSV& operator= (const tzMatteSV& rhs);
 
 		~tzMatteSV(void);
 		
-		void 													
-		set_ka(const float k);
+		void setKa(const float k);
 		
-		void 													
-		set_kd(const float k);
+		void setKd(const float k);
 		
-		void													
-		set_cd(const tzITexture *c);
+		void setCd(const tzITexture *c);
 				
-		virtual tzRGBColor
-		shade(tzShadeRec& sr);
+		virtual tzColor shade(tzShadeRec& sr);
 
-		virtual tzRGBColor areaLightShade( tzShadeRec &sr ) const;
+		virtual tzColor areaLightShade( tzShadeRec &sr ) const;
 
-		virtual tzRGBColor pathShade(tzShadeRec& sr);
+		virtual tzColor pathShade(tzShadeRec& sr);
 		
 	private:
 		
-		tzLambertianSV*		ambient_brdf;
-		tzLambertianSV*		diffuse_brdf;
+		tzLambertianSV*		mAmbientBRDF;
+		tzLambertianSV*		mDiffuseBRDF;
 };
 
 
-// ---------------------------------------------------------------- set_ka
+// ---------------------------------------------------------------- setKa
 // this sets Lambertian::kd
 // there is no Lambertian::ka data member because ambient reflection 
 // is diffuse reflection
 
 inline void								
-tzMatteSV::set_ka(const float ka) {
-	ambient_brdf->set_kd(ka);
+tzMatteSV::setKa(const float ka) {
+	mAmbientBRDF->setKd(ka);
 }
 
 
-// ---------------------------------------------------------------- set_kd
+// ---------------------------------------------------------------- setKd
 // this also sets Lambertian::kd, but for a different Lambertian object
 
 inline void								
-tzMatteSV::set_kd (const float kd) {
-	diffuse_brdf->set_kd(kd);
+tzMatteSV::setKd (const float kd) {
+	mDiffuseBRDF->setKd(kd);
 }
 
 
-// ---------------------------------------------------------------- set_cd
+// ---------------------------------------------------------------- setCd
 
 inline void												
-tzMatteSV::set_cd(const tzITexture *c) {
-	ambient_brdf->set_cd(c);
-	diffuse_brdf->set_cd(c);
+tzMatteSV::setCd(const tzITexture *c) {
+	mAmbientBRDF->setCd(c);
+	mDiffuseBRDF->setCd(c);
 }
 
 

@@ -30,13 +30,13 @@ class tzPerfectTransmitter: public tzIBTDF {
 		bool													
 		tir(const tzShadeRec& sr) const;
 		
-		virtual tzRGBColor
+		virtual tzColor
 		f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
 		
-		virtual tzRGBColor
-		sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wt) const;
+		virtual tzColor
+		sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wt) const;
 		
-		virtual tzRGBColor
+		virtual tzColor
 		rho(const tzShadeRec& sr, const tzVector3D& wo) const;
 				
 	private:

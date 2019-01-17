@@ -6,7 +6,7 @@
 
 #include "../include/tzConstants.h"
 #include "tzBBox.h"
-#include "tzRGBColor.h"
+#include "tzColor.h"
 #include "tzPoint3D.h"
 #include "tzVector3D.h"
 #include "tzNormal.h"
@@ -41,11 +41,11 @@ class tzIGeometricObject {
 				   
 		// The following three functions are only required for Chapter 3
 		
-		void setColor(const tzRGBColor& c);
+		void setColor(const tzColor& c);
 				
 		void setColor(const float r, const float g, const float b);
 		
-		tzRGBColor getColor(void);
+		tzColor getColor(void);
 		
 		virtual void setBoundingBox(void);
 		
@@ -56,7 +56,7 @@ class tzIGeometricObject {
 		
 		// The following two functions are only required for objects that are light sources, eg disks, rectangles, and spheres
 		 
-		virtual tzPoint3D sample(void);
+		virtual tzPoint3D sample(const tzShadeRec& sr );
 		
 		virtual float pdf(const tzShadeRec& sr); 
 				
@@ -71,14 +71,14 @@ class tzIGeometricObject {
 	protected:
 	
 		mutable tzIMaterial*   mMaterialPtr;   	// mutable allows the const functions Compound::hit, Instance::hit, and RegularGrid::hit to assign to mMaterialPtr
-		tzRGBColor   		   mColor;				// only used for Bare Bones ray tracing
+		tzColor   		   mColor;				// only used for Bare Bones ray tracing
 	
 		tzIGeometricObject& operator= (const tzIGeometricObject& rhs);
 };
 
 
 //===================================================================================
-inline void tzIGeometricObject::setColor(const tzRGBColor& c) 
+inline void tzIGeometricObject::setColor(const tzColor& c) 
 {
 	mColor = c;
 }
@@ -92,7 +92,7 @@ inline void tzIGeometricObject::setColor(const float r, const float g, const flo
 }
 
 //===================================================================================
-inline tzRGBColor tzIGeometricObject::getColor(void) 
+inline tzColor tzIGeometricObject::getColor(void) 
 {
 	return (mColor);
 }

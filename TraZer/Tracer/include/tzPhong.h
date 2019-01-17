@@ -23,19 +23,19 @@ class tzPhong: public tzIMaterial {
 		~tzPhong(void);
 		
 		void 													
-		set_ka(const float k);
+		setKa(const float k);
 		
 		void 													
-		set_kd(const float k);
+		setKd(const float k);
 		
 		void													
-		set_cd(const tzRGBColor c);
+		setCd(const tzColor c);
 		
 		void													
-		set_cd(const float r, const float g, const float b);
+		setCd(const float r, const float g, const float b);
 		
 		void																						
-		set_cd(const float c);
+		setCd(const float c);
 
 		// specular
 		void
@@ -45,7 +45,7 @@ class tzPhong: public tzIMaterial {
 		set_exp(const float exp);
 		
 		void
-		set_cs(const tzRGBColor& c);
+		set_cs(const tzColor& c);
 		
 		void													
 		set_cs(const float r, const float g, const float b);
@@ -54,63 +54,63 @@ class tzPhong: public tzIMaterial {
 		set_cs(const float c);
 				
 		//
-		virtual tzRGBColor
+		virtual tzColor
 		shade(tzShadeRec& sr);
 
 		//
-		virtual tzRGBColor areaLightShade( tzShadeRec &sr) const;
+		virtual tzColor areaLightShade( tzShadeRec &sr) const;
 		
 	private:
 		
-		tzLambertian*		ambient_brdf;
-		tzLambertian*		diffuse_brdf;
+		tzLambertian*		mAmbientBRDF;
+		tzLambertian*		mDiffuseBRDF;
 		tzGlossySpecular*	specular_brdf;
 };
 
 
-// ---------------------------------------------------------------- set_ka
+// ---------------------------------------------------------------- setKa
 // this sets Lambertian::kd
 // there is no Lambertian::ka data member because ambient reflection 
 // is diffuse reflection
 
 inline void								
-tzPhong::set_ka(const float ka) {
-	ambient_brdf->set_kd(ka);
+tzPhong::setKa(const float ka) {
+	mAmbientBRDF->setKd(ka);
 }
 
 
-// ---------------------------------------------------------------- set_kd
+// ---------------------------------------------------------------- setKd
 // this also sets Lambertian::kd, but for a different Lambertian object
 
 inline void								
-tzPhong::set_kd (const float kd) {
-	diffuse_brdf->set_kd(kd);
+tzPhong::setKd (const float kd) {
+	mDiffuseBRDF->setKd(kd);
 }
 
 
-// ---------------------------------------------------------------- set_cd
+// ---------------------------------------------------------------- setCd
 
 inline void												
-tzPhong::set_cd(const tzRGBColor c) {
-	ambient_brdf->set_cd(c);
-	diffuse_brdf->set_cd(c);
+tzPhong::setCd(const tzColor c) {
+	mAmbientBRDF->setCd(c);
+	mDiffuseBRDF->setCd(c);
 }
 
 
-// ---------------------------------------------------------------- set_cd
+// ---------------------------------------------------------------- setCd
 
 inline void													
-tzPhong::set_cd(const float r, const float g, const float b) {
-	ambient_brdf->set_cd(r, g, b);
-	diffuse_brdf->set_cd(r, g, b);
+tzPhong::setCd(const float r, const float g, const float b) {
+	mAmbientBRDF->setCd(r, g, b);
+	mDiffuseBRDF->setCd(r, g, b);
 }
 
-// ---------------------------------------------------------------- set_cd
+// ---------------------------------------------------------------- setCd
 
 inline void													
-tzPhong::set_cd(const float c) {
-	ambient_brdf->set_cd(c);
-	diffuse_brdf->set_cd(c);
+tzPhong::setCd(const float c) {
+	mAmbientBRDF->setCd(c);
+	mDiffuseBRDF->setCd(c);
 }
 
 //
@@ -127,7 +127,7 @@ tzPhong::set_exp(const float exp)
 }
 
 inline void
-tzPhong::set_cs(const tzRGBColor& c)
+tzPhong::set_cs(const tzColor& c)
 {
 	specular_brdf->set_cs( c );
 }

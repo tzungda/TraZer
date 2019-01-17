@@ -24,7 +24,7 @@ class tzReflective: public tzPhong {
 		set_kr(const float k);
 				
 		void													
-		set_cr(const tzRGBColor& c);
+		set_cr(const tzColor& c);
 		
 		void
 		set_cr(const float r, const float g, const float b);
@@ -32,10 +32,10 @@ class tzReflective: public tzPhong {
 		void
 		set_cr(const float c);
 		
-		virtual tzRGBColor										
+		virtual tzColor										
 		shade(tzShadeRec& s);
 
-		virtual tzRGBColor pathShade(tzShadeRec& sr);
+		virtual tzColor pathShade(tzShadeRec& sr);
 		
 	private:
 	
@@ -54,7 +54,7 @@ tzReflective::set_kr(const float k) {
 // ---------------------------------------------------------------- set_cr
 
 inline void
-tzReflective::set_cr(const tzRGBColor& c) {
+tzReflective::set_cr(const tzColor& c) {
 	reflective_brdf->set_cr(c);
 	
 }

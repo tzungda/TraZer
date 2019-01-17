@@ -22,18 +22,18 @@ class tzAmbient: public tzILight
 		
 		void setColor(const float c);
 		
-		void setColor(const tzRGBColor& c);
+		void setColor(const tzColor& c);
 		
 		void setColor(const float r, const float g, const float b); 
 		
 		virtual tzVector3D getDirection(  tzShadeRec& s) ; 
 		
-		virtual tzRGBColor L(  tzShadeRec& s) ;
+		virtual tzColor L(  tzShadeRec& s) ;
 	
 	private:
 	
 		float		mLs;
-		tzRGBColor	mColor;
+		tzColor	mColor;
 };
 
 
@@ -50,7 +50,7 @@ inline void tzAmbient::setColor(const float c)
 }
 
 //===================================================================================
-inline void tzAmbient::setColor(const tzRGBColor& c) 
+inline void tzAmbient::setColor(const tzColor& c) 
 {
 	mColor = c;
 }

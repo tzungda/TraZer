@@ -11,6 +11,9 @@ public:
 	tzVector3D d;		// direction
 	int		depth;
 
+	unsigned int mThreadId;
+	unsigned int mMaxThreads;
+
 	// default constructor
 	tzRay( void );	
 

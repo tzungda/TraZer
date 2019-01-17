@@ -3,7 +3,7 @@
 
 
 #include <vector>		
-#include "tzRGBColor.h"
+#include "tzColor.h"
 using namespace std;
 
 //--------------------------------------------------------------------- class Image
@@ -27,12 +27,12 @@ class tzImage {
 		
 		int getWidth(void);	
 				
-		tzRGBColor getColor(const int row, const int col) const;		
+		tzColor getColor(const int row, const int col) const;		
 		
 	private:
 		int 				mWidth;			// horizontal resolution of image
 		int					mHeight;			// vertical resolution of image
-		vector<tzRGBColor> 	pixels;
+		vector<tzColor> 	pixels;
 };
 
 

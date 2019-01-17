@@ -15,18 +15,15 @@ class tzMultiJittered: public tzISampler {
 
 		tzMultiJittered(const tzMultiJittered& mjs);
 
-		tzMultiJittered&
-		operator= (const tzMultiJittered& rhs);
+		tzMultiJittered& operator= (const tzMultiJittered& rhs);
 
-		virtual tzMultiJittered*
-		clone(void) const;			
+		virtual tzMultiJittered* clone(void) const;			
 
 		virtual ~tzMultiJittered(void);
 		
 	private:
 		
-		virtual void										
-		generate_samples(void);		
+		virtual void generateSamples(void);		
 };
 
 #endif

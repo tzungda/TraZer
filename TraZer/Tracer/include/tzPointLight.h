@@ -27,14 +27,14 @@ class tzPointLight: public tzILight {
 		setColor(const float c);
 		
 		void
-		setColor(const tzRGBColor& c);
+		setColor(const tzColor& c);
 		
 		void
 		setColor(const float r, const float g, const float b); 
 		
 		virtual tzVector3D getDirection( tzShadeRec& s) ;
 		
-		virtual tzRGBColor L( tzShadeRec& s) ;
+		virtual tzColor L( tzShadeRec& s) ;
 
 		// 
 		void		set_location( const tzVector3D &loc );
@@ -45,7 +45,7 @@ class tzPointLight: public tzILight {
 	private:
 	
 		float		mLs;
-		tzRGBColor	mColor;
+		tzColor	mColor;
 		tzVector3D	mLocation;
 };
 
@@ -64,7 +64,7 @@ inline void tzPointLight::setColor(const float c)
 }
 
 //===================================================================================
-inline void tzPointLight::setColor(const tzRGBColor& c) 
+inline void tzPointLight::setColor(const tzColor& c) 
 {
 	mColor = c;
 }

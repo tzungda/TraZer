@@ -4,7 +4,7 @@
 
 #include "../include/tzConstants.h"
 #include "../include/tzRay.h"
-#include "tzRGBColor.h"
+#include "tzColor.h"
 
 class tzWorld;
 
@@ -18,10 +18,10 @@ class tzITracer {
 		virtual											
 		~tzITracer(void);									
 
-		virtual tzRGBColor			// only overridden in the tzITracers SingleSphere and MultipleObjects
+		virtual tzColor			// only overridden in the tzITracers SingleSphere and MultipleObjects
 		traceRay(const tzRay& ray) const;
 
-		virtual tzRGBColor
+		virtual tzColor
 		traceRay(const tzRay ray, const int depth) const;
 				
 	protected:

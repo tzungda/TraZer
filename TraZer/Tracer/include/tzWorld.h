@@ -16,7 +16,7 @@ class tzWorld
 {
 public:
 	tzViewPlane							mVp;
-	tzRGBColor							mBackgroundColor;
+	tzColor							mBackgroundColor;
 	tzSphere							mSphere;
 	tzITracer*							mTracerPtr;
 	std::vector<tzIGeometricObject*>	mObjects;
@@ -47,8 +47,8 @@ public:
 	void				build();
 	void				renderScene() const;
 	void				openWindow( const int hres, const int vres ) const;
-	void				writeToBuffer( std::vector<glm::vec4>& buffer, const int row, const int column, const tzRGBColor& pixel_color) const;
-	void				writeImage( const std::vector<glm::vec4>& buffer, const std::string &imagePath ) const;
+	void				writeToBuffer( std::vector<tzColor>& buffer, const int row, const int column, const tzColor& pixel_color) const;
+	void				writeImage( const std::vector<tzColor>& buffer, const std::string &imagePath ) const;
 
 	// 
 	void				setCamera( const tzICamera *cam );

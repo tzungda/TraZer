@@ -19,7 +19,7 @@ class tzPerfectSpecular: public tzIBRDF
 		set_kr(const float k);
 		
 		void
-		set_cr(const tzRGBColor& c);
+		set_cr(const tzColor& c);
 		
 		void													
 		set_cr(const float r, const float g, const float b);
@@ -27,22 +27,22 @@ class tzPerfectSpecular: public tzIBRDF
 		void													
 		set_cr(const float c);
 		
-		virtual tzRGBColor
+		virtual tzColor
 		f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
 		
-		virtual tzRGBColor
-		sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi) const;
+		virtual tzColor
+		sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi) const;
 		
-		virtual tzRGBColor
-		sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const;
+		virtual tzColor
+		sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const;
 		
-		virtual tzRGBColor
+		virtual tzColor
 		rho(const tzShadeRec& sr, const tzVector3D& wo) const;
 				
 	private:
 	
 		float		kr;			// reflection coefficient
-		tzRGBColor 	cr;			// the reflection colour
+		tzColor 	cr;			// the reflection colour
 };
 
 
@@ -57,7 +57,7 @@ tzPerfectSpecular::set_kr(const float k) {
 // -------------------------------------------------------------- set_cr
 
 inline void
-tzPerfectSpecular::set_cr(const tzRGBColor& c) {
+tzPerfectSpecular::set_cr(const tzColor& c) {
 	cr = c;
 }
 

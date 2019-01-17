@@ -13,7 +13,7 @@ class tzAreaLighting: public tzITracer {
 		
 		virtual ~tzAreaLighting(void);
 						
-		virtual tzRGBColor traceRay(const tzRay ray, const int depth) const;
+		virtual tzColor traceRay(const tzRay ray, const int depth) const;
 		
 };
 

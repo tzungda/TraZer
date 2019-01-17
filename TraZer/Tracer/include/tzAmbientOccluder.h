@@ -26,14 +26,14 @@ class tzAmbientOccluder: public tzILight {
 		setColor(const float c);
 		
 		void
-		setColor(const tzRGBColor& c);
+		setColor(const tzColor& c);
 		
 		void
 		setColor(const float r, const float g, const float b); 
 		
 		virtual tzVector3D getDirection( tzShadeRec& s);
 		
-		virtual tzRGBColor L( tzShadeRec& s);
+		virtual tzColor L( tzShadeRec& s);
 
 		//
 		virtual bool	inShadow(const tzRay &ray, const tzShadeRec &sr) const;
@@ -47,10 +47,10 @@ class tzAmbientOccluder: public tzILight {
 	private:
 	
 		float		mLs;
-		tzRGBColor	mColor;
+		tzColor	mColor;
 		tzISampler	*mSamplerPtr;
 		tzVector3D	u, v, w;
-		tzRGBColor	mMinAmount;
+		tzColor	mMinAmount;
 };
 
 
@@ -68,7 +68,7 @@ inline void tzAmbientOccluder::setColor(const float c)
 }
 
 //===================================================================================
-inline void tzAmbientOccluder::setColor(const tzRGBColor& c) 
+inline void tzAmbientOccluder::setColor(const tzColor& c) 
 {
 	mColor = c;
 }

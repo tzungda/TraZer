@@ -11,10 +11,10 @@ class tzPathTrace: public tzITracer {
 		
 		tzPathTrace(tzWorld* _worldPtr);
 	
-		virtual tzRGBColor	
+		virtual tzColor	
 		traceRay(const tzRay ray, const int depth) const;
 		
-		virtual tzRGBColor	
+		virtual tzColor	
 		traceRay(const tzRay ray, float& tmin, const int depth) const;
 };
 

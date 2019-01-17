@@ -18,32 +18,24 @@ class tzRectangle: public tzIGeometricObject {
 	
 		tzRectangle(const tzRectangle& r);
 
-		virtual													
-		~tzRectangle(void);
+		virtual ~tzRectangle(void);
 
-		tzRectangle&
-		operator= (const tzRectangle& rhs);
+		tzRectangle& operator= (const tzRectangle& rhs);
 		
-		tzBBox
-		getBoundingBox(void);				
+		tzBBox getBoundingBox(void);				
 	
-		virtual bool 												 
-		hit(const tzRay& ray, float& t, tzShadeRec& s) const;
+		virtual bool hit(const tzRay& ray, float& t, tzShadeRec& s) const;
 				
 		
 		// the following functions are used when the rectangle is a light source
 		
-		virtual void 								
-		set_sampler(tzISampler* sampler); 
+		virtual void setSampler(tzISampler* sampler); 
 				
-		virtual tzPoint3D
-		sample(void);
+		virtual tzPoint3D sample(const tzShadeRec& sr);
 		
-		virtual tzNormal
-		getNormal(const tzPoint3D& p);
+		virtual tzNormal getNormal(const tzPoint3D& p);
 		
-		virtual float												
-		pdf(tzShadeRec& sr);
+		virtual float pdf(tzShadeRec& sr);
 		
 	private:
 	

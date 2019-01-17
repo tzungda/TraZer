@@ -13,86 +13,78 @@ class tzMatte: public tzIMaterial {
 
 		tzMatte(const tzMatte& m);
 		
-		virtual tzIMaterial*										
-		clone(void) const;									
+		virtual tzIMaterial* clone(void) const;									
 
-		tzMatte&
-		operator= (const tzMatte& rhs);
+		tzMatte& operator= (const tzMatte& rhs);
 
 		~tzMatte(void);
 		
-		void 													
-		set_ka(const float k);
+		void setKa(const float k);
 		
-		void 													
-		set_kd(const float k);
+		void setKd(const float k);
 		
-		void													
-		set_cd(const tzRGBColor c);
+		void setCd(const tzColor c);
 		
-		void													
-		set_cd(const float r, const float g, const float b);
+		void setCd(const float r, const float g, const float b);
 		
-		void																						
-		set_cd(const float c);
+		void setCd(const float c);
 				
-		virtual tzRGBColor
-		shade(tzShadeRec& sr);
+		virtual tzColor shade(tzShadeRec& sr);
 
-		virtual tzRGBColor areaLightShade( tzShadeRec &sr ) const;
+		virtual tzColor areaLightShade( tzShadeRec &sr ) const;
 
-		virtual tzRGBColor pathShade(tzShadeRec& sr);
+		virtual tzColor pathShade(tzShadeRec& sr);
 		
 	private:
 		
-		tzLambertian*		ambient_brdf;
-		tzLambertian*		diffuse_brdf;
+		tzLambertian*		mAmbientBRDF;
+		tzLambertian*		mDiffuseBRDF;
 };
 
 
-// ---------------------------------------------------------------- set_ka
+// ---------------------------------------------------------------- setKa
 // this sets Lambertian::kd
 // there is no Lambertian::ka data member because ambient reflection 
 // is diffuse reflection
 
-inline void								
-tzMatte::set_ka(const float ka) {
-	ambient_brdf->set_kd(ka);
+inline void tzMatte::setKa(const float ka) 
+{
+	mAmbientBRDF->setKd(ka);
 }
 
 
-// ---------------------------------------------------------------- set_kd
+// ---------------------------------------------------------------- setKd
 // this also sets Lambertian::kd, but for a different Lambertian object
 
-inline void								
-tzMatte::set_kd (const float kd) {
-	diffuse_brdf->set_kd(kd);
+inline void tzMatte::setKd (const float kd) 
+{
+	mDiffuseBRDF->setKd(kd);
 }
 
 
-// ---------------------------------------------------------------- set_cd
+// ---------------------------------------------------------------- setCd
 
-inline void												
-tzMatte::set_cd(const tzRGBColor c) {
-	ambient_brdf->set_cd(c);
-	diffuse_brdf->set_cd(c);
+inline void tzMatte::setCd(const tzColor c) 
+{
+	mAmbientBRDF->setCd(c);
+	mDiffuseBRDF->setCd(c);
 }
 
 
-// ---------------------------------------------------------------- set_cd
+// ---------------------------------------------------------------- setCd
 
-inline void													
-tzMatte::set_cd(const float r, const float g, const float b) {
-	ambient_brdf->set_cd(r, g, b);
-	diffuse_brdf->set_cd(r, g, b);
+inline void tzMatte::setCd(const float r, const float g, const float b) 
+{
+	mAmbientBRDF->setCd(r, g, b);
+	mDiffuseBRDF->setCd(r, g, b);
 }
 
-// ---------------------------------------------------------------- set_cd
+// ---------------------------------------------------------------- setCd
 
-inline void													
-tzMatte::set_cd(const float c) {
-	ambient_brdf->set_cd(c);
-	diffuse_brdf->set_cd(c);
+inline void tzMatte::setCd(const float c) 
+{
+	mAmbientBRDF->setCd(c);
+	mDiffuseBRDF->setCd(c);
 }
 
 #endif

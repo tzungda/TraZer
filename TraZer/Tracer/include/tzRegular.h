@@ -12,16 +12,13 @@ class tzRegular: public tzISampler {
 
 		tzRegular(const tzRegular& u);
 
-		tzRegular&
-		operator= (const tzRegular& rhs);
+		tzRegular& operator= (const tzRegular& rhs);
 
-		virtual tzRegular*
-		clone(void) const;			
+		virtual tzRegular* clone(void) const;			
 
 		virtual ~tzRegular(void);
 		
-		virtual void
-		generate_samples(void);
+		virtual void generateSamples(void);
 };
 
 #endif

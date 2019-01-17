@@ -4,7 +4,7 @@
 #include "tzPoint3D.h"
 #include "tzVector3D.h"
 #include "tzNormal.h"
-#include "tzRGBColor.h"
+#include "tzColor.h"
 #include "../include/tzRay.h"
 
 class tzWorld;
@@ -17,7 +17,7 @@ public:
 	bool				mHitAnObject;
 	tzPoint3D			mLocalHitPoint;
 	tzNormal			mNormal;
-	tzRGBColor			mColor;
+	tzColor			mColor;
 	tzWorld&			mWorld;
 	float				mT;
 	float				u;
@@ -29,6 +29,10 @@ public:
 	tzRay				mRay;
 	int					mDepth;
 	tzVector3D			mDir;
+
+	//
+	unsigned int		mThreadId;
+	unsigned int		mMaxThreads;
 
 
 	// constructor

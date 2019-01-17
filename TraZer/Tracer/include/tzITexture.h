@@ -5,7 +5,7 @@
 #include <math.h>
 
 #include "../include/tzShadeRec.h"
-#include "tzRGBColor.h"
+#include "tzColor.h"
 
 class tzITexture {	
 	public:
@@ -20,7 +20,7 @@ class tzITexture {
 		virtual 											
 		~tzITexture(void);
 		
-		virtual tzRGBColor getColor(const tzShadeRec& sr) const = 0;
+		virtual tzColor getColor(const tzShadeRec& sr) const = 0;
 				
 	protected:
 	

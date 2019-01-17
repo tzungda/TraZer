@@ -13,13 +13,13 @@ class tzGlossySpecular: public tzIBRDF {
 		virtual tzGlossySpecular*
 		clone(void) const;
 		
-		virtual tzRGBColor
+		virtual tzColor
 		f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
 				
-		virtual tzRGBColor
-		sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const;
+		virtual tzColor
+		sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const;
 		
-		virtual tzRGBColor
+		virtual tzColor
 		rho(const tzShadeRec& sr, const tzVector3D& wo) const;
 		
 		void
@@ -29,7 +29,7 @@ class tzGlossySpecular: public tzIBRDF {
 		set_exp(const float exp);
 		
 		void
-		set_cs(const tzRGBColor& c);
+		set_cs(const tzColor& c);
 		
 		void													
 		set_cs(const float r, const float g, const float b);
@@ -37,22 +37,19 @@ class tzGlossySpecular: public tzIBRDF {
 		void													
 		set_cs(const float c);
 		
-		void
-		set_sampler(tzISampler* sp, const float exp);   			// any type of sampling
+		void setSampler(tzISampler* sp, const float exp);   			// any type of sampling
 		
-		void
-		set_samples(const int numSamples, const float exp); 	// multi jittered sampling
+		void setSamples(const int numSamples, const float exp); 	// multi jittered sampling
 		
-		void
-		set_normal(const tzNormal& n);
+		void setNormal(const tzNormal& n);
 		
 		
 	private:
 	
 		float		ks;
-		tzRGBColor 	cs;			// specular color
+		tzColor 	cs;			// specular color
 		float		exp; 		// specular exponent
-		tzISampler*	sampler;    // for use in sample_f
+		tzISampler*	sampler;    // for use in sampleF
 };
 
 
@@ -74,7 +71,7 @@ tzGlossySpecular::set_exp(const float e) {
 // -------------------------------------------------------------- set_cs
 
 inline void
-tzGlossySpecular::set_cs(const tzRGBColor& c) {
+tzGlossySpecular::set_cs(const tzColor& c) {
 	cs = c;
 }
 

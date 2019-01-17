@@ -7,6 +7,7 @@
 #include "tzPoint2D.h"
 #include "tzPoint3D.h"
 #include "../include/tzMaths.h"
+#include "../include/tzShadeRec.h"
 
 using namespace std;
 
@@ -29,7 +30,7 @@ class tzISampler {
 		
 		void setNumSets(const int np);					
 		
-		virtual void generate_samples(void) = 0;
+		virtual void generateSamples(void) = 0;
 
 		int getNumSamples(void);							
 		
@@ -48,15 +49,15 @@ class tzISampler {
 		
 		// the following functions are not const because they change count and jump
 		
-		tzPoint2D sampleUnitSquare(void);
+		tzPoint2D sampleUnitSquare(const tzRay &ray);
 		
-		tzPoint2D sampleUnitDisk(void);
+		tzPoint2D sampleUnitDisk(const tzRay &rayr);
 		
-		tzPoint3D sampleHemisphere(void);
+		tzPoint3D sampleHemisphere(const tzRay &ray);
 		
-		tzPoint3D sampleSphere(void);
+		tzPoint3D sampleSphere(const tzRay &ray);
 		
-		tzPoint2D sampleOneSet(void);							// this is not discussed in the book, but see the
+		tzPoint2D sampleOneSet(const tzRay &ray);							// this is not discussed in the book, but see the
 														// file LatticeNoise.cpp in Chapter 31
 		
 	protected:
@@ -68,8 +69,8 @@ class tzISampler {
 		vector<tzPoint2D>		mDiskSamples;			// sample points on a unit disk
 		vector<tzPoint3D> 		mHemisphereSamples;		// sample points on a unit hemisphere
 		vector<tzPoint3D> 		mSphereSamples;			// sample points on a unit sphere
-		unsigned long 			mCount;					// the current number of sample points used
-		int 					mJump;					// random index jump
+		unsigned long 			mCount[MAX_THREADS];					// the current number of sample points used
+		int 					mJump[MAX_THREADS];					// random index jump
 };
 
 #endif

@@ -24,23 +24,21 @@ class tzLambertianSV: public tzIBRDF
 		virtual tzLambertianSV*
 		clone(void) const;
 		
-		virtual tzRGBColor
-		f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
+		virtual tzColor f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
 		
-		virtual tzRGBColor
-		sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const;
+		virtual tzColor sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const;
 		
-		virtual tzRGBColor
+		virtual tzColor
 		rho(const tzShadeRec& sr, const tzVector3D& wo) const;
 			
 		void
-		set_ka(const float ka);	
+		setKa(const float ka);	
 				
 		void
-		set_kd(const float kd);
+		setKd(const float kd);
 		
 		void
-		set_cd(const tzITexture* c);
+		setCd(const tzITexture* c);
 					
 	private:
 	
@@ -51,27 +49,27 @@ class tzLambertianSV: public tzIBRDF
 
 
 
-// -------------------------------------------------------------- set_ka
+// -------------------------------------------------------------- setKa
 
 inline void
-tzLambertianSV::set_ka(const float k) {
+tzLambertianSV::setKa(const float k) {
 	kd = k;
 }
 
 
 
-// -------------------------------------------------------------- set_kd
+// -------------------------------------------------------------- setKd
 
 inline void
-tzLambertianSV::set_kd(const float k) {
+tzLambertianSV::setKd(const float k) {
 	kd = k;
 }
 
 
-// -------------------------------------------------------------- set_cd
+// -------------------------------------------------------------- setCd
 
 inline void
-tzLambertianSV::set_cd(const tzITexture* c) {
+tzLambertianSV::setCd(const tzITexture* c) {
 	cd = (tzITexture*)c;
 }
 

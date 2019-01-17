@@ -23,78 +23,78 @@ class tzLambertian: public tzIBRDF
 		virtual tzLambertian*
 		clone(void) const;
 		
-		virtual tzRGBColor
+		virtual tzColor
 		f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
 		
-		virtual tzRGBColor
-		sample_f(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const;
+		virtual tzColor
+		sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const;
 		
-		virtual tzRGBColor
+		virtual tzColor
 		rho(const tzShadeRec& sr, const tzVector3D& wo) const;
 			
 		void
-		set_ka(const float ka);	
+		setKa(const float ka);	
 				
 		void
-		set_kd(const float kd);
+		setKd(const float kd);
 		
 		void
-		set_cd(const tzRGBColor& c);
+		setCd(const tzColor& c);
 		
 		void													
-		set_cd(const float r, const float g, const float b);
+		setCd(const float r, const float g, const float b);
 		
 		void													
-		set_cd(const float c);
+		setCd(const float c);
 					
 	private:
 	
 		float		kd;
-		tzRGBColor 	cd;
+		tzColor 	cd;
 };
 
 
 
 
-// -------------------------------------------------------------- set_ka
+// -------------------------------------------------------------- setKa
 
 inline void
-tzLambertian::set_ka(const float k) {
+tzLambertian::setKa(const float k) {
 	kd = k;
 }
 
 
 
-// -------------------------------------------------------------- set_kd
+// -------------------------------------------------------------- setKd
 
 inline void
-tzLambertian::set_kd(const float k) {
+tzLambertian::setKd(const float k) {
 	kd = k;
 }
 
 
-// -------------------------------------------------------------- set_cd
+// -------------------------------------------------------------- setCd
 
 inline void
-tzLambertian::set_cd(const tzRGBColor& c) {
+tzLambertian::setCd(const tzColor& c) {
 	cd = c;
 }
 
 
-// ---------------------------------------------------------------- set_cd
+// ---------------------------------------------------------------- setCd
 
 inline void													
-tzLambertian::set_cd(const float r, const float g, const float b) {
+tzLambertian::setCd(const float r, const float g, const float b) {
 	cd.r = r; cd.g = g; cd.b = b;
 }
 
 
-// ---------------------------------------------------------------- set_cd
+// ---------------------------------------------------------------- setCd
 
 inline void													
-tzLambertian::set_cd(const float c) {
+tzLambertian::setCd(const float c) {
 	cd.r = c; cd.g = c; cd.b = c;
 }
 
 #endif
-
+

@@ -2,7 +2,7 @@
 #define TZ_TRACER_AREA_LIGHT
 
 
-#include "tzRGBColor.h"
+#include "tzColor.h"
 #include "tzVector3D.h"
 #include "tzPoint3D.h"
 #include "tzNormal.h"
@@ -28,7 +28,7 @@ class tzAreaLight: public tzILight {
 		
 		virtual tzVector3D getDirection( tzShadeRec& s) ;
 		
-		virtual tzRGBColor L( tzShadeRec& sr) ;
+		virtual tzColor L( tzShadeRec& sr) ;
 		
 		virtual bool inShadow(const tzRay& ray, const tzShadeRec& sr) const;
 		
@@ -40,9 +40,9 @@ class tzAreaLight: public tzILight {
 		
 		tzIGeometricObject* 	object_ptr;
 		tzIMaterial* 			mMaterialPtr;	 // will be an emissive material
-		tzPoint3D				sample_point;
-		tzNormal				light_normal;    // assigned in get_direction - which therefore can't be const for any light
-		tzVector3D				wi;			     // unit direction from hit point being shaded to sample point on light surface			
+		tzPoint3D				samplePoint[MAX_THREADS];
+		tzNormal				light_normal[MAX_THREADS];    // assigned in get_direction - which therefore can't be const for any light
+		tzVector3D				wi[MAX_THREADS];			     // unit direction from hit point being shaded to sample point on light surface			
 	
 };
 
