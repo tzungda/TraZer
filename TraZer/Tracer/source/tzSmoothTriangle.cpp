@@ -104,9 +104,9 @@ tzSmoothTriangle::getBoundingBox(void) {
 bool 
 tzSmoothTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
 {
-	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.d.x, d = v0.x - ray.o.x;
-	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.d.y, h = v0.y - ray.o.y;
-	float i = v0.z - v1.z, j = v0.z - v2.z, k = ray.d.z, l = v0.z - ray.o.z;
+	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.mDirection.x, d = v0.x - ray.mOrigin.x;
+	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.mDirection.y, h = v0.y - ray.mOrigin.y;
+	float i = v0.z - v1.z, j = v0.z - v2.z, k = ray.mDirection.z, l = v0.z - ray.mOrigin.z;
 		
 	float m = f * k - g * j, n = h * k - g * l, p = f * l - h * j;
 	float q = g * i - e * k, s = e * j - f * i;
@@ -137,7 +137,7 @@ tzSmoothTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const
 					
 	tmin 				= t;
 	sr.mNormal 			= interpolate_normal((float)beta, (float)gamma);
-	sr.mLocalHitPoint 	= ray.o + t * ray.d;	
+	sr.mLocalHitPoint 	= ray.mOrigin + t * ray.mDirection;	
 	
 	return (true);	
 }  	
@@ -149,9 +149,9 @@ tzSmoothTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const
 
 bool tzSmoothTriangle::shadowHit(const tzRay& ray, float& tmin) const
 {
-	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.d.x, d = v0.x - ray.o.x;
-	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.d.y, h = v0.y - ray.o.y;
-	float i = v0.z - v1.z, j = v0.z - v2.z, k = ray.d.z, l = v0.z - ray.o.z;
+	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.mDirection.x, d = v0.x - ray.mOrigin.x;
+	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.mDirection.y, h = v0.y - ray.mOrigin.y;
+	float i = v0.z - v1.z, j = v0.z - v2.z, k = ray.mDirection.z, l = v0.z - ray.mOrigin.z;
 		
 	float m = f * k - g * j, n = h * k - g * l, p = f * l - h * j;
 	float q = g * i - e * k, s = e * j - f * i;

@@ -84,7 +84,7 @@ tzMatteSV::~tzMatteSV(void) {
 tzColor
 tzMatteSV::shade(tzShadeRec& sr) 
 {
-	tzVector3D 	wo 			= -sr.mRay.d;
+	tzVector3D 	wo 			= -sr.mRay.mDirection;
 	tzColor 	L 			= mAmbientBRDF->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
 	int 		num_lights	= (int)sr.mWorld.mLights.size();
 	
@@ -119,7 +119,7 @@ tzMatteSV::shade(tzShadeRec& sr)
 //===================================================================================
 tzColor tzMatteSV::areaLightShade( tzShadeRec &sr) const
 {
-	tzVector3D 	wo = -sr.mRay.d;
+	tzVector3D 	wo = -sr.mRay.mDirection;
 	tzColor 	L = mAmbientBRDF->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
 	int 		num_lights = (int)sr.mWorld.mLights.size();
 
@@ -150,7 +150,7 @@ tzColor tzMatteSV::areaLightShade( tzShadeRec &sr) const
 //===================================================================================
 tzColor tzMatteSV::pathShade(tzShadeRec &sr)
 {
-	tzVector3D 	wo = -sr.mRay.d;
+	tzVector3D 	wo = -sr.mRay.mDirection;
 	tzVector3D 	wi;
 	float 		pdf;
 	tzColor 	f = mDiffuseBRDF->sampleF(sr, wo, wi, pdf);

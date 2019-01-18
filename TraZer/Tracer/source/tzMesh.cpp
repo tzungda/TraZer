@@ -9,8 +9,8 @@
 // ----------------------------------------------------------------  default constructor
 
 tzMesh::tzMesh(void)
-	: 	num_vertices(0),
-		num_triangles(0)	
+	: 	mNumVertices(0),
+		mNumTriangles(0)	
 {}
 
 
@@ -18,12 +18,12 @@ tzMesh::tzMesh(void)
 // this doesn't handle the vertex_faces
 
 tzMesh::tzMesh(const tzMesh& m)
-	: 	vertices(m.vertices),
-		normals(m.normals),
-		u(m.u),
-		v(m.v),
-		num_vertices(m.num_vertices),
-		num_triangles(m.num_triangles)
+	: 	mVertices(m.mVertices),
+		mNormals(m.mNormals),
+		mUs(m.mUs),
+		mVs(m.mVs),
+		mNumVertices(m.mNumVertices),
+		mNumTriangles(m.mNumTriangles)
 {}
 
 
@@ -35,12 +35,12 @@ tzMesh::operator= (const tzMesh& rhs) {
 	if (this == &rhs)
 		return (*this);
 
-	vertices 		= rhs.vertices;  
-	normals  		= rhs.normals;
-	u  				= rhs.u;
-	v  				= rhs.v;
-	num_vertices	= rhs.num_vertices;
-	num_triangles	= rhs.num_triangles;
+	mVertices = rhs.mVertices;
+	mNormals = rhs.mNormals;
+	mUs = rhs.mUs;
+	mVs = rhs.mVs;
+	mNumVertices = rhs.mNumVertices;
+	mNumTriangles = rhs.mNumTriangles;
 	
 	return (*this);
 }

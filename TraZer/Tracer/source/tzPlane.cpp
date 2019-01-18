@@ -65,7 +65,7 @@ tzPlane::~tzPlane(void)
 //===================================================================================
 bool tzPlane::shadowHit(const tzRay &ray, float &tmin) const
 {
-	float t = (float)((a - ray.o) * n / (ray.d * n));
+	float t = (float)((a - ray.mOrigin) * n / (ray.mDirection * n));
 
 	if ( t > kEpsilon )
 	{
@@ -80,12 +80,12 @@ bool tzPlane::shadowHit(const tzRay &ray, float &tmin) const
 
 bool 															 
 tzPlane::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
-	float t = (float)((a - ray.o) * n / (ray.d * n)); 
+	float t = (float)((a - ray.mOrigin) * n / (ray.mDirection * n));
 														
 	if (t > kEpsilon) {
 		tmin = t;
 		sr.mNormal = n;
-		sr.mLocalHitPoint = ray.o + t * ray.d;
+		sr.mLocalHitPoint = ray.mOrigin + t * ray.mDirection;
 		
 		return (true);	
 	}

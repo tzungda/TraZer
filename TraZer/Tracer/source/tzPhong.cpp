@@ -111,7 +111,7 @@ tzPhong::~tzPhong(void) {
 
 tzColor tzPhong::shade(tzShadeRec& sr) 
 {
-	tzVector3D 	wo 			= -sr.mRay.d;
+	tzVector3D 	wo 			= -sr.mRay.mDirection;
 	tzColor	ambientColor = mAmbientBRDF->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
 	tzColor 	L 			= ambientColor;
 	int 		num_lights	= (int)sr.mWorld.mLights.size();
@@ -145,7 +145,7 @@ tzColor tzPhong::shade(tzShadeRec& sr)
 //===================================================================================
 tzColor tzPhong::areaLightShade( tzShadeRec &sr) const
 {
-	tzVector3D 	wo = -sr.mRay.d;
+	tzVector3D 	wo = -sr.mRay.mDirection;
 	tzColor	ambientColor = mAmbientBRDF->rho(sr, wo) * sr.mWorld.mAmbientPtr->L(sr);
 	tzColor 	L = ambientColor;
 	int 		num_lights = (int)sr.mWorld.mLights.size();

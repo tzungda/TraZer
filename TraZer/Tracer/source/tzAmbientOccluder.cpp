@@ -73,8 +73,8 @@ tzColor tzAmbientOccluder::L( tzShadeRec& sr)
 	u = v^w;
 
 	tzRay shadowRay;
-	shadowRay.o = sr.mHitPoint;
-	shadowRay.d = getDirection( sr );
+	shadowRay.mOrigin = sr.mHitPoint;
+	shadowRay.mDirection = getDirection( sr );
 
 	if (inShadow( shadowRay, sr ) )
 	{

@@ -24,16 +24,16 @@ tzGlossySpecular* tzGlossySpecular::clone (void) const
 //===================================================================================
 void tzGlossySpecular::setSampler(tzISampler* sp, const float exp) 
 {
-	sampler_ptr = sp;
-	sampler_ptr->mapSamplesToHemisphere(exp);
+	mSamplerPtr = sp;
+	mSamplerPtr->mapSamplesToHemisphere(exp);
 }
 
 
 //===================================================================================
 void tzGlossySpecular::setSamples(const int numSamples, const float exp) 
 {
-	sampler_ptr = new tzMultiJittered(numSamples);
-	sampler_ptr->mapSamplesToHemisphere(exp);
+	mSamplerPtr = new tzMultiJittered(numSamples);
+	mSamplerPtr->mapSamplesToHemisphere(exp);
 }
 		
 
@@ -64,7 +64,7 @@ tzColor tzGlossySpecular::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tz
 	u.normalize();
 	tzVector3D v = u ^ w;
 		
-	tzPoint3D sp = sampler_ptr->sampleHemisphere(sr.mRay);
+	tzPoint3D sp = mSamplerPtr->sampleHemisphere(sr.mRay);
 	wi = sp.x * u + sp.y * v + sp.z * w;			// reflected ray direction
 	
 	if (sr.mNormal * wi < 0.0) 						// reflected ray is below tangent plane

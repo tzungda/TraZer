@@ -57,7 +57,7 @@ tzColor tzEmissive::shade(tzShadeRec& sr)
 //===================================================================================
 tzColor tzEmissive::areaLightShade( tzShadeRec& sr) const
 {
-	if ( -sr.mNormal * sr.mRay.d > 0.0f )
+	if ( -sr.mNormal * sr.mRay.mDirection > 0.0f )
 	{
 		return ls*ce;
 	}

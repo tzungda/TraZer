@@ -70,7 +70,7 @@ tzPinhole::~tzPinhole(void)
 
 tzVector3D tzPinhole::getDirection(const tzPoint2D& p) const
 {
-	tzVector3D dir = p.x * u + p.y * v - d * w;
+	tzVector3D dir = p.x * mOrthoU + p.y * mOrthoV - d * mOrthoW;
 	dir.normalize();
 	
 	return(dir);
@@ -92,7 +92,7 @@ void tzPinhole::renderScene(const tzWorld& w) const
 	tzRay			ray;
 	int 		depth = 0;
 	tzPoint2D 	pp;		// sample point on a pixel
-	ray.o = eye;
+	ray.mOrigin = eye;
 #endif
 
 	std::vector<tzColor> colorBuffer;
@@ -126,7 +126,7 @@ void tzPinhole::renderScene(const tzWorld& w) const
 			int 		depth = 0;
 			tzPoint2D 	pp;
 			tzRay ray;
-			ray.o = eye;
+			ray.mOrigin = mEye;
 			ray.mMaxThreads = maxThreads;
 			ray.mThreadId = omp_get_thread_num();
 #endif
@@ -163,7 +163,7 @@ void tzPinhole::renderScene(const tzWorld& w) const
 			//tzRay			ray;
 			
 			//tzPoint2D 	pp;		// sample point on a pixel
-			//ray.o = eye;
+			//ray.mOrigin = eye;
 
 			//omp_set_lock(&writelock);//-------------------------
 
@@ -174,7 +174,7 @@ void tzPinhole::renderScene(const tzWorld& w) const
 					
 					pp.x = vp.mS * (c - 0.5f * vp.mHres + (q + 0.5f)*invN);
 					pp.y = vp.mS * (r - 0.5f * vp.mVres + (p + 0.5f)*invN);
-					ray.d = getDirection(pp);
+					ray.mDirection = getDirection(pp);
 					threadL += w.mTracerPtr->traceRay(ray, depth);
 				}
 			}

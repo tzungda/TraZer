@@ -5,16 +5,16 @@
 // ---------------------------------------------------------- default constructor
 
 tzIBRDF::tzIBRDF(void)
-	: sampler_ptr(NULL)
+	: mSamplerPtr(NULL)
 {}
 
 
 // ---------------------------------------------------------- copy constructor
 
 tzIBRDF::tzIBRDF(const tzIBRDF& brdf) {
-	if(brdf.sampler_ptr)
-		sampler_ptr	= brdf.sampler_ptr->clone(); 
-	else  sampler_ptr = NULL;
+	if(brdf.mSamplerPtr)
+		mSamplerPtr	= brdf.mSamplerPtr->clone(); 
+	else  mSamplerPtr = NULL;
 }	
 
 
@@ -26,13 +26,13 @@ tzIBRDF::operator= (const tzIBRDF& rhs) {
 	if (this == &rhs)
 		return (*this);
 		
-	if (sampler_ptr) {
-		delete sampler_ptr;
-		sampler_ptr = NULL;
+	if (mSamplerPtr) {
+		delete mSamplerPtr;
+		mSamplerPtr = NULL;
 	}
 
-	if (rhs.sampler_ptr)
-		sampler_ptr	= rhs.sampler_ptr->clone();
+	if (rhs.mSamplerPtr)
+		mSamplerPtr	= rhs.mSamplerPtr->clone();
 
 	return (*this);
 }
@@ -41,9 +41,9 @@ tzIBRDF::operator= (const tzIBRDF& rhs) {
 // ---------------------------------------------------------- destructor
 
 tzIBRDF::~tzIBRDF(void) {
-	if (sampler_ptr) {
-		delete sampler_ptr;
-		sampler_ptr = NULL;
+	if (mSamplerPtr) {
+		delete mSamplerPtr;
+		mSamplerPtr = NULL;
 	}
 }  
 
@@ -53,8 +53,8 @@ tzIBRDF::~tzIBRDF(void) {
 
 void
 tzIBRDF::setSampler(tzISampler* sPtr) {
-	sampler_ptr = sPtr;
-	sampler_ptr->mapSamplesToHemisphere(1);  // for perfect diffuse
+	mSamplerPtr = sPtr;
+	mSamplerPtr->mapSamplesToHemisphere(1);  // for perfect diffuse
 }
 
 

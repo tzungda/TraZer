@@ -170,12 +170,12 @@ void tzWorld::build()
 	// area light & bunny------------------------------------------------------------------------------
 	int numSamples = 100;
 
-	tzISampler* sampler_ptr = new tzMultiJittered(numSamples);
+	tzISampler* mSamplerPtr = new tzMultiJittered(numSamples);
 
 	mVp.setHres(400);
 	mVp.setVres(400);
 	//mVp.setMaxDepth(0);
-	mVp.setSampler(sampler_ptr);
+	mVp.setSampler(mSamplerPtr);
 
 	mBackgroundColor = tzColor(0.5);
 
@@ -207,7 +207,7 @@ void tzWorld::build()
 	// rectangle emit object
 	tzRectangle* rectangle_ptr = new tzRectangle(p0, a, b, normal);
 	rectangle_ptr->setMaterial(emissive_ptr);
-	rectangle_ptr->setSampler(sampler_ptr);
+	rectangle_ptr->setSampler(mSamplerPtr);
 	//rectangle_ptr->set_shadows(false);
 	addObject(rectangle_ptr);
 
@@ -263,12 +263,14 @@ void tzWorld::build()
 	}
 	else
 	{
-		grid_ptr->read_smooth_uv_triangles((char*)file_name);		// for Figure 29.22(a)
+		//grid_ptr->read_smooth_uv_triangles((char*)file_name);		// for Figure 29.22(a)
 																	//	grid_ptr->read_smooth_uv_triangles(file_name);		// for Figure 29.22(b)
+		printf( "no mesh data exists" );
+		return;
 	}
 	//grid_ptr->read_flat_triangles((char*)file_name);
 	grid_ptr->setMaterial(sv_matte_ptr);
-	grid_ptr->setup_cells();
+	grid_ptr->setupCells();
 	addObject(grid_ptr);
 
 	// sphere
@@ -335,7 +337,7 @@ void tzWorld::build()
 	}
 
 	grid_ptr->setMaterial(sv_matte_ptr);
-	grid_ptr->setup_cells();
+	grid_ptr->setupCells();
 	addObject(grid_ptr);
 
 
@@ -385,7 +387,7 @@ void tzWorld::build()
 	grid_ptr->read_flat_triangles((char*)file_name);		// for Figure 23.7(a)
 													//	grid_ptr->read_smooth_triangles(file_name);		// for Figure 23.7(b)
 	grid_ptr->setMaterial(matte_ptr1);
-	grid_ptr->setup_cells();
+	grid_ptr->setupCells();
 	addObject(grid_ptr);
 
 	tzMatte* matte_ptr2 = new tzMatte;
@@ -403,12 +405,12 @@ void tzWorld::build()
 	/*
 	int numSamples = 100;
 
-	tzISampler* sampler_ptr = new tzMultiJittered(num_samples);
+	tzISampler* mSamplerPtr = new tzMultiJittered(num_samples);
 
 	mVp.setHres(400);
 	mVp.setVres(400);
 	//mVp.setMaxDepth(0);
-	mVp.setSampler(sampler_ptr);
+	mVp.setSampler(mSamplerPtr);
 
 	mBackgroundColor = tzColor(0.5);
 
@@ -447,7 +449,7 @@ void tzWorld::build()
 	// rectangle emit object
 	tzRectangle* rectangle_ptr = new tzRectangle(p0, a, b, normal);
 	rectangle_ptr->setMaterial(emissive_ptr);
-	rectangle_ptr->setSampler(sampler_ptr);
+	rectangle_ptr->setSampler(mSamplerPtr);
 	//rectangle_ptr->set_shadows(false);
 	addObject(rectangle_ptr);
 
@@ -485,7 +487,7 @@ void tzWorld::build()
 	grid_ptr->setScale( 10.0f );
 	grid_ptr->read_flat_triangles((char*)file_name);
 	grid_ptr->setMaterial(mattePtr1);
-	grid_ptr->setup_cells();
+	grid_ptr->setupCells();
 	addObject(grid_ptr);
 
 	// sphere
@@ -658,7 +660,7 @@ void tzWorld::renderScene() const
 //	float x, y;
 	pixelColorArray.resize(mVp.mHres*mVp.mVres);
 
-	ray.d = tzVector3D( 0.0f, 0.0f, -1.0f );
+	ray.mDirection = tzVector3D( 0.0f, 0.0f, -1.0f );
 	const float h = (float)mVp.mHres;
 	const float v = (float)mVp.mVres;
 	tzPoint2D sp; // sample point in [0, 1] x [0, 1]
@@ -680,7 +682,7 @@ void tzWorld::renderScene() const
 				sp = mVp.mSamplerPtr->sampleUnitSquare(ray);
 				pp.x = mVp.mS * (fC - 0.5f*h + sp.x);
 				pp.y = mVp.mS * (fR - 0.5f*v + sp.y);
-				ray.o = tzPoint3D( pp.x, pp.y, zw );
+				ray.mOrigin = tzPoint3D( pp.x, pp.y, zw );
 				pixelColor += mTracerPtr->traceRay( ray );
 			}
 			pixelColor *= invNumSamples;
@@ -749,7 +751,7 @@ tzShadeRec tzWorld::hitObjects(const tzRay &ray, float &tmin)
 			sr.mHitAnObject = true;
 			tmin = (float)t;
 			sr.mMaterialPtr = mObjects[j]->getMaterial();
-			sr.mHitPoint = ray.o + tmin * ray.d;
+			sr.mHitPoint = ray.mOrigin + tmin * ray.mDirection;
 			normal = sr.mNormal;
 			localHitPoint = sr.mLocalHitPoint;
 		}

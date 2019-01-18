@@ -13,7 +13,7 @@ tzRectangle::tzRectangle(void)
 		normal(0, 1, 0),
 		area(4.0),
 		inv_area(0.25),
-		sampler_ptr(NULL)
+		mSamplerPtr(NULL)
 {}
 
 
@@ -27,7 +27,7 @@ tzRectangle::tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVec
 		b_len_squared((float)(b.len_squared())),
 		area((float)(a.length() * b.length())),
 		inv_area(1.0f / (float)area),
-		sampler_ptr(NULL)		
+		mSamplerPtr(NULL)		
 {
 	normal = a ^ b;
 	normal.normalize();
@@ -44,7 +44,7 @@ tzRectangle::tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVec
 		area((float)(a.length() * b.length())),	
 		inv_area(1.0f / (float)area),
 		normal(n),
-		sampler_ptr(NULL)
+		mSamplerPtr(NULL)
 {
 	normal.normalize();
 }
@@ -68,9 +68,9 @@ tzRectangle::tzRectangle(const tzRectangle& r)
 		area(r.area),
 		inv_area(r.inv_area)
 {
-	if(r.sampler_ptr)
-		sampler_ptr	= r.sampler_ptr->clone(); 
-	else  sampler_ptr = NULL;
+	if(r.mSamplerPtr)
+		mSamplerPtr	= r.mSamplerPtr->clone(); 
+	else  mSamplerPtr = NULL;
 }
 
 
@@ -91,13 +91,13 @@ tzRectangle& tzRectangle::operator= (const tzRectangle& rhs)
 	inv_area		= rhs.inv_area;
 	normal			= rhs.normal;
 	
-	if (sampler_ptr) {
-		delete sampler_ptr;
-		sampler_ptr = NULL;
+	if (mSamplerPtr) {
+		delete mSamplerPtr;
+		mSamplerPtr = NULL;
 	}
 
-	if (rhs.sampler_ptr)
-		sampler_ptr= rhs.sampler_ptr->clone();
+	if (rhs.mSamplerPtr)
+		mSamplerPtr= rhs.mSamplerPtr->clone();
 
 	return (*this);
 }
@@ -106,9 +106,9 @@ tzRectangle& tzRectangle::operator= (const tzRectangle& rhs)
 tzRectangle::~tzRectangle(void)
 {
 
-	if (sampler_ptr) {
-		delete sampler_ptr;
-		sampler_ptr = NULL;
+	if (mSamplerPtr) {
+		delete mSamplerPtr;
+		mSamplerPtr = NULL;
 	}
 }
 
@@ -127,12 +127,12 @@ tzBBox tzRectangle::getBoundingBox(void)
 bool tzRectangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
 {
 	
-	float t = (p0 - ray.o) * normal / (ray.d * normal);
+	float t = (p0 - ray.mOrigin) * normal / (ray.mDirection * normal);
 	
 	if (t <= kEpsilon)
 		return (false);
 			
-	tzPoint3D p = ray.o + t * ray.d;
+	tzPoint3D p = ray.mOrigin + t * ray.mDirection;
 	tzVector3D d = p - p0;
 	
 	float ddota = d * a;
@@ -156,14 +156,14 @@ bool tzRectangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const
 //===================================================================================
 void tzRectangle::setSampler(tzISampler* sampler) 
 {
-	sampler_ptr = sampler;
+	mSamplerPtr = sampler;
 }
 
 
 //===================================================================================
 tzPoint3D tzRectangle::sample(const tzShadeRec& sr) 
 {
-	tzPoint2D samplePoint = sampler_ptr->sampleUnitSquare( sr.mRay );
+	tzPoint2D samplePoint = mSamplerPtr->sampleUnitSquare( sr.mRay );
 	return (p0 + samplePoint.x * a + samplePoint.y * b);
 }
 

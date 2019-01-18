@@ -104,7 +104,7 @@ bool tzAreaLight::inShadow(const tzRay& ray, const tzShadeRec& sr) const
 {
 	float t;
 	int num_objects = (int)sr.mWorld.mObjects.size();
-	float ts = (float)((samplePoint[sr.mThreadId] - ray.o) * ray.d);
+	float ts = (float)((samplePoint[sr.mThreadId] - ray.mOrigin) * ray.mDirection);
 	
 	for (int j = 0; j < num_objects; j++)
 	{

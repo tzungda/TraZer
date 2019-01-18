@@ -12,15 +12,15 @@ tzSmoothMeshTriangle::tzSmoothMeshTriangle(void)
 
 // ---------------------------------------------------------------- constructor
 
-tzSmoothMeshTriangle::tzSmoothMeshTriangle(tzMesh* _mesh_ptr, const int i0, const int i1, const int i2)
-	: 	tzMeshTriangle(_mesh_ptr, i0, i1, i2)
+tzSmoothMeshTriangle::tzSmoothMeshTriangle(tzMesh* meshPtr, const int i0, const int i1, const int i2)
+	: 	tzMeshTriangle(meshPtr, i0, i1, i2)
 {}
 
 
 // ---------------------------------------------------------------- clone
 
-tzSmoothMeshTriangle*
-tzSmoothMeshTriangle::clone (void) const {
+tzSmoothMeshTriangle* tzSmoothMeshTriangle::clone (void) const 
+{
 	return (new tzSmoothMeshTriangle(*this));
 }
 
@@ -52,11 +52,11 @@ tzSmoothMeshTriangle::~tzSmoothMeshTriangle(void) {}
 
 // ---------------------------------------------------------------- interpolate_normal
 
-tzNormal 
-tzSmoothMeshTriangle::interpolate_normal(const float beta, const float gamma) const {
-	tzNormal normal((1 - beta - gamma) * mesh_ptr->normals[indexV0] 
-						+ beta * mesh_ptr->normals[indexV1] 
-								+ gamma * mesh_ptr->normals[indexV2]);
+tzNormal  tzSmoothMeshTriangle::interpolate_normal(const float beta, const float gamma) const 
+{
+	tzNormal normal((1 - beta - gamma) * mMeshPtr->mNormals[mIndexV0]
+						+ beta * mMeshPtr->mNormals[mIndexV1] 
+								+ gamma * mMeshPtr->mNormals[mIndexV2]);
 	normal.normalize();
 	
 	return(normal);
@@ -64,15 +64,15 @@ tzSmoothMeshTriangle::interpolate_normal(const float beta, const float gamma) co
 
 // ---------------------------------------------------------------- hit
 
-bool 															 
-tzSmoothMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
-	tzPoint3D v0(mesh_ptr->vertices[indexV0]);
-	tzPoint3D v1(mesh_ptr->vertices[indexV1]);
-	tzPoint3D v2(mesh_ptr->vertices[indexV2]);
+bool tzSmoothMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
+{
+	tzPoint3D v0(mMeshPtr->mVertices[mIndexV0]);
+	tzPoint3D v1(mMeshPtr->mVertices[mIndexV1]);
+	tzPoint3D v2(mMeshPtr->mVertices[mIndexV2]);
 	
-	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.d.x, d = v0.x - ray.o.x;
-	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.d.y, h = v0.y - ray.o.y;
-	float i = v0.z - v1.z, j = v0.z - v2.z, k = ray.d.z, l = v0.z - ray.o.z;
+	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.mDirection.x, d = v0.x - ray.mOrigin.x;
+	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.mDirection.y, h = v0.y - ray.mOrigin.y;
+	float i = v0.z - v1.z, j = v0.z - v2.z, k = ray.mDirection.z, l = v0.z - ray.mOrigin.z;
 		
 	float m = f * k - g * j, n = h * k - g * l, p = f * l - h * j;
 	float q = g * i - e * k, s = e * j - f * i;
@@ -103,7 +103,7 @@ tzSmoothMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
 					
 	tmin 				= t;
 	sr.mNormal 			= interpolate_normal((float)beta, (float)gamma); // for smooth shading
-	sr.mLocalHitPoint 	= ray.o + t * ray.d;	
+	sr.mLocalHitPoint 	= ray.mOrigin + t * ray.mDirection;
 	
 	return (true);	
 }  

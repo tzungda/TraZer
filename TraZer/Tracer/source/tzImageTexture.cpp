@@ -114,8 +114,8 @@ tzImageTexture::getColor(const tzShadeRec& sr) const {
 	if (mapping_ptr)
 		mapping_ptr->get_texel_coordinates(sr.mLocalHitPoint, hres, vres, row, column);
 	else {
-		row 	= (int)(sr.v * (vres - 1));  	
-		column 	= (int)(sr.u * (hres - 1));	
+		row 	= (int)(sr.mV * (vres - 1));  	
+		column 	= (int)(sr.mU * (hres - 1));	
 	}
 	
 	return (image_ptr->getColor(row, column));

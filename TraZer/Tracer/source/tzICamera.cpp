@@ -5,13 +5,13 @@
 // ----------------------------------------------------------------- default constructor
 
 tzICamera::tzICamera(void)
-	:	eye(0, 0, 500),
-		lookat(0),
-		ra(0),
-		up(0, 1, 0),
-		u(1, 0, 0),
-		v(0, 1, 0),
-		w(0, 0, 1),
+	:	mEye(0, 0, 500),
+		mLookAt(0),
+		mRollAngle(0),
+		mUp(0, 1, 0),
+		mOrthoU(1, 0, 0),
+		mOrthoV(0, 1, 0),
+		mOrthoW(0, 0, 1),
 		mExposureTime(1.0),
 		mOutputPath( "C:\\Temp\\test.png" )
 {}
@@ -20,13 +20,13 @@ tzICamera::tzICamera(void)
 // ----------------------------------------------------------------- copy constructor
 
 tzICamera::tzICamera(const tzICamera& c)
-	: 	eye(c.eye),
-		lookat(c.lookat),
-		ra(c.ra),
-		up(c.up),
-		u(c.u),
-		v(c.v),
-		w(c.w),
+	: 	mEye(c.mEye),
+		mLookAt(c.mLookAt),
+		mRollAngle(c.mRollAngle),
+		mUp(c.mUp),
+		mOrthoU(c.mOrthoU),
+		mOrthoV(c.mOrthoV),
+		mOrthoW(c.mOrthoW),
 		mExposureTime(c.mExposureTime),
 		mOutputPath(c.mOutputPath)
 {}
@@ -40,13 +40,13 @@ tzICamera::operator= (const tzICamera& rhs) {
 	if (this == &rhs)
 		return (*this);
 	
-	eye				= rhs.eye;
-	lookat			= rhs.lookat;
-	ra				= rhs.ra;
-	up				= rhs.up;
-	u				= rhs.u;
-	v				= rhs.v;
-	w				= rhs.w;
+	mEye				= rhs.mEye;
+	mLookAt			= rhs.mLookAt;
+	mRollAngle		= rhs.mRollAngle;
+	mUp				= rhs.mUp;
+	mOrthoU				= rhs.mOrthoU;
+	mOrthoV				= rhs.mOrthoV;
+	mOrthoW				= rhs.mOrthoW;
 	mExposureTime = rhs.mExposureTime;
 	mOutputPath		= rhs.mOutputPath;
 
@@ -65,25 +65,28 @@ tzICamera::~tzICamera(void) {}
 // This computes an orthornormal basis given the view point, lookat point, and up vector
 
 void
-tzICamera::computeUVW(void) {
-	w = eye - lookat;
-	w.normalize();
-	u = up ^ w; 
-	u.normalize();
-	v = w ^ u;
+tzICamera::computeUVW(void) 
+{
+	mOrthoW = mEye - mLookAt;
+	mOrthoW.normalize();
+	mOrthoU = mUp ^ mOrthoW;
+	mOrthoU.normalize();
+	mOrthoV = mOrthoW ^ mOrthoU;
 
 	// take care of the singularity by hardwiring in specific camera orientations
 	
-	if (eye.x == lookat.x && eye.z == lookat.z && eye.y > lookat.y) { // camera looking vertically down
-		u = tzVector3D(0, 0, 1);
-		v = tzVector3D(1, 0, 0);
-		w = tzVector3D(0, 1, 0);
+	if (mEye.x == mLookAt.x && mEye.z == mLookAt.z && mEye.y > mLookAt.y) // camera looking vertically down
+	{ 
+		mOrthoU = tzVector3D(0, 0, 1);
+		mOrthoV = tzVector3D(1, 0, 0);
+		mOrthoW = tzVector3D(0, 1, 0);
 	}
 	
-	if (eye.x == lookat.x && eye.z == lookat.z && eye.y < lookat.y) { // camera looking vertically up
-		u = tzVector3D(1, 0, 0);
-		v = tzVector3D(0, 0, 1);
-		w = tzVector3D(0, -1, 0);
+	if (mEye.x == mLookAt.x && mEye.z == mLookAt.z && mEye.y < mLookAt.y) // camera looking vertically up
+	{ 
+		mOrthoU = tzVector3D(1, 0, 0);
+		mOrthoV = tzVector3D(0, 0, 1);
+		mOrthoW = tzVector3D(0, -1, 0);
 	}
 }
 

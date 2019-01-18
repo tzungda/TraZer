@@ -52,7 +52,7 @@ tzPerfectTransmitter::operator= (const tzPerfectTransmitter& rhs) {
 
 bool													
 tzPerfectTransmitter::tir(const tzShadeRec& sr) const {
-	tzVector3D wo(-sr.mRay.d); 
+	tzVector3D wo(-sr.mRay.mDirection);
 	float cos_thetai = sr.mNormal * wo;  
 	float eta = ior;
 	

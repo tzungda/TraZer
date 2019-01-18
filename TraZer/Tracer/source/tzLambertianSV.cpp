@@ -72,7 +72,7 @@ tzLambertianSV::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& 
 	v.normalize();
 	tzVector3D u = v ^ w;
 	
-	tzPoint3D sp = sampler_ptr->sampleHemisphere(sr.mRay);
+	tzPoint3D sp = mSamplerPtr->sampleHemisphere(sr.mRay);
 	wi = sp.x * u + sp.y * v + sp.z * w;
 	wi.normalize(); 	
 	

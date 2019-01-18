@@ -45,11 +45,11 @@ _clamp(const float x, const float min, const float max) {
 
 tzGrid::tzGrid(void)
 	: 	tzCompound(),
-		nx(0),
-		ny(0),
-		nz(0),
-		mesh_ptr(new tzMesh),
-		reverse_normal(false),
+		mNx(0),
+		mNy(0),
+		mNz(0),
+		mMeshPtr(new tzMesh),
+		mReverseNormal(false),
 		mScale( 1.0f )
 {
 	// The cells array will be empty
@@ -59,13 +59,13 @@ tzGrid::tzGrid(void)
 // ----------------------------------------------------------------  constructor
 // for rendering triangle meshes
 
-tzGrid::tzGrid(tzMesh* _mesh_ptr)
+tzGrid::tzGrid(tzMesh* meshPtr)
 	: 	tzCompound(),
-		nx(0),
-		ny(0),
-		nz(0),
-		mesh_ptr(_mesh_ptr),
-		reverse_normal(false),
+		mNx(0),
+		mNy(0),
+		mNz(0),
+		mMeshPtr(meshPtr),
+		mReverseNormal(false),
 		mScale( 1.0f )
 {
 	// The cells array will be empty
@@ -101,26 +101,26 @@ tzGrid::operator= (const tzGrid& rhs)	{
 tzGrid::~tzGrid(void) {}
 
 
-tzBBox 
-tzGrid::getBoundingBox(void) {
-	return (bbox);
+tzBBox tzGrid::getBoundingBox(void)
+{
+	return (mBbox);
 }
 
-//------------------------------------------------------------------ setup_cells
+//------------------------------------------------------------------ setupCells
 
-void
-tzGrid::setup_cells(void) {
+void tzGrid::setupCells(void) 
+{
 	// find the minimum and maximum coordinates of the grid
 	
-	tzPoint3D p0 = find_min_bounds();
-	tzPoint3D p1 = find_max_bounds();
+	tzPoint3D p0 = findMinBounds();
+	tzPoint3D p1 = findMaxBounds();
 	
-	bbox.x0 = p0.x;
-	bbox.y0 = p0.y;
-	bbox.z0 = p0.z;
-	bbox.x1 = p1.x;
-	bbox.y1 = p1.y;
-	bbox.z1 = p1.z;
+	mBbox.x0 = p0.x;
+	mBbox.y0 = p0.y;
+	mBbox.z0 = p0.z;
+	mBbox.x1 = p1.x;
+	mBbox.y1 = p1.y;
+	mBbox.z1 = p1.z;
 		
 	// compute the number of grid cells in the x, y, and z directions
 	
@@ -135,17 +135,17 @@ tzGrid::setup_cells(void) {
 	float multiplier = 2.0f;  	// multiplyer scales the number of grid cells relative to the number of objects
 								
 	float s = pow(wx * wy * wz / num_objects, 0.3333333f);
-	nx = (int)(multiplier * wx / s) + 1;
-	ny = (int)(multiplier * wy / s) + 1;
-	nz = (int)(multiplier * wz / s) + 1;
+	mNx = (int)(multiplier * wx / s) + 1;
+	mNy = (int)(multiplier * wy / s) + 1;
+	mNz = (int)(multiplier * wz / s) + 1;
 
 	// set up the array of grid cells with null pointers
 	
-	int num_cells = nx * ny * nz;	
-	cells.reserve(num_objects);
+	int num_cells = mNx * mNy * mNz;	
+	mCells.reserve(num_objects);
 	
 	for (int j = 0; j < num_cells; j++)
-		cells.push_back(NULL);
+		mCells.push_back(NULL);
 				
 	// set up a temporary array to hold the number of objects stored in each cell
 	
@@ -166,34 +166,34 @@ tzGrid::setup_cells(void) {
 				
 		// compute the cell indices at the corners of the bounding box of the object
 		
-		int ixmin = (int)clamp((obj_bBox.x0 - p0.x) * (float)(nx) / (p1.x - p0.x), 0.0f, (float)(nx) - 1.0f);
-		int iymin = (int)clamp((obj_bBox.y0 - p0.y) * (float)(ny) / (p1.y - p0.y), 0.0f, (float)(ny) - 1.0f);
-		int izmin = (int)clamp((obj_bBox.z0 - p0.z) * (float)(nz) / (p1.z - p0.z), 0.0f, (float)(nz) - 1.0f);
-		int ixmax = (int)clamp((obj_bBox.x1 - p0.x) * (float)(nx) / (p1.x - p0.x), 0.0f, (float)(nx) - 1.0f);
-		int iymax = (int)clamp((obj_bBox.y1 - p0.y) * (float)(ny) / (p1.y - p0.y), 0.0f, (float)(ny) - 1.0f);
-		int izmax = (int)clamp((obj_bBox.z1 - p0.z) * (float)(nz) / (p1.z - p0.z), 0.0f, (float)(nz) - 1.0f);
+		int ixmin = (int)clamp((obj_bBox.x0 - p0.x) * (float)(mNx) / (p1.x - p0.x), 0.0f, (float)(mNx) - 1.0f);
+		int iymin = (int)clamp((obj_bBox.y0 - p0.y) * (float)(mNy) / (p1.y - p0.y), 0.0f, (float)(mNy) - 1.0f);
+		int izmin = (int)clamp((obj_bBox.z0 - p0.z) * (float)(mNz) / (p1.z - p0.z), 0.0f, (float)(mNz) - 1.0f);
+		int ixmax = (int)clamp((obj_bBox.x1 - p0.x) * (float)(mNx) / (p1.x - p0.x), 0.0f, (float)(mNx) - 1.0f);
+		int iymax = (int)clamp((obj_bBox.y1 - p0.y) * (float)(mNy) / (p1.y - p0.y), 0.0f, (float)(mNy) - 1.0f);
+		int izmax = (int)clamp((obj_bBox.z1 - p0.z) * (float)(mNz) / (p1.z - p0.z), 0.0f, (float)(mNz) - 1.0f);
 				
 		// add the object to the cells
 				
 		for (int iz = izmin; iz <= izmax; iz++) 					// cells in z direction
 			for (int iy = iymin; iy <= iymax; iy++)					// cells in y direction
 				for (int ix = ixmin; ix <= ixmax; ix++) {			// cells in x direction
-					index = ix + nx * iy + nx * ny * iz;
+					index = ix + mNx * iy + mNx * mNy * iz;
 															
 					if (counts[index] == 0) {
-						cells[index] = objects[j];
+						mCells[index] = objects[j];
 						counts[index] += 1;  						// now = 1
 					}
 					else {
 						if (counts[index] == 1) {
 							tzCompound* compound_ptr = new tzCompound;	// construct a compound object
-							compound_ptr->addObject(cells[index]); // add object already in cell
+							compound_ptr->addObject(mCells[index]); // add object already in cell
 							compound_ptr->addObject(objects[j]);  	// add the new object
-							cells[index] = compound_ptr;			// store compound in current cell
+							mCells[index] = compound_ptr;			// store compound in current cell
 							counts[index] += 1;  					// now = 2
 						}						
 						else {										// counts[index] > 1
-							cells[index]->addObject(objects[j]);	// just add current object
+							mCells[index]->addObject(objects[j]);	// just add current object
 							counts[index] += 1;						// for statistics only
 						}
 					}
@@ -239,12 +239,12 @@ tzGrid::setup_cells(void) {
 }
 
 
-//------------------------------------------------------------------ find_min_bounds
+//------------------------------------------------------------------ findMinBounds
 
 // find the minimum grid coordinates, based on the bounding boxes of all the objects
 
-tzPoint3D 
-tzGrid::find_min_bounds(void) {
+tzPoint3D  tzGrid::findMinBounds(void) 
+{
 	tzBBox 	object_box;
 	tzPoint3D p0(kHugeValue);
 
@@ -267,12 +267,12 @@ tzGrid::find_min_bounds(void) {
 }
 
 
-//------------------------------------------------------------------ find_max_bounds
+//------------------------------------------------------------------ findMaxBounds
 
 // find the maximum grid coordinates, based on the bounding boxes of the objects
 
 tzPoint3D 
-tzGrid::find_max_bounds(void) {
+tzGrid::findMaxBounds(void) {
 	tzBBox object_box;
 	tzPoint3D p1(-kHugeValue);
 
@@ -306,7 +306,7 @@ tzGrid::find_max_bounds(void) {
 
 void												
 tzGrid::read_flat_triangles(char* file_name) {
-  	read_ply_file(file_name, flat);
+  	//read_ply_file(file_name, flat);
  }
 
 
@@ -314,8 +314,8 @@ tzGrid::read_flat_triangles(char* file_name) {
 
 void												
 tzGrid::read_smooth_triangles(char* file_name) {
-  	read_ply_file(file_name, smooth);
-  	compute_mesh_normals();
+  	//read_ply_file(file_name, smooth);
+  	//computeMeshNormals();
 }
 
 
@@ -332,7 +332,7 @@ tzGrid::read_smooth_triangles(char* file_name) {
 // Using the one function construct to flat and smooth triangles saves a lot of repeated code
 // The ply file is the same for flat and smooth triangles
 
-
+/*
 void
 tzGrid::read_ply_file(char* file_name, const int triangle_type) {
 	// Vertex definition 
@@ -419,8 +419,8 @@ tzGrid::read_ply_file(char* file_name, const int triangle_type) {
 		  	
 		  	// reserve mesh elements
 		  	
-		  	mesh_ptr->num_vertices = num_elems;
-		  	mesh_ptr->vertices.reserve(num_elems);
+		  	mMeshPtr->mNumVertices = num_elems;
+		  	mMeshPtr->mVertices.reserve(num_elems);
 
 		  	// grab all the vertex elements
 		  			  
@@ -430,7 +430,7 @@ tzGrid::read_ply_file(char* file_name, const int triangle_type) {
 		        // grab an element from the file
 		        
 				ply_get_element (ply, (void *) vertex_ptr);
-		  		mesh_ptr->vertices.push_back(tzPoint3D(vertex_ptr->x * mScale, vertex_ptr->y* mScale, vertex_ptr->z* mScale));
+				mMeshPtr->mVertices.push_back(tzPoint3D(vertex_ptr->x * mScale, vertex_ptr->y* mScale, vertex_ptr->z* mScale));
 		  		delete vertex_ptr;
 		  	}
     	}
@@ -442,16 +442,16 @@ tzGrid::read_ply_file(char* file_name, const int triangle_type) {
 		
 			ply_get_property (ply, elem_name, &face_props[0]);   // only one property - a list
 			
-		  	mesh_ptr->num_triangles = num_elems;
+			mMeshPtr->mNumTriangles = num_elems;
 		  	objects.reserve(num_elems);  // triangles will be stored in Compound::objects
 		
 			// the following code stores the face numbers that are shared by each vertex
 		  	
-		  	mesh_ptr->vertex_faces.reserve(mesh_ptr->num_vertices);
+			mMeshPtr->mVertexFaces.reserve(mMeshPtr->mNumVertices);
 		  	vector<int> faceList;
 		  			  	
-		  	for (j = 0; j < mesh_ptr->num_vertices; j++) 
-		  		mesh_ptr->vertex_faces.push_back(faceList); // store empty lists so that we can use the [] notation below
+		  	for (j = 0; j < mMeshPtr->mNumVertices; j++)
+				mMeshPtr->mVertexFaces.push_back(faceList); // store empty lists so that we can use the [] notation below
 		  			
 			// grab all the face elements
 			
@@ -467,22 +467,22 @@ tzGrid::read_ply_file(char* file_name, const int triangle_type) {
 			    // construct a mesh triangle of the specified type
 			    
 			    if (triangle_type == flat) {
-			    	tzFlatMeshTriangle* triangle_ptr = new tzFlatMeshTriangle(mesh_ptr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
-					triangle_ptr->computeNormal(reverse_normal);		
+			    	tzFlatMeshTriangle* triangle_ptr = new tzFlatMeshTriangle(mMeshPtr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
+					triangle_ptr->computeNormal(mReverseNormal);		
 					objects.push_back(triangle_ptr); 
 				} 
 			    	
 			    if (triangle_type == smooth) {
-			    	tzSmoothMeshTriangle* triangle_ptr = new tzSmoothMeshTriangle(mesh_ptr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
-					triangle_ptr->computeNormal(reverse_normal); 	// the "flat triangle" normal is used to compute the average normal at each mesh vertex
-					objects.push_back(triangle_ptr); 				// it's quicker to do it once here, than have to do it on average 6 times in compute_mesh_normals
+			    	tzSmoothMeshTriangle* triangle_ptr = new tzSmoothMeshTriangle(mMeshPtr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
+					triangle_ptr->computeNormal(mReverseNormal); 	// the "flat triangle" normal is used to compute the average normal at each mesh vertex
+					objects.push_back(triangle_ptr); 				// it's quicker to do it once here, than have to do it on average 6 times in computeMeshNormals
 					
 					// the following code stores a list of all faces that share a vertex
 					// it's used for computing the average normal at each vertex in order(num_vertices) time
 					
-					mesh_ptr->vertex_faces[face_ptr->verts[0]].push_back(count);
-					mesh_ptr->vertex_faces[face_ptr->verts[1]].push_back(count);
-					mesh_ptr->vertex_faces[face_ptr->verts[2]].push_back(count);
+					mMeshPtr->vertex_faces[face_ptr->verts[0]].push_back(count);
+					mMeshPtr->vertex_faces[face_ptr->verts[1]].push_back(count);
+					mMeshPtr->vertex_faces[face_ptr->verts[2]].push_back(count);
 					count++;
 				} 
 			}
@@ -517,23 +517,23 @@ tzGrid::read_ply_file(char* file_name, const int triangle_type) {
 	  
 	ply_close (ply);
 }
+*/
 
 
-
-// ----------------------------------------------------------------------------- compute_mesh_normals
+// ----------------------------------------------------------------------------- computeMeshNormals
 // this computes the average normal at each vertex
 // the calculation is of order(num_vertices)
 // some triangles in ply files are not defined properly
 
-void
-tzGrid::compute_mesh_normals(void) {
-	mesh_ptr->normals.reserve(mesh_ptr->num_vertices);
+void tzGrid::computeMeshNormals(void) 
+{
+	mMeshPtr->mNormals.reserve(mMeshPtr->mNumVertices);
 	
-	for (int index = 0; index < mesh_ptr->num_vertices; index++) {   // for each vertex
+	for (int index = 0; index < mMeshPtr->mNumVertices; index++) {   // for each vertex
 		tzNormal normal;    // is zero at this point	
 			
-		for (int j = 0; j < mesh_ptr->vertex_faces[index].size(); j++)
-			normal += objects[mesh_ptr->vertex_faces[index][j]]->getNormal();  
+		for (int j = 0; j < mMeshPtr->mVertexFaces[index].size(); j++)
+			normal += objects[mMeshPtr->mVertexFaces[index][j]]->getNormal();
 	
 		// The following code attempts to avoid (nan, nan, nan) normalised normals when all components = 0
 		
@@ -542,16 +542,16 @@ tzGrid::compute_mesh_normals(void) {
 		else 
 			normal.normalize();     
 		
-		mesh_ptr->normals.push_back(normal);
+		mMeshPtr->mNormals.push_back(normal);
 	}
 	
 	// erase the vertex_faces arrays because we have now finished with them
 	
-	for (int index = 0; index < mesh_ptr->num_vertices; index++)
-		for (int j = 0; j < mesh_ptr->vertex_faces[index].size(); j++)
-			mesh_ptr->vertex_faces[index].erase (mesh_ptr->vertex_faces[index].begin(), mesh_ptr->vertex_faces[index].end());
+	for (int index = 0; index < mMeshPtr->mNumVertices; index++)
+		for (int j = 0; j < mMeshPtr->mVertexFaces[index].size(); j++)
+			mMeshPtr->mVertexFaces[index].erase (mMeshPtr->mVertexFaces[index].begin(), mMeshPtr->mVertexFaces[index].end());
 	
-	mesh_ptr->vertex_faces.erase (mesh_ptr->vertex_faces.begin(), mesh_ptr->vertex_faces.end());
+	mMeshPtr->mVertexFaces.erase (mMeshPtr->mVertexFaces.begin(), mMeshPtr->mVertexFaces.end());
 
 	cout << "finished constructing normals" << endl;
 }
@@ -772,21 +772,21 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 // The following grid traversal code is based on the pseudo-code in Shirley (2000)	
 // The first part is the same as the code in BBox::hit
 
-bool 							 
-tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
-	float ox = ray.o.x;
-	float oy = ray.o.y;
-	float oz = ray.o.z;
-	float dx = ray.d.x;
-	float dy = ray.d.y;
-	float dz = ray.d.z;
+bool tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const 
+{
+	float ox = ray.mOrigin.x;
+	float oy = ray.mOrigin.y;
+	float oz = ray.mOrigin.z;
+	float dx = ray.mDirection.x;
+	float dy = ray.mDirection.y;
+	float dz = ray.mDirection.z;
 
-	float x0 = bbox.x0;
-	float y0 = bbox.y0;
-	float z0 = bbox.z0;
-	float x1 = bbox.x1;
-	float y1 = bbox.y1;
-	float z1 = bbox.z1;
+	float x0 = mBbox.x0;
+	float y0 = mBbox.y0;
+	float z0 = mBbox.z0;
+	float x1 = mBbox.x1;
+	float y1 = mBbox.y1;
+	float z1 = mBbox.z1;
 	
 	float tx_min, ty_min, tz_min;
 	float tx_max, ty_max, tz_max;
@@ -849,23 +849,29 @@ tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
 	
 	int ix, iy, iz;
 	
-	if (bbox.inside(ray.o)) {  			// does the ray start inside the grid?
-		ix = (int)clamp((ox - x0) * (float)(nx) / (x1 - x0), 0.0f, (float)(nx - 1));
-		iy = (int)clamp((oy - y0) * (float)(ny) / (y1 - y0), 0.0f, (float)(ny - 1));
-		iz = (int)clamp((oz - z0) * (float)(nz) / (z1 - z0), 0.0f, (float)(nz - 1));
+	if (mBbox.inside(ray.mOrigin)) // does the ray start inside the grid?
+	{  			
+		ix = (int)clamp((ox - x0) * (float)(mNx) / (x1 - x0), 0.0f, (float)(mNx - 1));
+		iy = (int)clamp((oy - y0) * (float)(mNy) / (y1 - y0), 0.0f, (float)(mNy - 1));
+		iz = (int)clamp((oz - z0) * (float)(mNz) / (z1 - z0), 0.0f, (float)(mNz - 1));
 	}
 	else {
-		tzPoint3D p = ray.o + t0 * ray.d;  // initial hit point with grid's bounding box
-		ix = (int)clamp((p.x - x0) * (float)(nx) / (x1 - x0), 0.0f, (float)(nx - 1));
-		iy = (int)clamp((p.y - y0) * (float)(ny) / (y1 - y0), 0.0f, (float)(ny - 1));
-		iz = (int)clamp((p.z - z0) * (float)(nz) / (z1 - z0), 0.0f, (float)(nz - 1));
+		tzPoint3D p = ray.mOrigin + t0 * ray.mDirection;  // initial hit point with grid's bounding box
+		ix = (int)clamp((p.x - x0) * (float)(mNx) / (x1 - x0), 0.0f, (float)(mNx - 1));
+		iy = (int)clamp((p.y - y0) * (float)(mNy) / (y1 - y0), 0.0f, (float)(mNy - 1));
+		iz = (int)clamp((p.z - z0) * (float)(mNz) / (z1 - z0), 0.0f, (float)(mNz - 1));
 	}
 	
+
+	const float invNx = 1.0f / (float)mNx;
+	const float invNy = 1.0f / (float)mNy;
+	const float invNz = 1.0f / (float)mNz;
+
 	// ray parameter increments per cell in the x, y, and z directions
 	
-	float dtx = (tx_max - tx_min) / nx;
-	float dty = (ty_max - ty_min) / ny;
-	float dtz = (tz_max - tz_min) / nz;
+	float dtx = (tx_max - tx_min) * invNx;
+	float dty = (ty_max - ty_min) * invNy;
+	float dtz = (tz_max - tz_min) * invNz;
 		
 	float 	tx_next, ty_next, tz_next;
 	int 	ix_step, iy_step, iz_step;
@@ -874,10 +880,10 @@ tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
 	if (dx > 0) {
 		tx_next = tx_min + (ix + 1) * dtx;
 		ix_step = +1;
-		ix_stop = nx;
+		ix_stop = mNx;
 	}
 	else {
-		tx_next = tx_min + (nx - ix) * dtx;
+		tx_next = tx_min + (mNx - ix) * dtx;
 		ix_step = -1;
 		ix_stop = -1;
 	}
@@ -892,10 +898,10 @@ tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
 	if (dy > 0) {
 		ty_next = ty_min + (iy + 1) * dty;
 		iy_step = +1;
-		iy_stop = ny;
+		iy_stop = mNy;
 	}
 	else {
-		ty_next = ty_min + (ny - iy) * dty;
+		ty_next = ty_min + (mNy - iy) * dty;
 		iy_step = -1;
 		iy_stop = -1;
 	}
@@ -909,10 +915,10 @@ tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
 	if (dz > 0) {
 		tz_next = tz_min + (iz + 1) * dtz;
 		iz_step = +1;
-		iz_stop = nz;
+		iz_stop = mNz;
 	}
 	else {
-		tz_next = tz_min + (nz - iz) * dtz;
+		tz_next = tz_min + (mNz - iz) * dtz;
 		iz_step = -1;
 		iz_stop = -1;
 	}
@@ -927,7 +933,7 @@ tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
 	// traverse the grid
 	
 	while (true) {	
-		tzIGeometricObject* object_ptr = cells[ix + nx * iy + nx * ny * iz];
+		tzIGeometricObject* object_ptr = mCells[ix + mNx * iy + mNx * mNy * iz];
 		
 		if (tx_next < ty_next && tx_next < tz_next) {
 			if (object_ptr && object_ptr->hit(ray, t, sr) && t < tx_next) {
@@ -973,19 +979,19 @@ tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const {
 	//===================================================================================
 bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 {
-	float ox = ray.o.x;
-	float oy = ray.o.y;
-	float oz = ray.o.z;
-	float dx = ray.d.x;
-	float dy = ray.d.y;
-	float dz = ray.d.z;
+	float ox = ray.mOrigin.x;
+	float oy = ray.mOrigin.y;
+	float oz = ray.mOrigin.z;
+	float dx = ray.mDirection.x;
+	float dy = ray.mDirection.y;
+	float dz = ray.mDirection.z;
 
-	float x0 = bbox.x0;
-	float y0 = bbox.y0;
-	float z0 = bbox.z0;
-	float x1 = bbox.x1;
-	float y1 = bbox.y1;
-	float z1 = bbox.z1;
+	float x0 = mBbox.x0;
+	float y0 = mBbox.y0;
+	float z0 = mBbox.z0;
+	float x1 = mBbox.x1;
+	float y1 = mBbox.y1;
+	float z1 = mBbox.z1;
 
 	float tx_min, ty_min, tz_min;
 	float tx_max, ty_max, tz_max;
@@ -1048,23 +1054,29 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 
 	int ix, iy, iz;
 
-	if (bbox.inside(ray.o)) {  			// does the ray start inside the grid?
-		ix = (int)clamp((ox - x0) * (float)(nx) / (x1 - x0), 0, (float)(nx - 1));
-		iy = (int)clamp((oy - y0) * (float)(ny) / (y1 - y0), 0, (float)(ny - 1));
-		iz = (int)clamp((oz - z0) * (float)(nz) / (z1 - z0), 0, (float)(nz - 1));
+	if (mBbox.inside(ray.mOrigin)) // does the ray start inside the grid?
+	{  			
+		ix = (int)clamp((ox - x0) * (float)(mNx) / (x1 - x0), 0, (float)(mNx - 1));
+		iy = (int)clamp((oy - y0) * (float)(mNy) / (y1 - y0), 0, (float)(mNy - 1));
+		iz = (int)clamp((oz - z0) * (float)(mNz) / (z1 - z0), 0, (float)(mNz - 1));
 	}
-	else {
-		tzPoint3D p = ray.o + t0 * ray.d;  // initial hit point with grid's bounding box
-		ix = (int)clamp((p.x - x0) * (float)(nx) / (x1 - x0), 0, (float)(nx - 1));
-		iy = (int)clamp((p.y - y0) * (float)(ny) / (y1 - y0), 0, (float)(ny - 1));
-		iz = (int)clamp((p.z - z0) * (float)(nz) / (z1 - z0), 0, (float)(nz - 1));
+	else 
+	{
+		tzPoint3D p = ray.mOrigin + t0 * ray.mDirection;  // initial hit point with grid's bounding box
+		ix = (int)clamp((p.x - x0) * (float)(mNx) / (x1 - x0), 0, (float)(mNx - 1));
+		iy = (int)clamp((p.y - y0) * (float)(mNy) / (y1 - y0), 0, (float)(mNy - 1));
+		iz = (int)clamp((p.z - z0) * (float)(mNz) / (z1 - z0), 0, (float)(mNz - 1));
 	}
+
+	const float invNx = 1.0f / (float)mNx;
+	const float invNy = 1.0f / (float)mNy;
+	const float invNz = 1.0f / (float)mNz;
 
 	// ray parameter increments per cell in the x, y, and z directions
 
-	float dtx = (tx_max - tx_min) / nx;
-	float dty = (ty_max - ty_min) / ny;
-	float dtz = (tz_max - tz_min) / nz;
+	float dtx = (tx_max - tx_min) * invNx;
+	float dty = (ty_max - ty_min) * invNy;
+	float dtz = (tz_max - tz_min) * invNz;
 
 	float 	tx_next, ty_next, tz_next;
 	int 	ix_step, iy_step, iz_step;
@@ -1073,10 +1085,10 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 	if (dx > 0) {
 		tx_next = tx_min + (ix + 1) * dtx;
 		ix_step = +1;
-		ix_stop = nx;
+		ix_stop = mNx;
 	}
 	else {
-		tx_next = tx_min + (nx - ix) * dtx;
+		tx_next = tx_min + (mNx - ix) * dtx;
 		ix_step = -1;
 		ix_stop = -1;
 	}
@@ -1091,10 +1103,10 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 	if (dy > 0) {
 		ty_next = ty_min + (iy + 1) * dty;
 		iy_step = +1;
-		iy_stop = ny;
+		iy_stop = mNy;
 	}
 	else {
-		ty_next = ty_min + (ny - iy) * dty;
+		ty_next = ty_min + (mNy - iy) * dty;
 		iy_step = -1;
 		iy_stop = -1;
 	}
@@ -1108,10 +1120,10 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 	if (dz > 0) {
 		tz_next = tz_min + (iz + 1) * dtz;
 		iz_step = +1;
-		iz_stop = nz;
+		iz_stop = mNz;
 	}
 	else {
-		tz_next = tz_min + (nz - iz) * dtz;
+		tz_next = tz_min + (mNz - iz) * dtz;
 		iz_step = -1;
 		iz_stop = -1;
 	}
@@ -1126,7 +1138,7 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 	// traverse the grid
 
 	while (true) {
-		tzIGeometricObject* object_ptr = cells[ix + nx * iy + nx * ny * iz];
+		tzIGeometricObject* object_ptr = mCells[ix + mNx * iy + mNx * mNy * iz];
 
 		if (object_ptr )
 		{
@@ -1180,7 +1192,7 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 	return false;
 }
 
-
+/*
 //===================================================================================
 void tzGrid::read_flat_uv_triangles(char* file_name) 
 {
@@ -1192,9 +1204,11 @@ void tzGrid::read_flat_uv_triangles(char* file_name)
 void tzGrid::read_smooth_uv_triangles(char* file_name) 
 {
 	read_uv_ply_file(file_name, smooth);
-	compute_mesh_normals();
+	computeMeshNormals();
 }
+*/
 
+/*
 //===================================================================================
 void tzGrid::read_uv_ply_file(char* file_name, const int triangle_type) 
 {
@@ -1388,6 +1402,7 @@ void tzGrid::read_uv_ply_file(char* file_name, const int triangle_type)
 
 	ply_close(ply);
 }
+*/
 
 //===================================================================================
 void tzGrid::addMesh(const vector<tzPoint3D> &vertices,
@@ -1399,20 +1414,20 @@ void tzGrid::addMesh(const vector<tzPoint3D> &vertices,
 	const int &num_vertices,
 	const int &num_triangles)
 {
-	if ( !mesh_ptr )
+	if ( !mMeshPtr )
 	{
 		printf( " the mesh pointer hasn't been initialized \n" );
 		return;
 	}
 
 	//
-	mesh_ptr->vertices = vertices;
-	mesh_ptr->normals = normals;
-	mesh_ptr->u = u;
-	mesh_ptr->v = v;
-	mesh_ptr->vertex_faces = vertex_faces;
-	mesh_ptr->num_vertices = num_vertices;
-	mesh_ptr->num_triangles = num_triangles;
+	mMeshPtr->mVertices = vertices;
+	mMeshPtr->mNormals = normals;
+	mMeshPtr->mUs = u;
+	mMeshPtr->mVs = v;
+	mMeshPtr->mVertexFaces = vertex_faces;
+	mMeshPtr->mNumVertices = num_vertices;
+	mMeshPtr->mNumTriangles = num_triangles;
 
 	// create triangles
 	for ( int tr = 0; tr < num_triangles; tr++ )
@@ -1428,8 +1443,8 @@ void tzGrid::addMesh(const vector<tzPoint3D> &vertices,
 		int uv1 = face_vertices[index + 1].texcoord_index;
 		int uv2 = face_vertices[index + 2].texcoord_index;
 		//
-		tzFlatUVMeshTriangle* triangle_ptr = new tzFlatUVMeshTriangle(mesh_ptr, v0, v1, v2, n0, n1, n2, uv0, uv1, uv2);
-		triangle_ptr->computeNormal(reverse_normal);
+		tzFlatUVMeshTriangle* triangle_ptr = new tzFlatUVMeshTriangle(mMeshPtr, v0, v1, v2, n0, n1, n2, uv0, uv1, uv2);
+		triangle_ptr->computeNormal(mReverseNormal);
 		objects.push_back(triangle_ptr);
 	}
 }

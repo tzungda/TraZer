@@ -58,7 +58,7 @@ bool tzPointLight::inShadow(const tzRay &ray, const tzShadeRec &sr) const
 {
 	float t = 0.0f;
 	int numObjects = (int)sr.mWorld.mObjects.size();
-	float d = (float)(mLocation - ray.o).length();
+	float d = (float)(mLocation - ray.mOrigin).length();
 
 	for (int j = 0; j < numObjects; j++)
 	{

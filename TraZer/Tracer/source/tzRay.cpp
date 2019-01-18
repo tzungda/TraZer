@@ -8,9 +8,9 @@ tzRay::~tzRay(void)
 
 // ================================================================================
 tzRay::tzRay(void)
-	: o(0.0),
-	d(0.0, 0.0, 1.0),
-	depth(0)
+	: mOrigin(0.0),
+	mDirection(0.0, 0.0, 1.0),
+	mDepth(0)
 {
 	mThreadId = 0;
 	mMaxThreads = 1;
@@ -18,7 +18,7 @@ tzRay::tzRay(void)
 
 // ================================================================================
 tzRay::tzRay(const tzPoint3D& origin, const tzVector3D& dir)
-	: o(origin), d(dir), depth(0)
+	: mOrigin(origin), mDirection(dir), mDepth(0)
 {
 	mThreadId = 0;
 	mMaxThreads = 1;
@@ -26,9 +26,9 @@ tzRay::tzRay(const tzPoint3D& origin, const tzVector3D& dir)
 
 // ================================================================================
 tzRay::tzRay(const tzRay& ray)
-	: o(ray.o),
-	d(ray.d),
-	depth(ray.depth)
+	: mOrigin(ray.mOrigin),
+	mDirection(ray.mDirection),
+	mDepth(ray.mDepth)
 {
 	mThreadId = ray.mThreadId;
 	mMaxThreads = ray.mMaxThreads;
@@ -41,9 +41,9 @@ tzRay::operator= (const tzRay& rhs) {
 	if (this == &rhs)
 		return (*this);
 
-	o = rhs.o;
-	d = rhs.d;
-	depth = rhs.depth;
+	mOrigin = rhs.mOrigin;
+	mDirection = rhs.mDirection;
+	mDepth = rhs.mDepth;
 
 	mThreadId = rhs.mThreadId;
 	mMaxThreads = rhs.mMaxThreads;
