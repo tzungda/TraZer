@@ -49,7 +49,7 @@ class tzGrid: public tzCompound {
 		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
 
 		void
-		setup_cells(void);
+		setupCells(void);
 
 		void
 		reverse_mesh_normals(void);
@@ -60,8 +60,8 @@ class tzGrid: public tzCompound {
 		void	setScale( float scale );
 
 		// uv related
-		void read_flat_uv_triangles(char* file_name);
-		void read_smooth_uv_triangles(char* file_name);
+		//void read_flat_uv_triangles(char* file_name);
+		//void read_smooth_uv_triangles(char* file_name);
 
 		// add mesh
 		void addMesh(	const vector<tzPoint3D> &vertices,
@@ -75,35 +75,35 @@ class tzGrid: public tzCompound {
 
 	private: 
 
-		vector<tzIGeometricObject*>	cells;			// grid of cells
-		int							nx, ny, nz;    	// number of cells in the x, y, and z directions
-		tzBBox						bbox;			// bounding box
-		tzMesh*						mesh_ptr;		// holds triangle data
-		bool						reverse_normal;	// some PLY files have normals that point inwards
+		vector<tzIGeometricObject*>	mCells;			// grid of cells
+		int							mNx, mNy, mNz;    	// number of cells in the x, y, and z directions
+		tzBBox						mBbox;			// bounding box
+		tzMesh*						mMeshPtr;		// holds triangle data
+		bool						mReverseNormal;	// some PLY files have normals that point inwards
 		float						mScale;
 
 		tzPoint3D
-		find_min_bounds(void);
+		findMinBounds(void);
 
 		tzPoint3D
-		find_max_bounds(void);
+		findMaxBounds(void);
+
+		//void read_ply_file(char* file_name, const int triangle_type);
 
 		void
-		read_ply_file(char* file_name, const int triangle_type);
-
-		void
-		compute_mesh_normals(void);	
+		computeMeshNormals(void);	
 
 		// uv related
-		void read_uv_ply_file(char* file_name, const int triangle_type);
+		//void read_uv_ply_file(char* file_name, const int triangle_type);
 };
 
 
 // ------------------------------------------------------------------------------ store_material
 
 inline void
-tzGrid::reverse_mesh_normals(void) {
-	reverse_normal = true;
+tzGrid::reverse_mesh_normals(void) 
+{
+	mReverseNormal = true;
 }
 
 

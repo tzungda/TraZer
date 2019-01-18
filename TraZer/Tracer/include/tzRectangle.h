@@ -48,7 +48,7 @@ class tzRectangle: public tzIGeometricObject {
 		
 		float			area;			// for rectangular lights
 		float			inv_area;		// for rectangular lights
-		tzISampler*		sampler_ptr;	// for rectangular lights 	
+		tzISampler*		mSamplerPtr;	// for rectangular lights 	
 		
 		static const float kEpsilon;
 };

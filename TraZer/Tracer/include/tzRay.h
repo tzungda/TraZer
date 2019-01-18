@@ -7,9 +7,9 @@
 class tzRay
 {
 public:
-	tzPoint3D o;		// origin
-	tzVector3D d;		// direction
-	int		depth;
+	tzPoint3D mOrigin;		// origin
+	tzVector3D mDirection;		// direction
+	int		mDepth;
 
 	unsigned int mThreadId;
 	unsigned int mMaxThreads;

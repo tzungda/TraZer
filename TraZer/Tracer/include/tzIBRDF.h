@@ -14,33 +14,26 @@ class tzIBRDF {
 		
 		tzIBRDF(const tzIBRDF& brdf);
 		
-		virtual tzIBRDF*
-		clone(void)const = 0;
+		virtual tzIBRDF* clone(void)const = 0;
 		
-		tzIBRDF&
-		operator= (const tzIBRDF& rhs);
+		tzIBRDF& operator= (const tzIBRDF& rhs);
 		
 		virtual ~tzIBRDF(void);
 				
-		void							
-		setSampler(tzISampler* sPtr);
+		void setSampler(tzISampler* sPtr);
 		
-		virtual tzColor
-		f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
+		virtual tzColor f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
 		
-		virtual tzColor
-		sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi) const;
+		virtual tzColor sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi) const;
 		
-		virtual tzColor
-		sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const;
+		virtual tzColor sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const;
 		
-		virtual tzColor
-		rho(const tzShadeRec& sr, const tzVector3D& wo) const;
+		virtual tzColor rho(const tzShadeRec& sr, const tzVector3D& wo) const;
 		
 			
 	protected:
 	
-		tzISampler* sampler_ptr;		// for indirect illumination
+		tzISampler* mSamplerPtr;		// for indirect illumination
 };
 
 #endif

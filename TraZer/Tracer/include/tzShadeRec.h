@@ -17,11 +17,11 @@ public:
 	bool				mHitAnObject;
 	tzPoint3D			mLocalHitPoint;
 	tzNormal			mNormal;
-	tzColor			mColor;
+	tzColor				mColor;
 	tzWorld&			mWorld;
 	float				mT;
-	float				u;
-	float				v;
+	float				mU;
+	float				mV;
 
 	//
 	tzIMaterial			*mMaterialPtr;

@@ -47,17 +47,16 @@ class tzICamera
 		
 	protected:		
 	
-		tzPoint3D		eye;				// eye point
-		tzPoint3D		lookat; 			// lookat point
-		float			ra;					// roll angle
-		tzVector3D		u, v, w;			// orthonormal basis vectors
-		tzVector3D		up;					// up vector
+		tzPoint3D		mEye;				// eye point
+		tzPoint3D		mLookAt; 			// lookat point
+		float			mRollAngle;					// roll angle
+		tzVector3D		mOrthoU, mOrthoV, mOrthoW;			// orthonormal basis vectors
+		tzVector3D		mUp;					// up vector
 		float			mExposureTime;
 
 		std::string		mOutputPath;
 		
-		tzICamera& 							// assignment operator
-		operator= (const tzICamera& camera);
+		tzICamera& operator= (const tzICamera& camera);
 };
 
 
@@ -66,33 +65,34 @@ class tzICamera
 
 // ----------------------------------------------------------------- setEye
 
-inline void
-tzICamera::setEye(const tzPoint3D& p) {
-	eye = p;
+inline void tzICamera::setEye(const tzPoint3D& p) 
+{
+	mEye = p;
 }
 
 
 // ----------------------------------------------------------------- setEye
 
 inline void
-tzICamera::setEye(const float x, const float y, const float z) {
-	eye.x = x; eye.y = y; eye.z = z;
+tzICamera::setEye(const float x, const float y, const float z) 
+{
+	mEye.x = x; mEye.y = y; mEye.z = z;
 }
 
 
 // ----------------------------------------------------------------- setLookAt
 
-inline void
-tzICamera::setLookAt(const tzPoint3D& p) {
-	lookat = p;
+inline void tzICamera::setLookAt(const tzPoint3D& p) 
+{
+	mLookAt = p;
 }
 
 
 // ----------------------------------------------------------------- setLookAt
 
-inline void
-tzICamera::setLookAt(const float x, const float y, const float z) {
-	lookat.x = x; lookat.y = y; lookat.z = z;
+inline void tzICamera::setLookAt(const float x, const float y, const float z)
+{
+	mLookAt.x = x; mLookAt.y = y; mLookAt.z = z;
 }
 
 
@@ -100,30 +100,29 @@ tzICamera::setLookAt(const float x, const float y, const float z) {
 
 inline void
 tzICamera::setUpVector(const tzVector3D& u) {
-	up = u;
+	mUp = u;
 }
 
 
 // ----------------------------------------------------------------- setUpVector
 
-inline void
-tzICamera::setUpVector(const float x, const float y, const float z) {
-	up.x = x; up.y = y; up.z = z;
+inline void tzICamera::setUpVector(const float x, const float y, const float z) 
+{
+	mUp.x = x; mUp.y = y; mUp.z = z;
 }
 
 
 // ----------------------------------------------------------------- setRoll
 
-inline void
-tzICamera::setRoll(const float r) {
-	ra = r;
+inline void tzICamera::setRoll(const float r)
+{
+	mRollAngle = r;
 }
 
 
 // ----------------------------------------------------------------- set_exposure_time
 
-inline void
-tzICamera::setExposureTime(const float exposure) 
+inline void tzICamera::setExposureTime(const float exposure) 
 {
 	mExposureTime = exposure;
 }
