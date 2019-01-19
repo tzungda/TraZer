@@ -91,7 +91,7 @@ bool tzSmoothUVMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) 
 		return (false);
 					
 	tmin 				= t;
-	sr.mNormal 			= interpolate_normal((float)beta, (float)gamma); // for smooth shading
+	sr.mNormal 			= interpolateNormal((float)beta, (float)gamma); // for smooth shading
 	sr.mU				= interpolate_u((float)beta, (float)gamma );
 	sr.mV				= interpolate_v((float)beta, (float)gamma );
 	sr.mLocalHitPoint 	= ray.mOrigin + t * ray.mDirection;

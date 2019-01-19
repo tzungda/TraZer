@@ -124,7 +124,7 @@ void tzGrid::setupCells(void)
 		
 	// compute the number of grid cells in the x, y, and z directions
 	
-	int num_objects = (int)objects.size();
+	int numObjects = (int)mObjects.size();
 	
 	// dimensions of the grid in the x, y, and z directions
 	
@@ -134,7 +134,7 @@ void tzGrid::setupCells(void)
 	
 	float multiplier = 2.0f;  	// multiplyer scales the number of grid cells relative to the number of objects
 								
-	float s = pow(wx * wy * wz / num_objects, 0.3333333f);
+	float s = pow(wx * wy * wz / numObjects, 0.3333333f);
 	mNx = (int)(multiplier * wx / s) + 1;
 	mNy = (int)(multiplier * wy / s) + 1;
 	mNz = (int)(multiplier * wz / s) + 1;
@@ -142,7 +142,7 @@ void tzGrid::setupCells(void)
 	// set up the array of grid cells with null pointers
 	
 	int num_cells = mNx * mNy * mNz;	
-	mCells.reserve(num_objects);
+	mCells.reserve(numObjects);
 	
 	for (int j = 0; j < num_cells; j++)
 		mCells.push_back(NULL);
@@ -161,8 +161,8 @@ void tzGrid::setupCells(void)
 	tzBBox obj_bBox; 	// object's bounding box
 	int index;  	// cell's array index
 			
-	for (int j = 0; j < num_objects; j++) {
-		obj_bBox =  objects[j]->getBoundingBox();
+	for (int j = 0; j < numObjects; j++) {
+		obj_bBox = mObjects[j]->getBoundingBox();
 				
 		// compute the cell indices at the corners of the bounding box of the object
 		
@@ -181,29 +181,29 @@ void tzGrid::setupCells(void)
 					index = ix + mNx * iy + mNx * mNy * iz;
 															
 					if (counts[index] == 0) {
-						mCells[index] = objects[j];
+						mCells[index] = mObjects[j];
 						counts[index] += 1;  						// now = 1
 					}
 					else {
 						if (counts[index] == 1) {
 							tzCompound* compound_ptr = new tzCompound;	// construct a compound object
 							compound_ptr->addObject(mCells[index]); // add object already in cell
-							compound_ptr->addObject(objects[j]);  	// add the new object
+							compound_ptr->addObject(mObjects[j]);  	// add the new object
 							mCells[index] = compound_ptr;			// store compound in current cell
 							counts[index] += 1;  					// now = 2
 						}						
 						else {										// counts[index] > 1
-							mCells[index]->addObject(objects[j]);	// just add current object
+							mCells[index]->addObject(mObjects[j]);	// just add current object
 							counts[index] += 1;						// for statistics only
 						}
 					}
 				}	
-	}  // end of for (int j = 0; j < num_objects; j++)
+	}  // end of for (int j = 0; j < numObjects; j++)
 	
 	
 	// erase the Compound::vector that stores the object pointers, but don't delete the objects
 	
-	objects.erase (objects.begin(), objects.end());
+	mObjects.erase (mObjects.begin(), mObjects.end());
 
 	
 // display some statistics on counts
@@ -248,10 +248,11 @@ tzPoint3D  tzGrid::findMinBounds(void)
 	tzBBox 	object_box;
 	tzPoint3D p0(kHugeValue);
 
-	int num_objects = (int)objects.size();
+	int numObjects = (int)mObjects.size();
 	
-	for (int j = 0; j < num_objects; j++) {
-		object_box = objects[j]->getBoundingBox();
+	for (int j = 0; j < numObjects; j++) 
+	{
+		object_box = mObjects[j]->getBoundingBox();
 				
 		if (object_box.x0 < p0.x)
 			p0.x = object_box.x0;
@@ -276,10 +277,10 @@ tzGrid::findMaxBounds(void) {
 	tzBBox object_box;
 	tzPoint3D p1(-kHugeValue);
 
-	int num_objects = (int)objects.size();
+	int numObjects = (int)mObjects.size();
 	
-	for (int j = 0; j < num_objects; j++) {
-		object_box = objects[j]->getBoundingBox();
+	for (int j = 0; j < numObjects; j++) {
+		object_box = mObjects[j]->getBoundingBox();
 				
 		if (object_box.x1 > p1.x)
 			p1.x = object_box.x1;
@@ -443,7 +444,7 @@ tzGrid::read_ply_file(char* file_name, const int triangle_type) {
 			ply_get_property (ply, elem_name, &face_props[0]);   // only one property - a list
 			
 			mMeshPtr->mNumTriangles = num_elems;
-		  	objects.reserve(num_elems);  // triangles will be stored in Compound::objects
+		  	mObjects.reserve(num_elems);  // triangles will be stored in Compound::objects
 		
 			// the following code stores the face numbers that are shared by each vertex
 		  	
@@ -469,13 +470,13 @@ tzGrid::read_ply_file(char* file_name, const int triangle_type) {
 			    if (triangle_type == flat) {
 			    	tzFlatMeshTriangle* triangle_ptr = new tzFlatMeshTriangle(mMeshPtr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
 					triangle_ptr->computeNormal(mReverseNormal);		
-					objects.push_back(triangle_ptr); 
+					mObjects.push_back(triangle_ptr); 
 				} 
 			    	
 			    if (triangle_type == smooth) {
 			    	tzSmoothMeshTriangle* triangle_ptr = new tzSmoothMeshTriangle(mMeshPtr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
 					triangle_ptr->computeNormal(mReverseNormal); 	// the "flat triangle" normal is used to compute the average normal at each mesh vertex
-					objects.push_back(triangle_ptr); 				// it's quicker to do it once here, than have to do it on average 6 times in computeMeshNormals
+					mObjects.push_back(triangle_ptr); 				// it's quicker to do it once here, than have to do it on average 6 times in computeMeshNormals
 					
 					// the following code stores a list of all faces that share a vertex
 					// it's used for computing the average normal at each vertex in order(num_vertices) time
@@ -533,7 +534,7 @@ void tzGrid::computeMeshNormals(void)
 		tzNormal normal;    // is zero at this point	
 			
 		for (int j = 0; j < mMeshPtr->mVertexFaces[index].size(); j++)
-			normal += objects[mMeshPtr->mVertexFaces[index][j]]->getNormal();
+			normal += mObjects[mMeshPtr->mVertexFaces[index][j]]->getNormal();
 	
 		// The following code attempts to avoid (nan, nan, nan) normalised normals when all components = 0
 		
@@ -583,7 +584,7 @@ tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_st
 					cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
 	
 		tzTriangle* triangle_ptr = new tzTriangle(v0, v1, v2);
-		objects.push_back(triangle_ptr); 							
+		mObjects.push_back(triangle_ptr);
 	}
 	
 	
@@ -605,7 +606,7 @@ tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_st
 					cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
 	
 		tzTriangle* triangle_ptr = new tzTriangle(v0, v1, v2);
-		objects.push_back(triangle_ptr);  						
+		mObjects.push_back(triangle_ptr);
 	}
 
 	
@@ -631,7 +632,7 @@ tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_st
 						cos(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
 		
 			tzTriangle* triangle_ptr1 = new tzTriangle(v0, v1, v2);
-			objects.push_back(triangle_ptr1); 	
+			mObjects.push_back(triangle_ptr1);
 			
 			
 			// define the second triangle
@@ -651,7 +652,7 @@ tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_st
 							cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
 		
 			tzTriangle* triangle_ptr2 = new tzTriangle(v0, v1, v2); 
-			objects.push_back(triangle_ptr2); 						
+			mObjects.push_back(triangle_ptr2); 						
 		}
 	}	
 }
@@ -685,7 +686,7 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 		triangle_ptr->n0 = v0;
 		triangle_ptr->n1 = v1;
 		triangle_ptr->n2 = v2;
-		objects.push_back(triangle_ptr); 							
+		mObjects.push_back(triangle_ptr); 							
 	}
 	
 	
@@ -710,7 +711,7 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 		triangle_ptr->n0 = v0;
 		triangle_ptr->n1 = v1;
 		triangle_ptr->n2 = v2;
-		objects.push_back(triangle_ptr);  						
+		mObjects.push_back(triangle_ptr);  						
 	}
 
 	
@@ -738,7 +739,7 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 			triangle_ptr1->n0 = v0;
 			triangle_ptr1->n1 = v1;
 			triangle_ptr1->n2 = v2;
-			objects.push_back(triangle_ptr1); 	
+			mObjects.push_back(triangle_ptr1); 	
 			
 			
 			// define the second triangle
@@ -761,7 +762,7 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 			triangle_ptr2->n0 = v0;
 			triangle_ptr2->n1 = v1;
 			triangle_ptr2->n2 = v2;
-			objects.push_back(triangle_ptr2); 					
+			mObjects.push_back(triangle_ptr2); 					
 		}
 	}	
 }
@@ -1330,7 +1331,7 @@ void tzGrid::read_uv_ply_file(char* file_name, const int triangle_type)
 			ply_get_property(ply, elem_name, &face_props[0]);   // only one property - a list
 
 			mesh_ptr->num_triangles = num_elems;
-			objects.reserve(num_elems);  // triangles will be stored in Compound::objects
+			mObjects.reserve(num_elems);  // triangles will be stored in Compound::objects
 
 										 // new code to store the face numbers that are shared by each vertex
 
@@ -1355,13 +1356,13 @@ void tzGrid::read_uv_ply_file(char* file_name, const int triangle_type)
 				if (triangle_type == flat) {
 					tzFlatUVMeshTriangle* triangle_ptr = new tzFlatUVMeshTriangle(mesh_ptr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
 					triangle_ptr->computeNormal(reverse_normal);
-					objects.push_back(triangle_ptr);
+					mObjects.push_back(triangle_ptr);
 				}
 
 				if (triangle_type == smooth) {
 					tzSmoothUVMeshTriangle* triangle_ptr = new tzSmoothUVMeshTriangle(mesh_ptr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
 					triangle_ptr->computeNormal(reverse_normal);
-					objects.push_back(triangle_ptr);
+					mObjects.push_back(triangle_ptr);
 
 					mesh_ptr->vertex_faces[face_ptr->verts[0]].push_back(count);
 					mesh_ptr->vertex_faces[face_ptr->verts[1]].push_back(count);
@@ -1445,6 +1446,6 @@ void tzGrid::addMesh(const vector<tzPoint3D> &vertices,
 		//
 		tzFlatUVMeshTriangle* triangle_ptr = new tzFlatUVMeshTriangle(mMeshPtr, v0, v1, v2, n0, n1, n2, uv0, uv1, uv2);
 		triangle_ptr->computeNormal(mReverseNormal);
-		objects.push_back(triangle_ptr);
+		mObjects.push_back(triangle_ptr);
 	}
 }

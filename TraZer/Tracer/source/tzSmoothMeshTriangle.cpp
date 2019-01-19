@@ -50,9 +50,9 @@ tzSmoothMeshTriangle::operator= (const tzSmoothMeshTriangle& rhs) {
 tzSmoothMeshTriangle::~tzSmoothMeshTriangle(void) {}
 
 
-// ---------------------------------------------------------------- interpolate_normal
+// ---------------------------------------------------------------- interpolateNormal
 
-tzNormal  tzSmoothMeshTriangle::interpolate_normal(const float beta, const float gamma) const 
+tzNormal  tzSmoothMeshTriangle::interpolateNormal(const float beta, const float gamma) const 
 {
 	tzNormal normal((1 - beta - gamma) * mMeshPtr->mNormals[mIndexV0]
 						+ beta * mMeshPtr->mNormals[mIndexV1] 
@@ -102,7 +102,7 @@ bool tzSmoothMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) co
 		return (false);
 					
 	tmin 				= t;
-	sr.mNormal 			= interpolate_normal((float)beta, (float)gamma); // for smooth shading
+	sr.mNormal 			= interpolateNormal((float)beta, (float)gamma); // for smooth shading
 	sr.mLocalHitPoint 	= ray.mOrigin + t * ray.mDirection;
 	
 	return (true);	

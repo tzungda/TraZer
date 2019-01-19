@@ -35,13 +35,13 @@ tzSphericalMap::clone(void) const {
 }	
 
 
-// ---------------------------------------------------------------- get_texel_coordinates
+// ---------------------------------------------------------------- getTexelCoordinates
 
 // Given a hit point on a generic sphere, and the image resolution, this function 
 // returns the texel coordinates in the image
 
 void
-tzSphericalMap::get_texel_coordinates(	const 	tzPoint3D& 	local_hit_point,
+tzSphericalMap::getTexelCoordinates(	const 	tzPoint3D& 	local_hit_point,
 										const 	int 		xres, 
 										const 	int 		yres, 
 												int& 		row, 

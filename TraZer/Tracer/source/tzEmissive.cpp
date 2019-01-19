@@ -91,19 +91,19 @@ void tzEmissive::scaleRadiance(const float k)
 }
 
 //===================================================================================
-void tzEmissive::set_ce(const tzColor &c)
+void tzEmissive::setCe(const tzColor &c)
 {
 	ce = c;
 }
 
 //===================================================================================
-void tzEmissive::set_ce(const float r, const float g, const float b)
+void tzEmissive::setCe(const float r, const float g, const float b)
 {
 	ce = tzColor(r, g, b);
 }
 
 //===================================================================================
-void tzEmissive::set_ce(const float c)
+void tzEmissive::setCe(const float c)
 {
 	ce = tzColor(c);
 }

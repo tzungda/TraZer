@@ -1,18 +1,18 @@
 
 #include "../include/tzRectangle.h"
 
-const float tzRectangle::kEpsilon = 0.001f;
+const float tzRectangle::mEpsilon = 0.001f;
 
 //===================================================================================
 tzRectangle::tzRectangle(void)
 	: 	tzIGeometricObject(),
-		p0(-1, 0, -1), 
-		a(0, 0, 2), b(2, 0, 0), 
-		a_len_squared(4.0), 
-		b_len_squared(4.0),
-		normal(0, 1, 0),
-		area(4.0),
-		inv_area(0.25),
+		mP0(-1, 0, -1), 
+		mSideA(0, 0, 2), mSideB(2, 0, 0), 
+		mLenSquaredA(4.0), 
+		mLenSquaredB(4.0),
+		mNormal(0, 1, 0),
+		mArea(4.0),
+		mInvArea(0.25),
 		mSamplerPtr(NULL)
 {}
 
@@ -20,33 +20,33 @@ tzRectangle::tzRectangle(void)
 //===================================================================================
 tzRectangle::tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVector3D& _b)
 	:	tzIGeometricObject(),
-		p0(_p0),
-		a(_a),
-		b(_b),
-		a_len_squared((float)(a.len_squared())), 
-		b_len_squared((float)(b.len_squared())),
-		area((float)(a.length() * b.length())),
-		inv_area(1.0f / (float)area),
+		mP0(_p0),
+		mSideA(_a),
+		mSideB(_b),
+		mLenSquaredA((float)(mSideA.len_squared())),
+		mLenSquaredB((float)(mSideB.len_squared())),
+		mArea((float)(mSideA.length() * mSideB.length())),
+		mInvArea(1.0f / (float)mArea),
 		mSamplerPtr(NULL)		
 {
-	normal = a ^ b;
-	normal.normalize();
+	mNormal = mSideA ^ mSideB;
+	mNormal.normalize();
 }
 
 //===================================================================================
 tzRectangle::tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVector3D& _b, const tzNormal& n)
 	:	tzIGeometricObject(),
-		p0(_p0),
-		a(_a),
-		b(_b),
-		a_len_squared(a.len_squared()), 
-		b_len_squared(b.len_squared()),
-		area((float)(a.length() * b.length())),	
-		inv_area(1.0f / (float)area),
-		normal(n),
+		mP0(_p0),
+		mSideA(_a),
+		mSideB(_b),
+		mLenSquaredA(mSideA.len_squared()),
+		mLenSquaredB(mSideB.len_squared()),
+		mArea((float)(mSideA.length() * mSideB.length())),
+		mInvArea(1.0f / (float)mArea),
+		mNormal(n),
 		mSamplerPtr(NULL)
 {
-	normal.normalize();
+	mNormal.normalize();
 }
 
 
@@ -59,14 +59,14 @@ tzRectangle* tzRectangle::clone(void) const
 //===================================================================================
 tzRectangle::tzRectangle(const tzRectangle& r)
 	:	tzIGeometricObject(r),
-		p0(r.p0), 
-		a(r.a),
-		b(r.b),
-		a_len_squared(r.a_len_squared), 
-		b_len_squared(r.b_len_squared),	
-		normal(r.normal),
-		area(r.area),
-		inv_area(r.inv_area)
+		mP0(r.mP0), 
+		mSideA(r.mSideA),
+		mSideB(r.mSideB),
+		mLenSquaredA(r.mLenSquaredA), 
+		mLenSquaredB(r.mLenSquaredB),	
+		mNormal(r.mNormal),
+		mArea(r.mArea),
+		mInvArea(r.mInvArea)
 {
 	if(r.mSamplerPtr)
 		mSamplerPtr	= r.mSamplerPtr->clone(); 
@@ -82,14 +82,14 @@ tzRectangle& tzRectangle::operator= (const tzRectangle& rhs)
 
 	tzIGeometricObject::operator=(rhs);
 	
-	p0				= rhs.p0;
-	a				= rhs.a;
-	b				= rhs.b;
-	a_len_squared	= rhs.a_len_squared; 
-	b_len_squared	= rhs.b_len_squared;
-	area			= rhs.area;	
-	inv_area		= rhs.inv_area;
-	normal			= rhs.normal;
+	mP0				= rhs.mP0;
+	mSideA = rhs.mSideA;
+	mSideB = rhs.mSideB;
+	mLenSquaredA	= rhs.mLenSquaredA; 
+	mLenSquaredB	= rhs.mLenSquaredB;
+	mArea			= rhs.mArea;	
+	mInvArea		= rhs.mInvArea;
+	mNormal			= rhs.mNormal;
 	
 	if (mSamplerPtr) {
 		delete mSamplerPtr;
@@ -117,9 +117,9 @@ tzBBox tzRectangle::getBoundingBox(void)
 {
 	float delta = 0.0001f;
 
-	return(tzBBox(fmin(p0.x, p0.x + a.x + b.x) - delta, fmax(p0.x, p0.x + a.x + b.x) + delta,
-				fmin(p0.y, p0.y + a.y + b.y) - delta, fmax(p0.y, p0.y + a.y + b.y) + delta, 
-				fmin(p0.z, p0.z + a.z + b.z) - delta, fmax(p0.z, p0.z + a.z + b.z) + delta));
+	return(tzBBox(fmin(mP0.x, mP0.x + mSideA.x + mSideB.x) - delta, fmax(mP0.x, mP0.x + mSideA.x + mSideB.x) + delta,
+				fmin(mP0.y, mP0.y + mSideA.y + mSideB.y) - delta, fmax(mP0.y, mP0.y + mSideA.y + mSideB.y) + delta,
+				fmin(mP0.z, mP0.z + mSideA.z + mSideB.z) - delta, fmax(mP0.z, mP0.z + mSideA.z + mSideB.z) + delta));
 }
 																			
 
@@ -127,26 +127,26 @@ tzBBox tzRectangle::getBoundingBox(void)
 bool tzRectangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
 {
 	
-	float t = (p0 - ray.mOrigin) * normal / (ray.mDirection * normal);
+	float t = (mP0 - ray.mOrigin) * mNormal / (ray.mDirection * mNormal);
 	
 	if (t <= kEpsilon)
 		return (false);
 			
 	tzPoint3D p = ray.mOrigin + t * ray.mDirection;
-	tzVector3D d = p - p0;
+	tzVector3D d = p - mSideB;
 	
-	float ddota = d * a;
+	float ddota = d * mSideA;
 	
-	if (ddota < 0.0 || ddota > a_len_squared)
+	if (ddota < 0.0 || ddota > mLenSquaredA)
 		return (false);
 		
-	float ddotb = d * b;
+	float ddotb = d * mSideB;
 	
-	if (ddotb < 0.0 || ddotb > b_len_squared)
+	if (ddotb < 0.0 || ddotb > mLenSquaredB)
 		return (false);
 		
 	tmin 				= t;
-	sr.mNormal 			= normal;
+	sr.mNormal 			= mNormal;
 	sr.mLocalHitPoint 	= p;
 	
 	return (true);
@@ -164,21 +164,21 @@ void tzRectangle::setSampler(tzISampler* sampler)
 tzPoint3D tzRectangle::sample(const tzShadeRec& sr) 
 {
 	tzPoint2D samplePoint = mSamplerPtr->sampleUnitSquare( sr.mRay );
-	return (p0 + samplePoint.x * a + samplePoint.y * b);
+	return (mP0 + samplePoint.x * mSideA + samplePoint.y * mSideB);
 }
 
 
 //===================================================================================					 
 tzNormal tzRectangle::getNormal(const tzPoint3D& p) 
 {
-	return (normal);
+	return (mNormal);
 }
 
 
 //===================================================================================
 float tzRectangle::pdf(tzShadeRec& sr) 
 {
-	return (inv_area);
+	return (mInvArea);
 } 
 
 

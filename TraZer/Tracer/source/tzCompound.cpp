@@ -23,7 +23,7 @@ tzCompound::tzCompound(const tzCompound& c)
 	: tzIGeometricObject(c) 
 {
 	
-	copyObjects(c.objects);					
+	copyObjects(c.mObjects);
 }
 
 
@@ -35,7 +35,7 @@ tzCompound& tzCompound::operator= (const tzCompound& rhs)
 
 	tzIGeometricObject::operator= (rhs);						
 	
-	copyObjects(rhs.objects);				
+	copyObjects(rhs.mObjects);
 
 	return (*this);
 }
@@ -51,42 +51,43 @@ tzCompound::~tzCompound(void)
 //===================================================================================
 void tzCompound::addObject(tzIGeometricObject* object_ptr)
 {
-	objects.push_back(object_ptr);	
+	mObjects.push_back(object_ptr);
 }
 
 
 //===================================================================================
 void tzCompound::setMaterial(tzIMaterial* mMaterialPtr) 
 {
-	int num_objects = (int)objects.size();
+	int numObjects = (int)mObjects.size();
 
-	for (int j = 0; j < num_objects; j++)
-		objects[j]->setMaterial(mMaterialPtr);
+	for (int j = 0; j < numObjects; j++)
+		mObjects[j]->setMaterial(mMaterialPtr);
 }
 
 
 //===================================================================================
 void tzCompound::deleteObjects(void) 
 {
-	int num_objects = (int)objects.size();
+	int numObjects = (int)mObjects.size();
 	
-	for (int j = 0; j < num_objects; j++) {
-		delete objects[j];
-		objects[j] = NULL;
+	for (int j = 0; j < numObjects; j++)
+	{
+		delete mObjects[j];
+		mObjects[j] = NULL;
 	}	
 	
-	objects.erase(objects.begin(), objects.end());
+	mObjects.erase(mObjects.begin(), mObjects.end());
 }
 
 
 //===================================================================================
-void tzCompound::copyObjects(const std::vector<tzIGeometricObject*>& rhs_ojects) 
+void tzCompound::copyObjects(const std::vector<tzIGeometricObject*>& rhsOjects) 
 {
 	deleteObjects();    	
-	int num_objects = (int)rhs_ojects.size();
+	int numObjects = (int)rhsOjects.size();
 	
-	for (int j = 0; j < num_objects; j++)
-		objects.push_back(rhs_ojects[j]->clone());
+	for (int j = 0; j < numObjects; j++)
+		mObjects.push_back(rhsOjects[j]->clone());
 }
 
 
@@ -98,13 +99,13 @@ bool tzCompound::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const
 	tzPoint3D		local_hit_point;
 	bool		hit 		= false;
 				tmin 		= kHugeValue;
-	int 		num_objects	= (int)objects.size();
+	int 		numObjects	= (int)mObjects.size();
 	
-	for (int j = 0; j < num_objects; j++)
-		if (objects[j]->hit(ray, t, sr) && (t < tmin)) {
+	for (int j = 0; j < numObjects; j++)
+		if (mObjects[j]->hit(ray, t, sr) && (t < tmin)) {
 			hit				= true;
 			tmin 			= t;
-			mMaterialPtr	= objects[j]->getMaterial();	// lhs is GeometricObject::mMaterialPtr
+			mMaterialPtr	= mObjects[j]->getMaterial();	// lhs is GeometricObject::mMaterialPtr
 			normal			= sr.mNormal;
 			local_hit_point	= sr.mLocalHitPoint;  
 		}
@@ -125,10 +126,10 @@ bool tzCompound::shadowHit(const tzRay& ray, float& tmin) const {
 	tzPoint3D		local_hit_point;
 	bool		hit = false;
 	tmin = kHugeValue;
-	int 		num_objects = (int)objects.size();
+	int 		numObjects = (int)mObjects.size();
 
-	for (int j = 0; j < num_objects; j++)
-		if (objects[j]->shadowHit(ray, t) && (t < tmin)) {
+	for (int j = 0; j < numObjects; j++)
+		if (mObjects[j]->shadowHit(ray, t) && (t < tmin)) {
 			hit = true;
 			tmin = t;
 		}

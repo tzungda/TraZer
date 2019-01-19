@@ -6,8 +6,8 @@
 
 tzLambertian::tzLambertian(void)
 	:   tzIBRDF(),
-		kd(0.0), 
-		cd(0.0)
+		mKd(0.0f), 
+		mCd(0.0f)
 {}
 
 
@@ -15,8 +15,8 @@ tzLambertian::tzLambertian(void)
 
 tzLambertian::tzLambertian(const tzLambertian& lamb)
 	:   tzIBRDF(lamb),
-		kd(lamb.kd), 
-		cd(lamb.cd)
+		mKd(lamb.mKd), 
+		mCd(lamb.mCd)
 {}
 
 
@@ -29,8 +29,8 @@ tzLambertian::operator= (const tzLambertian& rhs) {
 		
 	tzIBRDF::operator= (rhs);
 	
-	kd = rhs.kd; 
-	cd = rhs.cd;
+	mKd = rhs.mKd; 
+	mCd = rhs.mCd;
 	
 	return (*this);
 }
@@ -54,7 +54,7 @@ tzLambertian::clone(void) const {
 
 tzColor
 tzLambertian::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const {
-	return (kd * cd * (float)invPI);
+	return (mKd * mCd * (float)invPI);
 }
 
 
@@ -78,7 +78,7 @@ tzLambertian::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi
 	
 	pdf = (float)(sr.mNormal * wi * invPI);
 	
-	return (kd * cd * (float)invPI);
+	return (mKd * mCd * (float)invPI);
 }
 
 
@@ -87,7 +87,7 @@ tzLambertian::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi
 
 tzColor
 tzLambertian::rho(const tzShadeRec& sr, const tzVector3D& wo) const {
-	return (kd * cd);
+	return (mKd * mCd);
 }
 
 

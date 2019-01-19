@@ -4,7 +4,7 @@
 //===================================================================================	
 tzAreaLight::tzAreaLight(void)
 	: 	tzILight(),
-		object_ptr(NULL),
+		mObjectPtr(NULL),
 		mMaterialPtr(NULL)
 {}	
 
@@ -13,9 +13,9 @@ tzAreaLight::tzAreaLight(void)
 tzAreaLight::tzAreaLight(const tzAreaLight& al)
 	: 	tzILight(al) 
 {
-	if(al.object_ptr)
-		object_ptr = al.object_ptr->clone(); 
-	else  object_ptr = NULL;
+	if(al.mObjectPtr)
+		mObjectPtr = al.mObjectPtr->clone();
+	else  mObjectPtr = NULL;
 	
 	if(al.mMaterialPtr)
 		mMaterialPtr = al.mMaterialPtr->clone(); 
@@ -55,13 +55,13 @@ tzAreaLight& tzAreaLight::operator= (const tzAreaLight& rhs) {
 		
 	tzILight::operator=(rhs);
 	
-	if (object_ptr) {
-		delete object_ptr;
-		object_ptr = NULL;
+	if (mObjectPtr) {
+		delete mObjectPtr;
+		mObjectPtr = NULL;
 	}
 
-	if (rhs.object_ptr)
-		object_ptr = rhs.object_ptr->clone();
+	if (rhs.mObjectPtr)
+		mObjectPtr = rhs.mObjectPtr->clone();
 		
 	if (mMaterialPtr) {
 		delete mMaterialPtr;
@@ -78,19 +78,19 @@ tzAreaLight& tzAreaLight::operator= (const tzAreaLight& rhs) {
 //===================================================================================
 tzVector3D tzAreaLight::getDirection(tzShadeRec& sr)
 {
-	samplePoint[sr.mThreadId] = object_ptr->sample( sr );    // used in the G function
-	light_normal[sr.mThreadId] = object_ptr->getNormal(samplePoint[sr.mThreadId]);
-	wi[sr.mThreadId] = samplePoint[sr.mThreadId] - sr.mHitPoint;  		// used in the G function
-	wi[sr.mThreadId].normalize();
+	mSamplePoint[sr.mThreadId] = mObjectPtr->sample( sr );    // used in the G function
+	mLightNormal[sr.mThreadId] = mObjectPtr->getNormal(mSamplePoint[sr.mThreadId]);
+	mWi[sr.mThreadId] = mSamplePoint[sr.mThreadId] - sr.mHitPoint;  		// used in the G function
+	mWi[sr.mThreadId].normalize();
 	
-	return (wi[sr.mThreadId]);
+	return (mWi[sr.mThreadId]);
 }
 
 
 //===================================================================================
 tzColor tzAreaLight::L(tzShadeRec& sr)
 {
-	float ndotd = (float)( -light_normal[sr.mThreadId] * wi[sr.mThreadId]);
+	float ndotd = (float)( -mLightNormal[sr.mThreadId] * mWi[sr.mThreadId]);
 	
 	if (ndotd > 0.0)		
 		return (mMaterialPtr->getLe(sr)); 
@@ -103,10 +103,10 @@ tzColor tzAreaLight::L(tzShadeRec& sr)
 bool tzAreaLight::inShadow(const tzRay& ray, const tzShadeRec& sr) const 
 {
 	float t;
-	int num_objects = (int)sr.mWorld.mObjects.size();
-	float ts = (float)((samplePoint[sr.mThreadId] - ray.mOrigin) * ray.mDirection);
+	int numObjects = (int)sr.mWorld.mObjects.size();
+	float ts = (float)((mSamplePoint[sr.mThreadId] - ray.mOrigin) * ray.mDirection);
 	
-	for (int j = 0; j < num_objects; j++)
+	for (int j = 0; j < numObjects; j++)
 	{
 		if (sr.mWorld.mObjects[j]->shadowHit(ray, t) && t < ts)
 		{
@@ -121,8 +121,8 @@ bool tzAreaLight::inShadow(const tzRay& ray, const tzShadeRec& sr) const
 //===================================================================================
 float tzAreaLight::G(const tzShadeRec& sr) const 
 {
-	float ndotd = (float)(-light_normal[sr.mThreadId] * wi[sr.mThreadId]);
-	float d2 	= (float)samplePoint[sr.mThreadId].d_squared(sr.mHitPoint);
+	float ndotd = (float)(-mLightNormal[sr.mThreadId] * mWi[sr.mThreadId]);
+	float d2 	= (float)mSamplePoint[sr.mThreadId].dSquared(sr.mHitPoint);
 		
 	return (ndotd / d2);
 }
@@ -131,6 +131,6 @@ float tzAreaLight::G(const tzShadeRec& sr) const
 //===================================================================================
 float tzAreaLight::pdf(const tzShadeRec& sr) const 
 {
-	return (object_ptr->pdf(sr));
+	return (mObjectPtr->pdf(sr));
 }
 

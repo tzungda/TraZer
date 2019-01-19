@@ -4,9 +4,9 @@
 
 //===================================================================================
 tzGlossySpecular::tzGlossySpecular(void)
-	: 	ks(0.5), 
-		cs(1.0),
-		sampler(NULL)
+	: 	mKs(0.5), 
+		mCs(1.0),
+		mSampler(NULL)
 {}
 
 
@@ -42,11 +42,11 @@ tzColor tzGlossySpecular::f(const tzShadeRec& sr, const tzVector3D& wo, const tz
 {
 	tzColor 	L;
 	float 		ndotwi = (float)(sr.mNormal * wi);
-	tzVector3D 	r(-wi + 2.0 * sr.mNormal * ndotwi); // mirror reflection direction
+	tzVector3D 	r(-wi + 2.0f * sr.mNormal * ndotwi); // mirror reflection direction
 	float 		rdotwo = (float)(r * wo);
 		
-	if (rdotwo > 0.0)
-		L = ks * cs * pow(rdotwo, exp); 
+	if (rdotwo > 0.0f)
+		L = mKs * mCs * pow(rdotwo, mExp); 
 			
 	return (L);
 }
@@ -70,10 +70,10 @@ tzColor tzGlossySpecular::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tz
 	if (sr.mNormal * wi < 0.0) 						// reflected ray is below tangent plane
 		wi = -sp.x * u - sp.y * v + sp.z * w;
 
-	float phong_lobe = (float)pow(r * wi, exp);
+	float phong_lobe = (float)pow(r * wi, mExp);
 	pdf = phong_lobe * (float)(sr.mNormal * wi);
 
-	return (ks * cs * phong_lobe);
+	return (mKs * mCs * phong_lobe);
 }
 
 

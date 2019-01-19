@@ -17,7 +17,7 @@ tzImage::tzImage(void)
 tzImage::tzImage(const tzImage& image)
 	:	mHeight(image.mHeight),
 		mWidth(image.mWidth),
-		pixels(image.pixels)
+	mPixels(image.mPixels)
 {}		
 
 
@@ -29,7 +29,7 @@ tzImage& tzImage::operator= (const tzImage& rhs)
 	
 	mHeight 		= rhs.mHeight;
 	mWidth 		= rhs.mWidth;
-	pixels 		= rhs.pixels;
+	mPixels = rhs.mPixels;
 
 	return (*this);
 }		
@@ -102,7 +102,7 @@ void tzImage::read_ppm_file(const char* file_name)
 
     // allocate memory
     
-	pixels.reserve(mHeight * mWidth);
+	mPixels.reserve(mHeight * mWidth);
 
     // read pixel data
     
@@ -129,7 +129,7 @@ void tzImage::read_ppm_file(const char* file_name)
 			float g = green * inv_max_value;
 			float b = blue  * inv_max_value;
 
-			pixels.push_back(tzColor(r, g, b));
+			mPixels.push_back(tzColor(r, g, b));
         }
     }
 
@@ -154,7 +154,7 @@ void tzImage::readPng(const char* fileName)
 	// set pixels
 	mWidth = (int)width;
 	mHeight = (int)height;
-	pixels.resize(width*height);
+	mPixels.resize(width*height);
 	unsigned int len = width*height;
 	for ( int i = 0; i < len; i++ )
 	{
@@ -165,7 +165,7 @@ void tzImage::readPng(const char* fileName)
 		float a = ((float)image[index+3]) / 255.0f;
 
 		//
-		pixels[i] = tzColor( r, g, b, a );
+		mPixels[i] = tzColor( r, g, b, a );
 	}
 }
 
@@ -173,10 +173,10 @@ void tzImage::readPng(const char* fileName)
 tzColor tzImage::getColor(const int row, const int column) const 
 {
 	int index = column + mHeight * (mWidth - row - 1);
-	int pixels_size = pixels.size();
+	int pixelsSize = mPixels.size();
 	
-	if (index < pixels_size)
-		return (pixels[index]);
+	if (index < pixelsSize)
+		return (mPixels[index]);
 	else
 		return (red);    // useful for debugging 
 }

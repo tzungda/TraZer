@@ -191,7 +191,7 @@ void tzWorld::build()
 
 	tzEmissive* emissive_ptr = new tzEmissive;
 	emissive_ptr->scaleRadiance(300);
-	emissive_ptr->set_ce(white);
+	emissive_ptr->setCe(white);
 
 	//
 	float width = 8.0f;				// for Figure 18.4(a) & (b)
@@ -225,14 +225,14 @@ void tzWorld::build()
 	//addLight(lightPtr);
 
 	// material matte sv
-	tzImage* image_ptr = new tzImage;
+	tzImage* mImagePtr = new tzImage;
 	const char* texPath = "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\images.ppm";
-	//image_ptr->read_ppm_file(texPath);
+	//mImagePtr->read_ppm_file(texPath);
 
-	image_ptr->readPng( "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\TraZer\\commonData\\torusTexture.png" );
+	mImagePtr->readPng( "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\TraZer\\commonData\\torusTexture.png" );
 
 	tzImageTexture* texture_ptr = new tzImageTexture;
-	texture_ptr->set_image(image_ptr);
+	texture_ptr->set_image(mImagePtr);
 
 	tzMatteSV* sv_matte_ptr = new tzMatteSV;
 	sv_matte_ptr->setKa(0.1f);
@@ -309,12 +309,12 @@ void tzWorld::build()
 	directional_ptr->setCastsShadows(true);
 	addLight(directional_ptr);
 
-	tzImage* image_ptr = new tzImage;
+	tzImage* mImagePtr = new tzImage;
 	const char* texPath = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\TextureImages\\TextureFiles\\ppm\\BlueGlass.ppm";
-	image_ptr->read_ppm_file(texPath);
+	mImagePtr->read_ppm_file(texPath);
 
 	tzImageTexture* texture_ptr = new tzImageTexture;
-	texture_ptr->set_image(image_ptr);
+	texture_ptr->set_image(mImagePtr);
 
 	tzMatteSV* sv_matte_ptr = new tzMatteSV;
 	sv_matte_ptr->setKa(0.1);
@@ -426,7 +426,7 @@ void tzWorld::build()
 
 	tzEmissive* emissive_ptr = new tzEmissive;
 	emissive_ptr->scaleRadiance(300);
-	emissive_ptr->set_ce(white);
+	emissive_ptr->setCe(white);
 
 	//
 	float width = 8.0;				// for Figure 18.4(a) & (b)
@@ -469,8 +469,8 @@ void tzWorld::build()
 	//phongPtr->setKa(0.25);
 	//phongPtr->setKd(0.75);
 	//phongPtr->setCd(0.4, 0.7, 0.4);  	// light green
-	//phongPtr->set_ks(0.005);
-	//phongPtr->set_exp(500);
+	//phongPtr->setKs(0.005);
+	//phongPtr->setExp(500);
 
 	//
 	tzMatte* mattePtr2 = new tzMatte();
@@ -586,8 +586,8 @@ void tzWorld::build()
 	phongPtr->setKa(0.25);
 	phongPtr->setKd(0.75);
 	phongPtr->setCd(0.75, 0.75, 0);  	// dark yellow
-	phongPtr->set_ks(0.25);
-	phongPtr->set_exp(50);
+	phongPtr->setKs(0.25);
+	phongPtr->setExp(50);
 
 	// material matte
 	tzMatte* mattePtr = new tzMatte();
@@ -631,7 +631,7 @@ void tzWorld::build()
 
 	// create spheres
 	tzSphere *spherePtr = new tzSphere();
-	spherePtr->set_center( 0.0f, -25.0f, 0.0f );
+	spherePtr->setCenter( 0.0f, -25.0f, 0.0f );
 	spherePtr->set_radius( 80 );
 	spherePtr->setColor( 1.0f, 0.0f, 0.0f );
 	addObject( spherePtr );

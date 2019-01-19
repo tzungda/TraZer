@@ -7,7 +7,7 @@ tzPhong::tzPhong(void)
 	:	tzIMaterial(),
 		mAmbientBRDF(new tzLambertian),
 		mDiffuseBRDF(new tzLambertian),
-		specular_brdf( new tzGlossySpecular )
+		mSpecularBRDF( new tzGlossySpecular )
 {}
 
 
@@ -26,13 +26,13 @@ tzPhong::tzPhong(const tzPhong& m)
 	else  mDiffuseBRDF = NULL;
 
 	//
-	if (m.specular_brdf)
+	if (m.mSpecularBRDF)
 	{
-		specular_brdf = m.specular_brdf->clone();
+		mSpecularBRDF = m.mSpecularBRDF->clone();
 	}
 	else
 	{
-		specular_brdf = NULL;
+		mSpecularBRDF = NULL;
 	}
 }
 
@@ -71,14 +71,14 @@ tzPhong::operator= (const tzPhong& rhs) {
 		mDiffuseBRDF = rhs.mDiffuseBRDF->clone();
 
 	//
-	if ( specular_brdf )
+	if ( mSpecularBRDF )
 	{
-		delete specular_brdf;
-		specular_brdf = NULL;
+		delete mSpecularBRDF;
+		mSpecularBRDF = NULL;
 	}
-	if ( rhs.specular_brdf )
+	if ( rhs.mSpecularBRDF )
 	{
-		specular_brdf = rhs.specular_brdf->clone();
+		mSpecularBRDF = rhs.mSpecularBRDF->clone();
 	}
 
 	return (*this);
@@ -99,10 +99,10 @@ tzPhong::~tzPhong(void) {
 		mDiffuseBRDF = NULL;
 	}
 
-	if (specular_brdf )
+	if (mSpecularBRDF )
 	{
-		delete specular_brdf;
-		specular_brdf = NULL;
+		delete mSpecularBRDF;
+		mSpecularBRDF = NULL;
 	}
 }
 
@@ -134,7 +134,7 @@ tzColor tzPhong::shade(tzShadeRec& sr)
 			if ( !in_shadow )
 			{
 				// L += mDiffuseBRDF->f(sr, wo, wi) * sr.mWorld.mLights[j]->L(sr) * sr.mWorld.mLights[j]->G(sr) * ndotwi / sr.mWorld.mLights[j]->pdf(sr);
-				L += ( mDiffuseBRDF->f(sr, wo, wi) + specular_brdf->f( sr, wo, wi ) ) * sr.mWorld.mLights[j]->L(sr) * sr.mWorld.mLights[j]->G(sr) * ndotwi / sr.mWorld.mLights[j]->pdf(sr);
+				L += ( mDiffuseBRDF->f(sr, wo, wi) + mSpecularBRDF->f( sr, wo, wi ) ) * sr.mWorld.mLights[j]->L(sr) * sr.mWorld.mLights[j]->G(sr) * ndotwi / sr.mWorld.mLights[j]->pdf(sr);
 			}
 		}
 	}
@@ -168,7 +168,7 @@ tzColor tzPhong::areaLightShade( tzShadeRec &sr) const
 			//
 			if (!inShadow)
 			{
-				L += (mDiffuseBRDF->f(sr, wo, wi) + specular_brdf->f(sr, wo, wi)) * sr.mWorld.mLights[j]->L(sr) * ndotwi;
+				L += (mDiffuseBRDF->f(sr, wo, wi) + mSpecularBRDF->f(sr, wo, wi)) * sr.mWorld.mLights[j]->L(sr) * ndotwi;
 			}
 		}
 	}

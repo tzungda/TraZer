@@ -5,21 +5,21 @@
 
 tzImageTexture::tzImageTexture(void)
 	:	tzITexture(),
-		hres(100),
-		vres(100),
-		image_ptr(NULL),
-		mapping_ptr(NULL)
+		mHeight(100),
+		mWidth(100),
+		mImagePtr(NULL),
+		mMappingPtr(NULL)
 {}
 
 
 // ---------------------------------------------------------------- constructor
 
-tzImageTexture::tzImageTexture(tzImage* _image_ptr)
+tzImageTexture::tzImageTexture(tzImage* imagePtr)
 	:	tzITexture(),
-		hres(_image_ptr->getHeight()),
-		vres(_image_ptr->getWidth()),
-		image_ptr(_image_ptr),
-		mapping_ptr(NULL)
+	mHeight(imagePtr->getHeight()),
+	mWidth(imagePtr->getWidth()),
+	mImagePtr(imagePtr),
+	mMappingPtr(NULL)
 {}
 
 
@@ -27,48 +27,54 @@ tzImageTexture::tzImageTexture(tzImage* _image_ptr)
 
 tzImageTexture::tzImageTexture(const tzImageTexture& it)
 	: 	tzITexture(it),
-		hres(it.hres),
-		vres(it.vres)
+	mHeight(it.mHeight),
+	mWidth(it.mWidth)
 {
-	if (it.image_ptr)
-		*image_ptr = *it.image_ptr;
+	if (it.mImagePtr)
+		*mImagePtr = *it.mImagePtr;
 	else
-		image_ptr = NULL;
+		mImagePtr = NULL;
 		
-	if (it.mapping_ptr)
-		mapping_ptr = it.mapping_ptr->clone();
+	if (it.mMappingPtr)
+		mMappingPtr = it.mMappingPtr->clone();
 	else
-		mapping_ptr = NULL;
+		mMappingPtr = NULL;
 }
 
 
 // ---------------------------------------------------------------- assignment operator
 
-tzImageTexture&
-tzImageTexture::operator= (const tzImageTexture& rhs) {
+tzImageTexture& tzImageTexture::operator= (const tzImageTexture& rhs)
+{
 	if (this == &rhs)
 		return (*this);
 	
 	tzITexture::operator= (rhs);
 	
-	hres = rhs.hres;
-	vres = rhs.vres;
+	mHeight = rhs.mHeight;
+	mWidth = rhs.mWidth;
 	
-	if (image_ptr) {
-		delete image_ptr;
-		image_ptr = NULL;
+	if (mImagePtr)
+	{
+		delete mImagePtr;
+		mImagePtr = NULL;
 	}
 	
-	if (rhs.image_ptr)
-		*image_ptr = *rhs.image_ptr;
-	
-	if (mapping_ptr) {
-		delete mapping_ptr;
-		mapping_ptr = NULL;
+	if (rhs.mImagePtr)
+	{
+		*mImagePtr = *rhs.mImagePtr;
 	}
 	
-	if (rhs.mapping_ptr)
-		mapping_ptr = rhs.mapping_ptr->clone();
+	if (mMappingPtr) 
+	{
+		delete mMappingPtr;
+		mMappingPtr = NULL;
+	}
+	
+	if (rhs.mMappingPtr)
+	{
+		mMappingPtr = rhs.mMappingPtr->clone();
+	}
 
 	return (*this);
 }
@@ -76,24 +82,25 @@ tzImageTexture::operator= (const tzImageTexture& rhs) {
 
 // ---------------------------------------------------------------- clone
 
-tzImageTexture*
-tzImageTexture::clone(void) const {
+tzImageTexture* tzImageTexture::clone(void) const 
+{
 	return (new tzImageTexture(*this));
 }	
 
 
 // ---------------------------------------------------------------- destructor
 
-tzImageTexture::~tzImageTexture(void) {
+tzImageTexture::~tzImageTexture(void) 
+{
 
-	if (image_ptr) {
-		delete image_ptr;
-		image_ptr = NULL;
+	if (mImagePtr) {
+		delete mImagePtr;
+		mImagePtr = NULL;
 	}
 	
-	if (mapping_ptr) {
-		delete mapping_ptr;
-		mapping_ptr = NULL;
+	if (mMappingPtr) {
+		delete mMappingPtr;
+		mMappingPtr = NULL;
 	}
 }
 
@@ -106,19 +113,22 @@ tzImageTexture::~tzImageTexture(void) {
 // from the uv coordinates stored in the ShadeRec object in the uv triangles' hit functions
 // See, for example, Listing 29.12.
 
-tzColor														
-tzImageTexture::getColor(const tzShadeRec& sr) const {
+tzColor tzImageTexture::getColor(const tzShadeRec& sr) const 
+{
 	int row;
 	int column;
 		
-	if (mapping_ptr)
-		mapping_ptr->get_texel_coordinates(sr.mLocalHitPoint, hres, vres, row, column);
-	else {
-		row 	= (int)(sr.mV * (vres - 1));  	
-		column 	= (int)(sr.mU * (hres - 1));	
+	if (mMappingPtr)
+	{
+		mMappingPtr->getTexelCoordinates(sr.mLocalHitPoint, mHeight, mWidth, row, column);
+	}
+	else 
+	{
+		row 	= (int)(sr.mV * (mHeight - 1));
+		column 	= (int)(sr.mU * (mWidth - 1));
 	}
 	
-	return (image_ptr->getColor(row, column));
+	return (mImagePtr->getColor(row, column));
 }  
 
 

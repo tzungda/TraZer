@@ -59,18 +59,18 @@ tzAmbientOccluder::~tzAmbientOccluder(void)
 tzVector3D tzAmbientOccluder::getDirection(  tzShadeRec& s)
 {
 	tzPoint3D sp = mSamplerPtr->sampleHemisphere(s.mRay);
-	return ( sp.x*u + sp.y*v + sp.z*w );
+	return ( sp.x*mU + sp.y*mV + sp.z*mW );
 }
 
 
 //===================================================================================
 tzColor tzAmbientOccluder::L( tzShadeRec& sr) 
 {
-	w = sr.mNormal;
+	mW = sr.mNormal;
 	// jitter up vector in case normal is vertical
-	v = w^tzVector3D(0.0072f, 1.0f, 0.0034f);
-	v.normalize();
-	u = v^w;
+	mV = mW^tzVector3D(0.0072f, 1.0f, 0.0034f);
+	mV.normalize();
+	mU = mV^mW;
 
 	tzRay shadowRay;
 	shadowRay.mOrigin = sr.mHitPoint;
