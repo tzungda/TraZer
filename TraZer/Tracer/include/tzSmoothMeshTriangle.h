@@ -10,24 +10,19 @@ class tzSmoothMeshTriangle: public tzMeshTriangle {
 		
 		tzSmoothMeshTriangle(tzMesh* _meshPtr, const int i0, const int i1, const int i2);
 
-		virtual tzSmoothMeshTriangle*
-		clone(void) const;
+		virtual tzSmoothMeshTriangle* clone(void) const;
 	
 		tzSmoothMeshTriangle(const tzSmoothMeshTriangle& fmt);
 
-		virtual
-		~tzSmoothMeshTriangle(void);
+		virtual ~tzSmoothMeshTriangle(void);
 
-		tzSmoothMeshTriangle&
-		operator= (const tzSmoothMeshTriangle& rhs);
+		tzSmoothMeshTriangle& operator= (const tzSmoothMeshTriangle& rhs);
 				
-		virtual	bool 
-		hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;
+		virtual	bool hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;
 
 	protected:
 	
-		tzNormal 
-		interpolate_normal(const float beta, const float gamma) const;
+		tzNormal interpolateNormal(const float beta, const float gamma) const;
 };
 
 #endif

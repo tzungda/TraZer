@@ -26,10 +26,10 @@ class tzSphere: public tzIGeometricObject {
 		operator= (const tzSphere& tzSphere);				
 																					
 		void
-		set_center(const tzPoint3D& c);
+		setCenter(const tzPoint3D& c);
 		
 		void
-		set_center(const float x, const float y, const float z);
+		setCenter(const float x, const float y, const float z);
 		
 		void
 		set_radius(const float r);
@@ -50,12 +50,12 @@ class tzSphere: public tzIGeometricObject {
 
 
 inline void
-tzSphere::set_center(const tzPoint3D& c) {
+tzSphere::setCenter(const tzPoint3D& c) {
 	center = c;
 }
 		
 inline void
-tzSphere::set_center(const float x, const float y, const float z) {
+tzSphere::setCenter(const float x, const float y, const float z) {
 	center.x = x;
 	center.y = y;
 	center.z = z;

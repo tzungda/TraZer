@@ -49,7 +49,7 @@ class tzAmbientOccluder: public tzILight {
 		float		mLs;
 		tzColor	mColor;
 		tzISampler	*mSamplerPtr;
-		tzVector3D	u, v, w;
+		tzVector3D	mU, mV, mW;
 		tzColor	mMinAmount;
 };
 

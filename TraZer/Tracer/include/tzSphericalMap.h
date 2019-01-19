@@ -21,7 +21,7 @@ class tzSphericalMap: public tzIMapping {
 		~tzSphericalMap(void);
 		
 		virtual void
-		get_texel_coordinates(	const 	tzPoint3D& 	local_hit_point, 
+		getTexelCoordinates(	const 	tzPoint3D& 	local_hit_point, 
 								const 	int 		xres, 
 								const 	int 		yres, 
 										int& 		row, 

@@ -27,8 +27,7 @@ class tzIMaterial {
 		
 	protected:
 	
-		tzIMaterial&
-		operator= (const tzIMaterial& rhs);
+		tzIMaterial& operator= (const tzIMaterial& rhs);
 };
 
 #endif

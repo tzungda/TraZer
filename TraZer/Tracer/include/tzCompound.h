@@ -32,13 +32,13 @@ class tzCompound: public tzIGeometricObject {
 			
 	protected:		
 		
-		std::vector<tzIGeometricObject*> objects;
+		std::vector<tzIGeometricObject*> mObjects;
 		
 	private:
 	
 		void deleteObjects(void);								
 
-		void copyObjects(const std::vector<tzIGeometricObject*>& rhs_objects);
+		void copyObjects(const std::vector<tzIGeometricObject*>& rhsObjects);
 	
 };
 
@@ -47,7 +47,7 @@ class tzCompound: public tzIGeometricObject {
 
 inline int tzCompound::getNumObjects(void) 
 {
-	return ((int)objects.size());
+	return ((int)mObjects.size());
 }
 
 #endif

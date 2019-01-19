@@ -23,19 +23,19 @@ class tzGlossySpecular: public tzIBRDF {
 		rho(const tzShadeRec& sr, const tzVector3D& wo) const;
 		
 		void
-		set_ks(const float ks);
+		setKs(const float ks);
 		
 		void
-		set_exp(const float exp);
+		setExp(const float exp);
 		
 		void
-		set_cs(const tzColor& c);
+		setCs(const tzColor& c);
 		
 		void													
-		set_cs(const float r, const float g, const float b);
+		setCs(const float r, const float g, const float b);
 		
 		void													
-		set_cs(const float c);
+		setCs(const float c);
 		
 		void setSampler(tzISampler* sp, const float exp);   			// any type of sampling
 		
@@ -46,49 +46,49 @@ class tzGlossySpecular: public tzIBRDF {
 		
 	private:
 	
-		float		ks;
-		tzColor 	cs;			// specular color
-		float		exp; 		// specular exponent
-		tzISampler*	sampler;    // for use in sampleF
+		float		mKs;
+		tzColor 	mCs;			// specular color
+		float		mExp; 		// specular exponent
+		tzISampler*	mSampler;    // for use in sampleF
 };
 
 
-// -------------------------------------------------------------- set_ks
+// -------------------------------------------------------------- setKs
 
-inline void
-tzGlossySpecular::set_ks(const float k) {
-	ks = k;
+inline void tzGlossySpecular::setKs(const float k) 
+{
+	mKs = k;
 }
 
-// -------------------------------------------------------------- set_exp
+// -------------------------------------------------------------- setExp
 
-inline void
-tzGlossySpecular::set_exp(const float e) {
-	exp= e;
-}
-
-
-// -------------------------------------------------------------- set_cs
-
-inline void
-tzGlossySpecular::set_cs(const tzColor& c) {
-	cs = c;
+inline void tzGlossySpecular::setExp(const float e)
+{
+	mExp= e;
 }
 
 
-// ---------------------------------------------------------------- set_cs
+// -------------------------------------------------------------- setCs
 
-inline void													
-tzGlossySpecular::set_cs(const float r, const float g, const float b) {
-	cs.r = r; cs.g = g; cs.b = b;
+inline void tzGlossySpecular::setCs(const tzColor& c) 
+{
+	mCs = c;
 }
 
 
-// ---------------------------------------------------------------- set_cs
+// ---------------------------------------------------------------- setCs
 
-inline void													
-tzGlossySpecular::set_cs(const float c) {
-	cs.r = c; cs.g = c; cs.b = c;
+inline void tzGlossySpecular::setCs(const float r, const float g, const float b) 
+{
+	mCs.r = r; mCs.g = g; mCs.b = b;
+}
+
+
+// ---------------------------------------------------------------- setCs
+
+inline void tzGlossySpecular::setCs(const float c) 
+{
+	mCs.r = c; mCs.g = c; mCs.b = c;
 }
 
 #endif

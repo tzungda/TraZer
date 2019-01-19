@@ -49,51 +49,48 @@ class tzLambertian: public tzIBRDF
 					
 	private:
 	
-		float		kd;
-		tzColor 	cd;
+		float		mKd;
+		tzColor 	mCd;
 };
 
 
 
-
-// -------------------------------------------------------------- setKa
-
-inline void
-tzLambertian::setKa(const float k) {
-	kd = k;
+inline void tzLambertian::setKa(const float k) 
+{
+	mKd = k;
 }
 
 
 
 // -------------------------------------------------------------- setKd
 
-inline void
-tzLambertian::setKd(const float k) {
-	kd = k;
+inline void tzLambertian::setKd(const float k) 
+{
+	mKd = k;
 }
 
 
 // -------------------------------------------------------------- setCd
 
-inline void
-tzLambertian::setCd(const tzColor& c) {
-	cd = c;
+inline void tzLambertian::setCd(const tzColor& c) 
+{
+	mCd = c;
 }
 
 
 // ---------------------------------------------------------------- setCd
 
-inline void													
-tzLambertian::setCd(const float r, const float g, const float b) {
-	cd.r = r; cd.g = g; cd.b = b;
+inline void tzLambertian::setCd(const float r, const float g, const float b) 
+{
+	mCd.r = r; mCd.g = g; mCd.b = b;
 }
 
 
 // ---------------------------------------------------------------- setCd
 
-inline void													
-tzLambertian::setCd(const float c) {
-	cd.r = c; cd.g = c; cd.b = c;
+inline void tzLambertian::setCd(const float c) 
+{
+	mCd.r = c; mCd.g = c; mCd.b = c;
 }
 
 #endif

@@ -120,7 +120,7 @@ inline void tzICamera::setRoll(const float r)
 }
 
 
-// ----------------------------------------------------------------- set_exposure_time
+// ----------------------------------------------------------------- setExposure_time
 
 inline void tzICamera::setExposureTime(const float exposure) 
 {

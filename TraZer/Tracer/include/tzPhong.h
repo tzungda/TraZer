@@ -39,19 +39,19 @@ class tzPhong: public tzIMaterial {
 
 		// specular
 		void
-		set_ks(const float ks);
+		setKs(const float ks);
 		
 		void
-		set_exp(const float exp);
+		setExp(const float exp);
 		
 		void
-		set_cs(const tzColor& c);
+		setCs(const tzColor& c);
 		
 		void													
-		set_cs(const float r, const float g, const float b);
+		setCs(const float r, const float g, const float b);
 		
 		void													
-		set_cs(const float c);
+		setCs(const float c);
 				
 		//
 		virtual tzColor
@@ -64,7 +64,7 @@ class tzPhong: public tzIMaterial {
 		
 		tzLambertian*		mAmbientBRDF;
 		tzLambertian*		mDiffuseBRDF;
-		tzGlossySpecular*	specular_brdf;
+		tzGlossySpecular*	mSpecularBRDF;
 };
 
 
@@ -115,33 +115,33 @@ tzPhong::setCd(const float c) {
 
 //
 inline void
-tzPhong::set_ks(const float ks)
+tzPhong::setKs(const float ks)
 {
-	specular_brdf->set_ks( ks );
+	mSpecularBRDF->setKs( ks );
 }
 
 inline void
-tzPhong::set_exp(const float exp)
+tzPhong::setExp(const float exp)
 {
-	specular_brdf->set_exp( exp );
+	mSpecularBRDF->setExp( exp );
 }
 
 inline void
-tzPhong::set_cs(const tzColor& c)
+tzPhong::setCs(const tzColor& c)
 {
-	specular_brdf->set_cs( c );
+	mSpecularBRDF->setCs( c );
 }
 
 inline void
-tzPhong::set_cs(const float r, const float g, const float b)
+tzPhong::setCs(const float r, const float g, const float b)
 {
-	specular_brdf->set_cs( r, g, b );
+	mSpecularBRDF->setCs( r, g, b );
 }
 
 inline void
-tzPhong::set_cs(const float c)
+tzPhong::setCs(const float c)
 {
-	specular_brdf->set_cs( c );
+	mSpecularBRDF->setCs( c );
 }
 
 #endif

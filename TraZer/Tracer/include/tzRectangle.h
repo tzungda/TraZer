@@ -39,18 +39,18 @@ class tzRectangle: public tzIGeometricObject {
 		
 	private:
 	
-		tzPoint3D 		p0;   			// corner vertex 
-		tzVector3D		a;				// side
-		tzVector3D		b;				// side
-		float			a_len_squared;	// square of the length of side a
-		float			b_len_squared;	// square of the length of side b
-		tzNormal		normal;
+		tzPoint3D 		mP0;   			// corner vertex 
+		tzVector3D		mSideA;				// side
+		tzVector3D		mSideB;				// side
+		float			mLenSquaredA;	// square of the length of side a
+		float			mLenSquaredB;	// square of the length of side b
+		tzNormal		mNormal;
 		
-		float			area;			// for rectangular lights
-		float			inv_area;		// for rectangular lights
+		float			mArea;			// for rectangular lights
+		float			mInvArea;		// for rectangular lights
 		tzISampler*		mSamplerPtr;	// for rectangular lights 	
 		
-		static const float kEpsilon;
+		static const float mEpsilon;
 };
 
 #endif

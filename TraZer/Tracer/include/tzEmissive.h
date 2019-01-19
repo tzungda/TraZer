@@ -16,28 +16,22 @@ class tzEmissive: public tzIMaterial {
 
 		tzEmissive(const tzEmissive& m);
 		
-		virtual tzIMaterial*										
-		clone(void) const;									
+		virtual tzIMaterial* clone(void) const;									
 
-		tzEmissive&
-		operator= (const tzEmissive& rhs);
+		tzEmissive& operator= (const tzEmissive& rhs);
 
 		~tzEmissive(void);
 		
-		float		emissiveRadiance( ) const;
+		float emissiveRadiance( ) const;
 		tzColor	emissiveColor() const;
 
-		void 													
-		scaleRadiance(const float k);
+		void scaleRadiance(const float k);
 		
-		void													
-		set_ce(const tzColor &c);
+		void setCe(const tzColor &c);
 		
-		void													
-		set_ce(const float r, const float g, const float b);
+		void setCe(const float r, const float g, const float b);
 		
-		void																						
-		set_ce(const float c);
+		void setCe(const float c);
 				
 		virtual tzColor shade(tzShadeRec& sr);
 

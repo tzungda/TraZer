@@ -10,7 +10,7 @@ class tzImageTexture: public tzITexture {
 	
 		tzImageTexture(void);
 			
-		tzImageTexture(tzImage* _image_ptr);
+		tzImageTexture(tzImage* _mImagePtr);
 				
 		tzImageTexture(const tzImageTexture& it);
 
@@ -27,35 +27,35 @@ class tzImageTexture: public tzITexture {
 		getColor(const tzShadeRec& sr) const;
 						
 		void
-		set_image(tzImage* _image_ptr);
+		set_image(tzImage* _mImagePtr);
 		
 		void
 		set_mapping(tzIMapping* map_ptr);	
 		
 	private:
 	
-		int 		hres;			// horizontal resolution of the image
-		int			vres;			// vertical resolution of the image
-		tzImage*		image_ptr;		// the image
-		tzIMapping*	mapping_ptr;	// mapping technique used, if any
+		int 		mHeight;			// horizontal resolution of the image
+		int			mWidth;			// vertical resolution of the image
+		tzImage*	mImagePtr;		// the image
+		tzIMapping*	mMappingPtr;	// mapping technique used, if any
 };
 
 
 // ---------------------------------------------------------------- set_image
 
-inline void
-tzImageTexture::set_image(tzImage* _image_ptr) {
-	image_ptr = _image_ptr;
-	hres = image_ptr->getHeight();
-	vres = image_ptr->getWidth();
+inline void tzImageTexture::set_image(tzImage* imagePtr) 
+{
+	mImagePtr = imagePtr;
+	mHeight = imagePtr->getHeight();
+	mWidth = imagePtr->getWidth();
 }
 
 
 // ---------------------------------------------------------------- set_mapping
 
-inline void
-tzImageTexture::set_mapping(tzIMapping* map_ptr) {
-	mapping_ptr = map_ptr;
+inline void tzImageTexture::set_mapping(tzIMapping* map_ptr) 
+{
+	mMappingPtr = map_ptr;
 }
 
 #endif		

@@ -21,16 +21,16 @@ class tzReflective: public tzPhong {
 		~tzReflective(void);
 		
 		void
-		set_kr(const float k);
+		setKr(const float k);
 				
 		void													
-		set_cr(const tzColor& c);
+		setCr(const tzColor& c);
 		
 		void
-		set_cr(const float r, const float g, const float b);
+		setCr(const float r, const float g, const float b);
 		
 		void
-		set_cr(const float c);
+		setCr(const float c);
 		
 		virtual tzColor										
 		shade(tzShadeRec& s);
@@ -43,36 +43,36 @@ class tzReflective: public tzPhong {
 };
 
 
-// ---------------------------------------------------------------- set_kr
+// ---------------------------------------------------------------- setKr
 
 inline void
-tzReflective::set_kr(const float k) {
-	reflective_brdf->set_kr(k);
+tzReflective::setKr(const float k) {
+	reflective_brdf->setKr(k);
 }
 
 
-// ---------------------------------------------------------------- set_cr
+// ---------------------------------------------------------------- setCr
 
 inline void
-tzReflective::set_cr(const tzColor& c) {
-	reflective_brdf->set_cr(c);
+tzReflective::setCr(const tzColor& c) {
+	reflective_brdf->setCr(c);
 	
 }
 
 
-// ---------------------------------------------------------------- set_cr
+// ---------------------------------------------------------------- setCr
 
 inline void
-tzReflective::set_cr(const float r, const float g, const float b) {
-	reflective_brdf->set_cr(r, g, b);
+tzReflective::setCr(const float r, const float g, const float b) {
+	reflective_brdf->setCr(r, g, b);
 }
 
 
-// ---------------------------------------------------------------- set_cr
+// ---------------------------------------------------------------- setCr
 
 inline void
-tzReflective::set_cr(const float c) {
-	reflective_brdf->set_cr(c);
+tzReflective::setCr(const float c) {
+	reflective_brdf->setCr(c);
 }
 
 #endif

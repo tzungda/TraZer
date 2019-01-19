@@ -24,8 +24,7 @@ class tzITexture {
 				
 	protected:
 	
-		tzITexture&
-		operator= (const tzITexture& rhs);
+		tzITexture& operator= (const tzITexture& rhs);
 };
 
 #endif

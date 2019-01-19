@@ -16,16 +16,16 @@ class tzPerfectSpecular: public tzIBRDF
 		clone(void) const;
 		
 		void
-		set_kr(const float k);
+		setKr(const float k);
 		
 		void
-		set_cr(const tzColor& c);
+		setCr(const tzColor& c);
 		
 		void													
-		set_cr(const float r, const float g, const float b);
+		setCr(const float r, const float g, const float b);
 		
 		void													
-		set_cr(const float c);
+		setCr(const float c);
 		
 		virtual tzColor
 		f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
@@ -46,34 +46,34 @@ class tzPerfectSpecular: public tzIBRDF
 };
 
 
-// -------------------------------------------------------------- set_kr
+// -------------------------------------------------------------- setKr
 
 inline void
-tzPerfectSpecular::set_kr(const float k) {
+tzPerfectSpecular::setKr(const float k) {
 	kr = k;
 }
 
 
-// -------------------------------------------------------------- set_cr
+// -------------------------------------------------------------- setCr
 
 inline void
-tzPerfectSpecular::set_cr(const tzColor& c) {
+tzPerfectSpecular::setCr(const tzColor& c) {
 	cr = c;
 }
 
 
-// ---------------------------------------------------------------- set_cr
+// ---------------------------------------------------------------- setCr
 
 inline void													
-tzPerfectSpecular::set_cr(const float r, const float g, const float b) {
+tzPerfectSpecular::setCr(const float r, const float g, const float b) {
 	cr.r = r; cr.g = g; cr.b = b;
 }
 
 
-// ---------------------------------------------------------------- set_cr
+// ---------------------------------------------------------------- setCr
 
 inline void													
-tzPerfectSpecular::set_cr(const float c) {
+tzPerfectSpecular::setCr(const float c) {
 	cr.r = c; cr.g = c; cr.b = c;
 }
 

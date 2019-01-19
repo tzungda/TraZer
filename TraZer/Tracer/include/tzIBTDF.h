@@ -15,23 +15,17 @@ class tzIBTDF {
 		
 		tzIBTDF(const tzIBTDF& tzIBTDF);
 		
-		virtual tzIBTDF*
-		clone(void) = 0;
+		virtual tzIBTDF* clone(void) = 0;
 		
-		tzIBTDF&							
-		operator= (const tzIBTDF& rhs);
+		tzIBTDF& operator= (const tzIBTDF& rhs);
 		
-		virtual
-		~tzIBTDF(void);
+		virtual ~tzIBTDF(void);
 				
-		virtual tzColor
-		f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
+		virtual tzColor f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
 		
-		virtual tzColor
-		sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wt) const;
+		virtual tzColor sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wt) const;
 		
-		virtual tzColor
-		rho(const tzShadeRec& sr, const tzVector3D& wo) const;
+		virtual tzColor rho(const tzShadeRec& sr, const tzVector3D& wo) const;
 };
 
 #endif

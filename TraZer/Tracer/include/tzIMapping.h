@@ -22,7 +22,7 @@ class tzIMapping {
 		virtual ~tzIMapping(void);
 				
 		virtual void
-		get_texel_coordinates(	const 	tzPoint3D& 	hit_point, 
+		getTexelCoordinates(	const 	tzPoint3D& 	hit_point, 
 								const 	int 		xres, 
 								const 	int 		yres, 
 										int& 		row, 

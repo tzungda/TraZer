@@ -36,7 +36,7 @@ class tzSmoothTriangle: public tzIGeometricObject {
 		tzPoint3D v0, v1, v2;	
 		
 		tzNormal												
-		interpolate_normal(const float beta, const float gamma) const;
+		interpolateNormal(const float beta, const float gamma) const;
 };
 
 #endif

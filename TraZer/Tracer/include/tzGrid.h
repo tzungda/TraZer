@@ -82,16 +82,13 @@ class tzGrid: public tzCompound {
 		bool						mReverseNormal;	// some PLY files have normals that point inwards
 		float						mScale;
 
-		tzPoint3D
-		findMinBounds(void);
+		tzPoint3D findMinBounds(void);
 
-		tzPoint3D
-		findMaxBounds(void);
+		tzPoint3D findMaxBounds(void);
 
 		//void read_ply_file(char* file_name, const int triangle_type);
 
-		void
-		computeMeshNormals(void);	
+		void computeMeshNormals(void);	
 
 		// uv related
 		//void read_uv_ply_file(char* file_name, const int triangle_type);
@@ -113,7 +110,7 @@ tzGrid::reverse_mesh_normals(void)
 
 inline void
 tzGrid::store_material(tzIMaterial* mMaterialPtr, const int index) {
-	objects[index]->setMaterial(mMaterialPtr); 
+	mObjects[index]->setMaterial(mMaterialPtr);
 }
 
 inline void

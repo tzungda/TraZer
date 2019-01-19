@@ -38,20 +38,20 @@ class tzAreaLight: public tzILight {
 		
 	private:
 		
-		tzIGeometricObject* 	object_ptr;
+		tzIGeometricObject* 	mObjectPtr;
 		tzIMaterial* 			mMaterialPtr;	 // will be an emissive material
-		tzPoint3D				samplePoint[MAX_THREADS];
-		tzNormal				light_normal[MAX_THREADS];    // assigned in get_direction - which therefore can't be const for any light
-		tzVector3D				wi[MAX_THREADS];			     // unit direction from hit point being shaded to sample point on light surface			
+		tzPoint3D				mSamplePoint[MAX_THREADS];
+		tzNormal				mLightNormal[MAX_THREADS];    // assigned in get_direction - which therefore can't be const for any light
+		tzVector3D				mWi[MAX_THREADS];			     // unit direction from hit point being shaded to sample point on light surface			
 	
 };
 
 
 //===================================================================================
-inline void tzAreaLight::setObject(tzIGeometricObject* obj_ptr) 
+inline void tzAreaLight::setObject(tzIGeometricObject* objPtr) 
 {
-	object_ptr = obj_ptr;
-	mMaterialPtr = object_ptr->getMaterial();	
+	mObjectPtr = objPtr;
+	mMaterialPtr = mObjectPtr->getMaterial();
 }
 
 #endif

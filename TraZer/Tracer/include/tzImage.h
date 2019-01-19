@@ -32,7 +32,7 @@ class tzImage {
 	private:
 		int 				mWidth;			// horizontal resolution of image
 		int					mHeight;			// vertical resolution of image
-		vector<tzColor> 	pixels;
+		vector<tzColor> 	mPixels;
 };
 
 
