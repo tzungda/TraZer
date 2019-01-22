@@ -11,15 +11,15 @@ class tzIGLDraw
 {
 protected:
 	GLuint			mVAObject;
-	GLuint			mVBObject;
 	GLuint			mShaderProgram;
 	char			mInitialized;
 	string			mShaderName;
+	string			mName;
 
 public:
 	virtual			string shaderName( ) const {return mShaderName;}
 	virtual			void setShaderName( string shader ) { mShaderName = shader; }
-	virtual			void init( ) = 0;
+	virtual			void init( GLuint shaderProgram ) = 0;
 	virtual			void draw( ) = 0;
 };
 
