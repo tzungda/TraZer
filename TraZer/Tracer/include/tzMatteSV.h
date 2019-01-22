@@ -44,8 +44,8 @@ class tzMatteSV: public tzIMaterial {
 // there is no Lambertian::ka data member because ambient reflection 
 // is diffuse reflection
 
-inline void								
-tzMatteSV::setKa(const float ka) {
+inline void tzMatteSV::setKa(const float ka)
+{
 	mAmbientBRDF->setKd(ka);
 }
 
@@ -53,16 +53,16 @@ tzMatteSV::setKa(const float ka) {
 // ---------------------------------------------------------------- setKd
 // this also sets Lambertian::kd, but for a different Lambertian object
 
-inline void								
-tzMatteSV::setKd (const float kd) {
+inline void tzMatteSV::setKd (const float kd) 
+{
 	mDiffuseBRDF->setKd(kd);
 }
 
 
 // ---------------------------------------------------------------- setCd
 
-inline void												
-tzMatteSV::setCd(const tzITexture *c) {
+inline void tzMatteSV::setCd(const tzITexture *c) 
+{
 	mAmbientBRDF->setCd(c);
 	mDiffuseBRDF->setCd(c);
 }

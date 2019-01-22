@@ -14,48 +14,35 @@ class tzPhong: public tzIMaterial {
 
 		tzPhong(const tzPhong& m);
 		
-		virtual tzIMaterial*										
-		clone(void) const;									
+		virtual tzIMaterial* clone(void) const;									
 
-		tzPhong&
-		operator= (const tzPhong& rhs);
+		tzPhong& operator= (const tzPhong& rhs);
 
 		~tzPhong(void);
 		
-		void 													
-		setKa(const float k);
+		void setKa(const float k);
 		
-		void 													
-		setKd(const float k);
+		void setKd(const float k);
 		
-		void													
-		setCd(const tzColor c);
+		void setCd(const tzColor c);
 		
-		void													
-		setCd(const float r, const float g, const float b);
+		void setCd(const float r, const float g, const float b);
 		
-		void																						
-		setCd(const float c);
+		void setCd(const float c);
 
 		// specular
-		void
-		setKs(const float ks);
+		void setKs(const float ks);
 		
-		void
-		setExp(const float exp);
+		void setExp(const float exp);
 		
-		void
-		setCs(const tzColor& c);
+		void setCs(const tzColor& c);
 		
-		void													
-		setCs(const float r, const float g, const float b);
+		void setCs(const float r, const float g, const float b);
 		
-		void													
-		setCs(const float c);
+		void setCs(const float c);
 				
 		//
-		virtual tzColor
-		shade(tzShadeRec& sr);
+		virtual tzColor shade(tzShadeRec& sr);
 
 		//
 		virtual tzColor areaLightShade( tzShadeRec &sr) const;
@@ -73,8 +60,8 @@ class tzPhong: public tzIMaterial {
 // there is no Lambertian::ka data member because ambient reflection 
 // is diffuse reflection
 
-inline void								
-tzPhong::setKa(const float ka) {
+inline void tzPhong::setKa(const float ka) 
+{
 	mAmbientBRDF->setKd(ka);
 }
 
@@ -82,16 +69,16 @@ tzPhong::setKa(const float ka) {
 // ---------------------------------------------------------------- setKd
 // this also sets Lambertian::kd, but for a different Lambertian object
 
-inline void								
-tzPhong::setKd (const float kd) {
+inline void tzPhong::setKd (const float kd) 
+{
 	mDiffuseBRDF->setKd(kd);
 }
 
 
 // ---------------------------------------------------------------- setCd
 
-inline void												
-tzPhong::setCd(const tzColor c) {
+inline void tzPhong::setCd(const tzColor c) 
+{
 	mAmbientBRDF->setCd(c);
 	mDiffuseBRDF->setCd(c);
 }
@@ -99,47 +86,42 @@ tzPhong::setCd(const tzColor c) {
 
 // ---------------------------------------------------------------- setCd
 
-inline void													
-tzPhong::setCd(const float r, const float g, const float b) {
+inline void tzPhong::setCd(const float r, const float g, const float b)
+{
 	mAmbientBRDF->setCd(r, g, b);
 	mDiffuseBRDF->setCd(r, g, b);
 }
 
 // ---------------------------------------------------------------- setCd
 
-inline void													
-tzPhong::setCd(const float c) {
+inline void tzPhong::setCd(const float c) 
+{
 	mAmbientBRDF->setCd(c);
 	mDiffuseBRDF->setCd(c);
 }
 
 //
-inline void
-tzPhong::setKs(const float ks)
+inline void tzPhong::setKs(const float ks)
 {
 	mSpecularBRDF->setKs( ks );
 }
 
-inline void
-tzPhong::setExp(const float exp)
+inline void tzPhong::setExp(const float exp)
 {
 	mSpecularBRDF->setExp( exp );
 }
 
-inline void
-tzPhong::setCs(const tzColor& c)
+inline void tzPhong::setCs(const tzColor& c)
 {
 	mSpecularBRDF->setCs( c );
 }
 
-inline void
-tzPhong::setCs(const float r, const float g, const float b)
+inline void tzPhong::setCs(const float r, const float g, const float b)
 {
 	mSpecularBRDF->setCs( r, g, b );
 }
 
-inline void
-tzPhong::setCs(const float c)
+inline void tzPhong::setCs(const float c)
 {
 	mSpecularBRDF->setCs( c );
 }

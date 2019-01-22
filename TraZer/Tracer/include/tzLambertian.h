@@ -32,20 +32,15 @@ class tzLambertian: public tzIBRDF
 		virtual tzColor
 		rho(const tzShadeRec& sr, const tzVector3D& wo) const;
 			
-		void
-		setKa(const float ka);	
+		void setKa(const float ka);	
 				
-		void
-		setKd(const float kd);
+		void setKd(const float kd);
 		
-		void
-		setCd(const tzColor& c);
+		void setCd(const tzColor& c);
 		
-		void													
-		setCd(const float r, const float g, const float b);
+		void setCd(const float r, const float g, const float b);
 		
-		void													
-		setCd(const float c);
+		void setCd(const float c);
 					
 	private:
 	

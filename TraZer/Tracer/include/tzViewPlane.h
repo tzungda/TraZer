@@ -10,8 +10,8 @@ public:
 	virtual ~tzViewPlane();
 
 //private:
-	int				mHres;		//horizontal image resolution
-	int				mVres;		//vertical image resolution
+	int				mHeight;		//horizontal image resolution
+	int				mWidth;		//vertical image resolution
 	float			mS;			//pixel size
 	float			mGamma;		// monitor gamma factor
 	float			mInvGamma;	// one over gamma
@@ -20,8 +20,8 @@ public:
 	float			mMaxDepth;
 
 public:
-	void			setHres( int hres );
-	void			setVres( int vres );
+	void			setHeight( int hres );
+	void			setWidth( int vres );
 	void			setPixelSize( float s );
 	void			setGamma( float gamma );
 	void			setSampler(tzISampler* sp);

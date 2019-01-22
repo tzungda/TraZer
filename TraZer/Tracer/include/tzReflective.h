@@ -39,40 +39,32 @@ class tzReflective: public tzPhong {
 		
 	private:
 	
-		tzPerfectSpecular* reflective_brdf;
+		tzPerfectSpecular* mReflectiveBRDF;
 };
 
 
-// ---------------------------------------------------------------- setKr
-
-inline void
-tzReflective::setKr(const float k) {
-	reflective_brdf->setKr(k);
+//===================================================================================
+inline void tzReflective::setKr(const float k) 
+{
+	mReflectiveBRDF->setKr(k);
 }
 
-
-// ---------------------------------------------------------------- setCr
-
-inline void
-tzReflective::setCr(const tzColor& c) {
-	reflective_brdf->setCr(c);
-	
+//===================================================================================
+inline void tzReflective::setCr(const tzColor& c) 
+{
+	mReflectiveBRDF->setCr(c);
 }
 
-
-// ---------------------------------------------------------------- setCr
-
-inline void
-tzReflective::setCr(const float r, const float g, const float b) {
-	reflective_brdf->setCr(r, g, b);
+//===================================================================================
+inline void tzReflective::setCr(const float r, const float g, const float b) 
+{
+	mReflectiveBRDF->setCr(r, g, b);
 }
 
-
-// ---------------------------------------------------------------- setCr
-
-inline void
-tzReflective::setCr(const float c) {
-	reflective_brdf->setCr(c);
+//===================================================================================
+inline void tzReflective::setCr(const float c) 
+{
+	mReflectiveBRDF->setCr(c);
 }
 
 #endif

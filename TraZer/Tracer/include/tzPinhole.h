@@ -22,11 +22,9 @@ class tzPinhole: public tzICamera {
 		
 		virtual ~tzPinhole();
 			
-		void
-		set_view_distance(const float vpd);
+		void setViewDistance(const float vpd);
 		
-		void
-		set_zoom(const float zoom_factor);
+		void setZoom(const float zoomFactor);
 		
 		tzVector3D getDirection(const tzPoint2D& p) const;
 		
@@ -34,8 +32,8 @@ class tzPinhole: public tzICamera {
 		
 	private:
 			
-		float	d;		// view plane distance
-		float	zoom;	// zoom factor
+		float	mDistance;		// view plane distance
+		float	mZoom;	// zoom factor
 		
 };
 
@@ -44,18 +42,18 @@ class tzPinhole: public tzICamera {
 
 //-------------------------------------------------------------------------- set_vpd
 
-inline void
-tzPinhole::set_view_distance(float _d) {
-	d = _d;
+inline void tzPinhole::setViewDistance(float d) 
+{
+	mDistance = d;
 }	
 	
 
 
-//-------------------------------------------------------------------------- set_zoom
+//-------------------------------------------------------------------------- setZoom
 
-inline void
-tzPinhole::set_zoom(float zoom_factor) {
-	zoom = zoom_factor;
+inline void tzPinhole::setZoom(float zoomFactor) 
+{
+	mZoom = zoomFactor;
 }	
 
 #endif

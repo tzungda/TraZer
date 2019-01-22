@@ -43,8 +43,7 @@ class tzMesh {
 
 		~tzMesh(void);
 
-		tzMesh&
-		operator= (const tzMesh& rhs);
+		tzMesh& operator= (const tzMesh& rhs);
 };
 
 #endif

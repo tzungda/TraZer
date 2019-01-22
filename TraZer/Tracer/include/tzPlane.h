@@ -15,11 +15,9 @@ class tzPlane: public tzIGeometricObject {
 	
 		tzPlane(const tzPlane& plane); 									// copy constructor
 		
-		virtual tzPlane* 												// virtual copy constructor
-		clone(void) const;
+		virtual tzPlane* clone(void) const;
 
-		tzPlane& 														// assignment operator
-		operator= (const tzPlane& rhs);
+		tzPlane& operator= (const tzPlane& rhs);
 		
 		virtual ~tzPlane(void);
 					
@@ -32,10 +30,10 @@ class tzPlane: public tzIGeometricObject {
 		
 	private:
 	
-		tzPoint3D 	a;   				// point through which plane passes 
-		tzNormal	n;					// normal to the plane
+		tzPoint3D 	mPoint;   				// point through which plane passes 
+		tzNormal	mNormal;					// normal to the plane
 				
-		static const float kEpsilon;   // for shadows and secondary rays
+		static const float mEpsilon;   // for shadows and secondary rays
 };
 
 #endif

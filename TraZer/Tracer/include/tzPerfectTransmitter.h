@@ -13,51 +13,43 @@ class tzPerfectTransmitter: public tzIBTDF {
 		
 		tzPerfectTransmitter(const tzPerfectTransmitter& pt);
 		
-		virtual tzPerfectTransmitter*
-		clone(void);
+		virtual tzPerfectTransmitter* clone(void);
 		
 		~tzPerfectTransmitter(void);
 		
-		tzPerfectTransmitter&
-		operator= (const tzPerfectTransmitter& rhs);
+		tzPerfectTransmitter& operator= (const tzPerfectTransmitter& rhs);
 		
-		void
-		set_kt(const float k);
+		void set_kt(const float k);
 		
-		void
-		set_ior(const float eta);
+		void set_ior(const float eta);
 
-		bool													
-		tir(const tzShadeRec& sr) const;
+		bool tir(const tzShadeRec& sr) const;
 		
-		virtual tzColor
-		f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
+		virtual tzColor f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
 		
-		virtual tzColor
-		sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wt) const;
+		virtual tzColor sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wt) const;
 		
-		virtual tzColor
-		rho(const tzShadeRec& sr, const tzVector3D& wo) const;
+		virtual tzColor rho(const tzShadeRec& sr, const tzVector3D& wo) const;
 				
 	private:
 	
-		float	kt;			// transmission coefficient
-		float	ior;		// index of refraction
+		float	mKt;			// transmission coefficient
+		float	mIor;		// index of refraction
 };
 
 
 // -------------------------------------------------------------- set_kt
 
-inline void
-tzPerfectTransmitter::set_kt(const float k) {
-	kt = k;
+inline void tzPerfectTransmitter::set_kt(const float k) 
+{
+	mKt = k;
 }
 
 // -------------------------------------------------------------- set_ior
 
-inline void
-tzPerfectTransmitter::set_ior(const float eta) {
-	ior = eta;
+inline void tzPerfectTransmitter::set_ior(const float eta) 
+{
+	mIor = eta;
 }
 
 #endif
