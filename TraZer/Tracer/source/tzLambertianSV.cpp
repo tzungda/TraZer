@@ -6,8 +6,8 @@
 
 tzLambertianSV::tzLambertianSV(void)
 	: tzIBRDF(),
-		kd(0.0), 
-		cd(NULL)
+		mKd(0.0), 
+		mCd(NULL)
 {}
 
 
@@ -15,22 +15,22 @@ tzLambertianSV::tzLambertianSV(void)
 
 tzLambertianSV::tzLambertianSV(const tzLambertianSV& lamb)
 	: tzIBRDF(lamb),
-		kd(lamb.kd), 
-		cd(lamb.cd)
+		mKd(lamb.mKd), 
+		mCd(lamb.mCd)
 {}
 
 
 // ---------------------------------------------------------------------- assignment operator
 
-tzLambertianSV&
-tzLambertianSV::operator= (const tzLambertianSV& rhs) {
+tzLambertianSV& tzLambertianSV::operator= (const tzLambertianSV& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 		
 	tzIBRDF::operator= (rhs);
 	
-	kd = rhs.kd; 
-	cd = rhs.cd;
+	mKd = rhs.mKd; 
+	mCd = rhs.mCd;
 	
 	return (*this);
 }
@@ -43,8 +43,8 @@ tzLambertianSV::~tzLambertianSV(void) {}
 
 // ---------------------------------------------------------------------- clone
 
-tzLambertianSV*
-tzLambertianSV::clone(void) const {
+tzLambertianSV* tzLambertianSV::clone(void) const 
+{
 	return (new tzLambertianSV(*this));
 }	
 
@@ -52,9 +52,9 @@ tzLambertianSV::clone(void) const {
 // ---------------------------------------------------------------------- f
 // there is no sampling here
 
-tzColor
-tzLambertianSV::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const {
-	return (kd * cd->getColor(sr) * (float)invPI);
+tzColor tzLambertianSV::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const 
+{
+	return (mKd * mCd->getColor(sr) * (float)invPI);
 }
 
 
@@ -64,8 +64,8 @@ tzLambertianSV::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& 
 // this is called in pathShade for any material with a diffuse shading component
 // the samples have to be stored with a cosine distribution
 
-tzColor
-tzLambertianSV::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const {
+tzColor tzLambertianSV::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const 
+{
 	
 	tzVector3D w = sr.mNormal;
 	tzVector3D v = tzVector3D(0.0034f, 1.0f, 0.0071f) ^ w;
@@ -78,16 +78,16 @@ tzLambertianSV::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& 
 	
 	pdf = (float)(sr.mNormal * wi * invPI);
 	
-	return (kd * cd->getColor(sr) * (float)invPI);
+	return ( mKd * mCd->getColor(sr) * (float)invPI );
 }
 
 
 
 // ---------------------------------------------------------------------- rho
 
-tzColor
-tzLambertianSV::rho(const tzShadeRec& sr, const tzVector3D& wo) const {
-	return (kd * cd->getColor(sr));
+tzColor tzLambertianSV::rho(const tzShadeRec& sr, const tzVector3D& wo) const 
+{
+	return ( mKd * mCd->getColor(sr));
 }
 
 

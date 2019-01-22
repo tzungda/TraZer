@@ -172,8 +172,8 @@ void tzWorld::build()
 
 	tzISampler* mSamplerPtr = new tzMultiJittered(numSamples);
 
-	mVp.setHres(400);
-	mVp.setVres(400);
+	mVp.setHeight(400);
+	mVp.setWidth(400);
 	//mVp.setMaxDepth(0);
 	mVp.setSampler(mSamplerPtr);
 
@@ -184,7 +184,7 @@ void tzWorld::build()
 	tzPinhole* camera = new tzPinhole();
 	camera->setEye(200, 200, 200);
 	camera->setLookAt(0, 0, 0);
-	camera->set_view_distance(16000);
+	camera->setViewDistance(16000);
 	camera->computeUVW();
 	setCamera(camera);
 
@@ -287,8 +287,8 @@ void tzWorld::build()
 	/*----------------------------------------------------------------
 	int numSamples = 16;
 
-	mVp.setHres(400);
-	mVp.setVres(400);
+	mVp.setHeight(400);
+	mVp.setWidth(400);
 	mVp.setSamples(num_samples);
 
 	mTracerPtr = new tzRayCast(this);
@@ -297,7 +297,7 @@ void tzWorld::build()
 
 	tzPinhole* pinhole_ptr = new tzPinhole;
 	pinhole_ptr->setEye(80, 80, 80);
-	pinhole_ptr->set_view_distance(1600.0);
+	pinhole_ptr->setViewDistance(1600.0);
 	pinhole_ptr->setLookAt(0, -0.5, 0);
 	pinhole_ptr->computeUVW();
 	setCamera(pinhole_ptr);
@@ -355,8 +355,8 @@ void tzWorld::build()
 	/*
 	int numSamples = 16;
 
-	mVp.setHres(400);
-	mVp.setVres(400);
+	mVp.setHeight(400);
+	mVp.setWidth(400);
 	mVp.setSamples(num_samples);
 
 	mTracerPtr = new tzRayCast(this);
@@ -366,7 +366,7 @@ void tzWorld::build()
 	tzPinhole* pinhole_ptr = new tzPinhole;
 	pinhole_ptr->setEye(0, 15, 15);
 	pinhole_ptr->setLookAt(0, 0, 0);
-	pinhole_ptr->set_view_distance(16000);
+	pinhole_ptr->setViewDistance(16000);
 	pinhole_ptr->computeUVW();
 	setCamera(pinhole_ptr);
 
@@ -407,8 +407,8 @@ void tzWorld::build()
 
 	tzISampler* mSamplerPtr = new tzMultiJittered(num_samples);
 
-	mVp.setHres(400);
-	mVp.setVres(400);
+	mVp.setHeight(400);
+	mVp.setWidth(400);
 	//mVp.setMaxDepth(0);
 	mVp.setSampler(mSamplerPtr);
 
@@ -419,7 +419,7 @@ void tzWorld::build()
 	tzPinhole* camera = new tzPinhole();
 	camera->setEye(200, 200, 200);
 	camera->setLookAt(0, 0, 0);
-	camera->set_view_distance(16000);
+	camera->setViewDistance(16000);
 	camera->computeUVW();
 	setCamera(camera);
 
@@ -504,8 +504,8 @@ void tzWorld::build()
 	/*---------------------------------------------------------------------------------------------------------
 	const int numSamples = 256;
 
-	mVp.setHres(400);
-	mVp.setVres(400);
+	mVp.setHeight(400);
+	mVp.setWidth(400);
 	mVp.setPixelSize(1.0f);
 	mVp.setSamples(numSamples);
 
@@ -527,7 +527,7 @@ void tzWorld::build()
 	tzPinhole *pinHolePtr = new tzPinhole();
 	pinHolePtr->setEye(25, 20, 45);
 	pinHolePtr->setLookAt(0, 1, 0);
-	pinHolePtr->set_view_distance(5000);
+	pinHolePtr->setViewDistance(5000);
 	pinHolePtr->computeUVW();
 	setCamera(pinHolePtr);
 
@@ -554,8 +554,8 @@ void tzWorld::build()
 	*/
 
 	/*------------------------------------------------------------------------------------
-	mVp.setHres( 400 );
-	mVp.setVres( 400 );
+	mVp.setHeight( 400 );
+	mVp.setWidth( 400 );
 	mVp.setPixelSize( 1.0f );
 	mVp.setSamples( 16 );
 
@@ -570,7 +570,7 @@ void tzWorld::build()
 	tzPinhole *pinHolePtr = new tzPinhole();
 	pinHolePtr->setEye(0, 200, 500);
 	pinHolePtr->setLookAt(0, 0, 0);
-	pinHolePtr->set_view_distance(850.0f );
+	pinHolePtr->setViewDistance(850.0f );
 	pinHolePtr->computeUVW();
 	setCamera(pinHolePtr);
 
@@ -608,8 +608,8 @@ void tzWorld::build()
 	
 	/*----------------------------------------------------------------------------------------------
 	// viewport plane
-	mVp.setHres( 256 );
-	mVp.setVres( 256 );
+	mVp.setHeight( 256 );
+	mVp.setWidth( 256 );
 	mVp.setPixelSize( 1.0f );
 	mVp.setGamma( 1.0f );
 	const int numSamples = 25;
@@ -622,7 +622,7 @@ void tzWorld::build()
 	tzPinhole *pinHolePtr = new tzPinhole();
 	pinHolePtr->setEye(0, 0, 500);
 	pinHolePtr->setLookAt(0);
-	pinHolePtr->set_view_distance(500);
+	pinHolePtr->setViewDistance(500);
 	pinHolePtr->computeUVW();
 	setCamera(pinHolePtr );
 
@@ -658,17 +658,17 @@ void tzWorld::renderScene() const
 	tzRay ray;
 	float zw = 100.0f;
 //	float x, y;
-	pixelColorArray.resize(mVp.mHres*mVp.mVres);
+	pixelColorArray.resize(mVp.mHeight*mVp.mWidth);
 
 	ray.mDirection = tzVector3D( 0.0f, 0.0f, -1.0f );
-	const float h = (float)mVp.mHres;
-	const float v = (float)mVp.mVres;
+	const float h = (float)mVp.mHeight;
+	const float v = (float)mVp.mWidth;
 	tzPoint2D sp; // sample point in [0, 1] x [0, 1]
 	tzPoint2D pp; // sample point on a pixel
 	float invNumSamples = 1.0f/(float)mVp.mNumSamples;
-	for ( int r = 0; r < mVp.mVres; r++ )
+	for ( int r = 0; r < mVp.mWidth; r++ )
 	{
-		for ( int c = 0; c < mVp.mHres; c++ )
+		for ( int c = 0; c < mVp.mHeight; c++ )
 		{
 			float fC = (float)c;
 			float fR = (float)r;
@@ -688,7 +688,7 @@ void tzWorld::renderScene() const
 			pixelColor *= invNumSamples;
 
 			// 
-			int index = c + r*mVp.mHres;
+			int index = c + r*mVp.mHeight;
 			pixelColorArray[index].r = pixelColor.r;
 			pixelColorArray[index].g = pixelColor.g;
 			pixelColorArray[index].b = pixelColor.b;
@@ -697,7 +697,7 @@ void tzWorld::renderScene() const
 	}
 
 	//
-	tzTool::writePng(pixelColorArray, mVp.mHres, mVp.mVres, (std::string)mOutputPath);
+	tzTool::writePng(pixelColorArray, mVp.mHeight, mVp.mWidth, (std::string)mOutputPath);
 }
 
 //===================================================================================
@@ -708,7 +708,7 @@ void tzWorld::openWindow(const int hres, const int vres) const
 //===================================================================================
 void tzWorld::writeToBuffer(std::vector<tzColor>& buffer, const int row, const int column, const tzColor& pixel_color) const
 {
-	int index = column + row*mVp.mHres;
+	int index = column + row*mVp.mHeight;
 	buffer[index].r = pixel_color.r;
 	buffer[index].g = pixel_color.g;
 	buffer[index].b = pixel_color.b;
@@ -718,7 +718,7 @@ void tzWorld::writeToBuffer(std::vector<tzColor>& buffer, const int row, const i
 //===================================================================================
 void tzWorld::writeImage( const std::vector<tzColor>& buffer, const std::string &imagePath) const
 {
-	tzTool::writePng(buffer, mVp.mHres, mVp.mVres, (std::string)imagePath);
+	tzTool::writePng(buffer, mVp.mHeight, mVp.mWidth, (std::string)imagePath);
 }
 
 //===================================================================================

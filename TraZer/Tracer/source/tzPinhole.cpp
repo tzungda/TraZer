@@ -18,8 +18,8 @@
 
 tzPinhole::tzPinhole(void)
 	:	tzICamera(),
-		d(500),
-		zoom(1.0)
+	mDistance(500.0f),
+		mZoom(1.0f)
 {
 }
 
@@ -28,8 +28,8 @@ tzPinhole::tzPinhole(void)
 
 tzPinhole::tzPinhole(const tzPinhole& c)
 	: 	tzICamera(c),
-		d(c.d),
-		zoom(c.zoom)
+	mDistance(c.mDistance),
+		mZoom(c.mZoom)
 {
 }
 
@@ -52,8 +52,8 @@ tzPinhole& tzPinhole::operator= (const tzPinhole& rhs)
 		
 	tzICamera::operator= (rhs);
 
-	d 		= rhs.d;
-	zoom	= rhs.zoom;
+	mDistance = rhs.mDistance;
+	mZoom = rhs.mZoom;
 
 	return (*this);
 }
@@ -70,7 +70,7 @@ tzPinhole::~tzPinhole(void)
 
 tzVector3D tzPinhole::getDirection(const tzPoint2D& p) const
 {
-	tzVector3D dir = p.x * mOrthoU + p.y * mOrthoV - d * mOrthoW;
+	tzVector3D dir = p.x * mOrthoU + p.y * mOrthoV - mDistance * mOrthoW;
 	dir.normalize();
 	
 	return(dir);
@@ -85,7 +85,7 @@ void tzPinhole::renderScene(const tzWorld& w) const
 	tzViewPlane	vp(w.mVp);
 	const int n = (int)sqrt((float)vp.mNumSamples);
 
-	vp.mS /= zoom;
+	vp.mS /= mZoom;
 	
 #ifndef _OPENMP
 	tzColor	L;
@@ -96,14 +96,14 @@ void tzPinhole::renderScene(const tzWorld& w) const
 #endif
 
 	std::vector<tzColor> colorBuffer;
-	colorBuffer.resize(vp.mVres*vp.mHres);
+	colorBuffer.resize(vp.mWidth*vp.mHeight);
 
 	const float invNumSamples = 1.0f/(float)vp.mNumSamples;
 	const float invN = 1.0f / (float)n;
 		
 	clock_t t = clock();
 
-	for (int r = 0; r < vp.mVres; r++)
+	for (int r = 0; r < vp.mWidth; r++)
 	{
 
 #ifdef _OPENMP
@@ -116,7 +116,7 @@ void tzPinhole::renderScene(const tzWorld& w) const
 		#pragma omp parallel for
 #endif
 
-		for (int c = 0; c < vp.mVres; c++) 
+		for (int c = 0; c < vp.mWidth; c++) 
 		{
 #ifndef _OPENMP
 			L = black; 
@@ -135,8 +135,8 @@ void tzPinhole::renderScene(const tzWorld& w) const
 #ifndef _OPENMP			
 			for (int p = 0; p < n; p++)			// up pixel
 				for (int q = 0; q < n; q++) {	// across pixel
-					pp.x = vp.mS * (c - 0.5f * vp.mHres + (q + 0.5f)*invN);
-					pp.y = vp.mS * (r - 0.5f * vp.mVres + (p + 0.5f)*invN);
+					pp.x = vp.mS * (c - 0.5f * vp.mHeight + (q + 0.5f)*invN);
+					pp.y = vp.mS * (r - 0.5f * vp.mWidth + (p + 0.5f)*invN);
 					ray.d = getDirection(pp);
 					L += w.mTracerPtr->traceRay(ray, depth);
 				}	
@@ -172,8 +172,8 @@ void tzPinhole::renderScene(const tzWorld& w) const
 				for (int q = 0; q < n; q++) // across pixel
 				{	
 					
-					pp.x = vp.mS * (c - 0.5f * vp.mHres + (q + 0.5f)*invN);
-					pp.y = vp.mS * (r - 0.5f * vp.mVres + (p + 0.5f)*invN);
+					pp.x = vp.mS * (c - 0.5f * vp.mHeight + (q + 0.5f)*invN);
+					pp.y = vp.mS * (r - 0.5f * vp.mWidth + (p + 0.5f)*invN);
 					ray.mDirection = getDirection(pp);
 					threadL += w.mTracerPtr->traceRay(ray, depth);
 				}

@@ -1,71 +1,63 @@
 
 #include "../include/tzPlane.h"
 
-const float tzPlane::kEpsilon = 0.001f;
+const float tzPlane::mEpsilon = 0.001f;
 
-// ----------------------------------------------------------------------  default constructor
-
+//===================================================================================
 tzPlane::tzPlane(void)
 	: 	tzIGeometricObject(),
-		a(0.0),
-		n(0, 1, 0)						
+		mPoint(0.0f),
+		mNormal(0.0f, 1.0f, 0.0f)
 {}
 
-
-// ----------------------------------------------------------------------  constructor
-
+//===================================================================================
 tzPlane::tzPlane(const tzPoint3D& point, const tzNormal& normal)
 	:	tzIGeometricObject(),
-		a(point),
-		n(normal)
+		mPoint(point),
+		mNormal(normal)
 {
-		n.normalize();
+	mNormal.normalize();
 }
 
-
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzPlane::tzPlane(const tzPlane& plane)
 	:	tzIGeometricObject(plane),
-		a(plane.a),
-		n(plane.n) 				
+	mPoint(plane.mPoint),
+	mNormal(plane.mNormal) 				
 {}
 
 
-// ---------------------------------------------------------------- clone
-
-tzPlane*
-tzPlane::clone(void) const {
+//===================================================================================
+tzPlane* tzPlane::clone(void) const 
+{
 	return (new tzPlane(*this));
 }
 
 
-// ---------------------------------------------------------------- assignment operator
-
-tzPlane&
-tzPlane::operator= (const tzPlane& rhs)	{
+//===================================================================================
+tzPlane& tzPlane::operator= (const tzPlane& rhs)
+{
 	
 	if (this == &rhs)
 		return (*this);
 
 	tzIGeometricObject::operator= (rhs);
 
-	a = rhs.a;
-	n = rhs.n;
+	mPoint = rhs.mPoint;
+	mNormal = rhs.mNormal;
 
 	return (*this);
 }
 
 
-// ---------------------------------------------------------------- destructor
-
+//===================================================================================
 tzPlane::~tzPlane(void)
 {}
 
 //===================================================================================
 bool tzPlane::shadowHit(const tzRay &ray, float &tmin) const
 {
-	float t = (float)((a - ray.mOrigin) * n / (ray.mDirection * n));
+	float t = (float)((mPoint - ray.mOrigin) * mNormal / (ray.mDirection * mNormal));
 
 	if ( t > kEpsilon )
 	{
@@ -76,15 +68,14 @@ bool tzPlane::shadowHit(const tzRay &ray, float &tmin) const
 	return false;
 }
 
-// ----------------------------------------------------------------- hit
-
-bool 															 
-tzPlane::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
-	float t = (float)((a - ray.mOrigin) * n / (ray.mDirection * n));
+//===================================================================================
+bool tzPlane::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
+{
+	float t = (float)(( mPoint - ray.mOrigin) * mNormal / (ray.mDirection * mNormal));
 														
 	if (t > kEpsilon) {
 		tmin = t;
-		sr.mNormal = n;
+		sr.mNormal = mNormal;
 		sr.mLocalHitPoint = ray.mOrigin + t * ray.mDirection;
 		
 		return (true);	

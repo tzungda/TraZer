@@ -10,7 +10,7 @@ Constructor/Destructor
 //===================================================================================
 tzViewPlane::tzViewPlane()
 {
-	mHres = mVres = 128;
+	mHeight = mWidth = 128;
 	mS = 1.0f;
 	mGamma = mInvGamma = 1.0f;
 
@@ -30,15 +30,15 @@ Interfaces
 */
 
 //===================================================================================
-void tzViewPlane::setHres(int hres)
+void tzViewPlane::setHeight(int hres)
 {
-	mHres = hres;
+	mHeight = hres;
 }
 
 //===================================================================================
-void tzViewPlane::setVres(int vres)
+void tzViewPlane::setWidth(int vres)
 {
-	mVres = vres;
+	mWidth = vres;
 }
 
 //===================================================================================
