@@ -7,7 +7,11 @@ This is for managing all types of the objects(mesh, implicit surface...etc) in a
 
 #include < vector >
 
+// core headers
 #include "../Include/tzCoreMesh.h"
+
+// gl headers
+#include "../glView/include/tzGLMesh.h"
 
 using namespace std;
 

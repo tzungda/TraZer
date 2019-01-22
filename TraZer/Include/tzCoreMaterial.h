@@ -1,40 +1,33 @@
 #ifndef TZ_CORE_MATERIAL
 #define TZ_CORE_MATERIAL
 
+
+#include <map>
 #include <string>
-#include "GLM/glm/glm.hpp"
+#include "../include/tzCoreObject.h"
 
 using namespace std;
-using namespace glm;
 
 
-struct tzCoreMaterial
+class tzCoreMaterial: public tzCoreObject
 {
-	string name;
-	vec3 ambient;
-	vec3 diffuse;
-	vec3 specular;
-	vec3 transmittance;
-	vec3 emission;
-	float shininess;
-	float ior;      // index of refraction
-	float dissolve; // 1 == opaque; 0 == fully transparent
-					  // illumination model (see http://www.fileformat.info/format/material/)
-	int illum;
+private:
+	map<string, float>		mAttributeList;
 
-	int dummy; // Suppress padding warning.
+public:
+	/*
+	constructor/destructor
+	*/
+	tzCoreMaterial();
+	virtual ~tzCoreMaterial();
 
-	unsigned int m_tex_ambient;
-	unsigned int m_tex_diffuse;
-	unsigned int m_tex_specular;
-	unsigned int m_tex_specular_highlight;
-	unsigned int m_tex_bump;
-	unsigned int m_tex_displacement;
-	unsigned int m_tex_alpha;
+public:
+	/*
+	interfaces
+	*/
+	void	setAttribute( const string &name, float value );
 
-	unsigned char hasAmbientTex;
-	unsigned char hasDiffuseTex;
-	unsigned char hasSpecularTex;
+	const map<string, float>& attributes( ) const;
 
 } ;
 
