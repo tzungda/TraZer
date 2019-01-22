@@ -2,13 +2,13 @@
 #include <iostream>
 
 //===================================================================================
-bool tzTool::writePng(const std::vector<glm::vec4>& buffer, unsigned int w, unsigned int h, std::string &outputPath)
+bool tzTool::writePng(const std::vector<tzColor>& buffer, unsigned int w, unsigned int h, std::string &outputPath)
 {
 	std::vector<unsigned char> my_image;
 	const int _h = h;
 	const int _w = w;
 	my_image.resize(_h * _w * 4);
-	glm::vec4 buf;
+	tzColor buf;
 	//int bufferIndex = 0;
 	for (int y = 0; y < _h; y++)
 	{
