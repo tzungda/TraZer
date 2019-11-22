@@ -9,6 +9,7 @@ This is for managing all types of the objects(mesh, implicit surface...etc) in a
 
 // core headers
 #include "../Include/tzCoreMesh.h"
+#include "../Include/tzCoreMaterial.h"
 
 // gl headers
 #include "../glView/include/tzGLMesh.h"
@@ -20,22 +21,27 @@ class tzCoreScene
 public:
 	tzCoreScene();
 	virtual ~tzCoreScene();
+
+	// texture list
+	vector< string >			mTexturePathList;
+
 private:
 	// all objects (including all types of objects)
 	vector< tzCoreObject* >		mObjectList;
 
-	// mesh type
+	// mesh list
 	vector< tzCoreMesh* >		mMeshList;
 	
-	// implicit surface type
-	// --- future work
+	// material list
+	vector< tzCoreMaterial* >	mMaterialList;
 
 public:
 	
+	void						addMesh( const tzCoreMesh* newMesh );
+	vector<tzCoreMesh*>			meshList( );
 
-	void				addMesh( const tzCoreMesh* newMesh );
-
-	vector<tzCoreMesh*>		meshList( );
+	void						addMaterial( const tzCoreMaterial* newMaterial );
+	vector<tzCoreMaterial*>		materialList( );
 
 };
 

@@ -21,6 +21,10 @@ public:
 	tzCoreMaterial();
 	virtual ~tzCoreMaterial();
 
+	string *mAmbientTexturePathPtr;
+	string *mDiffuseTexturePathPtr;
+	string *mSpecularTexturePathPtr;
+
 public:
 	/*
 	interfaces
