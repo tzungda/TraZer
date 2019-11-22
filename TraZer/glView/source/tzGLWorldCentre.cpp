@@ -24,12 +24,12 @@ tzIGLDraw interfaces
 */
 
 //================================================================================
-void tzGLWorldCentre::init()
+void tzGLWorldCentre::init(GLuint shaderProgram)
 {
 	// initialize line buffers
-	mAxisX.init();
-	mAxisY.init();
-	mAxisZ.init();
+	mAxisX.init(shaderProgram);
+	mAxisY.init(shaderProgram);
+	mAxisZ.init(shaderProgram);
 }
 
 //================================================================================

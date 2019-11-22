@@ -40,7 +40,7 @@ tzIGLDraw interfaces
 */
 
 //================================================================================
-void tzGLLine::init()
+void tzGLLine::init(GLuint shaderProgram)
 {
 	if (mInitialized )
 		return;
