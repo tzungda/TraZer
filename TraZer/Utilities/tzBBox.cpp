@@ -56,8 +56,8 @@ tzBBox::~tzBBox(void)
 // ================================================================================
 bool tzBBox::hit(const tzRay& ray) const 
 {
-	float ox = ray.o.x; float oy = ray.o.y; float oz = ray.o.z;
-	float dx = ray.d.x; float dy = ray.d.y; float dz = ray.d.z;
+	float ox = ray.mOrigin.x; float oy = ray.mOrigin.y; float oz = ray.mOrigin.z;
+	float dx = ray.mDirection.x; float dy = ray.mDirection.y; float dz = ray.mDirection.z;
 	
 	float tx_min, ty_min, tz_min;
 	float tx_max, ty_max, tz_max; 

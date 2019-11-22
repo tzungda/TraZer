@@ -29,7 +29,7 @@ class tzPoint3D {
 
 		tzPoint3D operator* (const tzMatrix& mat) const;
 		
-		float d_squared(const tzPoint3D& p) const;
+		float dSquared(const tzPoint3D& p) const;
 		
 		float distance(const tzPoint3D& p) const;
 
@@ -72,7 +72,7 @@ inline tzPoint3D tzPoint3D::operator* (const float a) const
 }
 
 //===================================================================================
-inline float tzPoint3D::d_squared(const tzPoint3D& p) const 
+inline float tzPoint3D::dSquared(const tzPoint3D& p) const 
 {
 	return (	(x - p.x) * (x - p.x) 
 			+ 	(y - p.y) * (y - p.y)
