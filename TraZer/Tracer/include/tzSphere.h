@@ -16,54 +16,47 @@ class tzSphere: public tzIGeometricObject {
 					
 		tzSphere(const tzSphere& tzSphere); 						// Copy constructor
 		
-		virtual tzSphere* 									// Virtual copy constructor
-		clone(void) const;
+		virtual tzSphere* clone(void) const;
 
-		virtual												// Destructor
-		~tzSphere(void);   									
+		virtual ~tzSphere(void);   									
 
-		tzSphere& 											// assignment operator
-		operator= (const tzSphere& tzSphere);				
+		tzSphere& operator= (const tzSphere& tzSphere);				
 																					
-		void
-		setCenter(const tzPoint3D& c);
+		void setCenter(const tzPoint3D& c);
 		
-		void
-		setCenter(const float x, const float y, const float z);
+		void setCenter(const float x, const float y, const float z);
 		
-		void
-		set_radius(const float r);
+		void setRadius(const float r);
 
 		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
 						
-		virtual bool 												 
-		hit(const tzRay& ray, float& t, tzShadeRec& s) const;
+		virtual bool hit(const tzRay& ray, float& t, tzShadeRec& s) const;
 		
 	private:
 	
-		tzPoint3D 	center;   			// center coordinates as a point  
-		float 		radius;				// the radius 
+		tzPoint3D 	mCenter;   			// center coordinates as a point  
+		float 		mRadius;				// the radius 
 		
-		static const float kEpsilon;   // for shadows and secondary rays
+		static const float mEpsilon;   // for shadows and secondary rays
 };
 
 
 
-inline void
-tzSphere::setCenter(const tzPoint3D& c) {
-	center = c;
+inline void tzSphere::setCenter(const tzPoint3D& c) 
+{
+	mCenter = c;
 }
 		
-inline void
-tzSphere::setCenter(const float x, const float y, const float z) {
-	center.x = x;
-	center.y = y;
-	center.z = z;
+inline void tzSphere::setCenter(const float x, const float y, const float z) 
+{
+	mCenter.x = x;
+	mCenter.y = y;
+	mCenter.z = z;
 }
 		
-inline void
-tzSphere::set_radius(const float r) {
-	radius = r;
+inline void tzSphere::setRadius(const float r) 
+{
+	mRadius = r;
 }
 
 #endif

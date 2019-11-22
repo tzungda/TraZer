@@ -30,8 +30,8 @@ class tzTriangle: public tzIGeometricObject {
 		
 	private:
 	
-		tzPoint3D	v0, v1, v2;
-		tzNormal	normal;
+		tzPoint3D	mV0, mV1, mV2;
+		tzNormal	mNormal;
 };
 
 #endif
