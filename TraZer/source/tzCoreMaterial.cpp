@@ -8,6 +8,7 @@ constructor/destructor
 //===================================================================================
 tzCoreMaterial::tzCoreMaterial()
 {
+	mAmbientTexturePathPtr = mDiffuseTexturePathPtr = mSpecularTexturePathPtr = NULL;
 }
 
 //===================================================================================
