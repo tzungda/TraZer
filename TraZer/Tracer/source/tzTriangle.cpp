@@ -6,18 +6,18 @@
 //===================================================================================
 tzTriangle::tzTriangle(void)
 	: 	tzIGeometricObject(),
-		v0(0, 0, 0), 
-		v1(0,0,1), 
-		v2(1,0,0),
-		normal(0, 1, 0)
+		mV0(0, 0, 0), 
+		mV1(0,0,1), 
+		mV2(1,0,0),
+		mNormal(0, 1, 0)
 {}
 
 //===================================================================================
 tzTriangle::tzTriangle(const tzPoint3D& a, const tzPoint3D& b, const tzPoint3D& c)
 	: 	tzIGeometricObject(),
-		v0(a),
-		v1(b),
-		v2(c)
+		mV0(a),
+		mV1(b),
+		mV2(c)
 {
 	computeNormal();	
 }
@@ -33,10 +33,10 @@ tzTriangle* tzTriangle::clone(void) const
 //===================================================================================
 tzTriangle::tzTriangle(const tzTriangle& triangle)
 	:	tzIGeometricObject(triangle),
-		v0(triangle.v0),
-		v1(triangle.v1),
-		v2(triangle.v2),
-		normal(triangle.normal)
+		mV0(triangle.mV0),
+		mV1(triangle.mV1),
+		mV2(triangle.mV2),
+		mNormal(triangle.mNormal)
 {}
 
 
@@ -48,10 +48,10 @@ tzTriangle& tzTriangle::operator= (const tzTriangle& rhs)
 
 	tzIGeometricObject::operator=(rhs);
 
-	v0 		= rhs.v0;
-	v1 		= rhs.v1;
-	v2 		= rhs.v2;
-	normal 	= rhs.normal;
+	mV0 = rhs.mV0;
+	mV1 = rhs.mV1;
+	mV2 = rhs.mV2;
+	mNormal = rhs.mNormal;
 		
 	return (*this);
 }
@@ -64,8 +64,8 @@ tzTriangle::~tzTriangle(void) {}
 //===================================================================================
 void tzTriangle::computeNormal(void) 
 {
-	normal = (v1 - v0) ^ (v2 - v0);  
-	normal.normalize();
+	mNormal = (mV1 - mV0) ^ (mV2 - mV0);  
+	mNormal.normalize();
 }
 
 //===================================================================================
@@ -73,18 +73,18 @@ tzBBox tzTriangle::getBoundingBox(void)
 {
 	float delta = 0.000001f; 
 	
-	return (tzBBox(fminf(fminf(v0.x, v1.x), v2.x) - delta, fmaxf(fmaxf(v0.x, v1.x), v2.x) + delta, 
-				 fminf(fminf(v0.y, v1.y), v2.y) - delta, fmaxf(fmaxf(v0.y, v1.y), v2.y) + delta, 
-				 fminf(fminf(v0.z, v1.z), v2.z) - delta, fmaxf(fmaxf(v0.z, v1.z), v2.z) + delta));
+	return (tzBBox(fminf(fminf(mV0.x, mV1.x), mV2.x) - delta, fmaxf(fmaxf(mV0.x, mV1.x), mV2.x) + delta, 
+				 fminf(fminf(mV0.y, mV1.y), mV2.y) - delta, fmaxf(fmaxf(mV0.y, mV1.y), mV2.y) + delta, 
+				 fminf(fminf(mV0.z, mV1.z), mV2.z) - delta, fmaxf(fmaxf(mV0.z, mV1.z), mV2.z) + delta));
 }
 
 
 //===================================================================================
 bool tzTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
 {
-	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.mDirection.x, d = v0.x - ray.mOrigin.x;
-	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.mDirection.y, h = v0.y - ray.mOrigin.y;
-	float i = v0.z - v1.z, j = v0.z - v2.z, k = ray.mDirection.z, l = v0.z - ray.mOrigin.z;
+	float a = mV0.x - mV1.x, b = mV0.x - mV2.x, c = ray.mDirection.x, d = mV0.x - ray.mOrigin.x;
+	float e = mV0.y - mV1.y, f = mV0.y - mV2.y, g = ray.mDirection.y, h = mV0.y - ray.mOrigin.y;
+	float i = mV0.z - mV1.z, j = mV0.z - mV2.z, k = ray.mDirection.z, l = mV0.z - ray.mOrigin.z;
 		
 	float m = f * k - g * j, n = h * k - g * l, p = f * l - h * j;
 	float q = g * i - e * k, s = e * j - f * i;
@@ -114,7 +114,7 @@ bool tzTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const
 		return (false);
 					
 	tmin 				= t;
-	sr.mNormal 			= normal;  	
+	sr.mNormal 			= mNormal;  	
 	sr.mLocalHitPoint 	= ray.mOrigin + t * ray.mDirection;
 	
 	return (true);	
@@ -124,9 +124,9 @@ bool tzTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const
 //===================================================================================
 bool tzTriangle::shadowHit(const tzRay& ray, float& tmin) const 
 {
-	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.mDirection.x, d = v0.x - ray.mOrigin.x;
-	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.mDirection.y, h = v0.y - ray.mOrigin.y;
-	float i = v0.z - v1.z, j = v0.z - v2.z, k = ray.mDirection.z, l = v0.z - ray.mOrigin.z;
+	float a = mV0.x - mV1.x, b = mV0.x - mV2.x, c = ray.mDirection.x, d = mV0.x - ray.mOrigin.x;
+	float e = mV0.y - mV1.y, f = mV0.y - mV2.y, g = ray.mDirection.y, h = mV0.y - ray.mOrigin.y;
+	float i = mV0.z - mV1.z, j = mV0.z - mV2.z, k = ray.mDirection.z, l = mV0.z - ray.mOrigin.z;
 		
 	float m = f * k - g * j, n = h * k - g * l, p = f * l - h * j;
 	float q = g * i - e * k, s = e * j - f * i;

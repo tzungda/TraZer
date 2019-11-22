@@ -3,14 +3,14 @@
 #include "../include/tzSphere.h"
 #include "math.h"
 
-const float tzSphere::kEpsilon = 0.001f;
+const float tzSphere::mEpsilon = 0.001f;
 					
 // ---------------------------------------------------------------- default constructor
 
 tzSphere::tzSphere(void)	
 	: 	tzIGeometricObject(),
-		center(0.0),
-		radius(1.0)
+		mCenter(0.0),
+		mRadius(1.0)
 {}
 
 
@@ -18,8 +18,8 @@ tzSphere::tzSphere(void)
 
 tzSphere::tzSphere(tzPoint3D c, float r)
 	: 	tzIGeometricObject(),
-		center(c),
-		radius(r)
+		mCenter(c),
+		mRadius(r)
 {}
 
 
@@ -34,8 +34,8 @@ tzSphere* tzSphere::clone(void) const {
 
 tzSphere::tzSphere (const tzSphere& tzSphere)
 	: 	tzIGeometricObject(tzSphere),
-		center(tzSphere.center),
-		radius(tzSphere.radius)
+		mCenter(tzSphere.mCenter),
+		mRadius(tzSphere.mRadius)
 {}
 
 
@@ -50,8 +50,8 @@ tzSphere::operator= (const tzSphere& rhs)
 
 	tzIGeometricObject::operator= (rhs);
 
-	center 	= rhs.center;
-	radius	= rhs.radius;
+	mCenter = rhs.mCenter;
+	mRadius = rhs.mRadius;
 
 	return (*this);
 }
@@ -66,10 +66,10 @@ tzSphere::~tzSphere(void)
 bool tzSphere::shadowHit(const tzRay &ray, float &tmin) const
 {
 	float 		t;
-	tzVector3D	temp = ray.mOrigin - center;
+	tzVector3D	temp = ray.mOrigin - mCenter;
 	float 		a = ray.mDirection * ray.mDirection;
 	float 		b = 2.0f * temp * ray.mDirection;
-	float 		c = temp * temp - radius * radius;
+	float 		c = temp * temp - mRadius * mRadius;
 	float 		disc = b * b - 4.0f * a * c;
 
 	if (disc < 0.0)
@@ -99,10 +99,10 @@ bool tzSphere::shadowHit(const tzRay &ray, float &tmin) const
 
 bool tzSphere::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
 	float 		t;
-	tzVector3D	temp 	= ray.mOrigin - center;
+	tzVector3D	temp 	= ray.mOrigin - mCenter;
 	float 		a 		= ray.mDirection * ray.mDirection;
 	float 		b 		= 2.0f * temp * ray.mDirection;
-	float 		c 		= temp * temp - radius * radius;
+	float 		c 		= temp * temp - mRadius * mRadius;
 	float 		disc	= b * b - 4.0f * a * c;
 	
 	if (disc < 0.0)
@@ -114,7 +114,7 @@ bool tzSphere::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
 	
 		if (t > kEpsilon) {
 			tmin = t;
-			sr.mNormal 	 = (temp + t * ray.mDirection) / radius;
+			sr.mNormal 	 = (temp + t * ray.mDirection) / mRadius;
 			sr.mLocalHitPoint = ray.mOrigin + t * ray.mDirection;
 			return (true);
 		} 
@@ -123,7 +123,7 @@ bool tzSphere::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
 	
 		if (t > kEpsilon) {
 			tmin = t;
-			sr.mNormal = (temp + t * ray.mDirection) / radius;
+			sr.mNormal = (temp + t * ray.mDirection) / mRadius;
 			sr.mLocalHitPoint = ray.mOrigin + t * ray.mDirection;
 			return (true);
 		} 

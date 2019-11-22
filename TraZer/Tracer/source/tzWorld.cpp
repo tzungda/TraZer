@@ -632,7 +632,7 @@ void tzWorld::build()
 	// create spheres
 	tzSphere *spherePtr = new tzSphere();
 	spherePtr->setCenter( 0.0f, -25.0f, 0.0f );
-	spherePtr->set_radius( 80 );
+	spherePtr->setRadius( 80 );
 	spherePtr->setColor( 1.0f, 0.0f, 0.0f );
 	addObject( spherePtr );
 	//
