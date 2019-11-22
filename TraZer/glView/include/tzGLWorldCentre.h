@@ -16,7 +16,7 @@ private:
 
 public: 
 	// tzIGLDraw interfaces
-	virtual		void init();
+	virtual		void init(GLuint shaderProgram);
 	virtual		void draw(GLuint colorId);
 };
 

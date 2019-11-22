@@ -29,6 +29,7 @@ my members
 private:
 	std::vector<glm::vec3>	mLintPoints;
 	lineShaderParams		mLineShaderParams;
+	GLuint			mVBObject;
 
 /*
 my interfaces
@@ -40,7 +41,7 @@ public:
 tzIGLDraw interfaces
 */
 public:
-	virtual			void init( );
+	virtual			void init(GLuint shaderProgram);
 	virtual			void draw( );
 };
 
