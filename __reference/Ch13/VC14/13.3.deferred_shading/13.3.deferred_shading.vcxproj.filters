@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\13.3.deferred_shading.cpp" />
+    <ClCompile Include="..\..\Source\ViewManager.cpp" />
+    <ClCompile Include="..\..\Source\Common.cpp" />
+    <ClCompile Include="..\..\Source\tiny_obj_loader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="GLSL">
+      <UniqueIdentifier>{e1b526ac-8fce-4640-8852-34d667a02e33}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Assets\13.3.deferred_shading\G-Buffer-Visualization.vs">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\Assets\13.3.deferred_shading\G-Buffer-Visualization.fs">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\Assets\13.3.deferred_shading\G-Buffer.vs">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\Assets\13.3.deferred_shading\G-Buffer.fs">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\Assets\13.3.deferred_shading\Deffered-Shading.vs">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\Assets\13.3.deferred_shading\Deffered-Shading.fs">
+      <Filter>GLSL</Filter>
+    </None>
+  </ItemGroup>
+</Project>

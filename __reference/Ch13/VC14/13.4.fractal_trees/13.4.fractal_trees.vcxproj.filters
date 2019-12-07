@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="GLSL">
+      <UniqueIdentifier>{8b777ee3-6b77-4226-8682-306dbca41899}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\tree.cpp" />
+    <ClCompile Include="..\..\Source\13.4.fractal_trees.cpp" />
+    <ClCompile Include="..\..\Source\tiny_obj_loader.cpp" />
+    <ClCompile Include="..\..\Source\Common.cpp" />
+    <ClCompile Include="..\..\Source\ViewManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\tree.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Assets\13.4.fractal_trees\directionalLight_depth.vs">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\Assets\13.4.fractal_trees\pointLight_depth.fs">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\Assets\13.4.fractal_trees\pointLight_depth.gs">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\Assets\13.4.fractal_trees\pointLight_depth.vs">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\Assets\13.4.fractal_trees\blinnPhong_shadow_instancing.fs">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\Assets\13.4.fractal_trees\blinnPhong_shadow_instancing.vs">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\Assets\13.4.fractal_trees\directionalLight_depth.fs">
+      <Filter>GLSL</Filter>
+    </None>
+  </ItemGroup>
+</Project>
