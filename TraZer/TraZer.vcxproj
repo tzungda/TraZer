@@ -108,13 +108,13 @@
       <PrecompiledHeaderFile />
       <MultiProcessorCompilation>
       </MultiProcessorCompilation>
-      <OpenMPSupport>false</OpenMPSupport>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\external\glew\win64_vs2017\1.13.0\release\lib;..\external\freeglut\win64_vs2017\3.0.0\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\external\freeglut\win64_vs2017\3.0.0\debug\lib;..\external\glew\win64_vs2017\1.13.0\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Rpcrt4.lib;freeglutd.lib;glew32d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -158,13 +158,19 @@
     <ClCompile Include="..\external\lodepng\lodepng.cpp" />
     <ClCompile Include="glView\source\tzGLCamera.cpp" />
     <ClCompile Include="glView\source\tzGLLine.cpp" />
+    <ClCompile Include="glView\source\tzGLPhongMaterial.cpp" />
+    <ClCompile Include="glView\source\tzGLMesh.cpp" />
+    <ClCompile Include="glView\source\tzGLTexture.cpp" />
+    <ClCompile Include="glView\source\tzGLTools.cpp" />
     <ClCompile Include="glView\source\tzGLWorldCentre.cpp" />
     <ClCompile Include="ImageExport\source\bmp-utils.c" />
     <ClCompile Include="source\tzCoreCamera.cpp" />
+    <ClCompile Include="source\tzCoreMaterial.cpp" />
     <ClCompile Include="source\tzCoreMesh.cpp" />
     <ClCompile Include="source\tzCoreObject.cpp" />
     <ClCompile Include="source\tzCoreScene.cpp" />
-    <ClCompile Include="source\tzTool.cpp" />
+    <ClCompile Include="source\tzCoreTexture.cpp" />
+    <ClCompile Include="Source\tzImageTool.cpp" />
     <ClCompile Include="source\tzCoreTransform.cpp" />
     <ClCompile Include="Tracer\source\tzAmbient.cpp" />
     <ClCompile Include="Tracer\source\tzAmbientOccluder.cpp" />
@@ -228,12 +234,16 @@
     <ClCompile Include="Utilities\tzNormal.cpp" />
     <ClCompile Include="Utilities\tzPoint2D.cpp" />
     <ClCompile Include="Utilities\tzPoint3D.cpp" />
-    <ClCompile Include="Utilities\tzRGBColor.cpp" />
+    <ClCompile Include="Utilities\tzColor.cpp" />
     <ClCompile Include="Utilities\tzVector3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glView\include\tzGLCamera.h" />
     <ClInclude Include="glView\include\tzGLLine.h" />
+    <ClInclude Include="glView\include\tzGLPhongMaterial.h" />
+    <ClInclude Include="glView\include\tzGLMesh.h" />
+    <ClInclude Include="glView\include\tzGLTexture.h" />
+    <ClInclude Include="glView\include\tzGLTools.h" />
     <ClInclude Include="glView\include\tzGLWorldCentre.h" />
     <ClInclude Include="ImageExport\include\bmp-utils.h" />
     <ClInclude Include="Include\Common.h" />
@@ -243,7 +253,8 @@
     <ClInclude Include="Include\tzCoreMesh.h" />
     <ClInclude Include="Include\tzCoreObject.h" />
     <ClInclude Include="Include\tzCoreScene.h" />
-    <ClInclude Include="Include\tzTool.h" />
+    <ClInclude Include="Include\tzCoreTexture.h" />
+    <ClInclude Include="Include\tzImageTool.h" />
     <ClInclude Include="Include\tzCoreTransform.h" />
     <ClInclude Include="Interfaces\tzIGLDraw.h" />
     <ClInclude Include="Tracer\include\tzAmbient.h" />
@@ -307,7 +318,7 @@
     <ClInclude Include="Utilities\tzNormal.h" />
     <ClInclude Include="Utilities\tzPoint2D.h" />
     <ClInclude Include="Utilities\tzPoint3D.h" />
-    <ClInclude Include="Utilities\tzRGBColor.h" />
+    <ClInclude Include="Utilities\tzColor.h" />
     <ClInclude Include="Utilities\tzVector3D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

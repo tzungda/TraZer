@@ -12,18 +12,26 @@
 #include "Common.h"
 
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "TinyOBJ/tiny_obj_loader.h"
+
 // core
 #include "../Include/tzCoreScene.h"
 
 // headers
-#include "../glView/include/tzGLWorldCentre.h"
-#include "../glView/include/tzGLCamera.h"
-#include "../Include/tzTool.h"
-
 #include "Tracer\include\tzWorld.h"
 
+#include "../glView/include/tzGLWorldCentre.h"
+#include "../glView/include/tzGLCamera.h"
+#include "../glView/include/tzGLMesh.h"
+#include "../glView/include/tzGLTexture.h"
+#include "../glView/include/tzGLPhongMaterial.h"
+#include "../glView/include/tzGLTools.h"
+#include "../Include/tzImageTool.h"
+
+
 using namespace glm;
-using namespace std;
+
 
 #define PI				3.14159265359f
 #define RADIAN_TO_ANGLE (180.0f / PI)
@@ -90,15 +98,205 @@ vec3			m_lightPos = vec3(5, 5, 0);
 
 GLuint			m_mainWindow;
 vec2			m_screenSize;
-tzGLCamera		m_camera;
 
+
+
+
+//tzGLMesh glMesh;
+
+
+// add meshes to scene
+//-----------------------------------------------------------------------------------------------------------------
 // create a scene
 tzCoreScene myScene;
+
+tzGLCamera		m_camera;
+tzGLPhongMaterial g_glPhongMaterial;
+tzGLMesh g_glMesh;
+tzCoreMesh * addMeshesToScene(tzCoreScene *scene, const tinyobj::attrib_t &attrib, const std::vector<tinyobj::shape_t>& shapes)
+{
+	int numShapes = (int)shapes.size();
+	for (int i = 0; i < numShapes; i++)
+	{
+		if (shapes[i].mesh.indices.size() % 3 != 0 || attrib.vertices.size() % 3 != 0)
+		{
+			printf(" mesh's indices needs to be a multiple of 3 \n");
+			continue;
+		}
+
+		//
+		tzCoreMesh *newMesh = new tzCoreMesh();
+		newMesh->setName(shapes[i].name);
+		newMesh->setNumTriangles((int)shapes[i].mesh.indices.size() / 3);
+
+		// get verts
+		int numVerts = (int)attrib.vertices.size() / 3;
+		std::vector<tzPoint3D> verts(numVerts);
+		for (int vid = 0; vid < numVerts; vid++)
+		{
+			int index = vid * 3;
+			verts[vid] = tzPoint3D(attrib.vertices[index], attrib.vertices[index + 1], attrib.vertices[index + 2]);
+		}
+		newMesh->setNumVertices(numVerts);
+		newMesh->setVertices(verts);
+
+		// get uvs
+		int numUVs = (int)attrib.texcoords.size() / 2;
+		std::vector<float> us(numUVs);
+		std::vector<float> vs(numUVs);
+		for (int uvid = 0; uvid < numUVs; uvid++)
+		{
+			int index = uvid * 2;
+			us[uvid] = attrib.texcoords[index];
+			vs[uvid] = attrib.texcoords[index + 1];
+		}
+		newMesh->setUs(us);
+		newMesh->setVs(vs);
+
+		// get normals
+		int numNorms = (int)attrib.normals.size() / 3;
+		std::vector<tzNormal> normals(numNorms);
+		for (int nid = 0; nid < numNorms; nid++)
+		{
+			int index = nid * 3;
+			normals[nid] = tzPoint3D(attrib.normals[index], attrib.normals[index + 1], attrib.normals[index + 2]);
+		}
+		newMesh->setVertexNormals(normals);
+
+		// vertex faces & indices
+		std::vector< std::vector< int > > vertexFaces(newMesh->numVertices());
+		std::vector< std::vector< int > > faceVertices(newMesh->numTriangles());
+		int idx = 0;
+		for (int j = 0; j < newMesh->numTriangles(); j++)
+		{
+			int vid = shapes[i].mesh.indices[idx].vertex_index;
+			vertexFaces[vid].push_back(j);
+			//indices[idx] = vid;
+			faceVertices[j].push_back(vid);
+			idx++;
+
+			vid = shapes[i].mesh.indices[idx].vertex_index;
+			vertexFaces[vid].push_back(j);
+			//indices[idx] = vid;
+			faceVertices[j].push_back(vid);
+			idx++;
+
+			vid = shapes[i].mesh.indices[idx].vertex_index;
+			vertexFaces[vid].push_back(j);
+			//indices[idx] = vid;
+			faceVertices[j].push_back(vid);
+			idx++;
+			//
+		}
+		newMesh->setFaceVertices(faceVertices);
+		newMesh->setVertexFaces(vertexFaces);
+		//
+		std::vector< tzCoreMesh::index > indices(shapes[i].mesh.indices.size());
+		for (int ind = 0; ind < (int)indices.size(); ind++)
+		{
+			indices[ind].vertex_index = shapes[i].mesh.indices[ind].vertex_index;
+			indices[ind].normal_index = shapes[i].mesh.indices[ind].normal_index;
+			indices[ind].texcoord_index = shapes[i].mesh.indices[ind].texcoord_index;
+		}
+		newMesh->setIndices(indices);
+
+		// set material ids
+
+		// add new mesh
+		scene->addMesh(newMesh);
+		return newMesh;
+	}
+	return NULL;
+}
+
+// currently read the obj file with one mesh and one material
+void loadObjToScene( tzCoreScene *ptrScene, const std::string &objPath, const std::string &parentPath )
+{
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
+
+	std::string err;
+
+	bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, objPath.c_str(), parentPath.c_str());
+	if (err.size() > 0)
+	{
+		printf("Load Models Fail: %s\n", err.c_str());
+		return;
+	}
+
+	tzCoreMesh *newMesh = addMeshesToScene(ptrScene, attrib, shapes);
+
+	// create material and texture objects
+	if ( materials.size() > 0 )
+	{
+		tinyobj::material_t mat = materials[0];
+		
+		// material
+		tzCoreMaterial *newMat = new tzCoreMaterial();
+		ptrScene->addMaterial( newMat );
+		newMesh->setMaterial( newMat );
+		newMat->setName( mat.name );
+		newMat->setAmbientColor( tzVector3D( mat.ambient[0], mat.ambient[1], mat.ambient[2] ) );
+		newMat->setDiffuseColor( tzVector3D(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]) );
+		newMat->setSpecularColor( tzVector3D(mat.specular[0], mat.specular[1], mat.specular[2]) );
+		//
+		newMat->addFloatAttribute( "shininess", mat.shininess );
+		newMat->addFloatAttribute( "ior", mat.ior );
+		newMat->addFloatAttribute( "dissolve", mat.dissolve );
+		newMat->addFloatAttribute( "illum", (float)mat.illum );
+
+		// textures
+		if ( mat.ambient_texname.length() > 0 )
+		{
+			tzCoreTexture *newTex = new tzCoreTexture();
+			newTex->setPath(mat.ambient_texname);
+			ptrScene->addTexture( newTex );
+			newMat->addTexture( "ambient", newTex );
+		}
+		if (mat.diffuse_texname.length() > 0)
+		{
+			tzCoreTexture *newTex = new tzCoreTexture();
+			newTex->setPath(mat.diffuse_texname);
+			ptrScene->addTexture(newTex);
+			newMat->addTexture("diffuse", newTex);
+		}
+		if (mat.specular_texname.length() > 0)
+		{
+			tzCoreTexture *newTex = new tzCoreTexture();
+			newTex->setPath(mat.specular_texname);
+			ptrScene->addTexture(newTex);
+			newMat->addTexture("specular", newTex);
+		}
+	}
+}
+
+// update my GL objects
+void updateGLObjects( const tzCoreScene *ptrScene)
+{/*
+	tzGLPhongMaterial g_glPhongMaterial;
+	tzGLMesh g_glMesh;
+	*/
+	g_glMesh.setMesh( ptrScene->meshList()[0] );
+	g_glPhongMaterial.setMaterial( ptrScene->materialList()[0] );
+	g_glMesh.setMaterial( &g_glPhongMaterial );
+
+	std::string dirPath = "./commonData/";
+	//phongShaderProgram = tzGLTools::loadShader(dirPath + "phong.vs", dirPath + "phong.fs");
+	g_glPhongMaterial.loadShader(dirPath + "phong.vs", dirPath + "phong.fs");
+
+	g_glMesh.init( 0 );
+
+	
+}
+//-----------------------------------------------------------------------------------------------------------------
+
+
 
 //material info
 typedef struct
 {
-	string name;
+	std::string name;
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
@@ -128,13 +326,13 @@ typedef struct
 
 
 GLuint			phongShaderProgram;
-map<string, vector<Material>> m_materials;//mesh name
+std::map<std::string, std::vector<Material>> m_materials;//mesh name
 
 
 										  //model info
 typedef struct
 {
-	string name;
+	std::string name;
 	GLuint vao;
 	GLuint vbo[3];
 	GLuint ebo;
@@ -146,7 +344,7 @@ typedef struct
 	vec3 rotation = vec3(0.0f);
 	vec3 scale = vec3(1.0f);
 
-	string shaderName = "phong";
+	std::string shaderName = "phong";
 
 	mat4 getTransformationMatrix()
 	{
@@ -161,12 +359,12 @@ typedef struct
 
 	void Draw()
 	{
-		map<string, vector<Material>>::iterator found = m_materials.find(name);
+		std::map<std::string, std::vector<Material>>::iterator found = m_materials.find(name);
 		if (found != m_materials.end())
 		{
 			Material mat = found->second[materialId];
-			glBindVertexArray(vao);
-			glUniformMatrix4fv(phongShaderPrograms.model_matrix, 1, GL_FALSE, value_ptr(getTransformationMatrix()));
+			
+			glUniformMatrix4fv( phongShaderPrograms.model_matrix, 1, GL_FALSE, value_ptr(getTransformationMatrix()));
 			glUniform3fv(phongShaderPrograms.ambient, 1, value_ptr(mat.ambient));
 			glUniform3fv(phongShaderPrograms.diffuse, 1, value_ptr(mat.diffuse));
 			glUniform3fv(phongShaderPrograms.specular, 1, value_ptr(mat.specular));
@@ -190,11 +388,17 @@ typedef struct
 				glActiveTexture(GL_TEXTURE2);
 				glBindTexture(GL_TEXTURE_2D, mat.m_tex_specular);
 			}
+
+			glBindVertexArray(vao);
 			//glPolygonMode(GL_FRONT, GL_LINE);
 			//glPolygonMode(GL_BACK, GL_LINE);
 			//glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 			glDrawArrays(GL_TRIANGLES, 0, indexCount);
+
 			glBindVertexArray(0);
+			glDisableVertexAttribArray(0);
+			glDisableVertexAttribArray(1);
+			glDisableVertexAttribArray(2);
 		}
 		else
 		{
@@ -210,7 +414,9 @@ tzGLWorldCentre gWorldCentre;
 GLuint			lineShaderProgram;
 //---------------------------------------------------------------------------------------------------
 
-vector<Shape>	m_shapes;
+std::vector<Shape>	m_shapes;
+
+//std::vector<tzGLMesh> g_Meshes;
 
 void drawaxes(void)
 {
@@ -257,8 +463,8 @@ void drawaxes(void)
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, 'z');
 }
 
-
-GLuint loadShader(string vsPath, string fsPath)
+/*
+GLuint loadShader(std::string vsPath, std::string fsPath)
 {
 	GLuint shaderProgram;
 	shaderProgram = glCreateProgram();
@@ -280,13 +486,13 @@ GLuint loadShader(string vsPath, string fsPath)
 	glLinkProgram(shaderProgram);
 	return shaderProgram;
 }
-
+*/
 
 void setupShaders()
 {
-	string dirPath = "./commonData/";
-
-	phongShaderProgram = loadShader(dirPath + "phong.vs", dirPath + "phong.fs");
+	std::string dirPath = "./commonData/";
+	/*
+	phongShaderProgram = tzGLTools::loadShader(dirPath + "phong.vs", dirPath + "phong.fs");
 	{
 		glUseProgram(phongShaderProgram);
 
@@ -310,10 +516,10 @@ void setupShaders()
 		glUniform1i(glGetUniformLocation(phongShaderProgram, "diffuseTexture"), 1);
 		glUniform1i(glGetUniformLocation(phongShaderProgram, "specularTexture"), 2);
 	}
-
+	*/
 	// line shader
 	glUseProgram(0);
-	lineShaderProgram = loadShader(dirPath + "line.vs", dirPath + "line.fs");
+	lineShaderProgram = tzGLTools::loadShader(dirPath + "line.vs", dirPath + "line.fs");
 	{
 		glUseProgram(lineShaderProgram);
 		lineShaderPrograms.model_matrix = glGetUniformLocation(lineShaderProgram, "model");
@@ -323,189 +529,35 @@ void setupShaders()
 	}
 }
 
-// add meshes to scene
-void addMeshesToScene( tzCoreScene *scene, const tinyobj::attrib_t &attrib, const std::vector<tinyobj::shape_t>& shapes )
-{
-	/*
-	m_shape.name = model_names[i];
-	m_shape.indexCount = (int)shapes[j].mesh.indices.size();
-
-	positions.resize(3 * shapes[j].mesh.indices.size());
-	texcoords.resize(2 * shapes[j].mesh.indices.size());
-	normals.resize(3 * shapes[j].mesh.indices.size());
-	for (int idx = 0; idx < m_shape.indexCount; idx++)
-	{
-	for (int channel = 0; channel < 3; channel++)
-	{
-	positions[3 * idx + channel] = attrib.vertices[3 * shapes[j].mesh.indices[idx].vertex_index + channel];
-	normals[3 * idx + channel] = attrib.normals[3 * shapes[j].mesh.indices[idx].normal_index + channel];
-	}
-	for (int channel = 0; channel < 2; channel++)
-	texcoords[2 * idx + channel] = attrib.texcoords[2 * shapes[j].mesh.indices[idx].texcoord_index + channel];
-	}
-	*/
-
-	int numShapes = (int)shapes.size();
-	for ( int i = 0; i < numShapes; i++ )
-	{
-		if (shapes[i].mesh.indices.size() % 3 != 0 || attrib.vertices.size() % 3 != 0 )
-		{
-			printf( " mesh's indices needs to be a multiple of 3 \n" );
-			continue;
-		}
-		bool moreTexcoordNum = true;
-		if (attrib.texcoords.size()/2 < attrib.vertices.size() / 3)
-		{
-			//printf(" the number of texcoords should be larger than the vertices \n");
-			moreTexcoordNum = false;
-			//continue;
-		}
-
-		//
-		tzCoreMesh *newMesh = new tzCoreMesh();
-		newMesh->setName( shapes[i].name );
-		newMesh->setNumTriangles( (int)shapes[i].mesh.indices.size()/3 );
-
-		// get number of verts
-		int numVerts = (int)std::max((int)attrib.vertices.size()/3, (int)attrib.texcoords.size()/2);
-		newMesh->setNumVertices(numVerts);
-		// vertices & uv & normal
-		std::vector<tzPoint3D> verts(numVerts);
-		std::vector<float> us(numVerts);
-		std::vector<float> vs(numVerts);
-		std::vector<tzNormal> normals(numVerts);
-		int numNorms = (int)attrib.normals.size()/3;
-		for ( int f = 0; f < (int)shapes[i].mesh.indices.size(); f++ )
-		{
-			int uvid = 0; 
-			int vid =  0; 
-			if (moreTexcoordNum )
-			{
-				uvid = shapes[i].mesh.indices[f].texcoord_index;
-				vid = uvid;
-				if (shapes[i].mesh.indices[f].texcoord_index >= (int)attrib.vertices.size() / 3)
-				{
-					vid = shapes[i].mesh.indices[f].vertex_index;
-				}
-			}
-			else
-			{
-				vid = shapes[i].mesh.indices[f].vertex_index;
-				uvid = uvid;
-				if (shapes[i].mesh.indices[f].vertex_index >= (int)attrib.texcoords.size() / 2)
-				{
-					uvid = shapes[i].mesh.indices[f].texcoord_index;
-				}
-			}
-			//
-			verts[vid].x = attrib.vertices[vid *3];
-			verts[vid].y = attrib.vertices[vid *3 + 1];
-			verts[vid].z = attrib.vertices[vid *3 + 2];
-
-			//
-			us[uvid] = attrib.texcoords[uvid*2];
-			vs[uvid] = attrib.texcoords[uvid*2 + 1];
-
-			//
-			if ( vid > numNorms - 1 )
-			{
-				normals[vid].x = attrib.normals[numNorms - 1];
-				normals[vid].y = attrib.normals[numNorms];
-				normals[vid].z = attrib.normals[numNorms + 1];
-			}
-			else
-			{
-				normals[vid].x = attrib.normals[vid * 3];
-				normals[vid].y = attrib.normals[vid * 3 + 1];
-				normals[vid].z = attrib.normals[vid * 3 + 2];
-			}
-		}
-		newMesh->setVertices(verts);
-		newMesh->setUs(us);
-		newMesh->setVs(vs);
-		newMesh->setVertexNormals(normals);
-
-		// vertex faces & indices
-		std::vector< std::vector< int > > vertexFaces(newMesh->numVertices());
-		std::vector< std::vector< int > > faceVertices(newMesh->numTriangles());
-		int idx = 0;
-		for (int j = 0; j < newMesh->numTriangles(); j++)
-		{
-			int vid = shapes[i].mesh.indices[idx].vertex_index;
-			vertexFaces[vid].push_back( j );
-			//indices[idx] = vid;
-			faceVertices[j].push_back(vid);
-			idx++;
-
-			vid = shapes[i].mesh.indices[idx].vertex_index;
-			vertexFaces[vid].push_back( j );
-			//indices[idx] = vid;
-			faceVertices[j].push_back(vid);
-			idx++;
-
-			vid = shapes[i].mesh.indices[idx].vertex_index;
-			vertexFaces[vid].push_back( j );
-			//indices[idx] = vid;
-			faceVertices[j].push_back(vid);
-			idx++;
-			//
-		}
-		newMesh->setFaceVertices(faceVertices);
-		newMesh->setVertexFaces(vertexFaces);
-		//
-		std::vector< tzCoreMesh::index > indices( shapes[i].mesh.indices.size() );
-		for ( int ind = 0; ind < (int)indices.size(); ind++ )
-		{
-			indices[ind].vertex_index = shapes[i].mesh.indices[ind].vertex_index;
-			indices[ind].normal_index = shapes[i].mesh.indices[ind].normal_index;
-			indices[ind].texcoord_index = shapes[i].mesh.indices[ind].texcoord_index;
-		}
-		newMesh->setIndices(indices);
-		
-		// uv
-		/*
-		std::vector< float > us(newMesh->numVertices());
-		std::vector< float > vs(newMesh->numVertices());
-		idx = 0;
-		for ( int j = 0; j < (int)attrib.texcoords.size(); j+=2)
-		{
-			us[idx] = attrib.texcoords[j];
-			vs[idx] = attrib.texcoords[j+1];
-			idx++;
-		}
-		newMesh->setUs( us );
-		newMesh->setVs( vs );
-		*/
-
-		// add new mesh
-		scene->addMesh( newMesh );
-	}
-
-	int a = 0;
-	a = 1;
-}
-
 
 void setupModels(tzCoreScene *scene)
 {
 	// initialize world axes buffers
-	gWorldCentre.init();
+	gWorldCentre.init(lineShaderProgram);
 	/*line1.setLineData( glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 0.0f, 0.0f) );
 	line2.setLineData(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 20.0f, 0.0f));
 	line1.init();
 	line2.init();*/
 
 	// path
-	string dirPath = "./commonData/";
+	std::string dirPath = "./commonData/";
 
 	//
-	vector<string> model_names =
+	std::vector<std::string> model_names =
 	{
 		dirPath+"sphere.obj",//"torus.obj",//"happynewyear.obj",//"sponza.obj",
 	};
 
-	map<string, vector<tinyobj::shape_t>> model_cache;
-	map<string, vector<tinyobj::material_t>> material_cache;
+	
+	// ooxx
+	loadObjToScene(scene, model_names[0], dirPath);
+	updateGLObjects( scene );
+
+	return;
+	
+
+	std::map<std::string, std::vector<tinyobj::shape_t>> model_cache;
+	std::map<std::string, std::vector<tinyobj::material_t>> material_cache;
 
 	for (int i = 0; i < model_names.size(); i++)
 	{
@@ -513,7 +565,7 @@ void setupModels(tzCoreScene *scene)
 		std::vector<tinyobj::shape_t> shapes;
 		std::vector<tinyobj::material_t> materials;
 
-		map<string, vector<tinyobj::shape_t>>::iterator found = model_cache.find(model_names[i]);
+		std::map<std::string, std::vector<tinyobj::shape_t>>::iterator found = model_cache.find(model_names[i]);
 		if (found != model_cache.end())
 		{
 			shapes = found->second;
@@ -526,19 +578,20 @@ void setupModels(tzCoreScene *scene)
 			if (err.size() > 0)
 			{
 				printf("Load Models Fail: %s\n", err.c_str());
-				continue;
+				continue; 
 			}
 
 			// test------------------------------------------------------------------
-			addMeshesToScene( scene, attrib, shapes);
+			//addMeshesToScene( scene, attrib, shapes);
+			loadObjToScene( scene, model_names[i], dirPath );
 			// test------------------------------------------------------------------
 
-			model_cache.insert(pair<string, vector<tinyobj::shape_t>>(model_names[i], shapes));
-			material_cache.insert(pair<string, vector<tinyobj::material_t>>(model_names[i], materials));
+			model_cache.insert(std::pair<std::string, std::vector<tinyobj::shape_t>>(model_names[i], shapes));
+			material_cache.insert(std::pair<std::string, std::vector<tinyobj::material_t>>(model_names[i], materials));
 
 			printf("Load Models Success ! Shapes size %d Material size %d\n", (int)shapes.size(), (int)materials.size());
 		}
-		vector<Material> temp_materials;
+		std::vector<Material> temp_materials;
 		for (int j = 0; j < materials.size(); ++j)
 		{
 			Material m_material;
@@ -546,7 +599,7 @@ void setupModels(tzCoreScene *scene)
 			m_material.diffuse = glm::vec3(materials[j].diffuse[0], materials[j].diffuse[1], materials[j].diffuse[2]);
 			m_material.specular = glm::vec3(materials[j].specular[0], materials[j].specular[1], materials[j].specular[2]);
 			m_material.shininess = materials[j].shininess;
-			m_material.transmittance = glm::vec3(materials[j].transmittance[0], materials[j].transmittance[1], materials[j].transmittance[2]);
+			m_material.transmittance = glm::vec3(0.0f, 0.0f, 0.0f);//glm::vec3(materials[j].transmittance[0], materials[j].transmittance[1], materials[j].transmittance[2]);
 			m_material.emission = glm::vec3(materials[j].emission[0], materials[j].emission[1], materials[j].emission[2]);
 			m_material.ior = materials[j].ior;      // index of refraction
 			m_material.dissolve = materials[j].dissolve; // 1 == opaque; 0 == fully transparent
@@ -555,8 +608,8 @@ void setupModels(tzCoreScene *scene)
 
 			m_material.dummy = materials[j].dummy; // Suppress padding warning.
 
-			TextureData textureData;
-			textureData = Load_png(materials[j].ambient_texname.c_str());
+			tzTextureData textureData;
+			textureData = tzImageTool::LoadPngTexture(materials[j].ambient_texname.c_str());
 			if (m_material.hasAmbientTex = (textureData.data != NULL))
 			{
 				glGenTextures(1, &m_material.m_tex_ambient);
@@ -569,7 +622,7 @@ void setupModels(tzCoreScene *scene)
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			}
 
-			textureData = Load_png(materials[j].diffuse_texname.c_str());
+			textureData = tzImageTool::LoadPngTexture(materials[j].diffuse_texname.c_str());
 			if (m_material.hasDiffuseTex = (textureData.data != NULL))
 			{
 				glGenTextures(1, &m_material.m_tex_diffuse);
@@ -582,7 +635,7 @@ void setupModels(tzCoreScene *scene)
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			}
 
-			textureData = Load_png(materials[j].specular_texname.c_str());
+			textureData = tzImageTool::LoadPngTexture(materials[j].specular_texname.c_str());
 			if (m_material.hasSpecularTex = (textureData.data != NULL))
 			{
 				glGenTextures(1, &m_material.m_tex_specular);
@@ -601,25 +654,39 @@ void setupModels(tzCoreScene *scene)
 
 			temp_materials.push_back(m_material);
 		}
-		m_materials.insert(pair<string, vector<Material>>(model_names[i], temp_materials));
+		m_materials.insert(std::pair<std::string, std::vector<Material>>(model_names[i], temp_materials));
 
 		for (int j = 0; j < shapes.size(); ++j)
 		{
+			//glMesh.setMesh(myScene.meshList()[0]);
+			//glMesh.init( phongShaderProgram );
+			
+			tzCoreMesh *msh = myScene.meshList()[0];
+
+			//tzGLMesh myMesh;
+			//myMesh.setMesh( msh );
+			
+
 			Shape m_shape;
+
+			m_shape.indexCount = (int)msh->indices().size();
+			
 			std::vector<float> positions;
 			std::vector<float> texcoords;
 			std::vector<float> normals;
 			
+			m_shape.indexCount = (int)msh->indices().size();
 			
 			//------------------------------------------------------------------------------
-			tzCoreMesh *msh = myScene.meshList()[0];
+			
 			//
+			
 			int indexLen = (int)msh->indices().size();
 			positions.resize(indexLen *3);
 			normals.resize(indexLen *3);
 			texcoords.resize(indexLen *2);
 			//
-			m_shape.indexCount = indexLen;//->numVertices();
+			//m_shape.indexCount = indexLen;//->numVertices();
 			//
 			//int index = 0;
 			for ( int ind = 0; ind < indexLen; ind++ )
@@ -647,6 +714,8 @@ void setupModels(tzCoreScene *scene)
 
 			//------------------------------------------------------------------------------
 			m_shape.name = model_names[i];
+			
+
 			/*
 			m_shape.indexCount = (int)shapes[j].mesh.indices.size();
 
@@ -664,6 +733,7 @@ void setupModels(tzCoreScene *scene)
 					texcoords[2 * idx + channel] = attrib.texcoords[2 * shapes[j].mesh.indices[idx].texcoord_index + channel];
 			}
 			*/
+			
 			
 			glGenVertexArrays(1, &m_shape.vao);
 			glBindVertexArray(m_shape.vao);
@@ -688,10 +758,18 @@ void setupModels(tzCoreScene *scene)
 
 			printf("Add object %s ,material ID %d\n", shapes[j].name.c_str(), m_shape.materialId);
 			m_shapes.push_back(m_shape);
+
+			/*
+			myMesh.setVAO( m_shape.vao );
+			myMesh.setVBO( m_shape.vbo );
+			myMesh.setMaterialId( m_shape.materialId );
+			g_Meshes.push_back( myMesh );
+			*/
+			
 		}
 	}
 
-	m_shapes[0].position = vec3(0, 0, 0);
+	//m_shapes[0].position = vec3(0, 0, 0);
 }
 
 void My_Init(tzCoreScene *scene)
@@ -705,9 +783,10 @@ void My_Init(tzCoreScene *scene)
 	//m_camera.SetCamera(vec3(-800.0f, 100.0f, -40.0f), vec3(10.0f, 100.0f, -40.0f));
 	//m_camera.SetCamera(vec3(0.0f, 0.0f, -200.0f), vec3(0.0f, 0.0f, 0.0f));
 	//m_camera.SetCamera(vec3(0.0f, 0.0f, 60.0f), vec3(0.0f, 0.0f, 0.0f));
-	m_camera.setCamPosition( tzVector3D(0.0f, 0.0f, 60.0f) );
+	m_camera.setCamPosition( tzVector3D(0.0f, 0.0f, 30.0f) );
 	//m_camera.Zoom(3.0f);
 
+	// ooxx
 	setupShaders();
 	setupModels( scene );
 }
@@ -727,42 +806,53 @@ void My_Display()
 	lightSpaceMatrix = lightProjection * lightView;
 
 	tzMatrix view = m_camera.viewMatrix();//.invertedTransformMatrix();
+	tzVector3D pos(100.0f, 10.0f, 0.0f);
 
+	// ooxx
+	glUseProgram( g_glPhongMaterial.mGLPhongShaderProgram );
+	{
+		glUniform3fv(g_glPhongMaterial.mGLLightPos, 1, value_ptr(m_lightPos));
+		glUniform3fv(g_glPhongMaterial.mGLViewPos, 1, (GLfloat*)(&pos.x));//value_ptr(m_camera.GetWorldEyePosition()));
+		glUniformMatrix4fv(g_glPhongMaterial.mGLLightMatrix, 1, GL_FALSE, value_ptr(lightSpaceMatrix));
+
+
+		glUniformMatrix4fv(g_glPhongMaterial.mGLViewMatrix, 1, GL_FALSE, (GLfloat*)(view).m);//value_ptr(m_camera.GetViewMatrix() * m_camera.GetModelMatrix()));
+		glUniformMatrix4fv(g_glPhongMaterial.mGLProjectionMatrix, 1, GL_FALSE, (GLfloat*)(m_camera.projectionMatrix(1.0f).m));//value_ptr(m_camera.GetProjectionMatrix(aspect)));
+		//mesh->Draw();
+		
+
+		g_glMesh.draw();
+	}
+	
+
+	/*
 	glUseProgram(phongShaderProgram);
 	{
-		tzVector3D pos( 100.0f, 10.0f, 0.0f );
+		//tzVector3D pos( 100.0f, 10.0f, 0.0f );
 
 
 		glUniform3fv(phongShaderPrograms.lightPos, 1, value_ptr(m_lightPos));
 		glUniform3fv(phongShaderPrograms.viewPos, 1, (GLfloat*)(&pos.x) );//value_ptr(m_camera.GetWorldEyePosition()));
 		glUniformMatrix4fv(phongShaderPrograms.light_matrix, 1, GL_FALSE, value_ptr(lightSpaceMatrix));
 
-		
-		/*
-		float mm[4][4];
-		glm::mat4 vw = m_camera.GetViewMatrix();
-		for( int i = 0; i < 4; i++ )
-		{
-			for ( int j = 0; j < 4; j++ )
-			{
-				mm[i][j] = vw[i][j];
-			}
-		}
-		*/
-
-
 
 		glUniformMatrix4fv(phongShaderPrograms.view_matrix, 1, GL_FALSE, (GLfloat*)(view).m);//value_ptr(m_camera.GetViewMatrix() * m_camera.GetModelMatrix()));
 		glUniformMatrix4fv(phongShaderPrograms.projection_matrix, 1, GL_FALSE, (GLfloat*)(m_camera.projectionMatrix(1.0f).m));//value_ptr(m_camera.GetProjectionMatrix(aspect)));
 		//mesh->Draw();
 
-
+		
 		for (int i = 0; i < m_shapes.size(); i++)
 		{
 			m_shapes[i].Draw();
 		}
+		
+		//glMesh.draw();
 
 	}
+	*/
+	
+	glUseProgram(0);
+
 
 	// line
 	glUseProgram(lineShaderProgram);
@@ -851,7 +941,7 @@ void My_Keyboard(unsigned char key, int x, int y)
 			tzWorld w;
 			w.mScenePtr = &myScene;
 			w.build();
-			w.setOutputPath( "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\happy_new_year.png" );
+			w.setOutputPath("C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\test2019.png");
 			w.renderScene();
 			int a = 0;
 			a = 1;
