@@ -27,6 +27,10 @@ private:
 	std::vector<float> mNormals;
 	unsigned int mIndexCount;
 	GLuint			mVBObject[3];
+	GLuint			mVAObject;
+	int				mMaterialId;
+
+	void*			mPtrMaterial;
 
 	/*
 	my members
@@ -38,8 +42,17 @@ private:
 my interfaces
 */
 public:
-	void			setMesh( const tzCoreMesh *coreMeshPtr );
-
+	void							setMesh( const tzCoreMesh *coreMeshPtr );
+	void							setMaterialId( int matId );
+	void							setVAO( GLint vao );
+	void							setVBO( const GLuint vbo[] );
+	const std::vector<float>&		positions() const;
+	const std::vector<float>&		texcoords() const;
+	const std::vector<float>&		normals() const;
+	unsigned int					indexCount() const;
+	//
+	void							setMaterial( void* mat );
+	void*							material( ) const;
 /*
 tzIGLDraw interfaces
 */

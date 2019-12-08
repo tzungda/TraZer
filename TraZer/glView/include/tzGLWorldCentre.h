@@ -15,7 +15,7 @@ private:
 	tzGLLine	mAxisZ;
 
 public: 
-	// tzIGLDraw interfaces
+	// 
 	virtual		void init(GLuint shaderProgram);
 	virtual		void draw(GLuint colorId);
 };
