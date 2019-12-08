@@ -1,4 +1,5 @@
 #include "../include/tzGLMesh.h"
+#include "../include/tzGLPhongMaterial.h"
 
 /*
 Constructor/Destructor
@@ -10,6 +11,7 @@ tzGLMesh::tzGLMesh()
 	this->mInitialized = false;
 	mCoreMeshPtr = NULL;
 	mIndexCount = 0;
+	mPtrMaterial = NULL;
 }
 
 //================================================================================
@@ -80,6 +82,61 @@ void tzGLMesh::setMesh(const tzCoreMesh *coreMeshPtr)
 	buildRenderData();
 }
 
+//================================================================================
+void tzGLMesh::setMaterialId(int matId)
+{
+	this->mMaterialId = matId;
+}
+
+//================================================================================
+const std::vector<float>& tzGLMesh::positions() const
+{
+	return this->mPositions;
+}
+
+//================================================================================
+void tzGLMesh::setVAO(GLint vao)
+{
+	this->mVAObject = vao;
+}
+
+//================================================================================
+void tzGLMesh::setVBO(const GLuint vbo[])
+{
+	this->mVBObject[0] = vbo[0];
+	this->mVBObject[1] = vbo[1];
+	this->mVBObject[2] = vbo[2];
+}
+
+//================================================================================
+const std::vector<float>& tzGLMesh::texcoords() const
+{
+	return this->mTexcoords;
+}
+
+//================================================================================
+const std::vector<float>& tzGLMesh::normals() const
+{
+	return this->mNormals;
+}
+
+//================================================================================
+unsigned int  tzGLMesh::indexCount() const
+{
+	return this->mIndexCount;
+}
+
+//================================================================================
+void tzGLMesh::setMaterial( void* mat )
+{
+	mPtrMaterial = mat;
+}
+
+//================================================================================
+void* tzGLMesh::material() const
+{
+	return mPtrMaterial;
+}
 
 /*
 tzIGLDraw interfaces
@@ -120,17 +177,43 @@ void tzGLMesh::draw()
 {
 	if (!mInitialized)
 		return;
-	//glm::mat4 mtx;
+	
+	// test......
+	tzGLPhongMaterial *mat = (tzGLPhongMaterial *)this->mPtrMaterial;
 
-	//glUseProgram(lineShaderProgram);
+	glUniformMatrix4fv(mat->mGLModelMatrix, 1, GL_FALSE, (GLfloat*)this->mCoreMeshPtr->transformMatrix().m );
+	float ccc[3] = {1.0f, 1.0f, 1.0f};
+	glUniform3fv( mat->mGLAmbient, 1,  &(mat->mAmbient.x) );
+	glUniform3fv( mat->mGLDiffuse, 1, &(mat->mDiffuse.x) );
+	glUniform3fv( mat->mGLSpecular, 1, &(mat->mSpecular.x));
+	glUniform1f(mat->mGLShininess, (mat->mShininess));
+
+	glUniform1i(mat->mGLHasAmbientTex, mat->mHasAmbientTex);
+	if (mat->mHasAmbientTex)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, mat->mGLTexAmbient);
+	}
+	glUniform1i(mat->mGLHasDiffuseTex, mat->mHasDiffuseTex);
+	if (mat->mHasDiffuseTex)
+	{
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, mat->mGLTexDiffuse);
+	}
+	glUniform1i(mat->mGLHasSpecularTex, mat->mHasSpecularTex);
+	if (mat->mHasSpecularTex)
+	{
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, mat->mGLTexSpecular);
+	}
 
 	glBindVertexArray(mVAObject);
+	//glPolygonMode(GL_FRONT, GL_LINE);
+	//glPolygonMode(GL_BACK, GL_LINE);
+	//glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, (int)this->mCoreMeshPtr->indices().size());
 
-	//glUniformMatrix4fv(lineShaderPrograms.model_matrix, 1, GL_FALSE, value_ptr(mtx));
-
-	glDrawArrays(GL_TRIANGLES, 0, (int)mCoreMeshPtr->indices().size());
 	glBindVertexArray(0);
-
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);

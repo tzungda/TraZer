@@ -28,6 +28,9 @@ tzMatrix tzGLCamera::viewMatrix()
 tzMatrix tzGLCamera::projectionMatrix(float aspect)
 {
 	return mCamera.perspectiveProjection();
+	//return mCamera.orthogonalProjection();
+
+	
 	/*
     mat4 projectionMatrix;
     float nearVal;
