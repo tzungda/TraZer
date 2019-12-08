@@ -27,12 +27,12 @@ void tzCoreScene::addMesh(const tzCoreMesh* newMesh)
 	{
 		return;
 	}
-	mObjectList.push_back( (tzCoreMesh*)newMesh );
+	mObjectList.push_back( (tzCoreObject*)newMesh );
 	mMeshList.push_back( (tzCoreMesh*)newMesh );
 }
 
 //===================================================================================
-vector<tzCoreMesh*> tzCoreScene::meshList()
+const std::vector<tzCoreMesh*>& tzCoreScene::meshList() const
 {
 	return mMeshList;
 }
@@ -45,14 +45,25 @@ void tzCoreScene::addMaterial( const tzCoreMaterial* newMaterial )
 		return;
 	}
 
-	mObjectList.push_back( (tzCoreMaterial*)newMaterial );
+	mObjectList.push_back( (tzCoreObject*)newMaterial );
 	mMaterialList.push_back( (tzCoreMaterial*)newMaterial );
 }
 
 //===================================================================================
-vector<tzCoreMaterial*> tzCoreScene::materialList( )
+const std::vector<tzCoreMaterial*>& tzCoreScene::materialList( ) const
 {
 	return mMaterialList;
 }
 
+//===================================================================================
+void tzCoreScene::addTexture( tzCoreTexture* newTexture)
+{
+	this->mTextureList[newTexture->path()] = newTexture;
+}
+
+//===================================================================================
+const std::map< std::string, tzCoreTexture* >& tzCoreScene::textureList() const
+{
+	return this->mTextureList;
+}
 

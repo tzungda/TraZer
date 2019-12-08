@@ -14,7 +14,7 @@ tzCoreCamera::tzCoreCamera()
 	mAspect = 1.0f;
 	mFov = 45.0f;
 
-	mNearPlane = 0.1f;
+	mNearPlane = 0.0f;
 	mFarPlane = 10000.0f;
 }
 
@@ -119,6 +119,42 @@ tzMatrix tzCoreCamera::perspectiveProjection() const
 	result.m[2][3] = -1.0f;
 	result.m[3][2] = -(2.0f * mFarPlane * mNearPlane) / (mFarPlane - mNearPlane);
 	return result;
+}
+
+tzMatrix tzCoreCamera::orthogonalProjection() const
+{
+	//-aspect * size, aspect * size, -size, size, nearVal, farVal
+	//
+	float testSize = 1.5f;
+	//
+	float left = -mAspect*testSize;
+	float right = mAspect*testSize;
+	float bottom = -testSize;
+	float top = testSize;
+	float zNear = mNearPlane;
+	float zFar = mFarPlane;
+
+	tzMatrix result;
+	//result.initializeWithAValue(1.0f);
+	result.m[0][0] = 2.0f / (right - left);
+	result.m[1][1] = 2.0f / (top - bottom);
+	result.m[2][2] = -2.0f / (zFar - zNear);
+	result.m[3][0] = -(right + left) / (right - left);
+	result.m[3][1] = -(top + bottom) / (top - bottom);
+	result.m[3][2] = -(zFar + zNear) / (zFar - zNear);
+
+	return result;
+
+	/*
+	tmat4x4<T, defaultp> Result(1);
+		Result[0][0] = static_cast<T>(2) / (right - left);
+		Result[1][1] = static_cast<T>(2) / (top - bottom);
+		Result[2][2] = - static_cast<T>(2) / (zFar - zNear);
+		Result[3][0] = - (right + left) / (right - left);
+		Result[3][1] = - (top + bottom) / (top - bottom);
+		Result[3][2] = - (zFar + zNear) / (zFar - zNear);
+		return Result;
+	*/
 }
 
 //===================================================================================

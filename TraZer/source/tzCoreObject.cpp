@@ -27,13 +27,13 @@ Interfaces
 */
 
 //===================================================================================
-string tzCoreObject::name() const
+std::string tzCoreObject::name() const
 {
 	return mName;
 }
 
 //===================================================================================
-void tzCoreObject::setName(const string &name)
+void tzCoreObject::setName(const std::string &name)
 {
 	mName = name;
 }

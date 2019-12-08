@@ -38,6 +38,7 @@ tzMatrix tzCoreTransform::rotateAlongVector(float angle, const tzVector3D &v)
 		u.x*u.y*(1.0f - cos(a)) - u.z*sin(a), cos(a) + u.y*u.y*(1.0f - cos(a)), u.z*u.y*(1.0f - cos(a)) + u.x*sin(a), 0.0f,
 		u.x*u.z*(1.0f - cos(a)) + u.y*sin(a), u.y*u.z*(1.0f - cos(a)) - u.x*sin(a), cos(a) + u.z*u.z*(1.0f - cos(a)), 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f);
+
 	return m;
 }
 
@@ -84,6 +85,16 @@ tzMatrix  tzCoreTransform::roatateZ(float deltaAngle)
 tzMatrix  tzCoreTransform::updateTransformMatrix()
 {
 	mTransform = mXRotationMatrix*mYRotationMatrix*mZRotationMatrix;
+	
+	// test
+	/*
+	tzVector3D v1( 0.0f, 0.0f, -1.0f );
+	tzVector3D v2( -200.0f, -200.0f, -200.0f);
+	v2.normalize();
+	mTransform = v2.rotationMatrixToV( v1 );
+	*/
+	// test
+	
 	mTransform.m[3][0] = mPosition.x;
 	mTransform.m[3][1] = mPosition.y;
 	mTransform.m[3][2] = mPosition.z;
