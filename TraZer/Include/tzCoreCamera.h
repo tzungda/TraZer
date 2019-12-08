@@ -12,7 +12,6 @@
 #include "tzPoint3D.h"
 #include "tzNormal.h"
 
-using namespace std;
 
 class tzCoreCamera : public tzCoreObject,
 				   public tzCoreTransform
@@ -47,6 +46,7 @@ public: //
 	void		setNearPlane( float nearPlane);
 	void		setFarPlane(float farPlane);
 	tzMatrix	perspectiveProjection( ) const;
+	tzMatrix	orthogonalProjection( ) const;
 
 	//
 	//virtual tzVector3D	move(float deltaX, float deltaY, float deltaZ);

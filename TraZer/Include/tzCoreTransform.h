@@ -4,7 +4,6 @@
 #include <vector>
 #include "tzMatrix.h"
 #include "tzVector3D.h"
-using namespace std;
 
 /*
 The basic class for all the transformation interfaces

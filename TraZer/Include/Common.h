@@ -4,18 +4,14 @@
 #include "FreeGLUT/freeglut.h"
 #include <direct.h>
 
-#define TINYOBJLOADER_IMPLEMENTATION
-#include "TinyOBJ/tiny_obj_loader.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "STB/stb_image.h"
 
-//#ifdef NDEBUG
+#ifdef _DEBUG
+#pragma comment (lib, "glew32d.lib")
+#pragma comment(lib, "freeglutd.lib")
+#else
 #pragma comment (lib, "glew32.lib")
 #pragma comment(lib, "freeglut.lib")
-//#else
-//#pragma comment (lib, "glew32d.lib")
-//#pragma comment(lib, "freeglutd.lib")
-//#endif
+#endif
 
 #define GLM_SWIZZLE
 #include "GLM/glm/glm.hpp"
@@ -28,6 +24,10 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+
+//
+#include "tzCoreTexture.h"
+//
 
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #define __FILEPATH__(x) ((std::string(__FILE__).substr(0, std::string(__FILE__).rfind('\\'))+(x)).c_str())
@@ -44,6 +44,7 @@ void DumpInfo(void)
 	printf("GLSL: %s\n", glGetString (GL_SHADING_LANGUAGE_VERSION));
 }
 
+/*
 void ShaderLog(GLuint shader)
 {
 	GLint isCompiled = 0;
@@ -61,6 +62,7 @@ void ShaderLog(GLuint shader)
 		delete[] errorLog;
 	}
 }
+*/
 
 void PrintGLError()
 {
@@ -96,14 +98,7 @@ void PrintGLError()
     }
 }
 
-typedef struct _TextureData
-{
-	_TextureData() : width(0), height(0), data(0) {}
-	int width;
-	int height;
-	unsigned char* data;
-} TextureData;
-
+/*
 TextureData Load_png(const char* path)
 {
 	TextureData texture;
@@ -135,7 +130,8 @@ TextureData Load_png(const char* path)
 	}
     return texture;
 }
-
+*/
+/*
 //Read shader file
 char** LoadShaderSource(const char* file)
 {
@@ -158,3 +154,4 @@ void FreeShaderSource(char** srcp)
 	delete srcp[0];
 	delete srcp;
 }
+*/

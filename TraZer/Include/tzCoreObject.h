@@ -6,7 +6,6 @@
 
 #include <rpc.h>
 
-using namespace std;
 
 /*
 The basic class for all the object which will be rendered, such as mesh, light, 
@@ -21,16 +20,16 @@ public:
 private:
 	// members
 	//unsigned int		mId;
-	string				mId;
-	string				mName;
+	std::string				mId;
+	std::string				mName;
 	tzCoreObject*			mParent;
-	vector<tzCoreObject*>	mChildren;
+	std::vector<tzCoreObject*>	mChildren;
 	
 
 public:
 	// object's name
-	virtual string					name( ) const;
-	virtual void					setName( const string &name );
+	virtual std::string					name( ) const;
+	virtual void					setName( const std::string &name );
 
 	// parent
 	virtual tzCoreObject*			parent() const;
