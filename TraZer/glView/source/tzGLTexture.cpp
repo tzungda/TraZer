@@ -1,5 +1,5 @@
 #include "../include/tzGLTexture.h"
-#include "../include/tzImageTool.h"
+#include "../include/tzTool.h"
 
 /*
 Constructor/Destructor
@@ -8,7 +8,6 @@ Constructor/Destructor
 //================================================================================
 tzGLTexture::tzGLTexture()
 {
-	mPtrCoreTexture = NULL;
 }
 
 //================================================================================
@@ -19,26 +18,22 @@ tzGLTexture::~tzGLTexture()
 //================================================================================
 void tzGLTexture::updateTextureData()
 {
-	if ( !mPtrCoreTexture )
+	if ( !mPtrCoreObject )
 	{
 		printf( " Texture isn't available \n" );
 		return;
 	}
 
-	mTextureData = tzImageTool::LoadPngTexture(mPtrCoreTexture->path().c_str());
+	mTextureData = tzTool::loadPngTexture( ((tzCoreTexture*)mPtrCoreObject)->path().c_str());
 }
 
 //================================================================================
-void tzGLTexture::setTexture( tzCoreTexture *tzCoreTexture)
+void tzGLTexture::setCoreObject(tzCoreObject *coreObjectPtr)
 {
-	mPtrCoreTexture = tzCoreTexture;
+	mPtrCoreObject = coreObjectPtr;
+	updateTextureData();
 }
 
-//================================================================================
-const tzCoreTexture* tzGLTexture::texture() const
-{
-	return mPtrCoreTexture;
-}
 
 //================================================================================
 const tzTextureData& tzGLTexture::textureData() const

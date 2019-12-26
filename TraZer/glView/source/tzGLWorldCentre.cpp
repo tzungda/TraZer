@@ -1,5 +1,6 @@
 #include "../include/tzGLWorldCentre.h"
-#include "GLM/glm/gtc/type_ptr.hpp"
+
+#include "../Utilities/tzVector3D.h"
 
 /*
 Constructor/Destructor
@@ -8,9 +9,9 @@ Constructor/Destructor
 //================================================================================
 tzGLWorldCentre::tzGLWorldCentre()
 {
-	mAxisX.setLineData(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 0.0f, 0.0f));
-	mAxisY.setLineData(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 20.0f, 0.0f));
-	mAxisZ.setLineData(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 20.0f));
+	mAxisX.setLineData(tzVector3D(0.0f, 0.0f, 0.0f), tzVector3D(10.0f, 0.0f, 0.0f));
+	mAxisY.setLineData(tzVector3D(0.0f, 0.0f, 0.0f), tzVector3D(0.0f, 10.0f, 0.0f));
+	mAxisZ.setLineData(tzVector3D(0.0f, 0.0f, 0.0f), tzVector3D(0.0f, 0.0f, 10.0f));
 }
 
 //================================================================================
@@ -35,10 +36,14 @@ void tzGLWorldCentre::init(GLuint shaderProgram)
 //================================================================================
 void tzGLWorldCentre::draw( GLuint colorId )
 {
-	glUniform3fv(colorId, 1, value_ptr(glm::vec3(1.0f, 0.0f, 0.0f)));
+	tzVector3D xAxis( 1.0f, 0.0f, 0.0f );
+	tzVector3D yAxis( 0.0f, 1.0f, 0.0f );
+	tzVector3D zAxis( 0.0f, 0.0f, 1.0f );
+
+	glUniform3fv(colorId, 1, (GLfloat*)(&xAxis.x));
 	mAxisX.draw();
-	glUniform3fv(colorId, 1, value_ptr(glm::vec3(0.0f, 1.0f, 0.0f)));
+	glUniform3fv(colorId, 1, (GLfloat*)(&yAxis.x));
 	mAxisY.draw();
-	glUniform3fv(colorId, 1, value_ptr(glm::vec3(0.0f, 0.0f, 1.0f)));
+	glUniform3fv(colorId, 1, (GLfloat*)(&zAxis.x));
 	mAxisZ.draw();
 }

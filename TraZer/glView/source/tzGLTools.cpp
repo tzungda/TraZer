@@ -50,8 +50,35 @@ void tzGLTools::shaderLog(unsigned int shader)
 }
 
 //===================================================================================
-unsigned int tzGLTools::loadShader(std::string vsPath, std::string fsPath)
+unsigned int tzGLTools::loadShader(std::string vsPath, std::string fsPath, std::string gsPath)
 {
+	bool useGeometricShader = gsPath != "";
+	GLuint shaderProgram;
+	shaderProgram = glCreateProgram();
+	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+	GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+	GLuint gs = (useGeometricShader) ? gs = glCreateShader(GL_GEOMETRY_SHADER) : -1;
+	char** vsSource = loadShaderSource(vsPath.c_str());
+	char** fsSource = loadShaderSource(fsPath.c_str());
+	char** gsSource = (useGeometricShader) ? loadShaderSource(gsPath.c_str()) : NULL;
+	glShaderSource(vs, 1, vsSource, NULL);
+	glShaderSource(fs, 1, fsSource, NULL);
+	if (useGeometricShader) glShaderSource(gs, 1, gsSource, NULL);
+	freeShaderSource(vsSource);
+	freeShaderSource(fsSource);
+	if (useGeometricShader) freeShaderSource(gsSource);
+	glCompileShader(vs);
+	glCompileShader(fs);
+	if (useGeometricShader) glCompileShader(gs);
+	shaderLog(vs);
+	shaderLog(fs);
+	if (useGeometricShader) shaderLog(gs);
+	glAttachShader(shaderProgram, vs);
+	glAttachShader(shaderProgram, fs);
+	if (useGeometricShader) glAttachShader(shaderProgram, gs);
+	glLinkProgram(shaderProgram);
+	return shaderProgram;
+	/*
 	GLuint shaderProgram;
 	shaderProgram = glCreateProgram();
 	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -71,4 +98,5 @@ unsigned int tzGLTools::loadShader(std::string vsPath, std::string fsPath)
 	glAttachShader(shaderProgram, fs);
 	glLinkProgram(shaderProgram);
 	return shaderProgram;
+	*/
 }

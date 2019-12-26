@@ -2,7 +2,7 @@
 
 #include "../Include/tzGLCamera.h"
 #include "../include/tzConstants.h"
-
+#include "../../Include/tzTool.h"
 
 //
 #include "tzMatrix.h"
@@ -25,7 +25,7 @@ tzMatrix tzGLCamera::viewMatrix()
 }
 
 //===================================================================================
-tzMatrix tzGLCamera::projectionMatrix(float aspect)
+tzMatrix tzGLCamera::projectionMatrix()
 {
 	return mCamera.perspectiveProjection();
 	//return mCamera.orthogonalProjection();
@@ -177,9 +177,9 @@ void tzGLCamera::mouseMoveEvent(int x,int y)
 		float angleX = atan2(rotM.m[1][2], rotM.m[2][2]) / degreeToRadian;
 		float angleY = atan2(-rotM.m[0][2], sqrtf(rotM.m[1][2] * rotM.m[1][2] + rotM.m[2][2] * rotM.m[2][2])) / degreeToRadian;
 		float angleZ = atan2(rotM.m[0][1], rotM.m[0][0]) / degreeToRadian;
-		mCamera.roatateX( angleX );
-		mCamera.roatateY( angleY );
-		mCamera.roatateZ( angleZ );
+		mCamera.rotateX( angleX );
+		mCamera.rotateY( angleY );
+		mCamera.rotateZ( angleZ );
 		mCamera.updateTransformMatrix();
 
         mLmbDownCoord = coord;
@@ -233,6 +233,7 @@ void tzGLCamera::setWindowSize(int width,int height)
 {
 	mWindowWidth = width;
 	mWindowHeight = height;
+	mCamera.setAspect( (float)width/(float)height );
 }
 
 //===================================================================================
@@ -244,8 +245,28 @@ void tzGLCamera::reset()
 }
 
 //===================================================================================
-void tzGLCamera::setCamPosition(const tzVector3D& position)
+void tzGLCamera::setCamPosition(const tzVector3D& eye )
 {
-	mCamera.setPosition( position );
+	//const tzVector3D& eye, tzVector3D center = tzVector3D(0.0f, 0.0f, 0.0f), tzVector3D up = tzVector3D(0.0f, 1.0f, 0.0f)
+	//tzMatrix initMat = tzTool::lookAt( eye, center, up );
+	mCamera.setPosition(eye);
+}
+
+//===================================================================================
+tzVector3D  tzGLCamera::position() const
+{
+	return mCamera.position();
+}
+
+//===================================================================================
+void tzGLCamera::setFarPlane( float farPlane )
+{
+	mCamera.setFarPlane( farPlane );
+}
+
+//===================================================================================
+void tzGLCamera::setNearPlane( float nearPlane )
+{
+	mCamera.setNearPlane( nearPlane );
 }
 

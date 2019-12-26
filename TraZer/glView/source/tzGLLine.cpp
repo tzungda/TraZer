@@ -1,5 +1,6 @@
 #include "../include/tzGLLine.h"
 
+#include "../Utilities/tzVector3D.h"
 /*
 Constructor/Destructor
 */
@@ -28,7 +29,7 @@ my interfaces
 */
 
 //================================================================================
-void tzGLLine::setLineData(glm::vec3 startPoint, glm::vec3 endPoint)
+void tzGLLine::setLineData( const tzVector3D& startPoint, const tzVector3D& endPoint)
 {
 	mLintPoints.push_back( startPoint );
 	mLintPoints.push_back( endPoint );
@@ -51,8 +52,8 @@ void tzGLLine::init(GLuint shaderProgram)
 	glBindVertexArray(mVAObject);
 	glBindBuffer(GL_ARRAY_BUFFER, mVBObject);
 
-	glBufferData(GL_ARRAY_BUFFER, mLintPoints.size() * sizeof(glm::vec3), &mLintPoints[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
+	glBufferData(GL_ARRAY_BUFFER, mLintPoints.size() * sizeof(tzVector3D), &mLintPoints[0], GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(tzVector3D), (GLvoid*)0);
 
 	// clean
 	glEnableVertexAttribArray(0);
@@ -87,6 +88,6 @@ void tzGLLine::draw()
 
 	//glUniformMatrix4fv(lineShaderPrograms.model_matrix, 1, GL_FALSE, value_ptr(mtx));
 
-	glDrawArrays(GL_LINE_STRIP, 0, (GLsizei)(sizeof(glm::vec3)*mLintPoints.size()));
+	glDrawArrays(GL_LINE_STRIP, 0, (GLsizei)(sizeof(tzVector3D)*mLintPoints.size()));
 	glBindVertexArray(0);
 }
