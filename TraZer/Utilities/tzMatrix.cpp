@@ -413,6 +413,16 @@ void tzMatrix::initializeWithAValue(float v)
 		}
 }
 
+//===================================================================================
+tzMatrix tzMatrix::rotationMatrix() const
+{
+	tzMatrix m = *this;
+	m.m[3][0] = 0.0f;
+	m.m[3][1] = 0.0f;
+	m.m[3][2] = 0.0f;
+	
+	return m;
+}
 
 
 

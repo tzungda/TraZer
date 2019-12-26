@@ -4,6 +4,7 @@
 #include "tzVector3D.h"
 #include "tzNormal.h"
 #include "tzPoint3D.h"
+#include "tzConstants.h"
 
 // ---------------------------------------------------------- default constructor
 
@@ -122,6 +123,44 @@ tzVector3D::hat(void) {
 	x /= length; y /= length; z /= length;
 	return (*this);
 } 
+
+tzMatrix tzVector3D::rotationMatrixToV(const tzVector3D& v) const
+{
+	tzMatrix m;
+
+	float d = (*this)*v;
+	if (d >= 1.0f)
+	{
+		return m;
+	}
+
+	tzVector3D a = (*this)^v;
+	if (a.len_squared() < kEpsilon)
+	{
+		m.m[0][0] = m.m[1][1] = m.m[2][2] = -1.0f;
+		return m;
+	}
+	a.normalize();
+
+	float _a = acosf(d);
+	float _c = cosf(_a);
+	float _s = sinf(_a);
+
+	m.m[3][3] = 1.0f;
+	m.m[0][0] = a.x * a.x * (1.0f - _c) + _c;
+	m.m[0][1] = a.x*a.y*(1.0f - _c) - _s * a.z;
+	m.m[0][2] = a.x*a.z*(1.0f - _c) + _s * a.y;
+	//
+	m.m[1][0] = a.x*a.y*(1.0f - _c) + _s * a.z;
+	m.m[1][1] = a.y*a.y*(1.0f - _c) + _c;
+	m.m[1][2] = a.y*a.z*(1.0f - _c) - _s * a.x;
+	//
+	m.m[2][0] = a.x*a.z*(1.0f - _c) - _s * a.y;
+	m.m[2][1] = a.y*a.z*(1.0f - _c) + _s * a.x;
+	m.m[2][2] = a.z*a.z*(1.0f - _c) + _c;
+
+	return m;
+}
 
 
 // non-member function

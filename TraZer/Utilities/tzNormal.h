@@ -37,7 +37,8 @@ class tzNormal {
 		
 		tzNormal operator* (const float a) const;
 
-		tzNormal operator* ( const tzMatrix& mat);
+		tzNormal operator* ( const tzMatrix& mat) const;
+		
 				
 		void normalize(void);
 };

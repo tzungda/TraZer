@@ -63,7 +63,7 @@ int ply_type_size[] = {
 #define NAMED_PROP       1
 
 
-/* returns 1 if strings are equal, 0 if not */
+/* returns 1 if std::strings are equal, 0 if not */
 int equal_strings(char *, char *);
 
 /* find an element in a plyfile's list */
@@ -1406,7 +1406,7 @@ void ply_get_info(PlyFile *ply, float *version, int *file_type)
 
 
 /******************************************************************************
-Compare two strings.  Returns 1 if they are the same, 0 if not.
+Compare two std::strings.  Returns 1 if they are the same, 0 if not.
 ******************************************************************************/
 
 int equal_strings(char *s1, char *s2)
@@ -1771,7 +1771,7 @@ char **get_words(FILE *fp, int *nwords, char **orig_line)
 
   /* convert line-feed and tabs into spaces */
   /* (this guarentees that there will be a space before the */
-  /*  null character at the end of the string) */
+  /*  null character at the end of the std::string) */
 
   str[BIG_STRING-2] = ' ';
   str[BIG_STRING-1] = '\0';
@@ -2527,7 +2527,7 @@ static char *my_alloc(int size, int lnum, char *fname)
 
 
 
-/* strdup.c -- String duplicate function
+/* strdup.c -- std::string duplicate function
  * Created: Mon Nov  7 10:23:32 1994 by faith@dict.org
  * Revised: Sat Mar 30 12:08:35 2002 by faith@dict.org
  * Copyright 1994-1996, 2002 Rickard E. Faith (faith@dict.org)

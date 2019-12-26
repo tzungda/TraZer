@@ -35,6 +35,8 @@ class tzMatrix {
 		void	setIdentity(void);	
 
 		void	initializeWithAValue( float v );
+
+		tzMatrix rotationMatrix( ) const;
 };
 
 #endif

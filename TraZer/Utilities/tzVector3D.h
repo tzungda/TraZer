@@ -58,6 +58,7 @@ class tzVector3D {
 		
 		tzVector3D												// subtraction
 		operator- (const tzVector3D& v) const;
+
 		
 		float 													// dot product							
 		operator* (const tzVector3D& b) const;
@@ -70,6 +71,8 @@ class tzVector3D {
 		
 		tzVector3D& 												// return a unit vector, and normalize the vector												
 		hat(void);
+
+		tzMatrix rotationMatrixToV( const tzVector3D& v ) const;
 };
 
 

@@ -73,7 +73,7 @@ void tzNormal::normalize(void) {
 
 
 //===================================================================================
-tzNormal tzNormal::operator* ( const tzMatrix& mat )
+tzNormal tzNormal::operator* ( const tzMatrix& mat ) const
 {
 	return (tzNormal(	mat.m[0][0] * x + mat.m[1][0] * y + mat.m[2][0] * z,
 					mat.m[0][1] * x + mat.m[1][1] * y + mat.m[2][1] * z,
