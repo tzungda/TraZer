@@ -6,10 +6,10 @@
 */
 
 #include "../../Include/tzCoreTexture.h"
-
+#include "Interfaces/tzIGLObject.h"
 
 //
-class tzGLTexture
+class tzGLTexture : public tzIGLObject
 {
 public:
 	tzGLTexture();
@@ -19,16 +19,13 @@ public:
 my members
 */
 private:
-	tzCoreTexture		*mPtrCoreTexture;
 	tzTextureData		mTextureData;
-
 	void				updateTextureData();
 /*
 my interfaces
 */
 public:
-	void					setTexture( tzCoreTexture *tzCoreTexture);
-	const tzCoreTexture*	texture( ) const;
+	virtual void			setCoreObject(tzCoreObject *coreObjectPtr);
 	const tzTextureData&	textureData( ) const;
 };
 

@@ -6,12 +6,15 @@
 */
 
 #include "interfaces/tzIGLDraw.h"
-#include "../include/tzCoreMesh.h"
-#include "GLM/glm/glm.hpp"
+#include "Interfaces/tzIGLObject.h"
+#include "../include/tzCoreMaterial.h"
 
+
+class tzIGLMaterial;
 
 //
-class tzGLMesh: public tzIGLDraw
+class tzGLMesh: public tzIGLDraw,
+				public tzIGLObject
 {
 public:
 	tzGLMesh();
@@ -21,20 +24,29 @@ public:
 my members
 */
 private:
-	tzCoreMesh	*mCoreMeshPtr;
+	//tzCoreMesh	*mCoreMeshPtr;
 	std::vector<float> mPositions;
 	std::vector<float> mTexcoords;
 	std::vector<float> mNormals;
+	std::vector<unsigned int> mIndices;
 	unsigned int mIndexCount;
 	GLuint			mVBObject[3];
-	GLuint			mVAObject;
 	int				mMaterialId;
 
-	void*			mPtrMaterial;
+	// 
+	tzCoreMaterial *mPtrCoreMaterial;
 
-	/*
-	my members
-	*/
+public:
+	
+	unsigned int vao;
+	unsigned int vbo;
+	unsigned int vboTex;
+	unsigned int ebo;
+	unsigned int p_normal;
+
+	unsigned int mTexture;
+
+
 private:
 	void			buildRenderData( );
 
@@ -42,7 +54,6 @@ private:
 my interfaces
 */
 public:
-	void							setMesh( const tzCoreMesh *coreMeshPtr );
 	void							setMaterialId( int matId );
 	void							setVAO( GLint vao );
 	void							setVBO( const GLuint vbo[] );
@@ -51,14 +62,17 @@ public:
 	const std::vector<float>&		normals() const;
 	unsigned int					indexCount() const;
 	//
-	void							setMaterial( void* mat );
-	void*							material( ) const;
+	void							setCoreMaterial(tzCoreMaterial* mat );
 /*
-tzIGLDraw interfaces
+derived interfaces
 */
 public:
-	virtual			void init( GLuint shaderProgram );
-	virtual			void draw( );
+	// tzIGLDraw interface
+	virtual	void			init(GLuint shaderProgram = 0);
+	virtual	void			draw( );
+
+	// tzIObject interface
+	virtual	void			setCoreObject(tzCoreObject *coreObjectPtr);
 };
 
 #endif

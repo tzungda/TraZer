@@ -6,7 +6,8 @@
 */
 
 #include "interfaces/tzIGLDraw.h"
-#include "GLM/glm/glm.hpp"
+
+class tzVector3D;
 
 struct lineShaderParams
 {
@@ -27,7 +28,7 @@ public:
 my members
 */
 private:
-	std::vector<glm::vec3>	mLintPoints;
+	std::vector<tzVector3D>	mLintPoints;
 	lineShaderParams		mLineShaderParams;
 	GLuint			mVBObject;
 
@@ -35,13 +36,13 @@ private:
 my interfaces
 */
 public:
-	void			setLineData( glm::vec3 startPoint, glm::vec3 endPoint );
+	void			setLineData(const tzVector3D& startPoint, const tzVector3D& endPoint );
 
 /*
 tzIGLDraw interfaces
 */
 public:
-	virtual			void init(GLuint shaderProgram);
+	virtual			void init(GLuint shaderProgram = 0);
 	virtual			void draw( );
 };
 

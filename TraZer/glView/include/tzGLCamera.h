@@ -41,18 +41,22 @@ public:
     void wheelEvent(float direction);
 
 	tzMatrix viewMatrix();
-	tzMatrix projectionMatrix(float aspect);
+	tzMatrix projectionMatrix();
 
 
     bool IsOrthoProjection() { return mIsOrtho; }
 
 	void setWindowSize(int width, int height);
 
-    bool ToggleOrtho() { return mIsOrtho = !mIsOrtho; }
+    bool toggleOrtho() { return mIsOrtho = !mIsOrtho; }
     void zoom(float distance);
     void reset();
 
-	void		setCamPosition(const tzVector3D& position);
+	void		setCamPosition(const tzVector3D& eye );
+	tzVector3D  position( ) const;
+
+	void		setFarPlane( float farPlane );
+	void		setNearPlane( float nearPlane );
 
 	
 

@@ -6,13 +6,14 @@
 */
 
 #include "../../Include/tzCoreMaterial.h"
-
+#include "Interfaces/tzIGLObject.h"
+#include "Interfaces/tzIGLMaterial.h"
 
 
 // (see http://www.fileformat.info/format/material/)
-class tzGLPhongMaterial
+class tzGLPhongMaterial : public tzIGLObject,
+						  public tzIGLMaterial
 {
-
 
 public:
 	tzGLPhongMaterial();
@@ -21,8 +22,6 @@ public:
 /*
 my members
 */
-private:
-	tzCoreMaterial		*mPtrCoreMaterial;
 
 public:
 	std::string			mName;
@@ -75,8 +74,20 @@ public:
 my interfaces
 */
 public:
-	void					setMaterial( tzCoreMaterial *tzCoreMaterial);
-	void					loadShader( const std::string& vertShaderPath, const std::string &fragShaderPath );
+	
+
+/*
+derived interfaces
+*/
+public:
+	// tzIGLObject interface
+	virtual	void			setCoreObject(tzCoreObject *coreObjectPtr);
+
+	// tzIGLMaterial interface
+	virtual void			setupShaders(const std::string& vertShaderPath, const std::string &fragShaderPath);
+	virtual void			updateAttributes(const tzMatrix &modelMatrix);
+	const std::map<std::string, tzCoreTexture*>& textureList() const;
+
 };
 
 #endif
