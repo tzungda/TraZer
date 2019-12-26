@@ -10,7 +10,7 @@ This is for managing all types of the objects(mesh, implicit surface...etc) in a
 // core headers
 #include "../Include/tzCoreMesh.h"
 #include "../Include/tzCoreMaterial.h"
-
+#include "../Include/tzCoreLight.h"
 
 
 class tzCoreScene
@@ -29,6 +29,9 @@ private:
 	// material list
 	std::vector< tzCoreMaterial* >	mMaterialList;
 
+	// light list
+	std::vector< tzCoreLight* >	mLightList;
+
 	// texture list
 	std::map< std::string, tzCoreTexture* >			mTextureList; // < image path, textureObject >
 
@@ -42,6 +45,9 @@ public:
 
 	void												addTexture( tzCoreTexture* newTexture );
 	const std::map< std::string, tzCoreTexture* >&		textureList( ) const;
+
+	void												addLight( const tzCoreLight* newLight );
+	const std::vector<tzCoreLight*>&					lightList( ) const;
 };
 
 #endif

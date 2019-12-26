@@ -932,16 +932,17 @@ namespace tinyobj {
 			const std::vector<vertex_index> &face = faceGroup[i];
 
 			vertex_index i0 = face[0];
-			vertex_index i1(-1);
-			vertex_index i2 = face[1];
+			vertex_index i1 = face[1];//i1(-1);
+			vertex_index i2 = face[2];
 
 			size_t npolys = face.size();
 
 			if (triangulate) {
 				// Polygon -> triangle fan conversion
-				for (size_t k = 2; k < npolys; k++) {
-					i1 = i2;
-					i2 = face[k];
+				//for (size_t k = 2; k < npolys; k++) 
+				{
+					//i1 = i2;
+					//i2 = face[k];
 
 					index_t idx0, idx1, idx2;
 					idx0.vertex_index = i0.v_idx;
@@ -1595,7 +1596,8 @@ namespace tinyobj {
 			}
 
 			// load mtl
-			if ((0 == strncmp(token, "mtllib", 6)) && IS_SPACE((token[6]))) {
+			if ((0 == strncmp(token, "mtllib", 6)) && IS_SPACE((token[6]))) 
+			{
 				if (readMatFn) {
 					token += 7;
 
@@ -1637,6 +1639,7 @@ namespace tinyobj {
 
 				continue;
 			}
+			
 
 			// group name
 			if (token[0] == 'g' && IS_SPACE((token[1]))) {

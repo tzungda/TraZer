@@ -23,7 +23,9 @@ protected:
 	float mYAxisAngle;// degree
 	float mZAxisAngle;// degree
 	tzVector3D mPosition;
+	tzVector3D mScale;
 	tzMatrix	mTransform;
+	tzMatrix	mInitMatrix;
 	tzVector3D	mFace;
 	tzVector3D	mUp;
 	tzVector3D	mRight;
@@ -33,11 +35,13 @@ protected:
 
 public:
 	tzMatrix		rotateAlongVector(float angle, const tzVector3D &v);
-	tzMatrix		roatateX(float deltaAngle);
-	tzMatrix		roatateY(float deltaAngle);
-	tzMatrix		roatateZ(float deltaAngle);
+	tzMatrix		rotateX(float deltaAngle);
+	tzMatrix		rotateY(float deltaAngle);
+	tzMatrix		rotateZ(float deltaAngle);
 	tzMatrix		updateTransformMatrix();
+	void			setInitMatrix( const tzMatrix& mat );
 	void			setPosition(const tzVector3D& position);
+	void			setScale( const tzVector3D& scale );
 	tzMatrix		transformMatrix( ) const;
 	tzMatrix		invertedTransformMatrix() const;
 	tzVector3D		position( ) const;

@@ -13,11 +13,6 @@
 #pragma comment(lib, "freeglut.lib")
 #endif
 
-#define GLM_SWIZZLE
-#include "GLM/glm/glm.hpp"
-#include "GLM/glm/gtc/matrix_transform.hpp"
-#include "GLM/glm/gtc/type_ptr.hpp"
-#include "GLM/glm/gtx/rotate_vector.hpp"
 
 #include <cstdio>
 #include <cstring>
@@ -44,25 +39,6 @@ void DumpInfo(void)
 	printf("GLSL: %s\n", glGetString (GL_SHADING_LANGUAGE_VERSION));
 }
 
-/*
-void ShaderLog(GLuint shader)
-{
-	GLint isCompiled = 0;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
-	if(isCompiled == GL_FALSE)
-	{
-		GLint maxLength = 0;
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
-
-		// The maxLength includes the NULL character
-		GLchar* errorLog = new GLchar[maxLength];
-		glGetShaderInfoLog(shader, maxLength, &maxLength, &errorLog[0]);
-
-		printf("%s\n", errorLog);
-		delete[] errorLog;
-	}
-}
-*/
 
 void PrintGLError()
 {
@@ -97,61 +73,3 @@ void PrintGLError()
         std::cout << "GL_ERROR" << std::endl;
     }
 }
-
-/*
-TextureData Load_png(const char* path)
-{
-	TextureData texture;
-	std::string spath = path;
-	if (spath != "")
-	{
-		printf("Load Image %s", path);
-		int n;
-		stbi_uc *data = stbi_load(path, &texture.width, &texture.height, &n, 4);
-		if (data != NULL)
-		{
-			printf(" ~ Success\n");
-			texture.data = new unsigned char[texture.width * texture.height * 4 * sizeof(unsigned char)];
-			memcpy(texture.data, data, texture.width * texture.height * 4 * sizeof(unsigned char));
-			// vertical-mirror image data
-			for (size_t i = 0; i < texture.width; i++)
-			{
-				for (size_t j = 0; j < texture.height / 2; j++)
-				{
-					for (size_t k = 0; k < 4; k++) {
-						std::swap(texture.data[(j * texture.width + i) * 4 + k], texture.data[((texture.height - j - 1) * texture.width + i) * 4 + k]);
-					}
-				}
-			}
-			stbi_image_free(data);
-		}
-		else
-			printf(" ~ Failed\n");
-	}
-    return texture;
-}
-*/
-/*
-//Read shader file
-char** LoadShaderSource(const char* file)
-{
-	FILE* fp = NULL;
-	fopen_s(&fp, file, "rb");
-	fseek(fp, 0, SEEK_END);
-	long sz = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
-	char *src = new char[sz + 1];
-	fread(src, sizeof(char), sz, fp);
-	src[sz] = '\0';
-	char **srcp = new char*[1];
-	srcp[0] = src;
-	return srcp;
-}
-
-//Release 2-dimension array
-void FreeShaderSource(char** srcp)
-{
-	delete srcp[0];
-	delete srcp;
-}
-*/

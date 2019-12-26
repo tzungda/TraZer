@@ -32,6 +32,7 @@ private: // member data
 	float		mNearPlane;
 	float		mFarPlane;
 
+
 public: // 
 
 	tzVector3D	faceDir() const;
