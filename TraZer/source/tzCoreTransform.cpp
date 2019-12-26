@@ -2,22 +2,23 @@
 #include "../Include/tzConstants.h"
 
 //===================================================================================
-tzCoreTransform::tzCoreTransform()
+tzCoreTransform::tzCoreTransform(): mScale(tzVector3D(1.0f, 1.0f, 1.0f ) )
 {
 	mTransform.setIdentity();
+	mInitMatrix.setIdentity();
 }
 
 //===================================================================================
 tzCoreTransform::tzCoreTransform(const tzMatrix &m)
 {
-	mTransform = m;
+	mInitMatrix = m;
 }
 
 //===================================================================================
 tzCoreTransform::tzCoreTransform(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13,
 	float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33)
 {
-	mTransform = tzMatrix(	m00, m01, m02, m03, m10, m11, m12, m13,
+	mInitMatrix = tzMatrix(	m00, m01, m02, m03, m10, m11, m12, m13,
 							m20, m21, m22, m23, m30, m31, m32, m33);
 }
 
@@ -43,63 +44,73 @@ tzMatrix tzCoreTransform::rotateAlongVector(float angle, const tzVector3D &v)
 }
 
 //===================================================================================
-tzMatrix  tzCoreTransform::roatateX(float deltaAngle)
+tzMatrix  tzCoreTransform::rotateX(float deltaAngle)
 {
 	mXAxisAngle += deltaAngle;
+	const float rad = mXAxisAngle * degreeToRadian;
 
 	mXRotationMatrix = tzMatrix(1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, cos(mXAxisAngle*degreeToRadian), sin(mXAxisAngle*degreeToRadian), 0.0f,
-		0.0f, -sin(mXAxisAngle*degreeToRadian), cos(mXAxisAngle*degreeToRadian), 0.0f,
+		0.0f, cos(rad), sin(rad), 0.0f,
+		0.0f, -sin(rad), cos(rad), 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f);
 
+	updateTransformMatrix();
 	return mXRotationMatrix;
 }
 
 //===================================================================================
-tzMatrix  tzCoreTransform::roatateY(float deltaAngle)
+tzMatrix  tzCoreTransform::rotateY(float deltaAngle)
 {
 	mYAxisAngle += deltaAngle;
+	const float rad = mYAxisAngle*degreeToRadian;
 
-	mYRotationMatrix = tzMatrix(cos(mYAxisAngle*degreeToRadian), 0.0f, -sin(mYAxisAngle*degreeToRadian), 0.0f,
+	mYRotationMatrix = tzMatrix(cos(rad), 0.0f, -sin(rad), 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
-		sin(mYAxisAngle*degreeToRadian), 0.0f, cos(mYAxisAngle*degreeToRadian), 0.0f,
+		sin(rad), 0.0f, cos(rad), 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f);
 
+	updateTransformMatrix();
 	return mYRotationMatrix;
 }
 
 //===================================================================================
-tzMatrix  tzCoreTransform::roatateZ(float deltaAngle)
+tzMatrix  tzCoreTransform::rotateZ(float deltaAngle)
 {
 	mZAxisAngle += deltaAngle;
+	const float rad = mZAxisAngle * degreeToRadian;
  
-	mZRotationMatrix = tzMatrix(cos(mZAxisAngle*degreeToRadian), sin(mZAxisAngle*degreeToRadian), 0.0f, 0.0f,
-		-sin(mZAxisAngle*degreeToRadian), cos(mZAxisAngle*degreeToRadian), 0.0f, 0.0f,
+	mZRotationMatrix = tzMatrix(cos(rad), sin(rad), 0.0f, 0.0f,
+		-sin(rad), cos(rad), 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f);
 
+	updateTransformMatrix();
 	return mZRotationMatrix;
 }
 
 //===================================================================================
 tzMatrix  tzCoreTransform::updateTransformMatrix()
 {
-	mTransform = mXRotationMatrix*mYRotationMatrix*mZRotationMatrix;
+	mTransform.setIdentity();
+	mTransform.m[0][0] = mScale.x;
+	mTransform.m[1][1] = mScale.y;
+	mTransform.m[2][2] = mScale.z;
+	mTransform = mTransform*mXRotationMatrix*mYRotationMatrix*mZRotationMatrix;
 	
-	// test
-	/*
-	tzVector3D v1( 0.0f, 0.0f, -1.0f );
-	tzVector3D v2( -200.0f, -200.0f, -200.0f);
-	v2.normalize();
-	mTransform = v2.rotationMatrixToV( v1 );
-	*/
-	// test
 	
 	mTransform.m[3][0] = mPosition.x;
 	mTransform.m[3][1] = mPosition.y;
 	mTransform.m[3][2] = mPosition.z;
 
+	mTransform = mTransform*mInitMatrix;
+
 	return mTransform;
+}
+
+//===================================================================================
+void tzCoreTransform::setInitMatrix(const tzMatrix& mat)
+{
+	mInitMatrix = mat;
 }
 
 //===================================================================================
@@ -110,8 +121,17 @@ void tzCoreTransform::setPosition(const tzVector3D &position)
 }
 
 //===================================================================================
+void tzCoreTransform::setScale( const tzVector3D& scale )
+{
+	mScale = scale;
+	updateTransformMatrix();
+}
+
+//===================================================================================
 tzMatrix tzCoreTransform::transformMatrix( ) const
 {
+	//tzCoreTransform temp = *this;
+	//temp.updateTransformMatrix();
 	return mTransform;
 }
 

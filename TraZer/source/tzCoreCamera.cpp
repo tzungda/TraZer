@@ -12,10 +12,10 @@ tzCoreCamera::tzCoreCamera()
 	mRight.x = 1.0f, mRight.y = 0.0f, mRight.z = 0.0f;
 
 	mAspect = 1.0f;
-	mFov = 45.0f;
+	mFov = 90.0f;
 
-	mNearPlane = 0.0f;
-	mFarPlane = 10000.0f;
+	mNearPlane = 0.1f;
+	mFarPlane = 500.0f;
 }
 
 //===================================================================================
