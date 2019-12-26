@@ -24,16 +24,15 @@
 #include "tzPoint3D.h"
 #include "tzNormal.h"
 
-using namespace std;
 	
 class tzMesh {
 	public:
 
-		vector<tzPoint3D> 		mVertices;				// mesh vertices 
-		vector<tzNormal>		mNormals;				// average normal at each vertex;
-		vector<float>			mUs;						// u texture coordinate at each vertex
-		vector<float>			mVs;						// v texture coordinate at each vertex
-		vector<vector<int> > 	mVertexFaces;			// the triangles shared by each vertex
+		std::vector<tzPoint3D> 		mVertices;				// mesh vertices 
+		std::vector<tzNormal>		mNormals;				// average normal at each vertex;
+		std::vector<float>			mUs;						// u texture coordinate at each vertex
+		std::vector<float>			mVs;						// v texture coordinate at each vertex
+		std::vector<std::vector<int> > 	mVertexFaces;			// the triangles shared by each vertex
 		int 					mNumVertices; 			// number of vertices
 		int 					mNumTriangles; 			// number of triangles
 		

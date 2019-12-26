@@ -64,23 +64,28 @@ class tzGrid: public tzCompound {
 		//void read_smooth_uv_triangles(char* file_name);
 
 		// add mesh
-		void addMesh(	const vector<tzPoint3D> &vertices,
-						const vector<tzNormal> &normals,
-						const vector<float> &u,
-						const vector<float> &v,
-						const vector<vector<int> > &vertex_faces,
-						const vector<tzCoreMesh::index > &face_vertices,
+		void addMesh(	const std::vector<tzPoint3D> &vertices,
+						const std::vector<tzNormal> &normals,
+						const std::vector<float> &u,
+						const std::vector<float> &v,
+						const std::vector<std::vector<int> > &vertex_faces,
+						const std::vector< tzCoreMesh::index > &face_vertices,
 						const int &num_vertices,
-						const int &num_triangles );
+						const int &num_triangles,
+						const tzMatrix &matrix,
+						tzIMaterial* material,
+						tzITexture* alphaTexture = NULL);
 
 	private: 
 
-		vector<tzIGeometricObject*>	mCells;			// grid of cells
+		std::vector<tzIGeometricObject*>	mCells;			// grid of cells
 		int							mNx, mNy, mNz;    	// number of cells in the x, y, and z directions
 		tzBBox						mBbox;			// bounding box
 		tzMesh*						mMeshPtr;		// holds triangle data
 		bool						mReverseNormal;	// some PLY files have normals that point inwards
 		float						mScale;
+
+		std::vector<tzMesh*>		mMeshList;
 
 		tzPoint3D findMinBounds(void);
 
@@ -113,8 +118,7 @@ tzGrid::store_material(tzIMaterial* mMaterialPtr, const int index) {
 	mObjects[index]->setMaterial(mMaterialPtr);
 }
 
-inline void
-tzGrid::setScale(float scale)
+inline void tzGrid::setScale(float scale)
 {
 	mScale = scale;
 }

@@ -14,7 +14,7 @@
 #include "../include/tzShadeRec.h"
 
 class tzIMaterial;	
-
+class tzITexture;
 
 class tzIGeometricObject {	
 	public:	
@@ -35,6 +35,7 @@ class tzIGeometricObject {
 		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
 		
 		virtual void  setMaterial(tzIMaterial* mPtr); 
+		virtual void  setAlphaTexture( tzITexture *alphaTexture );
 		
 		tzIMaterial* getMaterial(void) const;
 
@@ -72,6 +73,8 @@ class tzIGeometricObject {
 	
 		mutable tzIMaterial*   mMaterialPtr;   	// mutable allows the const functions Compound::hit, Instance::hit, and RegularGrid::hit to assign to mMaterialPtr
 		tzColor   		   mColor;				// only used for Bare Bones ray tracing
+
+		mutable tzITexture*	   mAlphaTexture;
 	
 		tzIGeometricObject& operator= (const tzIGeometricObject& rhs);
 };

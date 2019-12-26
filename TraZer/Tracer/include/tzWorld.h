@@ -6,7 +6,6 @@
 #include "../include/tzITracer.h"
 #include "../include/tzICamera.h"
 #include "../include/tzAmbient.h"
-#include "GLM/glm/glm.hpp"
 #include <vector>
 
 //class tzILight;

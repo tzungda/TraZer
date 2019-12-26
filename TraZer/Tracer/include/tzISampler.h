@@ -9,7 +9,6 @@
 #include "../include/tzMaths.h"
 #include "../include/tzShadeRec.h"
 
-using namespace std;
 
 class tzISampler {	
 	public:	
@@ -64,11 +63,11 @@ class tzISampler {
 	
 		int 					mNumSamples;     		// the number of sample points in a set
 		int 					mNumSets;				// the number of sample sets
-		vector<tzPoint2D>		mSamples;				// sample points on a unit square
-		vector<int>				mShuffledIndices;		// shuffled samples array indices
-		vector<tzPoint2D>		mDiskSamples;			// sample points on a unit disk
-		vector<tzPoint3D> 		mHemisphereSamples;		// sample points on a unit hemisphere
-		vector<tzPoint3D> 		mSphereSamples;			// sample points on a unit sphere
+		std::vector<tzPoint2D>		mSamples;				// sample points on a unit square
+		std::vector<int>				mShuffledIndices;		// shuffled samples array indices
+		std::vector<tzPoint2D>		mDiskSamples;			// sample points on a unit disk
+		std::vector<tzPoint3D> 		mHemisphereSamples;		// sample points on a unit hemisphere
+		std::vector<tzPoint3D> 		mSphereSamples;			// sample points on a unit sphere
 		unsigned long 			mCount[MAX_THREADS];					// the current number of sample points used
 		int 					mJump[MAX_THREADS];					// random index jump
 };
