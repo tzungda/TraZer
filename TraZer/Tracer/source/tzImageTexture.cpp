@@ -128,6 +128,13 @@ tzColor tzImageTexture::getColor(const tzShadeRec& sr) const
 		column 	= (int)(sr.mU * (mWidth - 1));
 	}
 	
+	row %= mHeight;
+	if ( row < 0 )
+		row += mHeight;
+	column %= mWidth;
+	if ( column < 0 )
+		column += mWidth;
+
 	return (mImagePtr->getColor(row, column));
 }  
 

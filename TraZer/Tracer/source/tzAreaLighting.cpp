@@ -36,6 +36,7 @@ tzColor tzAreaLighting::traceRay(const tzRay ray, const int depth) const
 			sr.mRay = ray;	
 			
 			return (sr.mMaterialPtr->areaLightShade(sr));   
+			//return sr.mMaterialPtr->shade( sr );
 		}
 		else
 			return (mWorldPtr->mBackgroundColor);

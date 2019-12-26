@@ -2,12 +2,12 @@
 #include "../include/tzConstants.h"
 #include "../include/tzIMaterial.h"
 #include "../include/tzIGeometricObject.h"
-
+#include "../include/tzITexture.h"
 
 //===================================================================================
 tzIGeometricObject::tzIGeometricObject(void)
 	: mColor(black),
-		mMaterialPtr(NULL)
+		mMaterialPtr(NULL), mAlphaTexture(NULL)
 		//shadows(true)
 {}
 
@@ -21,6 +21,15 @@ tzIGeometricObject::tzIGeometricObject (const tzIGeometricObject& object)
 		mMaterialPtr = object.mMaterialPtr->clone(); 
 	else  
 		mMaterialPtr = NULL;
+
+	if ( object.mAlphaTexture )
+	{
+		mAlphaTexture = object.mAlphaTexture;
+	}
+	else
+	{
+		mAlphaTexture = NULL;
+	}
 }	
 
 
@@ -74,6 +83,11 @@ void tzIGeometricObject::setMaterial(tzIMaterial* mPtr)
 	mMaterialPtr = mPtr;
 }
 
+//===================================================================================
+void tzIGeometricObject::setAlphaTexture(tzITexture *alphaTexture)
+{
+	this->mAlphaTexture = alphaTexture;
+}
 
 //===================================================================================
 bool tzIGeometricObject::shadowHit(const tzRay &ray, float &tmin) const

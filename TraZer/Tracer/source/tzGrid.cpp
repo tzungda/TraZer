@@ -149,7 +149,7 @@ void tzGrid::setupCells(void)
 				
 	// set up a temporary array to hold the number of objects stored in each cell
 	
-	vector<int> counts;
+	std::vector<int> counts;
 	counts.reserve(num_cells);
 		
 	for (int j = 0; j < num_cells; j++)
@@ -449,7 +449,7 @@ tzGrid::read_ply_file(char* file_name, const int triangle_type) {
 			// the following code stores the face numbers that are shared by each vertex
 		  	
 			mMeshPtr->mVertexFaces.reserve(mMeshPtr->mNumVertices);
-		  	vector<int> faceList;
+		  	std::vector<int> faceList;
 		  			  	
 		  	for (j = 0; j < mMeshPtr->mNumVertices; j++)
 				mMeshPtr->mVertexFaces.push_back(faceList); // store empty lists so that we can use the [] notation below
@@ -1336,7 +1336,7 @@ void tzGrid::read_uv_ply_file(char* file_name, const int triangle_type)
 										 // new code to store the face numbers that are shared by each vertex
 
 			mesh_ptr->vertex_faces.reserve(mesh_ptr->num_vertices);
-			vector<int> faceList;
+			std::vector<int> faceList;
 
 			for (j = 0; j < mesh_ptr->num_vertices; j++)
 				mesh_ptr->vertex_faces.push_back(faceList); // store empty lists so that we can use [] notation below
@@ -1406,29 +1406,48 @@ void tzGrid::read_uv_ply_file(char* file_name, const int triangle_type)
 */
 
 //===================================================================================
-void tzGrid::addMesh(const vector<tzPoint3D> &vertices,
-	const vector<tzNormal> &normals,
-	const vector<float> &u,
-	const vector<float> &v,
-	const vector<vector<int> > &vertex_faces,
-	const vector<tzCoreMesh::index  > &face_vertices,
+void tzGrid::addMesh(const std::vector<tzPoint3D> &vertices,
+	const std::vector<tzNormal> &normals,
+	const std::vector<float> &u,
+	const std::vector<float> &v,
+	const std::vector<std::vector<int> > &vertex_faces,
+	const std::vector< tzCoreMesh::index > &face_vertices,
 	const int &num_vertices,
-	const int &num_triangles)
+	const int &num_triangles,
+	const tzMatrix &matrix,
+	tzIMaterial* material,
+	tzITexture* alphaTexture )
 {
+	/*
 	if ( !mMeshPtr )
 	{
 		printf( " the mesh pointer hasn't been initialized \n" );
 		return;
 	}
+	*/
+	tzMesh* meshPtr = new tzMesh();
+	this->mMeshList.push_back( meshPtr );
+
+	// update transformation
+	meshPtr->mVertices.resize(vertices.size());
+	for ( int i = 0; i < (int)vertices.size(); i++ )
+	{
+		meshPtr->mVertices[i] = vertices[i]* matrix;
+	}
+	//
+	tzMatrix rotMatrix = matrix.rotationMatrix();
+	meshPtr->mNormals.resize(normals.size());
+	for (int i = 0; i < (int)normals.size(); i++)
+	{
+		meshPtr->mNormals[i] = normals[i]* rotMatrix;
+	}
 
 	//
-	mMeshPtr->mVertices = vertices;
-	mMeshPtr->mNormals = normals;
-	mMeshPtr->mUs = u;
-	mMeshPtr->mVs = v;
-	mMeshPtr->mVertexFaces = vertex_faces;
-	mMeshPtr->mNumVertices = num_vertices;
-	mMeshPtr->mNumTriangles = num_triangles;
+	meshPtr->mUs = u;
+	meshPtr->mVs = v;
+	meshPtr->mVertexFaces = vertex_faces;
+	meshPtr->mNumVertices = num_vertices;
+	meshPtr->mNumTriangles = num_triangles;
 
 	// create triangles
 	for ( int tr = 0; tr < num_triangles; tr++ )
@@ -1443,8 +1462,14 @@ void tzGrid::addMesh(const vector<tzPoint3D> &vertices,
 		int uv0 = face_vertices[index].texcoord_index;
 		int uv1 = face_vertices[index + 1].texcoord_index;
 		int uv2 = face_vertices[index + 2].texcoord_index;
+		
 		//
-		tzFlatUVMeshTriangle* triangle_ptr = new tzFlatUVMeshTriangle(mMeshPtr, v0, v1, v2, n0, n1, n2, uv0, uv1, uv2);
+		tzFlatUVMeshTriangle* triangle_ptr = new tzFlatUVMeshTriangle(meshPtr, v0, v1, v2, n0, n1, n2, uv0, uv1, uv2);
+		triangle_ptr->setMaterial( material );
+		if (alphaTexture )
+		{
+			triangle_ptr->setAlphaTexture(alphaTexture );
+		}
 		triangle_ptr->computeNormal(mReverseNormal);
 		mObjects.push_back(triangle_ptr);
 	}

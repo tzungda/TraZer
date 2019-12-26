@@ -2,7 +2,7 @@
 
 #include "../include/tzConstants.h"
 #include "../include/tzFlatUVMeshTriangle.h"
-						
+#include "../include/tzITexture.h"
 
 //===================================================================================
 tzFlatUVMeshTriangle::tzFlatUVMeshTriangle(void)
@@ -93,6 +93,26 @@ bool tzFlatUVMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) co
 	sr.mLocalHitPoint 	= ray.mOrigin + t * ray.mDirection;
 	sr.mU = interpolate_u( (float)beta, (float)gamma );
 	sr.mV = interpolate_v( (float)beta, (float)gamma );
+
+	if ( mAlphaTexture )
+	{
+		tzColor c = mAlphaTexture->getColor( sr );
+		if (c.a < kEpsilon )
+		{
+			return false;
+		}
+	}
+
+	if ( sr.mU > 1.0f )
+	{
+		int a = 0;
+		a = 1;
+	}
+	if (sr.mV > 1.0f)
+	{
+		int a = 0;
+		a = 1;
+	}
 	
 	return (true);	
 }  

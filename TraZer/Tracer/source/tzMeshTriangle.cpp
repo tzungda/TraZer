@@ -163,7 +163,7 @@ bool tzMeshTriangle::shadowHit(const tzRay& ray, float& tmin) const
 //===================================================================================
 float  tzMeshTriangle::interpolate_u(const float beta, const float gamma) const
 {
-	return( (1 - beta - gamma) * mMeshPtr->mUs[mIndexUV0]
+	return( (1.0f - beta - gamma) * mMeshPtr->mUs[mIndexUV0]
 				+ beta * mMeshPtr->mUs[mIndexUV1]
 					+ gamma * mMeshPtr->mUs[mIndexUV2] );
 }
@@ -172,7 +172,7 @@ float  tzMeshTriangle::interpolate_u(const float beta, const float gamma) const
 //===================================================================================
 float tzMeshTriangle::interpolate_v(const float beta, const float gamma) const 
 {
-	return( (1 - beta - gamma) * mMeshPtr->mVs[mIndexUV0]
+	return( (1.0f - beta - gamma) * mMeshPtr->mVs[mIndexUV0]
 				+ beta * mMeshPtr->mVs[mIndexUV1]
 					+ gamma * mMeshPtr->mVs[mIndexUV2] );
 }

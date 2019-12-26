@@ -71,7 +71,7 @@ void checkFileEnd( const char* filePath, const char* outputPath )
 		return;
 	}
 
-	// output new string
+	// output new std::string
 	FILE *fp_out = NULL;
 	fopen_s(&fp_out, outputPath, "w");
 	if (!fp_out)
@@ -168,7 +168,7 @@ tzShadeRec tzWorld::hitBareBonesObject(const tzRay &ray)
 void tzWorld::build()
 {
 	// area light & bunny------------------------------------------------------------------------------
-	int numSamples = 100;
+	int numSamples = 40;
 
 	tzISampler* mSamplerPtr = new tzMultiJittered(numSamples);
 
@@ -182,11 +182,66 @@ void tzWorld::build()
 	mTracerPtr = new tzAreaLighting(this);
 
 	tzPinhole* camera = new tzPinhole();
-	camera->setEye(200, 200, 200);
-	camera->setLookAt(0, 0, 0);
-	camera->setViewDistance(16000);
+	camera->setEye(0, 12, 30);
+	camera->setLookAt(0, 12, 0);
+	camera->setViewDistance(500.0f);
 	camera->computeUVW();
 	setCamera(camera);
+
+	//--------------------------------------------------------------------------------------
+	// point light
+	tzPointLight* lightPtr = new tzPointLight();
+	lightPtr->set_location(tzVector3D(5, 5, 0));
+	lightPtr->scaleRadiance(1.0f);
+	lightPtr->setCastsShadows(true);
+	addLight(lightPtr);
+	//
+	tzGrid* grid_ptr = new tzGrid(new tzMesh);
+	grid_ptr->setScale(1.0f);
+	for ( int i = 0; i < (int)mScenePtr->meshList().size(); i++ )
+	{
+		if ( i == 4 ) // test
+		{
+			continue;
+		}
+		/*
+		if ( i < 3 || i > 7 )
+		{
+			continue;
+		}
+		*/
+		/*if ( i == 9 )
+		{
+			int a = 0;
+			a = 1;
+		}*/
+		tzCoreMesh *ptrCoreMesh = mScenePtr->meshList()[i];
+		tzCoreMaterial *ptrCoreMat = ptrCoreMesh->material();
+		const std::map<std::string, tzCoreTexture*>& texList = ptrCoreMat->textureList();
+
+		// set material
+		tzMatteSV* sv_matte_ptr = new tzMatteSV;
+		sv_matte_ptr->setKa(0.1f);
+		sv_matte_ptr->setKd(4);
+		tzImageTexture* texture_ptr = NULL;
+		if (texList.find("diffuse") != texList.end() )
+		{
+			tzImage* mImagePtr = new tzImage;
+			mImagePtr->readPng(texList.find("diffuse")->second->path().c_str());
+			texture_ptr = new tzImageTexture;
+			texture_ptr->set_image(mImagePtr);
+			sv_matte_ptr->setCd(texture_ptr);
+		}
+
+		//
+		grid_ptr->addMesh(ptrCoreMesh->vertices(), ptrCoreMesh->vertexNormals(), ptrCoreMesh->us(), ptrCoreMesh->vs(), ptrCoreMesh->vertexFaces(), ptrCoreMesh->indices(), ptrCoreMesh->numVertices(), ptrCoreMesh->numTriangles(), ptrCoreMesh->transformMatrix(), sv_matte_ptr, texture_ptr);
+	}
+
+	grid_ptr->setupCells();
+	addObject(grid_ptr);
+
+	return;
+	//--------------------------------------------------------------------------------------
 
 
 	tzEmissive* emissive_ptr = new tzEmissive;
@@ -226,7 +281,7 @@ void tzWorld::build()
 
 	// material matte sv
 	tzImage* mImagePtr = new tzImage;
-	const char* texPath = "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\images.ppm";
+	//const char* texPath = "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\images.ppm";
 	//mImagePtr->read_ppm_file(texPath);
 
 	mImagePtr->readPng( "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\TraZer\\commonData\\torusTexture.png" );
@@ -252,14 +307,14 @@ void tzWorld::build()
 	//
 	// "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Stanford_Bunny\\Bunny10K.ply"
 	// "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Horse2K.ply"
-	const char* file_name = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Stanford_Bunny\\Bunny10K.ply";//"TwoTriangles.ply"; Horse2K
+	//const char* file_name = "C:\\Users\\User\\Desktop\\TraZer\\RayTraceGroundUp\\PLYFiles\\Stanford_Bunny\\Bunny10K.ply";//"TwoTriangles.ply"; Horse2K
 	//checkFileEnd(file_name, file_name);
-	tzGrid* grid_ptr = new tzGrid(new tzMesh);
-	grid_ptr->setScale(0.25f);
+	tzGrid* grid_ptrX = new tzGrid(new tzMesh);
+	grid_ptrX->setScale(0.25f);
 	if (mScenePtr && mScenePtr->meshList().size() > 0)
 	{
 		tzCoreMesh *ptrCoreMesh = mScenePtr->meshList()[0];
-		grid_ptr->addMesh(ptrCoreMesh->vertices(), ptrCoreMesh->vertexNormals(), ptrCoreMesh->us(), ptrCoreMesh->vs(), ptrCoreMesh->vertexFaces(), ptrCoreMesh->indices(), ptrCoreMesh->numVertices(), ptrCoreMesh->numTriangles());
+		grid_ptrX->addMesh(ptrCoreMesh->vertices(), ptrCoreMesh->vertexNormals(), ptrCoreMesh->us(), ptrCoreMesh->vs(), ptrCoreMesh->vertexFaces(), ptrCoreMesh->indices(), ptrCoreMesh->numVertices(), ptrCoreMesh->numTriangles(), ptrCoreMesh->transformMatrix(), mattePtr2);
 	}
 	else
 	{
@@ -269,8 +324,8 @@ void tzWorld::build()
 		return;
 	}
 	//grid_ptr->read_flat_triangles((char*)file_name);
-	grid_ptr->setMaterial(sv_matte_ptr);
-	grid_ptr->setupCells();
+	grid_ptrX->setMaterial(sv_matte_ptr);
+	grid_ptrX->setupCells();
 	addObject(grid_ptr);
 
 	// sphere
@@ -652,7 +707,7 @@ void tzWorld::renderScene() const
 		return;
 	}
 	
-
+	/*
 	std::vector< tzColor > pixelColorArray;
 	tzColor pixelColor;
 	tzRay ray;
@@ -698,6 +753,7 @@ void tzWorld::renderScene() const
 
 	//
 	tzTool::writePng(pixelColorArray, mVp.mHeight, mVp.mWidth, (std::string)mOutputPath);
+	*/
 }
 
 //===================================================================================

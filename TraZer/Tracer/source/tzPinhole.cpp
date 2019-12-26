@@ -101,9 +101,10 @@ void tzPinhole::renderScene(const tzWorld& w) const
 	const float invNumSamples = 1.0f/(float)vp.mNumSamples;
 	const float invN = 1.0f / (float)n;
 		
-	clock_t t = clock();
+	const float halfH = 0.5f * vp.mHeight;
+	const float halfW = 0.5f * vp.mWidth;
 
-	for (int r = 0; r < vp.mWidth; r++)
+	for (int r = 0; r < vp.mHeight; r++)
 	{
 
 #ifdef _OPENMP
@@ -172,8 +173,8 @@ void tzPinhole::renderScene(const tzWorld& w) const
 				for (int q = 0; q < n; q++) // across pixel
 				{	
 					
-					pp.x = vp.mS * (c - 0.5f * vp.mHeight + (q + 0.5f)*invN);
-					pp.y = vp.mS * (r - 0.5f * vp.mWidth + (p + 0.5f)*invN);
+					pp.x = vp.mS * (c - halfH + (q + 0.5f)*invN);
+					pp.y = vp.mS * (r - halfW + (p + 0.5f)*invN);
 					ray.mDirection = getDirection(pp);
 					threadL += w.mTracerPtr->traceRay(ray, depth);
 				}
@@ -211,22 +212,6 @@ void tzPinhole::renderScene(const tzWorld& w) const
 #endif
 
 	}
-
-	//-------------
-	t = clock() - t;
-#ifndef _OPENMP
-	const char* logFile = "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\timeLog_noOpenMp.txt";
-#else
-	const char* logFile = "C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\timeLog_openMp.txt";
-#endif
-	FILE *fp = NULL;
-	fopen_s( &fp, logFile, "w" );
-	if ( fp )
-	{
-		fprintf( fp, "time = %f\n", ((float)t) / CLOCKS_PER_SEC );
-		fclose( fp );
-	}
-	//-------------
 
 	// output png
 	//std::string outPath("C:\\Users\\User\\Desktop\\TraZer\\TraZer\\testImages\\areaLight.png");

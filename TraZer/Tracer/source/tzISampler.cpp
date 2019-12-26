@@ -145,7 +145,7 @@ void tzISampler::shuffleYCoordinates(void)
 void tzISampler::setupShuffledIndices(void) 
 {
 	mShuffledIndices.reserve(mNumSamples * mNumSets);
-	vector<int> indices;
+	std::vector<int> indices;
 	
 	for (int j = 0; j < mNumSamples; j++)
 		indices.push_back(j);
