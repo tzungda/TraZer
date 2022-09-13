@@ -5,6 +5,7 @@
 #include "GLEW/glew.h"
 #include "FreeGLUT/freeglut.h"
 #include <vector>
+#include <string>
 
 class tzIGLDraw
 {
