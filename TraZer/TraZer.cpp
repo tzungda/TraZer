@@ -23,9 +23,6 @@
 #include "../Include/tzTool.h"
 
 
-
-#define PI				3.14159265359f
-
 int screenSizeX = 400;
 int screenSizeY = 400;
 
@@ -43,13 +40,13 @@ GLuint			m_mainWindow;
 // add meshes to scene
 //-----------------------------------------------------------------------------------------------------------------
 // create a scene
-tzCoreScene myScene;
+std::shared_ptr<tzCoreScene> myScene = nullptr;
 
 tzGLCamera		m_camera;
-std::map< std::string, tzIGLMaterial* > g_glMaterial;
-std::vector< tzIGLLight* > g_glLights;
+std::map< std::string, std::shared_ptr<tzIGLMaterial> > g_glMaterial;
+std::vector< std::shared_ptr<tzIGLLight> > g_glLights;
 
-tzCoreMesh * addMeshesToScene(tzCoreScene *scene, const tinyobj::attrib_t &attrib, const std::vector<tinyobj::shape_t>& shapes)
+std::shared_ptr<tzCoreMesh> addMeshesToScene( std::shared_ptr<tzCoreScene> scene, const tinyobj::attrib_t &attrib, const std::vector<tinyobj::shape_t>& shapes)
 {
 	int numShapes = (int)shapes.size();
 	for (int i = 0; i < numShapes; i++)
@@ -62,7 +59,7 @@ tzCoreMesh * addMeshesToScene(tzCoreScene *scene, const tinyobj::attrib_t &attri
 		}
 
 		//
-		tzCoreMesh *newMesh = new tzCoreMesh();
+		std::shared_ptr<tzCoreMesh> newMesh = std::make_shared< tzCoreMesh >();
 		newMesh->setName(shape.name);
 		newMesh->setNumTriangles((int)shape.mesh.indices.size() / 3);
 
@@ -143,14 +140,14 @@ tzCoreMesh * addMeshesToScene(tzCoreScene *scene, const tinyobj::attrib_t &attri
 		scene->addMesh(newMesh);
 		return newMesh;
 	}
-	return NULL;
+	return nullptr;
 }
 
-void addLightsToScene(tzCoreScene *ptrScene)
+void addLightsToScene( std::shared_ptr<tzCoreScene> ptrScene)
 {
 	// create and add a point light
-	tzCoreLight *pointLight = new tzCoreLight();
-	pointLight->setPosition( tzVector3D(5, 4, 0) );
+	std::shared_ptr<tzCoreLight> pointLight = std::make_shared< tzCoreLight >();
+	pointLight->setPosition( tzVector3D(5.0f, 4.0f, 0.0f) );
 	pointLight->setLightType( point );
 	pointLight->setShadowmapResolution( 2048 );
 	pointLight->setNearPlane( 0.1f );
@@ -159,19 +156,19 @@ void addLightsToScene(tzCoreScene *ptrScene)
 	ptrScene->addLight( pointLight );
 
 	// create and add a directional light
-	tzCoreLight *directionalLight = new tzCoreLight();
-	directionalLight->setPosition(tzVector3D(5, 4, 0));
+	std::shared_ptr<tzCoreLight> directionalLight = std::make_shared< tzCoreLight >();
+	directionalLight->setPosition(tzVector3D(0.001f, 15.0f, 0.0f));
 	directionalLight->setLightType(directional);
 	directionalLight->setShadowmapResolution(2048);
-	directionalLight->setNearPlane(0.1f);
-	directionalLight->setFarPlane(50.0f);
+	directionalLight->setNearPlane( 0.1f );
+	directionalLight->setFarPlane( 50.0f );
 	//
 	ptrScene->addLight( directionalLight );
 
 }
 
 // currently read the obj file with one mesh and one material
-void loadObjToScene( tzCoreScene *ptrScene, const std::string &objPath, const std::string &parentPath )
+void loadObjToScene( std::shared_ptr<tzCoreScene> ptrScene, const std::string &objPath, const std::string &parentPath )
 {
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
@@ -186,7 +183,7 @@ void loadObjToScene( tzCoreScene *ptrScene, const std::string &objPath, const st
 		return;
 	}
 
-	tzCoreMesh *newMesh = addMeshesToScene(ptrScene, attrib, shapes);
+	std::shared_ptr<tzCoreMesh> newMesh = addMeshesToScene(ptrScene, attrib, shapes);
 	//newMesh->setPosition( tzVector3D(10.0f, 0.0f, 0.0f ) );
 
 	// create material and texture objects
@@ -195,7 +192,7 @@ void loadObjToScene( tzCoreScene *ptrScene, const std::string &objPath, const st
 		tinyobj::material_t mat = materials[0];
 		
 		// material
-		tzCoreMaterial *newMat = new tzCoreMaterial();
+		std::shared_ptr<tzCoreMaterial> newMat = std::make_shared< tzCoreMaterial >();
 		ptrScene->addMaterial( newMat );
 		newMesh->setMaterial( newMat );
 		newMat->setName( mat.name );
@@ -211,21 +208,21 @@ void loadObjToScene( tzCoreScene *ptrScene, const std::string &objPath, const st
 		// textures
 		if ( mat.ambient_texname.length() > 0 )
 		{
-			tzCoreTexture *newTex = new tzCoreTexture();
+			std::shared_ptr<tzCoreTexture> newTex = std::make_shared< tzCoreTexture >();
 			newTex->setPath(mat.ambient_texname);
 			ptrScene->addTexture( newTex );
 			newMat->addTexture( "ambient", newTex );
 		}
 		if (mat.diffuse_texname.length() > 0)
 		{
-			tzCoreTexture *newTex = new tzCoreTexture();
+			std::shared_ptr<tzCoreTexture> newTex = std::make_shared< tzCoreTexture >();
 			newTex->setPath(mat.diffuse_texname);
 			ptrScene->addTexture(newTex);
 			newMat->addTexture("diffuse", newTex);
 		}
 		if (mat.specular_texname.length() > 0)
 		{
-			tzCoreTexture *newTex = new tzCoreTexture();
+			std::shared_ptr<tzCoreTexture> newTex = std::make_shared< tzCoreTexture >();
 			newTex->setPath(mat.specular_texname);
 			ptrScene->addTexture(newTex);
 			newMat->addTexture("specular", newTex);
@@ -236,36 +233,40 @@ void loadObjToScene( tzCoreScene *ptrScene, const std::string &objPath, const st
 }
 
 // update my GL objects
-void updateGLObjects( const tzCoreScene *ptrScene)
+void updateGLObjects( const std::shared_ptr<tzCoreScene> ptrScene)
 {
-	const std::string shaderPath("./commonData/13.3.shadow_mapping/");
+	const std::string shaderPath("./shaders/");
 
 	// update materials
-	tzGLBlinnPhongMaterial_Shadow *newMat = new tzGLBlinnPhongMaterial_Shadow();
+	std::shared_ptr<tzGLBlinnPhongMaterial_Shadow> newMat = std::make_shared< tzGLBlinnPhongMaterial_Shadow >();
 	newMat->mPtrCamera = &m_camera;
 	g_glMaterial["BlinnPhongMaterial_Shadow"] = newMat;
 
 	// add lights
-	const std::vector< tzCoreLight* > lightList = ptrScene->lightList();
-	for(std::vector< tzCoreLight* >::const_iterator citer = lightList.begin(); citer != lightList.end(); citer++ )
+	const std::vector< std::shared_ptr<tzCoreLight> > lightList = ptrScene->lightList();
+	for(std::vector< std::shared_ptr<tzCoreLight> >::const_iterator citer = lightList.begin(); citer != lightList.end(); citer++ )
 	{
 		if ( (*citer)->lightType() == point )
 		{
-			tzGLPointLight *pointLight = new tzGLPointLight();
+			std::shared_ptr<tzGLPointLight> pointLight = std::make_shared< tzGLPointLight >();
+			pointLight->setLightPos((*citer)->position());
 			pointLight->setCoreObject( (*citer) );
 			pointLight->setupShaders(shaderPath + "pointLight_depth.vs", shaderPath + "pointLight_depth.fs", shaderPath + "pointLight_depth.gs");
 			g_glLights.push_back(pointLight);
 
 			newMat->m_pointLight_shadowDepthMap = pointLight->shadowDepthMap();
+			newMat->setPointLightPosition( pointLight->lightPos( ) );
 		}
 		else if ((*citer)->lightType() == directional )
 		{
-			tzGLDirectionalLight *directionalLight = new tzGLDirectionalLight();
+			std::shared_ptr<tzGLDirectionalLight> directionalLight = std::make_shared< tzGLDirectionalLight >();
+			directionalLight->setLightPos((*citer)->position());
 			directionalLight->setCoreObject((*citer));
 			directionalLight->setupShaders(shaderPath + "directionalLight_depth.vs", shaderPath + "directionalLight_depth.fs");
 			g_glLights.push_back( directionalLight );
 
 			newMat->m_directionalLight_shadowDepthMap = directionalLight->shadowDepthMap();
+			newMat->setDirectionalLightPosition( directionalLight->lightPos() );
 		}
 	}
 
@@ -278,7 +279,7 @@ void updateGLObjects( const tzCoreScene *ptrScene)
 		//ptrScene->meshList()[i]->setPosition( tzVector3D( (float)i, 0.0f, 0.0f ) );
 		//
 		
-		tzGLMesh *newGlMesh = new tzGLMesh();
+		std::shared_ptr<tzGLMesh> newGlMesh = std::make_shared< tzGLMesh >();
 		newGlMesh->setCoreObject( ptrScene->meshList()[i] );
 
 		// add mesh to its material
@@ -289,7 +290,7 @@ void updateGLObjects( const tzCoreScene *ptrScene)
 		newGlMesh->init();
 		
 		// add mesh to light 
-		for ( std::vector< tzIGLLight* >::iterator iter = g_glLights.begin(); iter != g_glLights.end(); iter++ )
+		for ( std::vector< std::shared_ptr<tzIGLLight> >::iterator iter = g_glLights.begin(); iter != g_glLights.end(); iter++ )
 		{
 			(*iter)->addMesh( newGlMesh );
 			(*iter)->addMesh(newGlMesh);
@@ -297,8 +298,8 @@ void updateGLObjects( const tzCoreScene *ptrScene)
 	}
 
 	// load shaders
-	std::string dirPath = "./commonData/";
-	for ( std::map< std::string, tzIGLMaterial* >::iterator it = g_glMaterial.begin(); it != g_glMaterial.end(); it++ )
+	std::string dirPath = "./shaders/";
+	for ( std::map< std::string, std::shared_ptr<tzIGLMaterial> >::iterator it = g_glMaterial.begin(); it != g_glMaterial.end(); it++ )
 	{
 		it->second->setupShaders(shaderPath + "blinnPhong_shadow.vs", shaderPath + "blinnPhong_shadow.fs");
 	}
@@ -320,7 +321,7 @@ GLuint			lineShaderProgram;
 
 void setupShaders()
 {
-	std::string dirPath = "./commonData/";
+	std::string dirPath = "./shaders/";
 	
 	// line shader
 	glUseProgram(0);
@@ -335,7 +336,7 @@ void setupShaders()
 }
 
 
-void setupModels(tzCoreScene *scene)
+void setupModels(std::shared_ptr<tzCoreScene> scene)
 {
 	// initialize world axes buffers
 	gWorldCentre.init(lineShaderProgram);
@@ -365,7 +366,7 @@ void setupModels(tzCoreScene *scene)
 	{
 		loadObjToScene(scene, model_names[i], dirPath);
 	}
-	const std::vector<tzCoreMesh*>& meshList = scene->meshList();
+	const std::vector<std::shared_ptr<tzCoreMesh>>& meshList = scene->meshList();
 	// ladybugs
 	meshList[0]->setPosition( tzVector3D( 5, 0, -5 ) );
 	meshList[1]->setPosition( tzVector3D( -5, 0, -5 ) );
@@ -396,7 +397,7 @@ void setupModels(tzCoreScene *scene)
 	//m_shapes[0].position = vec3(0, 0, 0);
 }
 
-void My_Init(tzCoreScene *scene)
+void My_Init( std::shared_ptr<tzCoreScene> scene)
 {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GLUT_MULTISAMPLE);
@@ -423,14 +424,13 @@ void My_Display()
 	tzMatrix view = m_camera.viewMatrix();//.invertedTransformMatrix();
 	//tzVector3D pos(100.0f, 10.0f, 0.0f);
 
-	// 
+	// use point light
 	int lightType = 1; // 0 for directional light, 1 for point light
-	for ( std::vector< tzIGLLight* >::iterator iter = g_glLights.begin(); iter != g_glLights.end(); iter++ )
+
+	// 
+	for ( std::vector< std::shared_ptr<tzIGLLight> >::iterator iter = g_glLights.begin(); iter != g_glLights.end(); iter++ )
 	{
-		if ( (*iter)->lightType() == lightType )
-		{
-			(*iter)->updateAttributes();
-		}
+		(*iter)->updateAttributes();
 	}
 
 
@@ -438,12 +438,16 @@ void My_Display()
 	glViewport(0, 0, screenSizeX, screenSizeY);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	tzMatrix matrix_test;
-	for (std::map< std::string, tzIGLMaterial*>::iterator iter = g_glMaterial.begin(); iter != g_glMaterial.end(); iter++)
+	// 
+	for (std::map< std::string, std::shared_ptr<tzIGLMaterial>>::iterator iter = g_glMaterial.begin(); iter != g_glMaterial.end(); iter++)
 	{
-		tzGLBlinnPhongMaterial_Shadow* mat = (tzGLBlinnPhongMaterial_Shadow*)iter->second;
-		mat->mLightSourceType = lightType;
-		mat->updateAttributes(matrix_test);
+		std::shared_ptr<tzGLBlinnPhongMaterial_Shadow> mat = std::dynamic_pointer_cast<tzGLBlinnPhongMaterial_Shadow>(iter->second);
+		if (mat )
+		{
+			mat->mLightSourceType = lightType;
+		}
+
+		iter->second->updateAttributes( tzMatrix() );
 	}
 
 	
@@ -518,10 +522,10 @@ void My_Keyboard(unsigned char key, int x, int y)
 		//
 		printf( "--->Clicked key r to render \n" );
 		tzWorld w;
-		w.mScenePtr = &myScene;
+		w.mScenePtr = myScene;
 		w.build();
 		printf("--->built the scene \n");
-		w.setOutputPath("C:\\Users\\tzungda.tsai\\Desktop\\something\\TraZer-master\\TraZer\\testImages\\test2019.png");
+		w.setOutputPath("./renderImages/test2020.png");
 		printf("--->started to render \n");
 		w.renderScene();
 		printf("--->render ended \n");
@@ -579,8 +583,14 @@ int main(int argc, char *argv[])
 	DumpInfo();
 	////////////////////
 
+	// create scene
+	if( !myScene )
+	{
+		myScene = std::make_shared<tzCoreScene>();
+	}
+
 	//Call custom initialize function
-	My_Init( &myScene );
+	My_Init( myScene );
 
 	//Register GLUT callback functions
 	////////////////////
