@@ -23,6 +23,17 @@ public:
 /*
 my members
 */
+private:
+	float mShadowOtho;// = 15.0f;
+	//float POINT_LIGHT_NEARPLANE = 0.1f;
+	float mPointLightFarPlane;// = 50.0f;
+	float mDirectionalLightNearPlane;// = 0.01f;
+	float mDirectionalLightFarPlane; // 50.0f;
+	tzVector3D mPointLightPos;
+	tzVector3D mDirectionalLightPos;
+	tzMatrix mLightProjection;
+	tzMatrix mLightView;
+	tzMatrix mLightSpaceMatrix;
 
 public:
 	int  mGLModelMatrix;
@@ -31,7 +42,8 @@ public:
 	int  mGLLightMatrix;
 	int  mGLFarPlane;
 	int  mGLLightSourceType;
-	int  mGLLightPos;
+	int  mGLPointLightPos;
+	int  mGLDirectionalLightPos;
 	int  mGLViewPos;
 	int  mGLUseShadowmap;
 	int  mGLUseBias;
@@ -60,14 +72,16 @@ derived interfaces
 */
 public:
 	// tzIGLObject interface
-	virtual	void			setCoreObject(tzCoreObject *coreObjectPtr);
+	virtual	void			setCoreObject( std::shared_ptr<tzCoreObject> coreObjectPtr);
 
 	// tzIGLMaterial interface
 	virtual void									setupShaders(const std::string& vertShaderPath, const std::string &fragShaderPath);
 	virtual void									updateAttributes(const tzMatrix &modelMatrix);
-	const std::map<std::string, tzCoreTexture*>&	textureList() const;
-	
+	const std::map<std::string, std::shared_ptr<tzCoreTexture>>&	textureList() const;
 
+	// my interface
+	void setDirectionalLightPosition( const tzVector3D &directionalLightPos );
+	void setPointLightPosition( const tzVector3D &pointLightPos );
 };
 
 #endif

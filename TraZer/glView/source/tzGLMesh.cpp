@@ -17,7 +17,7 @@ tzGLMesh::tzGLMesh()
 	this->mInitialized = false;
 	mIndexCount = 0;
 	//mPtrMaterial = NULL;
-	mPtrCoreMaterial = NULL;
+	mPtrCoreMaterial = nullptr;
 	mTexture = 0;
 }
 
@@ -46,7 +46,7 @@ void tzGLMesh::buildRenderData()
 		return;
 	}
 
-	tzCoreMesh *coreMesh = (tzCoreMesh*)mPtrCoreObject;
+	std::shared_ptr<tzCoreMesh> coreMesh = std::dynamic_pointer_cast<tzCoreMesh>(mPtrCoreObject);
 	coreMesh->updateData();
 	mPositions = coreMesh->floatVertices();
 	mNormals = coreMesh->floatNormals();
@@ -54,69 +54,6 @@ void tzGLMesh::buildRenderData()
 	coreMesh->indices(mIndices);
 	mIndexCount = (unsigned int)mIndices.size();
 
-	{
-		FILE *fp = 0;
-		char buf[256];
-		sprintf_s( buf, "C:\\Temp\\______%s_02.txt", coreMesh->name().c_str() );
-		fopen_s( &fp, buf, "w" );
-		if ( fp )
-		{
-			// index
-			fprintf( fp, "--> indices size = %d \n", (int)mIndices.size() );
-			for ( int i = 0; i < (int)mIndices.size(); i++ )
-			{
-				if ( i > 0 && i %3 == 0 )
-				{
-					fprintf( fp, "\n" );
-
-				}
-				fprintf( fp, " %d ", mIndices[i]);
-			}
-			fprintf( fp, "\n\n" );
-
-			// position
-			fprintf( fp, "--> positions size = %d \n", (int)mPositions.size() );
-			for ( int i = 0; i < (int)mPositions.size(); i++ )
-			{
-				if ( i > 0 && i %3 == 0 )
-				{
-					fprintf( fp, "\n" );
-
-				}
-				fprintf( fp, " %f ", mPositions[i]);
-			}
-			fprintf( fp, "\n\n" );
-
-			// normal
-			fprintf( fp, "--> normals size = %d \n", (int)mNormals.size() );
-			for ( int i = 0; i < (int)mNormals.size(); i++ )
-			{
-				if ( i > 0 && i %3 == 0 )
-				{
-					fprintf( fp, "\n" );
-
-				}
-				fprintf( fp, " %f ", mNormals[i]);
-			}
-			fprintf( fp, "\n\n" );
-
-			// texcoord
-			fprintf( fp, "--> texcoord size = %d \n", (int)mTexcoords.size() );
-			for ( int i = 0; i < (int)mTexcoords.size(); i++ )
-			{
-				if ( i > 0 && i %2 == 0 )
-				{
-					fprintf( fp, "\n" );
-
-				}
-				fprintf( fp, " %f ", mTexcoords[i]);
-			}
-			fprintf( fp, "\n" );
-
-			fclose( fp );
-		}
-
-	}
 
 	/*
 	// get indices
@@ -202,7 +139,7 @@ unsigned int  tzGLMesh::indexCount() const
 }
 
 //================================================================================
-void tzGLMesh::setCoreMaterial(tzCoreMaterial* mat )
+void tzGLMesh::setCoreMaterial(std::shared_ptr<tzCoreMaterial> mat )
 {
 	mPtrCoreMaterial = mat;
 }
@@ -275,7 +212,7 @@ void tzGLMesh::init(GLuint shaderProgram)
 	glEnableVertexAttribArray(2);
 	*/
 	
-	const std::map<std::string, tzCoreTexture*>& texList = mPtrCoreMaterial->textureList();
+	const std::map<std::string, std::shared_ptr<tzCoreTexture>>& texList = mPtrCoreMaterial->textureList();
 	std::string texPath = texList.find("diffuse")->second->path();
 	tzTextureData textureData;
 	textureData = tzTool::loadPngTexture(texPath.c_str());
@@ -320,7 +257,7 @@ void tzGLMesh::draw()
 }
 
 //================================================================================
-void tzGLMesh::setCoreObject(tzCoreObject *coreObjectPtr)
+void tzGLMesh::setCoreObject(std::shared_ptr<tzCoreObject> coreObjectPtr)
 {
 	this->mPtrCoreObject = coreObjectPtr;
 	buildRenderData();

@@ -79,8 +79,8 @@ void tzGLDirectionalLight::updateAttributes()
 		{
 			if ( mLightType == 0 && i >= 4 && i <= 7) continue;
 
-			tzGLMesh *mesh = mMeshList[i];
-			tzCoreMesh *coreMesh = (tzCoreMesh*)mesh->coreObject();
+			std::shared_ptr<tzGLMesh> mesh = mMeshList[i];
+			std::shared_ptr<tzCoreMesh> coreMesh = std::dynamic_pointer_cast<tzCoreMesh>(mesh->coreObject());
 
 			glBindVertexArray(mesh->vao);
 			glUniformMatrix4fv( mGLModelMatrix, 1, GL_FALSE, (GLfloat*)(coreMesh->transformMatrix().m));
@@ -96,11 +96,11 @@ void tzGLDirectionalLight::updateAttributes()
 }
 
 //================================================================================
-void tzGLDirectionalLight::setCoreObject(tzCoreObject *coreObjectPtr)
+void tzGLDirectionalLight::setCoreObject( std::shared_ptr<tzCoreObject> coreObjectPtr)
 {
 	this->mPtrCoreObject = coreObjectPtr;
 
-	tzCoreLight *coreLight = (tzCoreLight*)coreObjectPtr;
+	std::shared_ptr<tzCoreLight> coreLight = std::dynamic_pointer_cast<tzCoreLight>(coreObjectPtr);
 
 	mShadowmapResolution = coreLight->shadowmapResolution();
 	mNearPlane = coreLight->nearPlane();

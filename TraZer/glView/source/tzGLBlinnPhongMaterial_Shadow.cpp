@@ -16,20 +16,33 @@ Constructor/Destructor
 //================================================================================
 tzGLBlinnPhongMaterial_Shadow::tzGLBlinnPhongMaterial_Shadow()
 {
+	mShadowOtho = 15.0f;
+	mPointLightFarPlane = 50.0f;
+	mDirectionalLightNearPlane = 0.01f;
+	mDirectionalLightFarPlane = 50.0f;
+
+	//
+	mPointLightPos = mDirectionalLightPos = tzVector3D( 5.0f, 4.0f, 0.0f );
+	mLightProjection = tzTool::ortho(-mShadowOtho, mShadowOtho, -mShadowOtho, mShadowOtho, mDirectionalLightNearPlane, mDirectionalLightFarPlane);
+	mLightView = tzTool::lookAt(mDirectionalLightPos, tzVector3D(0.0f), tzVector3D(0.0, 1.0, 0.0));
+	mLightSpaceMatrix = mLightView * mLightProjection;
+
+	//
 	mGLModelMatrix = 0;
 	mGLViewMatrix = 0;
 	mGLProjectionMatrix = 0;
 	mGLLightMatrix = 0;
 	mGLFarPlane = 0;
 	mGLLightSourceType = 0;
-	mGLLightPos = 0;
+	mGLPointLightPos = 0;
+	mGLDirectionalLightPos = 0;
 	mGLViewPos = 0;
 	mGLUseShadowmap = 0;
 	mGLUseBias = 0;
 	mGLPcfKernel = 0;
 
 	//
-	mPtrCamera = NULL;
+	mPtrCamera = nullptr;
 	m_directionalLight_shadowDepthMap = m_pointLight_shadowDepthMap = 0;
 
 	mLightSourceType = 1;
@@ -43,13 +56,11 @@ tzGLBlinnPhongMaterial_Shadow::~tzGLBlinnPhongMaterial_Shadow()
 //================================================================================
 void tzGLBlinnPhongMaterial_Shadow::updateMaterial()
 {
-	tzCoreMaterial* coreMat = (tzCoreMaterial*)mPtrCoreObject;
-	
 }
 
 
 //================================================================================
-void tzGLBlinnPhongMaterial_Shadow::setCoreObject(tzCoreObject *coreObjectPtr)
+void tzGLBlinnPhongMaterial_Shadow::setCoreObject( std::shared_ptr< tzCoreObject > coreObjectPtr)
 {
 	mPtrCoreObject = coreObjectPtr;
 	if (!mPtrCoreObject)
@@ -69,7 +80,8 @@ void tzGLBlinnPhongMaterial_Shadow::setupShaders(const std::string& vertShaderPa
 	{
 		glUseProgram(mGLBlinnPhongShadowShaderProgram);
 
-		mGLLightPos = glGetUniformLocation(mGLBlinnPhongShadowShaderProgram, "lightPos");
+		mGLPointLightPos = glGetUniformLocation(mGLBlinnPhongShadowShaderProgram, "pointLightPos");
+		mGLDirectionalLightPos = glGetUniformLocation(mGLBlinnPhongShadowShaderProgram, "directionalLightPos");
 		mGLViewPos = glGetUniformLocation(mGLBlinnPhongShadowShaderProgram, "viewPos");
 		mGLModelMatrix = glGetUniformLocation(mGLBlinnPhongShadowShaderProgram, "model");
 		mGLViewMatrix = glGetUniformLocation(mGLBlinnPhongShadowShaderProgram, "view");
@@ -98,43 +110,30 @@ void tzGLBlinnPhongMaterial_Shadow::setupShaders(const std::string& vertShaderPa
 //================================================================================
 void tzGLBlinnPhongMaterial_Shadow::updateAttributes(const tzMatrix &modelMatrix)
 {
-	//********************************************
-	//int m_lightSource_type = 1;
-	tzVector3D mLightPos( 5, 4, 0 );
-	float SHADOW_OTHO = 15.0f;
-	//float POINT_LIGHT_NEARPLANE = 0.1f;
-	float POINT_LIGHT_FARPLANE = 50.0f;
-	float DIRECTIONAL_LIGHT_NEARPLANE = 0.01f;
-	float DIRECTIONAL_LIGHT_FARPLANE = 50.0f;
-
-	tzMatrix lightProjection, lightView, lightSpaceMatrix;
-	lightProjection = tzTool::ortho(-SHADOW_OTHO, SHADOW_OTHO, -SHADOW_OTHO, SHADOW_OTHO, DIRECTIONAL_LIGHT_NEARPLANE, DIRECTIONAL_LIGHT_FARPLANE);
-	lightView = tzTool::lookAt(mLightPos, tzVector3D(0.0f), tzVector3D(0.0, 1.0, 0.0));
-	lightSpaceMatrix = lightView* lightProjection;
-	//********************************************
-
-	tzVector3D eyePos( 0.0f, 0.0f, 5.0f );
-
 	tzVector3D camPos = mPtrCamera->position();
+
 	tzMatrix projMat = mPtrCamera->projectionMatrix();
 	tzMatrix view = mPtrCamera->viewMatrix();
+
+	// test
+	//tzVector3D directionalLightPos( 4.0f, 50.0f, 0.0f );
+	// test
 
 	glUseProgram(mGLBlinnPhongShadowShaderProgram);
 	{
 		glUniform1i( mGLLightSourceType, mLightSourceType);
-		glUniform1f( mGLFarPlane, POINT_LIGHT_FARPLANE);
-		glUniform3fv( mGLLightPos, 1, (GLfloat*)(&mLightPos.x));
-		glUniform3fv( mGLViewPos, 1, (GLfloat*)(&eyePos.x));
-		glUniformMatrix4fv( mGLLightMatrix, 1, GL_FALSE, (GLfloat*)(lightSpaceMatrix.m));
+		glUniform1f( mGLFarPlane, mPointLightFarPlane);
+		glUniform3fv(mGLPointLightPos, 1, (GLfloat*)(&mPointLightPos.x));
+		glUniform3fv(mGLDirectionalLightPos, 1, (GLfloat*)(&mDirectionalLightPos.x));
+		glUniform3fv( mGLViewPos, 1, (GLfloat*)(&camPos.x));
+		glUniformMatrix4fv( mGLLightMatrix, 1, GL_FALSE, (GLfloat*)(mLightSpaceMatrix.m));
 		glUniformMatrix4fv( mGLViewMatrix, 1, GL_FALSE, (GLfloat*)(view.m));
 		glUniformMatrix4fv( mGLProjectionMatrix, 1, GL_FALSE, (GLfloat*)(projMat.m));
 
 		for (int i = 0; i < mMeshList.size(); ++i)
 		{
-			if (mLightSourceType == 0 && i >= 4 && i <= 7) continue;
-
-			tzGLMesh *mesh = mMeshList[i];
-			tzCoreMesh *coreMesh = (tzCoreMesh*)mesh->coreObject();
+			std::shared_ptr<tzGLMesh> mesh = mMeshList[i];
+			std::shared_ptr<tzCoreMesh> coreMesh = std::dynamic_pointer_cast<tzCoreMesh>(mesh->coreObject());
 
 			glBindVertexArray(mesh->vao);
 			glUniformMatrix4fv( mGLModelMatrix, 1, GL_FALSE, (GLfloat*)(coreMesh->transformMatrix().m));//value_ptr(m_shape.getTransformationMatrix()));
@@ -149,7 +148,22 @@ void tzGLBlinnPhongMaterial_Shadow::updateAttributes(const tzMatrix &modelMatrix
 }
 
 //================================================================================
-const std::map<std::string, tzCoreTexture*>& tzGLBlinnPhongMaterial_Shadow::textureList() const
+const std::map<std::string, std::shared_ptr<tzCoreTexture>>& tzGLBlinnPhongMaterial_Shadow::textureList() const
 {
-	return ((tzCoreMaterial*)mPtrCoreObject)->textureList();
+	return (std::dynamic_pointer_cast<tzCoreMaterial>(mPtrCoreObject) )->textureList();
 }
+
+//================================================================================
+void tzGLBlinnPhongMaterial_Shadow::setDirectionalLightPosition( const tzVector3D &directionalLightPos)
+{
+	mDirectionalLightPos = directionalLightPos;
+	mLightView = tzTool::lookAt(mDirectionalLightPos, tzVector3D(0.0f), tzVector3D(0.0, 1.0, 0.0));
+	mLightSpaceMatrix = mLightView * mLightProjection;
+}
+
+//================================================================================
+void tzGLBlinnPhongMaterial_Shadow::setPointLightPosition(const tzVector3D &pointLightPos)
+{
+	mPointLightPos = pointLightPos;
+}
+

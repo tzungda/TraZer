@@ -43,7 +43,7 @@ public:
 	virtual void		updateAttributes();
 public:
 	// tzIGLObject interface
-	virtual	void		setCoreObject(tzCoreObject *coreObjectPtr);
+	virtual	void		setCoreObject( std::shared_ptr<tzCoreObject> coreObjectPtr);
 };
 
 #endif

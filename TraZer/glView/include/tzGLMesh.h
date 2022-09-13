@@ -34,7 +34,7 @@ private:
 	int				mMaterialId;
 
 	// 
-	tzCoreMaterial *mPtrCoreMaterial;
+	std::shared_ptr<tzCoreMaterial> mPtrCoreMaterial;
 
 public:
 	
@@ -62,7 +62,7 @@ public:
 	const std::vector<float>&		normals() const;
 	unsigned int					indexCount() const;
 	//
-	void							setCoreMaterial(tzCoreMaterial* mat );
+	void							setCoreMaterial(std::shared_ptr<tzCoreMaterial> mat );
 /*
 derived interfaces
 */
@@ -72,7 +72,7 @@ public:
 	virtual	void			draw( );
 
 	// tzIObject interface
-	virtual	void			setCoreObject(tzCoreObject *coreObjectPtr);
+	virtual	void			setCoreObject( std::shared_ptr<tzCoreObject> coreObjectPtr);
 };
 
 #endif

@@ -100,8 +100,8 @@ void tzGLPointLight::updateAttributes()
 
 		for (int i = 0; i < mMeshList.size(); ++i)
 		{
-			tzGLMesh *mesh = mMeshList[i];
-			tzCoreMesh *coreMesh = (tzCoreMesh*)mesh->coreObject();
+			std::shared_ptr<tzGLMesh> mesh = mMeshList[i];
+			std::shared_ptr<tzCoreMesh> coreMesh = std::dynamic_pointer_cast<tzCoreMesh>(mesh->coreObject());
 
 			glBindVertexArray(mesh->vao);
 			glUniformMatrix4fv( mGLModelMatrix, 1, GL_FALSE, (GLfloat*)(coreMesh->transformMatrix().m) );//value_ptr(m_shape.getTransformationMatrix()));
@@ -117,11 +117,11 @@ void tzGLPointLight::updateAttributes()
 }
 
 //================================================================================
-void tzGLPointLight::setCoreObject(tzCoreObject *coreObjectPtr)
+void tzGLPointLight::setCoreObject(std::shared_ptr<tzCoreObject> coreObjectPtr)
 {
 	this->mPtrCoreObject = coreObjectPtr;
 
-	tzCoreLight *coreLight = (tzCoreLight*)coreObjectPtr;
+	std::shared_ptr<tzCoreLight> coreLight = std::dynamic_pointer_cast<tzCoreLight>(coreObjectPtr);
 
 	mShadowmapResolution = coreLight->shadowmapResolution();
 	mNearPlane = coreLight->nearPlane();

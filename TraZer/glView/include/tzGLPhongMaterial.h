@@ -81,12 +81,12 @@ derived interfaces
 */
 public:
 	// tzIGLObject interface
-	virtual	void			setCoreObject(tzCoreObject *coreObjectPtr);
+	virtual	void			setCoreObject(std::shared_ptr<tzCoreObject> coreObjectPtr);
 
 	// tzIGLMaterial interface
 	virtual void			setupShaders(const std::string& vertShaderPath, const std::string &fragShaderPath);
 	virtual void			updateAttributes(const tzMatrix &modelMatrix);
-	const std::map<std::string, tzCoreTexture*>& textureList() const;
+	const std::map<std::string, std::shared_ptr<tzCoreTexture>>& textureList() const;
 
 };
 

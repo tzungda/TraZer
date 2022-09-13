@@ -41,14 +41,14 @@ tzGLPhongMaterial::~tzGLPhongMaterial()
 //================================================================================
 void tzGLPhongMaterial::updateMaterial()
 {
-	tzCoreMaterial* coreMat = (tzCoreMaterial*)mPtrCoreObject;
+	std::shared_ptr<tzCoreMaterial> coreMat = std::dynamic_pointer_cast<tzCoreMaterial>(mPtrCoreObject);
 	this->mName = coreMat->name();
 	// colors
 	this->mAmbient = coreMat->ambientColor();
 	this->mDiffuse = coreMat->diffuseColor();
 	this->mSpecular = coreMat->specularColor();
 	// textures
-	const std::map<std::string, tzCoreTexture*> textureList = coreMat->textureList();
+	const std::map<std::string, std::shared_ptr<tzCoreTexture>> textureList = coreMat->textureList();
 	if (textureList.find("ambient") != textureList.end())
 	{
 		mHasAmbientTex = 1;
@@ -68,7 +68,7 @@ void tzGLPhongMaterial::updateMaterial()
 
 
 //================================================================================
-void tzGLPhongMaterial::setCoreObject(tzCoreObject *coreObjectPtr)
+void tzGLPhongMaterial::setCoreObject(std::shared_ptr<tzCoreObject> coreObjectPtr)
 {
 	mPtrCoreObject = coreObjectPtr;
 	if (!mPtrCoreObject)
@@ -185,7 +185,7 @@ void tzGLPhongMaterial::updateAttributes(const tzMatrix &modelMatrix)
 }
 
 //================================================================================
-const std::map<std::string, tzCoreTexture*>& tzGLPhongMaterial::textureList() const
+const std::map<std::string, std::shared_ptr<tzCoreTexture>>& tzGLPhongMaterial::textureList() const
 {
-	return ((tzCoreMaterial*)mPtrCoreObject)->textureList();
+	return (std::dynamic_pointer_cast<tzCoreMaterial>(mPtrCoreObject))->textureList();
 }

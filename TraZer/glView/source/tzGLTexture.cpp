@@ -24,11 +24,11 @@ void tzGLTexture::updateTextureData()
 		return;
 	}
 
-	mTextureData = tzTool::loadPngTexture( ((tzCoreTexture*)mPtrCoreObject)->path().c_str());
+	mTextureData = tzTool::loadPngTexture( (std::dynamic_pointer_cast<tzCoreTexture>(mPtrCoreObject))->path().c_str());
 }
 
 //================================================================================
-void tzGLTexture::setCoreObject(tzCoreObject *coreObjectPtr)
+void tzGLTexture::setCoreObject( std::shared_ptr<tzCoreObject> coreObjectPtr)
 {
 	mPtrCoreObject = coreObjectPtr;
 	updateTextureData();
