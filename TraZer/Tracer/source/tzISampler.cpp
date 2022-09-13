@@ -260,38 +260,6 @@ tzPoint2D tzISampler::sampleUnitSquare(const tzRay &ray) //ooxx
 
 
 
-
-/*
-
-// ------------------------------------------------------------------- sampleUnitSquare
-// the first revised version in Listing in Listing 5.8
-
-Point2D
-Sampler::sampleUnitSquare(void) {
-	if (count % mNumSamples == 0)  									// start of a new pixel
-		jump = (rand_int() % mNumSets) * mNumSamples;				// random index jump initialised to zero in constructor
-	
-	return (samples[jump + count++ % mNumSamples]);	
-}
-
-*/
-
-
-
-/*
-
-// ------------------------------------------------------------------- sampleUnitSquare
-// the original version in Listing 5.7
-
-Point2D
-Sampler::sampleUnitSquare(void) {
-	return (samples[count++ % (mNumSamples * mNumSets)]);
-}
-
-*/
-
-
-
 //===================================================================================
 tzPoint2D tzISampler::sampleUnitDisk(const tzRay &ray)
 {

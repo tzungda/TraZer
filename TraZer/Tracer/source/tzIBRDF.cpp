@@ -2,34 +2,24 @@
 #include "../include/tzConstants.h"
 #include "../include/tzIBRDF.h"
 
-// ---------------------------------------------------------- default constructor
-
+//===================================================================================
 tzIBRDF::tzIBRDF(void)
-	: mSamplerPtr(NULL)
+	: mSamplerPtr(nullptr)
 {}
 
-
-// ---------------------------------------------------------- copy constructor
-
-tzIBRDF::tzIBRDF(const tzIBRDF& brdf) {
+//===================================================================================
+tzIBRDF::tzIBRDF(const tzIBRDF& brdf) 
+{
 	if(brdf.mSamplerPtr)
 		mSamplerPtr	= brdf.mSamplerPtr->clone(); 
-	else  mSamplerPtr = NULL;
+	else  mSamplerPtr = nullptr;
 }	
 
-
-
-// --------------------------------------------------------------- assignment operator
-
-tzIBRDF&
-tzIBRDF::operator= (const tzIBRDF& rhs) {
+//===================================================================================
+tzIBRDF& tzIBRDF::operator= (const tzIBRDF& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
-		
-	if (mSamplerPtr) {
-		delete mSamplerPtr;
-		mSamplerPtr = NULL;
-	}
 
 	if (rhs.mSamplerPtr)
 		mSamplerPtr	= rhs.mSamplerPtr->clone();
@@ -37,55 +27,39 @@ tzIBRDF::operator= (const tzIBRDF& rhs) {
 	return (*this);
 }
 
-
-// ---------------------------------------------------------- destructor
-
-tzIBRDF::~tzIBRDF(void) {
-	if (mSamplerPtr) {
-		delete mSamplerPtr;
-		mSamplerPtr = NULL;
-	}
+//===================================================================================
+tzIBRDF::~tzIBRDF(void) 
+{
 }  
 
-
-
-// ---------------------------------------------------------- setSampler
-
-void
-tzIBRDF::setSampler(tzISampler* sPtr) {
+//===================================================================================
+void tzIBRDF::setSampler(std::shared_ptr< tzISampler > sPtr) 
+{
 	mSamplerPtr = sPtr;
 	mSamplerPtr->mapSamplesToHemisphere(1);  // for perfect diffuse
 }
 
-
-// ------------------------------------------------------------------------ f
-
-tzColor
-tzIBRDF::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const {
+//===================================================================================
+tzColor tzIBRDF::f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const 
+{
 	return (black);
 }
 
-
-// ------------------------------------------------------------------------ sampleF
-
-tzColor
-tzIBRDF::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi) const {
+//===================================================================================
+tzColor tzIBRDF::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi) const 
+{
 	return (black);
 }
 
-
-// ------------------------------------------------------------------------ sampleF
-
-tzColor
-tzIBRDF::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const {
+//===================================================================================
+tzColor tzIBRDF::sampleF(const tzShadeRec& sr, const tzVector3D& wo, tzVector3D& wi, float& pdf) const 
+{
 	return (black);
 }
 
-
-// ------------------------------------------------------------------------ rho	
-	
-tzColor
-tzIBRDF::rho(const tzShadeRec& sr, const tzVector3D& wo) const {
+//===================================================================================	
+tzColor tzIBRDF::rho(const tzShadeRec& sr, const tzVector3D& wo) const 
+{
 	return (black);
 }
 

@@ -25,41 +25,26 @@
 #include "../include/tzTriangle.h"
 #include "../include/tzSmoothTriangle.h"
 
-#include "ply.h"
-
-using namespace std;
 
 typedef enum {
 	flat, 
 	smooth
 } TriangleType;
 
-/*
-float
-_clamp(const float x, const float min, const float max) {
-	return (x < min ? min : (x > max ? max : x));
-}
-*/
-
-// ----------------------------------------------------------------  default constructor
-
+//===================================================================================
 tzGrid::tzGrid(void)
 	: 	tzCompound(),
 		mNx(0),
 		mNy(0),
 		mNz(0),
-		mMeshPtr(new tzMesh),
+		mMeshPtr( std::make_shared< tzMesh >()),
 		mReverseNormal(false),
 		mScale( 1.0f )
 {
-	// The cells array will be empty
 }
 
-
-// ----------------------------------------------------------------  constructor
-// for rendering triangle meshes
-
-tzGrid::tzGrid(tzMesh* meshPtr)
+//===================================================================================
+tzGrid::tzGrid(std::shared_ptr<tzMesh> meshPtr)
 	: 	tzCompound(),
 		mNx(0),
 		mNy(0),
@@ -68,50 +53,39 @@ tzGrid::tzGrid(tzMesh* meshPtr)
 		mReverseNormal(false),
 		mScale( 1.0f )
 {
-	// The cells array will be empty
 }
 
-// ---------------------------------------------------------------- clone
-
-tzGrid*
-tzGrid::clone(void) const {
-	return (new tzGrid(*this));
+//===================================================================================
+std::shared_ptr<tzIGeometricObject> tzGrid::clone(void) const 
+{
+	return (std::make_shared< tzGrid >(*this));
 }
 
+//===================================================================================
+tzGrid::tzGrid(const tzGrid& grid) 
+{
+}
 
-// ---------------------------------------------------------------- copy constructor
-// not implemented
-
-tzGrid::tzGrid(const tzGrid& grid) {}
-
-
-// ---------------------------------------------------------------- assignment operator
-// not implemented
-
-tzGrid&
-tzGrid::operator= (const tzGrid& rhs)	{
+//===================================================================================
+tzGrid& tzGrid::operator= (const tzGrid& rhs)	
+{
 	return (*this);
 }	
 
+//===================================================================================
+tzGrid::~tzGrid(void) 
+{
+}
 
-
-// ---------------------------------------------------------------- destructor
-// not implemented
-
-tzGrid::~tzGrid(void) {}
-
-
-tzBBox tzGrid::getBoundingBox(void)
+//===================================================================================
+tzBBox tzGrid::getBoundingBox(void) const
 {
 	return (mBbox);
 }
 
-//------------------------------------------------------------------ setupCells
-
+//===================================================================================
 void tzGrid::setupCells(void) 
 {
-	// find the minimum and maximum coordinates of the grid
-	
 	tzPoint3D p0 = findMinBounds();
 	tzPoint3D p1 = findMaxBounds();
 	
@@ -142,18 +116,19 @@ void tzGrid::setupCells(void)
 	// set up the array of grid cells with null pointers
 	
 	int num_cells = mNx * mNy * mNz;	
-	mCells.reserve(numObjects);
+	mCells.resize(num_cells);
 	
-	for (int j = 0; j < num_cells; j++)
-		mCells.push_back(NULL);
+	//for (int j = 0; j < num_cells; j++)
+	//	mCells.push_back(nullptr);
 				
 	// set up a temporary array to hold the number of objects stored in each cell
 	
 	std::vector<int> counts;
-	counts.reserve(num_cells);
+	counts.resize(num_cells);
+	memset( &counts[0], 0, sizeof( int )* num_cells );
 		
-	for (int j = 0; j < num_cells; j++)
-		counts.push_back(0);
+	//for (int j = 0; j < num_cells; j++)
+	//	counts.push_back(0);
 		
 
 	// put the objects into the cells
@@ -161,8 +136,10 @@ void tzGrid::setupCells(void)
 	tzBBox obj_bBox; 	// object's bounding box
 	int index;  	// cell's array index
 			
-	for (int j = 0; j < numObjects; j++) {
-		obj_bBox = mObjects[j]->getBoundingBox();
+	//for (int j = 0; j < numObjects; j++) 
+	for (std::vector<std::shared_ptr<tzIGeometricObject> >::const_iterator it = mObjects.begin(); it != mObjects.end(); ++it )
+	{
+		obj_bBox = (*it)->getBoundingBox();
 				
 		// compute the cell indices at the corners of the bounding box of the object
 		
@@ -181,19 +158,19 @@ void tzGrid::setupCells(void)
 					index = ix + mNx * iy + mNx * mNy * iz;
 															
 					if (counts[index] == 0) {
-						mCells[index] = mObjects[j];
+						mCells[index] = (*it);
 						counts[index] += 1;  						// now = 1
 					}
 					else {
 						if (counts[index] == 1) {
-							tzCompound* compound_ptr = new tzCompound;	// construct a compound object
+							std::shared_ptr<tzCompound> compound_ptr = std::make_shared< tzCompound >();	// construct a compound object
 							compound_ptr->addObject(mCells[index]); // add object already in cell
-							compound_ptr->addObject(mObjects[j]);  	// add the new object
+							compound_ptr->addObject((*it));  	// add the new object
 							mCells[index] = compound_ptr;			// store compound in current cell
 							counts[index] += 1;  					// now = 2
 						}						
 						else {										// counts[index] > 1
-							mCells[index]->addObject(mObjects[j]);	// just add current object
+							mCells[index]->addObject((*it));	// just add current object
 							counts[index] += 1;						// for statistics only
 						}
 					}
@@ -229,20 +206,16 @@ void tzGrid::setupCells(void)
 			num_greater += 1;
 	}
 	
-	cout << "num_cells =" << num_cells << endl;
-	cout << "numZeroes = " << num_zeroes << "  numOnes = " << num_ones << "  numTwos = " << num_twos << endl;  
-	cout << "numThrees = " << num_threes << "  numGreater = " << num_greater << endl;		
+	std::cout << "num_cells =" << num_cells << std::endl;
+	std::cout << "numZeroes = " << num_zeroes << "  numOnes = " << num_ones << "  numTwos = " << num_twos << std::endl;  
+	std::cout << "numThrees = " << num_threes << "  numGreater = " << num_greater << std::endl;		
 
 	// erase the temporary counts vector
 	
 	counts.erase (counts.begin(), counts.end());  
 }
 
-
-//------------------------------------------------------------------ findMinBounds
-
-// find the minimum grid coordinates, based on the bounding boxes of all the objects
-
+//===================================================================================
 tzPoint3D  tzGrid::findMinBounds(void) 
 {
 	tzBBox 	object_box;
@@ -268,12 +241,9 @@ tzPoint3D  tzGrid::findMinBounds(void)
 }
 
 
-//------------------------------------------------------------------ findMaxBounds
-
-// find the maximum grid coordinates, based on the bounding boxes of the objects
-
-tzPoint3D 
-tzGrid::findMaxBounds(void) {
+//===================================================================================
+tzPoint3D tzGrid::findMaxBounds(void) 
+{
 	tzBBox object_box;
 	tzPoint3D p1(-kHugeValue);
 
@@ -295,237 +265,7 @@ tzGrid::findMaxBounds(void) {
 	return (p1);
 }
 
-
-// The following functions read a file in PLY format, and construct mesh triangles where the data is stored 
-// in the mesh object
-// They are just small wrapper functions that call the functions read_ply_file or read_uv_ply_file that
-// do the actual reading
-// These use the PLY code by Greg Turk to read the PLY file
-
-
-// ----------------------------------------------------------------------------- read_flat_triangles
-
-void												
-tzGrid::read_flat_triangles(char* file_name) {
-  	//read_ply_file(file_name, flat);
- }
-
-
-// ----------------------------------------------------------------------------- read_smooth_triangles
-
-void												
-tzGrid::read_smooth_triangles(char* file_name) {
-  	//read_ply_file(file_name, smooth);
-  	//computeMeshNormals();
-}
-
-
-// ----------------------------------------------------------------------------- read_ply_file
-
-// Most of this function was written by Greg Turk and is released under the licence agreement 
-// at the start of the PLY.h and PLY.c files
-// The PLY.h file is #included at the start of this file
-// It still has some of his printf statements for debugging
-// I've made changes to construct mesh triangles and store them in the grid
-// mesh_ptr is a data member of Grid
-// objects is a data member of Compound
-// triangle_type is either flat or smooth
-// Using the one function construct to flat and smooth triangles saves a lot of repeated code
-// The ply file is the same for flat and smooth triangles
-
-/*
-void
-tzGrid::read_ply_file(char* file_name, const int triangle_type) {
-	// Vertex definition 
-	
-	typedef struct Vertex {
-	  float x,y,z;      // space coordinates       
-	} Vertex;
-	
-	// Face definition. This is the same for all files but is placed here to keep all the definitions together
-
-	typedef struct Face {
-	  	unsigned char nverts;    // number of vertex indices in list
-	  	int* verts;              // vertex index list 
-	} Face;
-		
-	// list of property information for a vertex
-	// this varies depending on what you are reading from the file
-
-	PlyProperty vert_props[] = {
-	  {"x", PLY_FLOAT, PLY_FLOAT, offsetof(Vertex,x), 0, 0, 0, 0},
-	  {"y", PLY_FLOAT, PLY_FLOAT, offsetof(Vertex,y), 0, 0, 0, 0},
-	  {"z", PLY_FLOAT, PLY_FLOAT, offsetof(Vertex,z), 0, 0, 0, 0}
-	};
-
-	// list of property information for a face. 
-	// there is a single property, which is a list
-	// this is the same for all files
-
-	PlyProperty face_props[] = { 
-	  	{"vertex_indices", PLY_INT, PLY_INT, offsetof(Face,verts),
-	   		1, PLY_UCHAR, PLY_UCHAR, offsetof(Face,nverts)}
-	};
-	
-	// local variables
-	
-	int 			i,j;
-  	PlyFile*		ply;
-  	int 			nelems;		// number of element types: 2 in our case - vertices and faces
-  	char**			elist;
-	int 			file_type;
-	float 			version;
-	int 			nprops;		// number of properties each element has
-	int 			num_elems;	// number of each type of element: number of vertices or number of faces
-	PlyProperty**	plist;
-	Vertex**		vlist = NULL;
-	Face**			flist = NULL;
-	char*			elem_name;
-	int				num_comments;
-	char**			comments;
-	int 			num_obj_info;
-	char**			obj_info;
-
-
-  	// open a ply file for reading
-  
-	ply = ply_open_for_reading(file_name, &nelems, &elist, &file_type, &version);
-	
-  	// print what we found out about the file
-  
-  	printf ("version %f\n", version);
-  	printf ("type %d\n", file_type);
-  	
-  	// go through each kind of element that we learned is in the file and read them 
-
-  	for (i = 0; i < nelems; i++) {  // there are only two elements in our files: vertices and faces
-	    // get the description of the first element 
-	    
-  	    elem_name = elist[i];
-	    plist = ply_get_element_description (ply, elem_name, &num_elems, &nprops);
-
-	    // print the name of the element, for debugging
-	    
-		cout << "element name  " << elem_name << "  num elements = " << num_elems << "  num properties =  " << nprops << endl;
-
-	    // if we're on vertex elements, read in the properties
-    
-    	if (equal_strings ("vertex", elem_name)) {
-	      	// set up for getting vertex elements
-	      	// the three properties are the vertex coordinates
-	
-			ply_get_property (ply, elem_name, &vert_props[0]);
-	      	ply_get_property (ply, elem_name, &vert_props[1]);
-		  	ply_get_property (ply, elem_name, &vert_props[2]);
-		  	
-		  	// reserve mesh elements
-		  	
-		  	mMeshPtr->mNumVertices = num_elems;
-		  	mMeshPtr->mVertices.reserve(num_elems);
-
-		  	// grab all the vertex elements
-		  			  
-		  	for (j = 0; j < num_elems; j++) {
-				Vertex* vertex_ptr = new Vertex;
-
-		        // grab an element from the file
-		        
-				ply_get_element (ply, (void *) vertex_ptr);
-				mMeshPtr->mVertices.push_back(tzPoint3D(vertex_ptr->x * mScale, vertex_ptr->y* mScale, vertex_ptr->z* mScale));
-		  		delete vertex_ptr;
-		  	}
-    	}
-
-	    // if we're on face elements, read them in 
-	    
-	    if (equal_strings ("face", elem_name)) {
-		    // set up for getting face elements
-		
-			ply_get_property (ply, elem_name, &face_props[0]);   // only one property - a list
-			
-			mMeshPtr->mNumTriangles = num_elems;
-		  	mObjects.reserve(num_elems);  // triangles will be stored in Compound::objects
-		
-			// the following code stores the face numbers that are shared by each vertex
-		  	
-			mMeshPtr->mVertexFaces.reserve(mMeshPtr->mNumVertices);
-		  	std::vector<int> faceList;
-		  			  	
-		  	for (j = 0; j < mMeshPtr->mNumVertices; j++)
-				mMeshPtr->mVertexFaces.push_back(faceList); // store empty lists so that we can use the [] notation below
-		  			
-			// grab all the face elements
-			
-			int count = 0; // the number of faces read
-					      
-			for (j = 0; j < num_elems; j++) {
-			    // grab an element from the file 
-			    
-			    Face* face_ptr = new Face;
-			    
-			    ply_get_element (ply, (void *) face_ptr);
-			    
-			    // construct a mesh triangle of the specified type
-			    
-			    if (triangle_type == flat) {
-			    	tzFlatMeshTriangle* triangle_ptr = new tzFlatMeshTriangle(mMeshPtr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
-					triangle_ptr->computeNormal(mReverseNormal);		
-					mObjects.push_back(triangle_ptr); 
-				} 
-			    	
-			    if (triangle_type == smooth) {
-			    	tzSmoothMeshTriangle* triangle_ptr = new tzSmoothMeshTriangle(mMeshPtr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
-					triangle_ptr->computeNormal(mReverseNormal); 	// the "flat triangle" normal is used to compute the average normal at each mesh vertex
-					mObjects.push_back(triangle_ptr); 				// it's quicker to do it once here, than have to do it on average 6 times in computeMeshNormals
-					
-					// the following code stores a list of all faces that share a vertex
-					// it's used for computing the average normal at each vertex in order(num_vertices) time
-					
-					mMeshPtr->vertex_faces[face_ptr->verts[0]].push_back(count);
-					mMeshPtr->vertex_faces[face_ptr->verts[1]].push_back(count);
-					mMeshPtr->vertex_faces[face_ptr->verts[2]].push_back(count);
-					count++;
-				} 
-			}
-			
-			if (triangle_type == flat)
-				mesh_ptr->vertex_faces.erase(mesh_ptr->vertex_faces.begin(), mesh_ptr->vertex_faces.end());
-	    }
-    
-	    // print out the properties we got, for debugging
-	    
-	    for (j = 0; j < nprops; j++)
-	    	printf ("property %s\n", plist[j]->name);
-	
-	}  // end of for (i = 0; i < nelems; i++) 
-
-
-	// grab and print out the comments in the file
-	  
-	comments = ply_get_comments (ply, &num_comments);
-	  
-	for (i = 0; i < num_comments; i++)
-	    printf ("comment = '%s'\n", comments[i]);
-
-	// grab and print out the object information
-	  
-	obj_info = ply_get_obj_info (ply, &num_obj_info);
-	  
-	for (i = 0; i < num_obj_info; i++)
-	    printf ("obj_info = '%s'\n", obj_info[i]);
-
-	// close the ply file 
-	  
-	ply_close (ply);
-}
-*/
-
-
-// ----------------------------------------------------------------------------- computeMeshNormals
-// this computes the average normal at each vertex
-// the calculation is of order(num_vertices)
-// some triangles in ply files are not defined properly
-
+//===================================================================================
 void tzGrid::computeMeshNormals(void) 
 {
 	mMeshPtr->mNormals.reserve(mMeshPtr->mNumVertices);
@@ -554,16 +294,12 @@ void tzGrid::computeMeshNormals(void)
 	
 	mMeshPtr->mVertexFaces.erase (mMeshPtr->mVertexFaces.begin(), mMeshPtr->mVertexFaces.end());
 
-	cout << "finished constructing normals" << endl;
+	std::cout << "finished constructing normals" << std::endl;
 }
 
-
-
-// ------------------------------------------------------------------------------------------------  tesselate_flat_sphere
-// tesselate a unit sphere into flat triangles that are stored directly in the grid
-
-void												
-tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_steps) {
+//===================================================================================
+void tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_steps) 
+{
 	float pi = 3.1415926535897932384f;
 		
 	// define the top triangles which all touch the north pole
@@ -573,17 +309,17 @@ tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_st
 	for (int j = 0; j <= horizontal_steps - 1; j++) {
 		// define vertices
 		
-		tzPoint3D v0(	0, 1, 0);																		// top (north pole)
+		tzPoint3D v0( 0, 1, 0);																		// top (north pole)
 		
-		tzPoint3D v1(	sin(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 			// bottom left
+		tzPoint3D v1( sin(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps), 			// bottom left
 					cos(pi * k / vertical_steps), 
 					cos(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
 					
-		tzPoint3D v2(	sin(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 		// bottom  right
+		tzPoint3D v2( sin(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps), 		// bottom  right
 					cos(pi * k / vertical_steps), 
 					cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
 	
-		tzTriangle* triangle_ptr = new tzTriangle(v0, v1, v2);
+		std::shared_ptr<tzTriangle> triangle_ptr = std::make_shared< tzTriangle >(v0, v1, v2);
 		mObjects.push_back(triangle_ptr);
 	}
 	
@@ -605,7 +341,7 @@ tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_st
 					cos(pi * k / vertical_steps), 
 					cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
 	
-		tzTriangle* triangle_ptr = new tzTriangle(v0, v1, v2);
+		std::shared_ptr<tzTriangle> triangle_ptr = std::make_shared< tzTriangle >(v0, v1, v2);
 		mObjects.push_back(triangle_ptr);
 	}
 
@@ -631,7 +367,7 @@ tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_st
 						cos(pi * k / vertical_steps), 
 						cos(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
 		
-			tzTriangle* triangle_ptr1 = new tzTriangle(v0, v1, v2);
+			std::shared_ptr<tzTriangle> triangle_ptr1 = std::make_shared< tzTriangle >(v0, v1, v2);
 			mObjects.push_back(triangle_ptr1);
 			
 			
@@ -651,18 +387,15 @@ tzGrid::tessellate_flat_sphere(const int horizontal_steps, const int vertical_st
 							cos(pi * (k + 1) / vertical_steps), 
 							cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
 		
-			tzTriangle* triangle_ptr2 = new tzTriangle(v0, v1, v2); 
+			std::shared_ptr<tzTriangle> triangle_ptr2 = std::make_shared< tzTriangle >(v0, v1, v2); 
 			mObjects.push_back(triangle_ptr2); 						
 		}
 	}	
 }
 
-
-// ------------------------------------------------------------------------------------------------  tesselate_smooth_sphere
-// tesselate a unit sphere into smooth triangles that are stored directly in the grid
-
-void												
-tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_steps) {
+//===================================================================================
+void tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_steps) 
+{
 	float pi = 3.1415926535897932384f;
 	
 	// define the top triangles
@@ -682,7 +415,7 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 					cos(pi * k / vertical_steps), 
 					cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
 	
-		tzSmoothTriangle* triangle_ptr = new tzSmoothTriangle(v0, v1, v2);
+		std::shared_ptr<tzSmoothTriangle> triangle_ptr = std::make_shared< tzSmoothTriangle >(v0, v1, v2);
 		triangle_ptr->n0 = v0;
 		triangle_ptr->n1 = v1;
 		triangle_ptr->n2 = v2;
@@ -707,7 +440,7 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 					cos(pi * k / vertical_steps), 
 					cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * k / vertical_steps)	);
 	
-		tzSmoothTriangle* triangle_ptr = new tzSmoothTriangle(v0, v1, v2);
+		std::shared_ptr<tzSmoothTriangle> triangle_ptr = std::make_shared< tzSmoothTriangle >(v0, v1, v2);
 		triangle_ptr->n0 = v0;
 		triangle_ptr->n1 = v1;
 		triangle_ptr->n2 = v2;
@@ -735,7 +468,7 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 						cos(pi * k / vertical_steps), 
 						cos(2.0f * pi * j / horizontal_steps) * sin(pi * k / vertical_steps)	);
 		
-			tzSmoothTriangle* triangle_ptr1 = new tzSmoothTriangle(v0, v1, v2);
+			std::shared_ptr<tzSmoothTriangle> triangle_ptr1 = std::make_shared< tzSmoothTriangle >(v0, v1, v2);
 			triangle_ptr1->n0 = v0;
 			triangle_ptr1->n1 = v1;
 			triangle_ptr1->n2 = v2;
@@ -758,7 +491,7 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 							cos(pi * (k + 1) / vertical_steps), 
 							cos(2.0f * pi * (j + 1) / horizontal_steps) * sin(pi * (k + 1) / vertical_steps)	);
 		
-			tzSmoothTriangle* triangle_ptr2 = new tzSmoothTriangle(v0, v1, v2); 
+			std::shared_ptr<tzSmoothTriangle> triangle_ptr2 = std::make_shared< tzSmoothTriangle>(v0, v1, v2); 
 			triangle_ptr2->n0 = v0;
 			triangle_ptr2->n1 = v1;
 			triangle_ptr2->n2 = v2;
@@ -767,13 +500,8 @@ tzGrid::tessellate_smooth_sphere(const int horizontal_steps, const int vertical_
 	}	
 }
 
-
-// ---------------------------------------------------------------- hit
-
-// The following grid traversal code is based on the pseudo-code in Shirley (2000)	
-// The first part is the same as the code in BBox::hit
-
-bool tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const 
+//===================================================================================
+bool tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr)  
 {
 	float ox = ray.mOrigin.x;
 	float oy = ray.mOrigin.y;
@@ -934,12 +662,15 @@ bool tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const
 	// traverse the grid
 	
 	while (true) {	
-		tzIGeometricObject* object_ptr = mCells[ix + mNx * iy + mNx * mNy * iz];
+		std::shared_ptr<tzIGeometricObject> object_ptr = mCells[ix + mNx * iy + mNx * mNy * iz];
 		
 		if (tx_next < ty_next && tx_next < tz_next) {
-			if (object_ptr && object_ptr->hit(ray, t, sr) && t < tx_next) {
-				mMaterialPtr = object_ptr->getMaterial();
-				return (true);
+			if (object_ptr )
+			{
+				if ( object_ptr->hit(ray, t, sr) && t < tx_next) {
+					mMaterialPtr[ray.mThreadId] = object_ptr->getMaterial(ray.mThreadId);
+					return (true);
+				}
 			}
 			
 			tx_next += dtx;
@@ -950,9 +681,12 @@ bool tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const
 		} 
 		else { 	
 			if (ty_next < tz_next) {
-				if (object_ptr && object_ptr->hit(ray, t, sr) && t < ty_next) {
-					mMaterialPtr = object_ptr->getMaterial();
-					return (true);
+				if ( object_ptr )
+				{
+					if ( object_ptr->hit(ray, t, sr) && t < ty_next) {
+						mMaterialPtr[ray.mThreadId] = object_ptr->getMaterial(ray.mThreadId);
+						return (true);
+					}
 				}
 				
 				ty_next += dty;
@@ -961,10 +695,13 @@ bool tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const
 				if (iy == iy_stop)
 					return (false);
 		 	}
-		 	else {		
-				if (object_ptr && object_ptr->hit(ray, t, sr) && t < tz_next) {
-					mMaterialPtr = object_ptr->getMaterial();
-					return (true);
+		 	else {	
+				if (object_ptr)
+				{
+					if ( object_ptr->hit(ray, t, sr) && t < tz_next) {
+						mMaterialPtr[ray.mThreadId] = object_ptr->getMaterial(ray.mThreadId);
+						return (true);
+					}
 				}
 				
 				tz_next += dtz;
@@ -977,8 +714,8 @@ bool tzGrid::hit(const tzRay& ray, float& t, tzShadeRec& sr) const
 	}
 }	// end of hit
 
-	//===================================================================================
-bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
+//===================================================================================
+bool tzGrid::shadowHit(const tzRay &ray, const tzShadeRec& sr, float &tmin) const
 {
 	float ox = ray.mOrigin.x;
 	float oy = ray.mOrigin.y;
@@ -1139,19 +876,10 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 	// traverse the grid
 
 	while (true) {
-		tzIGeometricObject* object_ptr = mCells[ix + mNx * iy + mNx * mNy * iz];
-
-		if (object_ptr )
-		{
-			if (object_ptr->getMaterial( ) )
-			{
-				int a = 0;
-				a = 1;
-			}
-		}
+		std::shared_ptr<tzIGeometricObject> object_ptr = mCells[ix + mNx * iy + mNx * mNy * iz];
 
 		if (tx_next < ty_next && tx_next < tz_next) {
-			if (object_ptr && object_ptr->shadowHit(ray, tmin) && tmin < tx_next) {
+			if (object_ptr && object_ptr->shadowHit(ray, sr, tmin) && tmin < tx_next) {
 				//mMaterialPtr = object_ptr->getMaterial();
 				return (true);
 			}
@@ -1164,7 +892,7 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 		}
 		else {
 			if (ty_next < tz_next) {
-				if (object_ptr && object_ptr->shadowHit(ray, tmin) && tmin < ty_next) {
+				if (object_ptr && object_ptr->shadowHit(ray, sr, tmin) && tmin < ty_next) {
 					//mMaterialPtr = object_ptr->getMaterial();
 					return (true);
 				}
@@ -1176,7 +904,7 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 					return (false);
 			}
 			else {
-				if (object_ptr && object_ptr->shadowHit(ray, tmin) && tmin < tz_next) {
+				if (object_ptr && object_ptr->shadowHit(ray, sr, tmin) && tmin < tz_next) {
 					//mMaterialPtr = object_ptr->getMaterial();
 					return (true);
 				}
@@ -1193,217 +921,6 @@ bool tzGrid::shadowHit(const tzRay &ray, float &tmin) const
 	return false;
 }
 
-/*
-//===================================================================================
-void tzGrid::read_flat_uv_triangles(char* file_name) 
-{
-	read_uv_ply_file(file_name, flat);
-}
-
-
-//===================================================================================
-void tzGrid::read_smooth_uv_triangles(char* file_name) 
-{
-	read_uv_ply_file(file_name, smooth);
-	computeMeshNormals();
-}
-*/
-
-/*
-//===================================================================================
-void tzGrid::read_uv_ply_file(char* file_name, const int triangle_type) 
-{
-	// Vertex definition 
-
-	typedef struct Vertex {
-		float x, y, z;             	// space coordinates
-		float u, v;				// texture coordinates
-	} Vertex;
-
-	// Face definition. This is the same for all files but is placed here to keep all the defintions together
-
-	typedef struct Face {
-		unsigned char nverts;    // number of vertex indices in list
-		int* verts;              // vertex index list 
-	} Face;
-
-	// list of property information for a vertex - includes the texture coordinates
-
-	PlyProperty vert_props[] = {
-		{ "x", PLY_FLOAT, PLY_FLOAT, offsetof(Vertex,x), 0, 0, 0, 0 },
-		{ "y", PLY_FLOAT, PLY_FLOAT, offsetof(Vertex,y), 0, 0, 0, 0 },
-		{ "z", PLY_FLOAT, PLY_FLOAT, offsetof(Vertex,z), 0, 0, 0, 0 },
-		{ "u", PLY_FLOAT, PLY_FLOAT, offsetof(Vertex,u), 0, 0, 0, 0 },
-		{ "v", PLY_FLOAT, PLY_FLOAT, offsetof(Vertex,v), 0, 0, 0, 0 }
-	};
-
-	// list of property information for a face. This is the same for all files
-	// there is a single property, which is a list
-
-	PlyProperty face_props[] = {
-		{ "vertex_indices", PLY_INT, PLY_INT, offsetof(Face,verts),
-		1, PLY_UCHAR, PLY_UCHAR, offsetof(Face,nverts) }
-	};
-
-	// local variables
-
-	int 			i, j, k = 0;
-	PlyFile*		ply;
-	int 			nelems;		// number of element types: 2 in our case - vertices and faces
-	char**			elist;
-	int 			file_type;
-	float 			version;
-	int 			nprops;		// number of properties each element has
-	int 			num_elems;	// number of each type of element: number of vertices or number of faces
-	PlyProperty**	plist;
-	Vertex**		vlist = NULL;
-	Face**			flist = NULL;
-	char*			elem_name;
-	int				num_comments;
-	char**			comments;
-	int 			num_obj_info;
-	char**			obj_info;
-
-
-	// open a PLY file for reading
-
-	ply = ply_open_for_reading(file_name, &nelems, &elist, &file_type, &version);
-
-	// print what we found out about the file
-
-	printf("version %f\n", version);
-	printf("type %d\n", file_type);
-
-	// go through each kind of element that we learned is in the file
-	// and read them 
-
-	for (i = 0; i < nelems; i++) {  // there are only two elements in our files: vertices and faces
-									// get the description of the first element 
-
-		elem_name = elist[i];
-		plist = ply_get_element_description(ply, elem_name, &num_elems, &nprops);
-
-		// print the name of the element, for debugging
-
-		cout << "element name  " << elem_name << "  num elements = " << num_elems << "  num properties =  " << nprops << endl;
-
-		// if we're on vertex elements, read in the properties
-
-		if (equal_strings("vertex", elem_name)) {
-			// set up for getting vertex elements
-			// the five properties are the three vertex coordinates and the two texture coordinates
-
-			ply_get_property(ply, elem_name, &vert_props[0]);
-			ply_get_property(ply, elem_name, &vert_props[1]);
-			ply_get_property(ply, elem_name, &vert_props[2]);
-			ply_get_property(ply, elem_name, &vert_props[3]);
-			ply_get_property(ply, elem_name, &vert_props[4]);
-
-			// reserve mesh elements
-
-			mesh_ptr->num_vertices = num_elems;
-			mesh_ptr->vertices.reserve(num_elems);
-			mesh_ptr->u.reserve(num_elems);
-			mesh_ptr->v.reserve(num_elems);
-
-			// grab all the vertex elements
-
-			Vertex* vertex_ptr = new Vertex;
-
-			for (j = 0; j < num_elems; j++) {
-				// grab an element from the file
-
-				ply_get_element(ply, (void *)vertex_ptr);
-
-				mesh_ptr->vertices.push_back(tzPoint3D(vertex_ptr->x, vertex_ptr->y, vertex_ptr->z));
-				mesh_ptr->u.push_back(vertex_ptr->u);
-				mesh_ptr->v.push_back(vertex_ptr->v);
-			}
-
-			delete vertex_ptr;
-		}
-
-		// if we're on face elements, read them in 
-
-		if (equal_strings("face", elem_name)) {
-			// set up for getting face elements
-
-			ply_get_property(ply, elem_name, &face_props[0]);   // only one property - a list
-
-			mesh_ptr->num_triangles = num_elems;
-			mObjects.reserve(num_elems);  // triangles will be stored in Compound::objects
-
-										 // new code to store the face numbers that are shared by each vertex
-
-			mesh_ptr->vertex_faces.reserve(mesh_ptr->num_vertices);
-			std::vector<int> faceList;
-
-			for (j = 0; j < mesh_ptr->num_vertices; j++)
-				mesh_ptr->vertex_faces.push_back(faceList); // store empty lists so that we can use [] notation below
-
-															// grab all the face elements
-
-			Face* face_ptr = new Face;
-			int count = 0; // the number of faces read
-
-			for (j = 0; j < num_elems; j++) {
-				// grab an element from the file 
-
-				ply_get_element(ply, (void *)face_ptr);
-
-				// construct a uv mesh triangle of the specified type
-
-				if (triangle_type == flat) {
-					tzFlatUVMeshTriangle* triangle_ptr = new tzFlatUVMeshTriangle(mesh_ptr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
-					triangle_ptr->computeNormal(reverse_normal);
-					mObjects.push_back(triangle_ptr);
-				}
-
-				if (triangle_type == smooth) {
-					tzSmoothUVMeshTriangle* triangle_ptr = new tzSmoothUVMeshTriangle(mesh_ptr, face_ptr->verts[0], face_ptr->verts[1], face_ptr->verts[2]);
-					triangle_ptr->computeNormal(reverse_normal);
-					mObjects.push_back(triangle_ptr);
-
-					mesh_ptr->vertex_faces[face_ptr->verts[0]].push_back(count);
-					mesh_ptr->vertex_faces[face_ptr->verts[1]].push_back(count);
-					mesh_ptr->vertex_faces[face_ptr->verts[2]].push_back(count);
-					count++;
-				}
-			}
-
-			delete face_ptr;
-
-			if (triangle_type == flat)
-				mesh_ptr->vertex_faces.erase(mesh_ptr->vertex_faces.begin(), mesh_ptr->vertex_faces.end());
-		}
-
-		// print out the properties we got, for debugging
-
-		for (j = 0; j < nprops; j++)
-			printf("property %s\n", plist[j]->name);
-
-	}  // end of for (i = 0; i < nelems; i++) 
-
-
-	   // grab and print out the comments in the file
-
-	comments = ply_get_comments(ply, &num_comments);
-
-	for (i = 0; i < num_comments; i++)
-		printf("comment = '%s'\n", comments[i]);
-
-	// grab and print out the object information
-
-	obj_info = ply_get_obj_info(ply, &num_obj_info);
-
-	for (i = 0; i < num_obj_info; i++)
-		printf("obj_info = '%s'\n", obj_info[i]);
-
-	// close the ply file 
-
-	ply_close(ply);
-}
-*/
 
 //===================================================================================
 void tzGrid::addMesh(const std::vector<tzPoint3D> &vertices,
@@ -1415,31 +932,31 @@ void tzGrid::addMesh(const std::vector<tzPoint3D> &vertices,
 	const int &num_vertices,
 	const int &num_triangles,
 	const tzMatrix &matrix,
-	tzIMaterial* material,
-	tzITexture* alphaTexture )
+	std::shared_ptr < tzIMaterial> material,
+	std::shared_ptr<tzITexture> alphaTexture )
 {
-	/*
-	if ( !mMeshPtr )
-	{
-		printf( " the mesh pointer hasn't been initialized \n" );
-		return;
-	}
-	*/
-	tzMesh* meshPtr = new tzMesh();
+	
+	std::shared_ptr<tzMesh> meshPtr = std::make_shared< tzMesh >();
 	this->mMeshList.push_back( meshPtr );
 
 	// update transformation
 	meshPtr->mVertices.resize(vertices.size());
+	const tzPoint3D *origP = vertices.data();
+	tzPoint3D *newP = &(meshPtr->mVertices[0]);
 	for ( int i = 0; i < (int)vertices.size(); i++ )
 	{
-		meshPtr->mVertices[i] = vertices[i]* matrix;
+		//meshPtr->mVertices[i] = vertices[i]* matrix;
+		(*newP++) = (*origP++)*matrix;
 	}
 	//
 	tzMatrix rotMatrix = matrix.rotationMatrix();
 	meshPtr->mNormals.resize(normals.size());
+	const tzNormal *origN = normals.data();
+	tzNormal *newN = &(meshPtr->mNormals[0]);
 	for (int i = 0; i < (int)normals.size(); i++)
 	{
-		meshPtr->mNormals[i] = normals[i]* rotMatrix;
+		//meshPtr->mNormals[i] = normals[i]* rotMatrix;
+		(*newN++) = (*origN++)*rotMatrix;
 	}
 
 	//
@@ -1450,27 +967,37 @@ void tzGrid::addMesh(const std::vector<tzPoint3D> &vertices,
 	meshPtr->mNumTriangles = num_triangles;
 
 	// create triangles
+	size_t origSize = mObjects.size();
+	//mObjects.resize( origSize + num_triangles );
+	const tzCoreMesh::index *ptrIdx = face_vertices.data();
 	for ( int tr = 0; tr < num_triangles; tr++ )
 	{
-		int index = tr*3;
-		int v0 = face_vertices[index].vertex_index;
-		int v1 = face_vertices[index+1].vertex_index;
-		int v2 = face_vertices[index+2].vertex_index;
-		int n0 = face_vertices[index].normal_index;
-		int n1 = face_vertices[index + 1].normal_index;
-		int n2 = face_vertices[index + 2].normal_index;
-		int uv0 = face_vertices[index].texcoord_index;
-		int uv1 = face_vertices[index + 1].texcoord_index;
-		int uv2 = face_vertices[index + 2].texcoord_index;
+		//int index = tr*3;
+		int v0 = (*ptrIdx).vertex_index;
+		int n0 = (*ptrIdx).normal_index;
+		int uv0 = (*ptrIdx).texcoord_index;
+		ptrIdx++;
+		//
+		int v1 = (*ptrIdx).vertex_index;
+		int n1 = (*ptrIdx).normal_index;
+		int uv1 = (*ptrIdx).texcoord_index;
+		ptrIdx++;
+		//
+		int v2 = (*ptrIdx).vertex_index;
+		int n2 = (*ptrIdx).normal_index;
+		int uv2 = (*ptrIdx).texcoord_index;
+		ptrIdx++;
 		
 		//
-		tzFlatUVMeshTriangle* triangle_ptr = new tzFlatUVMeshTriangle(meshPtr, v0, v1, v2, n0, n1, n2, uv0, uv1, uv2);
-		triangle_ptr->setMaterial( material );
+		std::shared_ptr<tzFlatUVMeshTriangle> triangle_ptr = std::make_shared< tzFlatUVMeshTriangle>(meshPtr, v0, v1, v2, n0, n1, n2, uv0, uv1, uv2);
+		triangle_ptr->setMaterial( material, ~0 );
 		if (alphaTexture )
 		{
 			triangle_ptr->setAlphaTexture(alphaTexture );
 		}
+		
 		triangle_ptr->computeNormal(mReverseNormal);
-		mObjects.push_back(triangle_ptr);
+		//mObjects[origSize + tr] = triangle_ptr;
+		mObjects.push_back( triangle_ptr );
 	}
 }

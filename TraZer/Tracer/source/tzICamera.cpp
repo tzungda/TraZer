@@ -1,9 +1,7 @@
 
 #include "../include/tzICamera.h"
 
-
-// ----------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzICamera::tzICamera(void)
 	:	mEye(0, 0, 500),
 		mLookAt(0),
@@ -17,8 +15,7 @@ tzICamera::tzICamera(void)
 {}
 
 
-// ----------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzICamera::tzICamera(const tzICamera& c)
 	: 	mEye(c.mEye),
 		mLookAt(c.mLookAt),
@@ -31,12 +28,9 @@ tzICamera::tzICamera(const tzICamera& c)
 		mOutputPath(c.mOutputPath)
 {}
 
-
-
-// ----------------------------------------------------------------- assignment operator
-
-tzICamera&
-tzICamera::operator= (const tzICamera& rhs) {
+//===================================================================================
+tzICamera& tzICamera::operator= (const tzICamera& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 	
@@ -54,18 +48,13 @@ tzICamera::operator= (const tzICamera& rhs) {
 }
 
 
-// ----------------------------------------------------------------- destructor
+//===================================================================================
+tzICamera::~tzICamera(void) 
+{
+}
 
-tzICamera::~tzICamera(void) {}
-
-
-
-//-------------------------------------------------------------- computeUVW
-
-// This computes an orthornormal basis given the view point, lookat point, and up vector
-
-void
-tzICamera::computeUVW(void) 
+//===================================================================================
+void tzICamera::computeUVW(void) 
 {
 	mOrthoW = mEye - mLookAt;
 	mOrthoW.normalize();

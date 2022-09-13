@@ -14,7 +14,7 @@ tzViewPlane::tzViewPlane()
 	mS = 1.0f;
 	mGamma = mInvGamma = 1.0f;
 
-	mSamplerPtr = NULL;
+	mSamplerPtr = nullptr;
 	mNumSamples = 0;
 	mMaxDepth = kHugeValue;
 }
@@ -55,14 +55,8 @@ void tzViewPlane::setGamma(float gamma)
 }
 
 //===================================================================================
-void tzViewPlane::setSampler(tzISampler* sp)
+void tzViewPlane::setSampler(std::shared_ptr<tzISampler> sp)
 {
-	if ( mSamplerPtr )
-	{
-		delete mSamplerPtr;
-		mSamplerPtr = NULL;
-	}
-
 	mNumSamples = sp->getNumSamples();
 	mSamplerPtr = sp;
 }
@@ -72,19 +66,13 @@ void tzViewPlane::setSamples(const int n)
 {
 	mNumSamples = n;
 
-	if ( mSamplerPtr )
-	{
-		delete mSamplerPtr;
-		mSamplerPtr = NULL;
-	}
-
 	if (mNumSamples > 1)
 	{
-		mSamplerPtr = new tzMultiJittered( mNumSamples );	
+		mSamplerPtr = std::make_shared< tzMultiJittered >( mNumSamples );	
 	}
 	else
 	{
-		mSamplerPtr = new tzRegular( 1 );
+		mSamplerPtr = std::make_shared< tzRegular >( 1 );
 	}
 }
 

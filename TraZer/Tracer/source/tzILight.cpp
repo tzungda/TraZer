@@ -2,39 +2,31 @@
 #include "../include/tzILight.h"
 #include "../include/tzConstants.h"
 
-// ---------------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzILight::tzILight(void) 
 :mCastsShadows(false)
 {}
 
-// ---------------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzILight::tzILight(const tzILight& ls) 
 :mCastsShadows(ls.mCastsShadows)
 {}
 
-
-// ---------------------------------------------------------------------- assignment operator
-
-tzILight&
-tzILight::operator= (const tzILight& rhs) {
+//===================================================================================
+tzILight& tzILight::operator= (const tzILight& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
 	return (*this);
 }
 
+//===================================================================================
+tzILight::~tzILight(void) 
+{
+}
 
-// ---------------------------------------------------------------------- destructor
-
-tzILight::~tzILight(void) {}
-
-
-
-// ---------------------------------------------------------------------- L
-// returns the radiance
-
+//===================================================================================
 tzColor tzILight::L( tzShadeRec& s) 
 {
 	return (black);

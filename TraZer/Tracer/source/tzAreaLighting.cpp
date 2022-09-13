@@ -4,14 +4,9 @@
 #include "../include/tzShadeRec.h"
 #include "../include/tzIMaterial.h"
 
-//===================================================================================
-tzAreaLighting::tzAreaLighting(void)
-	: tzITracer()
-{}
-
 
 //===================================================================================		
-tzAreaLighting::tzAreaLighting(tzWorld* _worldPtr)
+tzAreaLighting::tzAreaLighting(tzWorld& _worldPtr)
 	: tzITracer(_worldPtr)
 {}
 
@@ -23,11 +18,11 @@ tzAreaLighting::~tzAreaLighting(void) {}
 //===================================================================================
 tzColor tzAreaLighting::traceRay(const tzRay ray, const int depth) const 
 {
-	if (depth > mWorldPtr->mVp.mMaxDepth)
+	if (depth > mWorldPtr.mVp.mMaxDepth)
 		return (black);
 	else {
 		float tmin;
-		tzShadeRec sr(mWorldPtr->hitObjects(ray, tmin));   
+		tzShadeRec sr(mWorldPtr.hitObjects(ray, tmin));   
 		sr.mThreadId = ray.mThreadId;
 		sr.mMaxThreads = ray.mMaxThreads;
 					
@@ -35,11 +30,11 @@ tzColor tzAreaLighting::traceRay(const tzRay ray, const int depth) const
 			sr.mDepth = depth;
 			sr.mRay = ray;	
 			
-			return (sr.mMaterialPtr->areaLightShade(sr));   
+			return (sr.mMaterialPtr[ray.mThreadId]->areaLightShade(sr));   
 			//return sr.mMaterialPtr->shade( sr );
 		}
 		else
-			return (mWorldPtr->mBackgroundColor);
+			return (mWorldPtr.mBackgroundColor);
 	}																																			
 }
 

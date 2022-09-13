@@ -24,9 +24,9 @@ tzTriangle::tzTriangle(const tzPoint3D& a, const tzPoint3D& b, const tzPoint3D& 
 
 
 //===================================================================================
-tzTriangle* tzTriangle::clone(void) const 
+std::shared_ptr<tzIGeometricObject> tzTriangle::clone(void) const
 {
-	return (new tzTriangle(*this));
+	return (std::make_shared< tzTriangle >(*this));
 }
 
 
@@ -69,7 +69,7 @@ void tzTriangle::computeNormal(void)
 }
 
 //===================================================================================
-tzBBox tzTriangle::getBoundingBox(void) 
+tzBBox tzTriangle::getBoundingBox(void) const
 {
 	float delta = 0.000001f; 
 	
@@ -80,7 +80,7 @@ tzBBox tzTriangle::getBoundingBox(void)
 
 
 //===================================================================================
-bool tzTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
+bool tzTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr)  
 {
 	float a = mV0.x - mV1.x, b = mV0.x - mV2.x, c = ray.mDirection.x, d = mV0.x - ray.mOrigin.x;
 	float e = mV0.y - mV1.y, f = mV0.y - mV2.y, g = ray.mDirection.y, h = mV0.y - ray.mOrigin.y;
@@ -122,7 +122,7 @@ bool tzTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const
 
 
 //===================================================================================
-bool tzTriangle::shadowHit(const tzRay& ray, float& tmin) const 
+bool tzTriangle::shadowHit(const tzRay& ray, const tzShadeRec& sr, float& tmin) const
 {
 	float a = mV0.x - mV1.x, b = mV0.x - mV2.x, c = ray.mDirection.x, d = mV0.x - ray.mOrigin.x;
 	float e = mV0.y - mV1.y, f = mV0.y - mV2.y, g = ray.mDirection.y, h = mV0.y - ray.mOrigin.y;

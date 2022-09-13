@@ -1,38 +1,32 @@
 
 #include "../include/tzIMaterial.h"
 
-// ---------------------------------------------------------------- default constructor
+//===================================================================================
+tzIMaterial::tzIMaterial(void) 
+{
+}
 
-tzIMaterial::tzIMaterial(void) {}
+//===================================================================================
+tzIMaterial::tzIMaterial(const tzIMaterial& m) 
+{
+}
 
-
-// ---------------------------------------------------------------- copy constructor
-
-tzIMaterial::tzIMaterial(const tzIMaterial& m) {}
-
-
-
-// ---------------------------------------------------------------- assignment operator
-
-tzIMaterial&
-tzIMaterial::operator= (const tzIMaterial& rhs) {
+//===================================================================================
+tzIMaterial& tzIMaterial::operator= (const tzIMaterial& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
 	return (*this);
 }
 
-
-// ---------------------------------------------------------------- destructor
-
+//===================================================================================
 tzIMaterial::~tzIMaterial(void)
 {}
 
-
-// ---------------------------------------------------------------- shade
-
-tzColor
-tzIMaterial::shade(tzShadeRec& sr) {
+//===================================================================================
+tzColor tzIMaterial::shade(tzShadeRec& sr) 
+{
 	return (black);
 }
 

@@ -2,40 +2,30 @@
 #include "../include/tzConstants.h"
 #include "../include/tzSmoothUVMeshTriangle.h"
 						
-
-// ----------------------------------------------------------------  default constructor
-
+//===================================================================================
 tzSmoothUVMeshTriangle::tzSmoothUVMeshTriangle(void)
 	: tzSmoothMeshTriangle()
 {}
 
-
-// ---------------------------------------------------------------- constructor
-
-tzSmoothUVMeshTriangle::tzSmoothUVMeshTriangle(tzMesh* _mesh_ptr, const int i0, const int i1, const int i2)
+//===================================================================================
+tzSmoothUVMeshTriangle::tzSmoothUVMeshTriangle(std::shared_ptr<tzMesh> _mesh_ptr, const int i0, const int i1, const int i2)
 	: tzSmoothMeshTriangle(_mesh_ptr, i0, i1, i2)
 {}
 
-
-// ---------------------------------------------------------------- clone
-
-tzSmoothUVMeshTriangle*
-tzSmoothUVMeshTriangle::clone (void) const {
-	return (new tzSmoothUVMeshTriangle(*this));
+//===================================================================================
+std::shared_ptr<tzIGeometricObject> tzSmoothUVMeshTriangle::clone (void) const 
+{
+	return (std::make_shared< tzSmoothUVMeshTriangle >(*this));
 }
 
-
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzSmoothUVMeshTriangle::tzSmoothUVMeshTriangle(const tzSmoothUVMeshTriangle& fmt)
 	: tzSmoothMeshTriangle(fmt)
 {}
 
-
-// ---------------------------------------------------------------- assignment operator
-
-tzSmoothUVMeshTriangle&
-tzSmoothUVMeshTriangle::operator= (const tzSmoothUVMeshTriangle& rhs) {
+//===================================================================================
+tzSmoothUVMeshTriangle& tzSmoothUVMeshTriangle::operator= (const tzSmoothUVMeshTriangle& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
@@ -44,16 +34,11 @@ tzSmoothUVMeshTriangle::operator= (const tzSmoothUVMeshTriangle& rhs) {
 	return (*this);
 }
 
-
-// ---------------------------------------------------------------- destructor
-
+//===================================================================================
 tzSmoothUVMeshTriangle::~tzSmoothUVMeshTriangle(void) {}
 
-
-
-// ---------------------------------------------------------------- hit
-
-bool tzSmoothUVMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
+//===================================================================================
+bool tzSmoothUVMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr)  
 {
 	tzPoint3D v0(mMeshPtr->mVertices[mIndexV0]);
 	tzPoint3D v1(mMeshPtr->mVertices[mIndexV1]);

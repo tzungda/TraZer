@@ -11,20 +11,20 @@ tzFlatMeshTriangle::tzFlatMeshTriangle(void)
 
 
 //===================================================================================
-tzFlatMeshTriangle::tzFlatMeshTriangle (tzMesh* _meshPtr, const int i0, const int i1, const int i2)
+tzFlatMeshTriangle::tzFlatMeshTriangle (std::shared_ptr<tzMesh> _meshPtr, const int i0, const int i1, const int i2)
 	: 	tzMeshTriangle(_meshPtr, i0, i1, i2)
 {}
 
 //===================================================================================
-tzFlatMeshTriangle::tzFlatMeshTriangle(tzMesh* _meshPtr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2)
+tzFlatMeshTriangle::tzFlatMeshTriangle(std::shared_ptr<tzMesh> _meshPtr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2)
 	: tzMeshTriangle(_meshPtr, v0, v1, v2, n0, n1, n2, uv0, uv1, uv2)
 {
 }
 
 //===================================================================================
-tzFlatMeshTriangle* tzFlatMeshTriangle::clone(void) const 
+std::shared_ptr<tzIGeometricObject> tzFlatMeshTriangle::clone(void) const
 {
-	return (new tzFlatMeshTriangle(*this));
+	return (std::make_shared< tzFlatMeshTriangle >(*this));
 }
 
 //===================================================================================
@@ -50,7 +50,7 @@ tzFlatMeshTriangle::~tzFlatMeshTriangle(void) {}
 
 
 //===================================================================================
-bool tzFlatMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const
+bool tzFlatMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) 
 {
 	tzPoint3D v0(mMeshPtr->mVertices[mIndexV0]);
 	tzPoint3D v1(mMeshPtr->mVertices[mIndexV1]);

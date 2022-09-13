@@ -1,22 +1,13 @@
-// 	Copyright (C) Kevin Suffern 2000-2007.
-//	This C++ code is for non-commercial purposes only.
-//	This C++ code is licensed under the GNU General Public License Version 2.
-//	See the file COPYING.txt for the full license.
 
 #include "tzMesh.h"
 
-
-// ----------------------------------------------------------------  default constructor
-
+//===================================================================================
 tzMesh::tzMesh(void)
 	: 	mNumVertices(0),
 		mNumTriangles(0)	
 {}
 
-
-// ---------------------------------------------------------------- copy constructor
-// this doesn't handle the vertex_faces
-
+//===================================================================================
 tzMesh::tzMesh(const tzMesh& m)
 	: 	mVertices(m.mVertices),
 		mNormals(m.mNormals),
@@ -26,12 +17,9 @@ tzMesh::tzMesh(const tzMesh& m)
 		mNumTriangles(m.mNumTriangles)
 {}
 
-
-// ---------------------------------------------------------------- assignment operator
-// this doesn't handle the vertex_faces
-
-tzMesh&
-tzMesh::operator= (const tzMesh& rhs) {
+//===================================================================================
+tzMesh& tzMesh::operator= (const tzMesh& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
@@ -45,9 +33,9 @@ tzMesh::operator= (const tzMesh& rhs) {
 	return (*this);
 }
 
-
-// ---------------------------------------------------------------- destructor
-
-tzMesh::~tzMesh(void) {}
+//===================================================================================
+tzMesh::~tzMesh(void) 
+{
+}
 
 

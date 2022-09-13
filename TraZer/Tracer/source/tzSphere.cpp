@@ -5,45 +5,35 @@
 
 const float tzSphere::mEpsilon = 0.001f;
 					
-// ---------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzSphere::tzSphere(void)	
 	: 	tzIGeometricObject(),
 		mCenter(0.0),
 		mRadius(1.0)
 {}
 
-
-// ---------------------------------------------------------------- constructor
-
+//===================================================================================
 tzSphere::tzSphere(tzPoint3D c, float r)
 	: 	tzIGeometricObject(),
 		mCenter(c),
 		mRadius(r)
 {}
 
-
-// ---------------------------------------------------------------- clone
-
-tzSphere* tzSphere::clone(void) const {
-	return (new tzSphere(*this));
+//===================================================================================
+std::shared_ptr<tzIGeometricObject> tzSphere::clone(void) const 
+{
+	return (std::make_shared< tzSphere >(*this));
 }
 
-
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzSphere::tzSphere (const tzSphere& tzSphere)
 	: 	tzIGeometricObject(tzSphere),
 		mCenter(tzSphere.mCenter),
 		mRadius(tzSphere.mRadius)
 {}
 
-
-
-// ---------------------------------------------------------------- assignment operator
-
-tzSphere& 
-tzSphere::operator= (const tzSphere& rhs)		
+//===================================================================================
+tzSphere&  tzSphere::operator= (const tzSphere& rhs)		
 {
 	if (this == &rhs)
 		return (*this);
@@ -56,14 +46,13 @@ tzSphere::operator= (const tzSphere& rhs)
 	return (*this);
 }
 
-
-// ---------------------------------------------------------------- destructor
-
+//===================================================================================
 tzSphere::~tzSphere(void) 
 {
 }
 
-bool tzSphere::shadowHit(const tzRay &ray, float &tmin) const
+//===================================================================================
+bool tzSphere::shadowHit(const tzRay &ray, const tzShadeRec& sr, float &tmin) const
 {
 	float 		t;
 	tzVector3D	temp = ray.mOrigin - mCenter;
@@ -95,9 +84,9 @@ bool tzSphere::shadowHit(const tzRay &ray, float &tmin) const
 	return false;
 }
 
-//---------------------------------------------------------------- hit
-
-bool tzSphere::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const {
+//===================================================================================
+bool tzSphere::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) 
+{
 	float 		t;
 	tzVector3D	temp 	= ray.mOrigin - mCenter;
 	float 		a 		= ray.mDirection * ray.mDirection;

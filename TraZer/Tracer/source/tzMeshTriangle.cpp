@@ -1,6 +1,8 @@
 
 #include "../include/tzConstants.h"
 #include "../include/tzMeshTriangle.h"
+#include "../include/tzITexture.h"
+
 #include <math.h>
 						
 
@@ -16,7 +18,7 @@ tzMeshTriangle::tzMeshTriangle(void)
 
 
 //===================================================================================
-tzMeshTriangle::tzMeshTriangle(tzMesh* meshPtr, const int i0, const int i1, const int i2)
+tzMeshTriangle::tzMeshTriangle(std::shared_ptr<tzMesh> meshPtr, const int i0, const int i1, const int i2)
 	: 	tzIGeometricObject(),
 		mMeshPtr(meshPtr),
 		mIndexV0(i0), mIndexV1(i1), mIndexV2(i2),
@@ -25,7 +27,7 @@ tzMeshTriangle::tzMeshTriangle(tzMesh* meshPtr, const int i0, const int i1, cons
 {}
 
 //===================================================================================
-tzMeshTriangle::tzMeshTriangle(tzMesh* meshPtr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2)
+tzMeshTriangle::tzMeshTriangle(std::shared_ptr<tzMesh> meshPtr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2)
 	: tzIGeometricObject(),
 	mMeshPtr(meshPtr),
 	mIndexV0(v0), mIndexV1(v1), mIndexV2(v2),
@@ -74,10 +76,6 @@ tzMeshTriangle& tzMeshTriangle::operator= (const tzMeshTriangle& rhs)
 //===================================================================================
 tzMeshTriangle::~tzMeshTriangle(void) 
 {
-	if (mMeshPtr) {
-		delete mMeshPtr;
-		mMeshPtr = NULL;
-	}
 }
 
 
@@ -103,7 +101,7 @@ tzNormal tzMeshTriangle::getNormal(void) const
 
 
 //===================================================================================
-tzBBox tzMeshTriangle::getBoundingBox(void) 
+tzBBox tzMeshTriangle::getBoundingBox(void) const
 {
 	float delta = 0.0001f;  // to avoid degenerate bounding boxes
 	
@@ -118,7 +116,7 @@ tzBBox tzMeshTriangle::getBoundingBox(void)
 
 
 //===================================================================================
-bool tzMeshTriangle::shadowHit(const tzRay& ray, float& tmin) const 
+bool tzMeshTriangle::shadowHit(const tzRay& ray, const tzShadeRec& sr, float& tmin) const
 {
 	tzPoint3D v0(mMeshPtr->mVertices[mIndexV0]);
 	tzPoint3D v1(mMeshPtr->mVertices[mIndexV1]);

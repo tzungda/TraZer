@@ -6,7 +6,7 @@
 tzGlossySpecular::tzGlossySpecular(void)
 	: 	mKs(0.5), 
 		mCs(1.0),
-		mSampler(NULL)
+		mSampler(nullptr)
 {}
 
 
@@ -15,14 +15,14 @@ tzGlossySpecular::~tzGlossySpecular(void) {}
 
 
 //===================================================================================
-tzGlossySpecular* tzGlossySpecular::clone (void) const 
+std::shared_ptr<tzIBRDF> tzGlossySpecular::clone (void) const
 {
-	return (new tzGlossySpecular(*this));
+	return (std::make_shared<tzGlossySpecular>(*this));
 }
 
 
 //===================================================================================
-void tzGlossySpecular::setSampler(tzISampler* sp, const float exp) 
+void tzGlossySpecular::setSampler(std::shared_ptr< tzISampler > sp, const float exp)
 {
 	mSamplerPtr = sp;
 	mSamplerPtr->mapSamplesToHemisphere(exp);
@@ -32,7 +32,7 @@ void tzGlossySpecular::setSampler(tzISampler* sp, const float exp)
 //===================================================================================
 void tzGlossySpecular::setSamples(const int numSamples, const float exp) 
 {
-	mSamplerPtr = new tzMultiJittered(numSamples);
+	mSamplerPtr = std::make_shared< tzMultiJittered >(numSamples);
 	mSamplerPtr->mapSamplesToHemisphere(exp);
 }
 		

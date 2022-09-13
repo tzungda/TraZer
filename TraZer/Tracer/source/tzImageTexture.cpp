@@ -1,30 +1,25 @@
 
 #include "../include/tzImageTexture.h"
 
-// ---------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzImageTexture::tzImageTexture(void)
 	:	tzITexture(),
 		mHeight(100),
 		mWidth(100),
-		mImagePtr(NULL),
-		mMappingPtr(NULL)
+		mImagePtr(nullptr),
+		mMappingPtr(nullptr)
 {}
 
-
-// ---------------------------------------------------------------- constructor
-
+//===================================================================================
 tzImageTexture::tzImageTexture(tzImage* imagePtr)
 	:	tzITexture(),
 	mHeight(imagePtr->getHeight()),
 	mWidth(imagePtr->getWidth()),
 	mImagePtr(imagePtr),
-	mMappingPtr(NULL)
+	mMappingPtr(nullptr)
 {}
 
-
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzImageTexture::tzImageTexture(const tzImageTexture& it)
 	: 	tzITexture(it),
 	mHeight(it.mHeight),
@@ -33,17 +28,15 @@ tzImageTexture::tzImageTexture(const tzImageTexture& it)
 	if (it.mImagePtr)
 		*mImagePtr = *it.mImagePtr;
 	else
-		mImagePtr = NULL;
+		mImagePtr = nullptr;
 		
 	if (it.mMappingPtr)
 		mMappingPtr = it.mMappingPtr->clone();
 	else
-		mMappingPtr = NULL;
+		mMappingPtr = nullptr;
 }
 
-
-// ---------------------------------------------------------------- assignment operator
-
+//===================================================================================
 tzImageTexture& tzImageTexture::operator= (const tzImageTexture& rhs)
 {
 	if (this == &rhs)
@@ -53,23 +46,13 @@ tzImageTexture& tzImageTexture::operator= (const tzImageTexture& rhs)
 	
 	mHeight = rhs.mHeight;
 	mWidth = rhs.mWidth;
-	
-	if (mImagePtr)
-	{
-		delete mImagePtr;
-		mImagePtr = NULL;
-	}
+
 	
 	if (rhs.mImagePtr)
 	{
 		*mImagePtr = *rhs.mImagePtr;
 	}
-	
-	if (mMappingPtr) 
-	{
-		delete mMappingPtr;
-		mMappingPtr = NULL;
-	}
+
 	
 	if (rhs.mMappingPtr)
 	{
@@ -79,40 +62,18 @@ tzImageTexture& tzImageTexture::operator= (const tzImageTexture& rhs)
 	return (*this);
 }
 
-
-// ---------------------------------------------------------------- clone
-
-tzImageTexture* tzImageTexture::clone(void) const 
+//===================================================================================
+std::shared_ptr<tzITexture> tzImageTexture::clone(void) const 
 {
-	return (new tzImageTexture(*this));
-}	
-
-
-// ---------------------------------------------------------------- destructor
-
-tzImageTexture::~tzImageTexture(void) 
-{
-
-	if (mImagePtr) {
-		delete mImagePtr;
-		mImagePtr = NULL;
-	}
-	
-	if (mMappingPtr) {
-		delete mMappingPtr;
-		mMappingPtr = NULL;
-	}
+	return (std::make_shared< tzImageTexture >(*this));
 }
 
+//===================================================================================
+tzImageTexture::~tzImageTexture(void) 
+{
+}
 
-// ---------------------------------------------------------------- getColor
-
-// When we ray trace a triangle mesh object with uv mapping, the mapping pointer may be NULL
-// because we can define uv coordinates on an arbitrary triangle mesh.
-// In this case we don't use the local hit point because the pixel coordinates are computed 
-// from the uv coordinates stored in the ShadeRec object in the uv triangles' hit functions
-// See, for example, Listing 29.12.
-
+//===================================================================================
 tzColor tzImageTexture::getColor(const tzShadeRec& sr) const 
 {
 	int row;
@@ -136,9 +97,5 @@ tzColor tzImageTexture::getColor(const tzShadeRec& sr) const
 		column += mWidth;
 
 	return (mImagePtr->getColor(row, column));
-}  
-
-
-
-
+}
 

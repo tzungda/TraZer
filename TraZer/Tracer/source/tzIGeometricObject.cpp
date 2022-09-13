@@ -7,7 +7,7 @@
 //===================================================================================
 tzIGeometricObject::tzIGeometricObject(void)
 	: mColor(black),
-		mMaterialPtr(NULL), mAlphaTexture(NULL)
+		mAlphaTexture(nullptr)
 		//shadows(true)
 {}
 
@@ -17,10 +17,13 @@ tzIGeometricObject::tzIGeometricObject (const tzIGeometricObject& object)
 	: mColor(object.mColor)
 		/*shadows(object.shadows)*/ 
 {
-	if(object.mMaterialPtr)
-		mMaterialPtr = object.mMaterialPtr->clone(); 
-	else  
-		mMaterialPtr = NULL;
+	for ( int i = 0; i < MAX_THREADS; i++)
+	{
+		if(object.mMaterialPtr[i])
+			mMaterialPtr[i] = object.mMaterialPtr[i]->clone(); 
+		else  
+			mMaterialPtr[i] = nullptr;
+	}
 
 	if ( object.mAlphaTexture )
 	{
@@ -28,7 +31,7 @@ tzIGeometricObject::tzIGeometricObject (const tzIGeometricObject& object)
 	}
 	else
 	{
-		mAlphaTexture = NULL;
+		mAlphaTexture = nullptr;
 	}
 }	
 
@@ -40,14 +43,12 @@ tzIGeometricObject& tzIGeometricObject::operator= (const tzIGeometricObject& rhs
 		return (*this);
 		
 	mColor = rhs.mColor;
-	
-	if (mMaterialPtr) {
-		delete mMaterialPtr;
-		mMaterialPtr = NULL;
-	}
 
-	if (rhs.mMaterialPtr)
-		mMaterialPtr = rhs.mMaterialPtr->clone();
+	for (int i = 0; i < MAX_THREADS; i++)
+	{
+		if (rhs.mMaterialPtr[i])
+			mMaterialPtr[i] = rhs.mMaterialPtr[i]->clone();
+	}
 
 	//shadows = rhs.shadows;
 
@@ -58,15 +59,11 @@ tzIGeometricObject& tzIGeometricObject::operator= (const tzIGeometricObject& rhs
 //===================================================================================
 tzIGeometricObject::~tzIGeometricObject (void) 
 {	
-	if (mMaterialPtr) {
-		delete mMaterialPtr;
-		mMaterialPtr = NULL;
-	}
 }
 
 
 //===================================================================================
-void tzIGeometricObject::addObject(tzIGeometricObject* object_ptr) 
+void tzIGeometricObject::addObject(std::shared_ptr<tzIGeometricObject> object_ptr)
 {
 }
 
@@ -78,27 +75,37 @@ tzNormal tzIGeometricObject::getNormal(void) const
 } 
 
 //===================================================================================
-void tzIGeometricObject::setMaterial(tzIMaterial* mPtr) 
+void tzIGeometricObject::setMaterial(std::shared_ptr < tzIMaterial> mPtr, int threadId)
 {
-	mMaterialPtr = mPtr;
+	if (threadId == ~0 )
+	{
+		for ( int i = 0; i < MAX_THREADS; i++ )
+		{
+			mMaterialPtr[i] = mPtr;
+		}
+	}
+	else
+	{
+		mMaterialPtr[threadId] = mPtr;
+	}
 }
 
 //===================================================================================
-void tzIGeometricObject::setAlphaTexture(tzITexture *alphaTexture)
+void tzIGeometricObject::setAlphaTexture( std::shared_ptr<tzITexture> alphaTexture)
 {
 	this->mAlphaTexture = alphaTexture;
 }
 
 //===================================================================================
-bool tzIGeometricObject::shadowHit(const tzRay &ray, float &tmin) const
+bool tzIGeometricObject::shadowHit(const tzRay &ray, const tzShadeRec& sr, float &tmin) const
 {
 	return false;
 }
 
 //===================================================================================
-tzIMaterial* tzIGeometricObject::getMaterial(void) const 
+std::shared_ptr < tzIMaterial> tzIGeometricObject::getMaterial(int threadId) const
 {
-	return (mMaterialPtr);
+	return mMaterialPtr[threadId];
 }
 
 
@@ -114,7 +121,7 @@ void tzIGeometricObject::setBoundingBox (void) {}
 
 
 //===================================================================================
-tzBBox tzIGeometricObject::getBoundingBox (void) 
+tzBBox tzIGeometricObject::getBoundingBox (void) const
 {
 	return tzBBox();
 }

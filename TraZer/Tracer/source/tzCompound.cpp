@@ -12,9 +12,9 @@ tzCompound::tzCompound(void)
 
 
 //===================================================================================
-tzCompound* tzCompound::clone(void) const 
+std::shared_ptr<tzIGeometricObject> tzCompound::clone(void) const
 {
-	return (new tzCompound(*this));
+	return (std::make_shared< tzCompound >(*this));
 }
 
 
@@ -49,39 +49,30 @@ tzCompound::~tzCompound(void)
 
 
 //===================================================================================
-void tzCompound::addObject(tzIGeometricObject* object_ptr)
+void tzCompound::addObject(std::shared_ptr<tzIGeometricObject> object_ptr)
 {
 	mObjects.push_back(object_ptr);
 }
 
 
 //===================================================================================
-void tzCompound::setMaterial(tzIMaterial* mMaterialPtr) 
+void tzCompound::setMaterial(std::shared_ptr < tzIMaterial > materialPtr, int threadId)
 {
 	int numObjects = (int)mObjects.size();
 
 	for (int j = 0; j < numObjects; j++)
-		mObjects[j]->setMaterial(mMaterialPtr);
+		mObjects[j]->setMaterial(materialPtr, threadId);
 }
 
 
 //===================================================================================
 void tzCompound::deleteObjects(void) 
 {
-	int numObjects = (int)mObjects.size();
-	
-	for (int j = 0; j < numObjects; j++)
-	{
-		delete mObjects[j];
-		mObjects[j] = NULL;
-	}	
-	
-	mObjects.erase(mObjects.begin(), mObjects.end());
 }
 
 
 //===================================================================================
-void tzCompound::copyObjects(const std::vector<tzIGeometricObject*>& rhsOjects) 
+void tzCompound::copyObjects(const std::vector<std::shared_ptr<tzIGeometricObject>>& rhsOjects)
 {
 	deleteObjects();    	
 	int numObjects = (int)rhsOjects.size();
@@ -92,7 +83,7 @@ void tzCompound::copyObjects(const std::vector<tzIGeometricObject*>& rhsOjects)
 
 
 //===================================================================================
-bool tzCompound::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
+bool tzCompound::hit(const tzRay& ray, float& tmin, tzShadeRec& sr)  
 {
 	float		t;
 	tzNormal		normal;
@@ -100,12 +91,13 @@ bool tzCompound::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const
 	bool		hit 		= false;
 				tmin 		= kHugeValue;
 	int 		numObjects	= (int)mObjects.size();
+
 	
 	for (int j = 0; j < numObjects; j++)
 		if (mObjects[j]->hit(ray, t, sr) && (t < tmin)) {
 			hit				= true;
 			tmin 			= t;
-			mMaterialPtr	= mObjects[j]->getMaterial();	// lhs is GeometricObject::mMaterialPtr
+			mMaterialPtr[ray.mThreadId]	= mObjects[j]->getMaterial(ray.mThreadId);	// lhs is GeometricObject::mMaterialPtr
 			normal			= sr.mNormal;
 			local_hit_point	= sr.mLocalHitPoint;  
 		}
@@ -120,7 +112,8 @@ bool tzCompound::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const
 }
 
 //===================================================================================
-bool tzCompound::shadowHit(const tzRay& ray, float& tmin) const {
+bool tzCompound::shadowHit(const tzRay& ray, const tzShadeRec& sr, float& tmin) const
+{
 	float		t;
 	tzNormal		normal;
 	tzPoint3D		local_hit_point;
@@ -129,7 +122,7 @@ bool tzCompound::shadowHit(const tzRay& ray, float& tmin) const {
 	int 		numObjects = (int)mObjects.size();
 
 	for (int j = 0; j < numObjects; j++)
-		if (mObjects[j]->shadowHit(ray, t) && (t < tmin)) {
+		if (mObjects[j]->shadowHit(ray, sr, t) && (t < tmin)) {
 			hit = true;
 			tmin = t;
 		}

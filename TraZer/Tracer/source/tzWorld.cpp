@@ -14,7 +14,7 @@
 #include "../include/tzEmissive.h"
 #include "../include/tzAreaLighting.h"
 #include "../include/tzRectangle.h"
-#include "../include/tzDirectional.h"
+#include "../include/tzDirectionalLight.h"
 #include "../include/tzGrid.h"
 #include "tzMesh.h"
 #include "../include/tzImageTexture.h"
@@ -90,52 +90,15 @@ Constructor/Destructor
 //===================================================================================
 tzWorld::tzWorld()
 {
-	mTracerPtr = NULL;
-	mCameraPtr = NULL;
-	mAmbientPtr = new tzAmbient();
-	mScenePtr = NULL;
+	mTracerPtr = nullptr;
+	mCameraPtr = nullptr;
+	mAmbientPtr = std::make_shared< tzAmbient >();
+	mScenePtr = nullptr;
 }
 
 //===================================================================================
 tzWorld::~tzWorld()
 {
-	if (mTracerPtr)
-	{
-		delete mTracerPtr;
-		mTracerPtr = NULL;
-	}
-	//
-	for (std::vector< tzIGeometricObject* >::iterator iter = mObjects.begin(); iter != mObjects.end(); ++iter)
-	{
-		if ( (*iter) )
-		{
-			delete (*iter);
-			(*iter) = NULL;
-		}
-	}
-	mObjects.clear();
-	//
-	if ( mCameraPtr )
-	{
-		delete mCameraPtr;
-		mCameraPtr = NULL;
-	}
-
-	//
-	if (mAmbientPtr )
-	{
-		delete mAmbientPtr;
-		mAmbientPtr = NULL;
-	}
-	//
-	for (std::vector< tzILight* >::iterator iter = mLights.begin(); iter != mLights.end(); ++iter)
-	{
-		if ((*iter))
-		{
-			delete (*iter);
-		}
-	}
-	mLights.clear();
 }
 
 
@@ -168,35 +131,52 @@ tzShadeRec tzWorld::hitBareBonesObject(const tzRay &ray)
 void tzWorld::build()
 {
 	// area light & bunny------------------------------------------------------------------------------
-	int numSamples = 40;
+	int numSamples = 100;
 
-	tzISampler* mSamplerPtr = new tzMultiJittered(numSamples);
+	std::shared_ptr<tzISampler> mSamplerPtr = std::make_shared< tzMultiJittered >(numSamples);
 
-	mVp.setHeight(400);
-	mVp.setWidth(400);
+	mVp.setHeight(500);
+	mVp.setWidth(500);
 	//mVp.setMaxDepth(0);
 	mVp.setSampler(mSamplerPtr);
 
 	mBackgroundColor = tzColor(0.5);
 
-	mTracerPtr = new tzAreaLighting(this);
+	mTracerPtr = std::make_shared< tzAreaLighting >(*this);
 
-	tzPinhole* camera = new tzPinhole();
-	camera->setEye(0, 12, 30);
-	camera->setLookAt(0, 12, 0);
+	std::shared_ptr<tzPinhole> camera = std::make_shared< tzPinhole >();
+	camera->setEye(0, 5, 35);
+	camera->setLookAt(0, 5, 0);
 	camera->setViewDistance(500.0f);
 	camera->computeUVW();
 	setCamera(camera);
 
 	//--------------------------------------------------------------------------------------
-	// point light
-	tzPointLight* lightPtr = new tzPointLight();
-	lightPtr->set_location(tzVector3D(5, 5, 0));
-	lightPtr->scaleRadiance(1.0f);
-	lightPtr->setCastsShadows(true);
-	addLight(lightPtr);
+	// add light
+	for (std::vector<std::shared_ptr<tzCoreLight>>::const_iterator iter = mScenePtr->lightList().begin(); iter != mScenePtr->lightList().end(); ++iter )
+	{
+		std::shared_ptr<tzILight> lightPtr = nullptr;
+		if ( (*iter)->lightType() == tzLightType::point )
+		{
+			lightPtr = std::make_shared< tzPointLight >();
+			( std::dynamic_pointer_cast<tzPointLight>(lightPtr) )->set_location( (*iter)->position() );
+			( std::dynamic_pointer_cast<tzPointLight>(lightPtr) )->scaleRadiance(1.0f);
+		}
+		else if ( (*iter)->lightType() == tzLightType::directional )
+		{
+			lightPtr = std::make_shared< tzDirectionalLight >();
+			(std::dynamic_pointer_cast<tzDirectionalLight>(lightPtr))->scaleRadiance(1.0f);
+		}
+		else
+		{
+			continue;
+		}
+		//
+		lightPtr->setCastsShadows(true);
+		addLight(lightPtr);
+	}
 	//
-	tzGrid* grid_ptr = new tzGrid(new tzMesh);
+	std::shared_ptr< tzGrid > grid_ptr = std::make_shared< tzGrid >(std::make_shared< tzMesh > ());
 	grid_ptr->setScale(1.0f);
 	for ( int i = 0; i < (int)mScenePtr->meshList().size(); i++ )
 	{
@@ -204,37 +184,29 @@ void tzWorld::build()
 		{
 			continue;
 		}
-		/*
-		if ( i < 3 || i > 7 )
-		{
-			continue;
-		}
-		*/
-		/*if ( i == 9 )
-		{
-			int a = 0;
-			a = 1;
-		}*/
-		tzCoreMesh *ptrCoreMesh = mScenePtr->meshList()[i];
-		tzCoreMaterial *ptrCoreMat = ptrCoreMesh->material();
-		const std::map<std::string, tzCoreTexture*>& texList = ptrCoreMat->textureList();
+		
+		std::shared_ptr<tzCoreMesh> ptrCoreMesh = mScenePtr->meshList()[i];
+		std::shared_ptr<tzCoreMaterial> ptrCoreMat = ptrCoreMesh->material();
+		const std::map<std::string, std::shared_ptr<tzCoreTexture>>& texList = ptrCoreMat->textureList();
 
 		// set material
-		tzMatteSV* sv_matte_ptr = new tzMatteSV;
+		std::shared_ptr<tzMatteSV> sv_matte_ptr(new tzMatteSV());// = std::make_shared<tzMatteSV>();//new tzMatteSV();
 		sv_matte_ptr->setKa(0.1f);
 		sv_matte_ptr->setKd(4);
-		tzImageTexture* texture_ptr = NULL;
+		std::shared_ptr<tzImageTexture> texture_ptr = nullptr;
 		if (texList.find("diffuse") != texList.end() )
 		{
-			tzImage* mImagePtr = new tzImage;
+			std::shared_ptr<tzImage> mImagePtr = std::make_shared< tzImage >();
 			mImagePtr->readPng(texList.find("diffuse")->second->path().c_str());
-			texture_ptr = new tzImageTexture;
+			texture_ptr = std::make_shared< tzImageTexture >();
 			texture_ptr->set_image(mImagePtr);
 			sv_matte_ptr->setCd(texture_ptr);
 		}
 
 		//
-		grid_ptr->addMesh(ptrCoreMesh->vertices(), ptrCoreMesh->vertexNormals(), ptrCoreMesh->us(), ptrCoreMesh->vs(), ptrCoreMesh->vertexFaces(), ptrCoreMesh->indices(), ptrCoreMesh->numVertices(), ptrCoreMesh->numTriangles(), ptrCoreMesh->transformMatrix(), sv_matte_ptr, texture_ptr);
+		grid_ptr->addMesh(ptrCoreMesh->vertices(), ptrCoreMesh->vertexNormals(), ptrCoreMesh->us(), ptrCoreMesh->vs(), 
+			ptrCoreMesh->vertexFaces(), ptrCoreMesh->indices(), 
+			ptrCoreMesh->numVertices(), ptrCoreMesh->numTriangles(), ptrCoreMesh->transformMatrix(), sv_matte_ptr, texture_ptr);
 	}
 
 	grid_ptr->setupCells();
@@ -243,7 +215,7 @@ void tzWorld::build()
 	return;
 	//--------------------------------------------------------------------------------------
 
-
+	/* -----------------------------------------------------------------------------------------------------------
 	tzEmissive* emissive_ptr = new tzEmissive;
 	emissive_ptr->scaleRadiance(300);
 	emissive_ptr->setCe(white);
@@ -291,7 +263,7 @@ void tzWorld::build()
 
 	tzMatteSV* sv_matte_ptr = new tzMatteSV;
 	sv_matte_ptr->setKa(0.1f);
-	sv_matte_ptr->setKd(4/*0.75*/);
+	sv_matte_ptr->setKd(4);
 	sv_matte_ptr->setCd(texture_ptr);
 	//tzMatte* mattePtr1 = new tzMatte();
 	//mattePtr1->setKa(0.25);
@@ -337,7 +309,7 @@ void tzWorld::build()
 	tzPlane* planePtr = new tzPlane(tzPoint3D(0, -1, 0), tzNormal(0, 1, 0));
 	planePtr->setMaterial(mattePtr2);
 	addObject(planePtr);
-	
+	-----------------------------------------------------------------------------------------------------------*/
 
 	/*----------------------------------------------------------------
 	int numSamples = 16;
@@ -778,13 +750,13 @@ void tzWorld::writeImage( const std::vector<tzColor>& buffer, const std::string 
 }
 
 //===================================================================================
-void tzWorld::setCamera(const tzICamera *cam)
+void tzWorld::setCamera(const std::shared_ptr<tzICamera> cam)
 {
-	mCameraPtr = (tzICamera*)cam;
+	mCameraPtr = cam;
 }
 
 //===================================================================================
-void tzWorld::addLight(tzILight *lightPtr)
+void tzWorld::addLight(std::shared_ptr<tzILight> lightPtr)
 {
 	mLights.push_back( lightPtr );
 }
@@ -806,7 +778,7 @@ tzShadeRec tzWorld::hitObjects(const tzRay &ray, float &tmin)
 		{
 			sr.mHitAnObject = true;
 			tmin = (float)t;
-			sr.mMaterialPtr = mObjects[j]->getMaterial();
+			sr.mMaterialPtr[ray.mThreadId] = mObjects[j]->getMaterial(ray.mThreadId);
 			sr.mHitPoint = ray.mOrigin + tmin * ray.mDirection;
 			normal = sr.mNormal;
 			localHitPoint = sr.mLocalHitPoint;
@@ -825,7 +797,7 @@ tzShadeRec tzWorld::hitObjects(const tzRay &ray, float &tmin)
 }
 
 //===================================================================================
-void tzWorld::setAmbientLight(tzILight *ambientLight)
+void tzWorld::setAmbientLight( std::shared_ptr<tzILight> ambientLight)
 {
 	mAmbientPtr = ambientLight;
 }

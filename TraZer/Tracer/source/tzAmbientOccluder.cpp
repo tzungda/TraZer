@@ -8,7 +8,7 @@ tzAmbientOccluder::tzAmbientOccluder(void)
 		mLs(1.0),
 		mColor(1.0),
 		mMinAmount( 0.0f ),
-		mSamplerPtr( NULL )
+		mSamplerPtr( nullptr )
 {}
 
 
@@ -18,14 +18,14 @@ tzAmbientOccluder::tzAmbientOccluder(const tzAmbientOccluder& a)
 		mLs(a.mLs),
 		mColor(a.mColor) ,
 		mMinAmount(0.0f),
-		mSamplerPtr(NULL)
+		mSamplerPtr(nullptr)
 {}
 
 
 //===================================================================================
-tzILight* tzAmbientOccluder::clone(void) const 
+std::shared_ptr<tzILight> tzAmbientOccluder::clone(void) const 
 {
-	return (new tzAmbientOccluder(*this));
+	return (std::make_shared< tzAmbientOccluder >(*this));
 }	
 
 
@@ -47,11 +47,6 @@ tzAmbientOccluder& tzAmbientOccluder::operator= (const tzAmbientOccluder& rhs)
 //===================================================================================
 tzAmbientOccluder::~tzAmbientOccluder(void) 
 {
-	if ( mSamplerPtr )
-	{
-		delete mSamplerPtr;
-		mSamplerPtr = NULL;
-	}
 }
 
 
@@ -92,7 +87,7 @@ bool tzAmbientOccluder::inShadow(const tzRay &ray, const tzShadeRec &sr) const
 
 	for ( int j = 0; j < numObjects; j++ )
 	{
-		if ( sr.mWorld.mObjects[j]->shadowHit( ray, t ) )
+		if ( sr.mWorld.mObjects[j]->shadowHit( ray, sr, t ) )
 		{
 			return true;
 		}
@@ -102,14 +97,8 @@ bool tzAmbientOccluder::inShadow(const tzRay &ray, const tzShadeRec &sr) const
 }
 
 // ================================================================================
-void tzAmbientOccluder::setSampler( tzISampler *samplerPtr )
+void tzAmbientOccluder::setSampler(std::shared_ptr< tzISampler > samplerPtr )
 {
-	if ( mSamplerPtr )
-	{
-		delete mSamplerPtr;
-		mSamplerPtr = NULL;
-	}
-
 	mSamplerPtr = samplerPtr;
 	mSamplerPtr->mapSamplesToHemisphere( 1 );
 }

@@ -1,41 +1,25 @@
 #include "../include/tzWorld.h"
 #include "../include/tzITracer.h"
 
-// -------------------------------------------------------------------- default constructor
-
-tzITracer::tzITracer(void)
-	: mWorldPtr(NULL)
-{}
-
-
-// -------------------------------------------------------------------- constructor
-
-tzITracer::tzITracer(tzWorld* _worldPtr)
+//===================================================================================
+tzITracer::tzITracer(tzWorld& _worldPtr)
 	: mWorldPtr(_worldPtr)
 {}
 
-
-
-// -------------------------------------------------------------------- destructor
-
-tzITracer::~tzITracer(void) {
-	if (mWorldPtr)
-		mWorldPtr = NULL;
+//===================================================================================
+tzITracer::~tzITracer(void) 
+{
 }
 
-
-// -------------------------------------------------------------------- traceRay
-
-tzColor
-tzITracer::traceRay(const tzRay& ray) const {
-	return (black);
+//===================================================================================
+tzColor tzITracer::traceRay(const tzRay& ray) const 
+{
+	return black;
 }
 
-
-// -------------------------------------------------------------------- traceRay
-
-tzColor
-tzITracer::traceRay(const tzRay ray, const int depth) const {
-	return (black);
+//===================================================================================
+tzColor tzITracer::traceRay(const tzRay ray, const int depth) const 
+{
+	return black;
 }
 

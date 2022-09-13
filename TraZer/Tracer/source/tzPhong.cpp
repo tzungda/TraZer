@@ -1,114 +1,73 @@
 
 #include "../include/tzPhong.h"
 
-// ---------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzPhong::tzPhong(void)
-	:	tzIMaterial(),
-		mAmbientBRDF(new tzLambertian),
-		mDiffuseBRDF(new tzLambertian),
-		mSpecularBRDF( new tzGlossySpecular )
-{}
+	:	tzIMaterial()
+{
+	mAmbientBRDF = std::make_shared<tzLambertian>();
+	mDiffuseBRDF = std::make_shared<tzLambertian>();
+	mSpecularBRDF = std::make_shared<tzGlossySpecular>();
+}
 
-
-
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzPhong::tzPhong(const tzPhong& m)
 	: 	tzIMaterial(m)
 {
 	if(m.mAmbientBRDF)
-		mAmbientBRDF = m.mAmbientBRDF->clone(); 
-	else  mAmbientBRDF = NULL;
+		mAmbientBRDF = std::dynamic_pointer_cast<tzLambertian>(m.mAmbientBRDF->clone());
+	else  mAmbientBRDF = nullptr;
 	
 	if(m.mDiffuseBRDF)
-		mDiffuseBRDF = m.mDiffuseBRDF->clone(); 
-	else  mDiffuseBRDF = NULL;
+		mDiffuseBRDF = std::dynamic_pointer_cast<tzLambertian>(m.mDiffuseBRDF->clone());
+	else  mDiffuseBRDF = nullptr;
 
 	//
 	if (m.mSpecularBRDF)
 	{
-		mSpecularBRDF = m.mSpecularBRDF->clone();
+		mSpecularBRDF = std::dynamic_pointer_cast<tzGlossySpecular>(m.mSpecularBRDF->clone());
 	}
 	else
 	{
-		mSpecularBRDF = NULL;
+		mSpecularBRDF = nullptr;
 	}
 }
 
-
-// ---------------------------------------------------------------- clone
-
-tzIMaterial*										
-tzPhong::clone(void) const {
-	return (new tzPhong(*this));
+//===================================================================================
+std::shared_ptr<tzIMaterial> tzPhong::clone(void) const
+{
+	return (std::make_shared< tzPhong >(*this));
 }	
 
-
-// ---------------------------------------------------------------- assignment operator
-
-tzPhong&
-tzPhong::operator= (const tzPhong& rhs) {
+//===================================================================================
+tzPhong& tzPhong::operator= (const tzPhong& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 		
 	tzIMaterial::operator=(rhs);
 	
-	if (mAmbientBRDF) {
-		delete mAmbientBRDF;
-		mAmbientBRDF = NULL;
-	}
-
 	if (rhs.mAmbientBRDF)
-		mAmbientBRDF = rhs.mAmbientBRDF->clone();
+		mAmbientBRDF = std::dynamic_pointer_cast<tzLambertian>(rhs.mAmbientBRDF->clone());
 		
-	if (mDiffuseBRDF) {
-		delete mDiffuseBRDF;
-		mDiffuseBRDF = NULL;
-	}
-
 	if (rhs.mDiffuseBRDF)
-		mDiffuseBRDF = rhs.mDiffuseBRDF->clone();
+		mDiffuseBRDF = std::dynamic_pointer_cast<tzLambertian>(rhs.mDiffuseBRDF->clone());
 
-	//
-	if ( mSpecularBRDF )
-	{
-		delete mSpecularBRDF;
-		mSpecularBRDF = NULL;
-	}
 	if ( rhs.mSpecularBRDF )
 	{
-		mSpecularBRDF = rhs.mSpecularBRDF->clone();
+		mSpecularBRDF = std::dynamic_pointer_cast<tzGlossySpecular>(rhs.mSpecularBRDF->clone());
 	}
 
 	return (*this);
 }
 
-
-// ---------------------------------------------------------------- destructor
-
-tzPhong::~tzPhong(void) {
-
-	if (mAmbientBRDF) {
-		delete mAmbientBRDF;
-		mAmbientBRDF = NULL;
-	}
+//===================================================================================
+tzPhong::~tzPhong(void)
+{
 	
-	if (mDiffuseBRDF) {
-		delete mDiffuseBRDF;
-		mDiffuseBRDF = NULL;
-	}
-
-	if (mSpecularBRDF )
-	{
-		delete mSpecularBRDF;
-		mSpecularBRDF = NULL;
-	}
 }
 
-
-// ---------------------------------------------------------------- shade
-
+//===================================================================================
 tzColor tzPhong::shade(tzShadeRec& sr) 
 {
 	tzVector3D 	wo 			= -sr.mRay.mDirection;

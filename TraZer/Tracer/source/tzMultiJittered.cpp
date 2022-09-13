@@ -44,34 +44,15 @@ tzMultiJittered& tzMultiJittered::operator= (const tzMultiJittered& rhs)
 }
 
 //===================================================================================
-tzMultiJittered* tzMultiJittered::clone(void) const 
+std::shared_ptr< tzISampler > tzMultiJittered::clone(void) const
 {
-	return (new tzMultiJittered(*this));
+	return (std::make_shared< tzMultiJittered >(*this));
 }
 
 //===================================================================================
-tzMultiJittered::~tzMultiJittered(void) {}
-
-
-// ---------------------------------------------------------------- shuffleXCoordinates
-
-/*
-
-void
-MultiJittered::shuffleXCoordinates(void) {
-	for (int p = 0; p < mNumSets; p++) {
-			for (int i = 0; i < n; i++)		
-				for (int j = 0; j < n; j++) {
-					int k = rand_int(j, n - 1);
-					float t = samples[i * n + j + p * mNumSamples].x;
-					samples[i * n + j + p * mNumSamples].x = samples[i * n + k + p * mNumSamples].x;
-					samples[i * n + k + p * mNumSamples].x = t;
-				}
-		}
+tzMultiJittered::~tzMultiJittered(void) 
+{
 }
-
-*/
-
 
 //===================================================================================
 void tzMultiJittered::generateSamples(void) 

@@ -1,70 +1,55 @@
 
-
 #include "../include/tzReflective.h"
 
-// ---------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzReflective::tzReflective(void)
-	:	tzPhong(),
-		mReflectiveBRDF(new tzPerfectSpecular)
-{}
-
-
-// ---------------------------------------------------------------- copy constructor
-
-tzReflective::tzReflective(const tzReflective& rm)
-	: 	tzPhong(rm) {
-	
-	if(rm.mReflectiveBRDF)
-		mReflectiveBRDF = rm.mReflectiveBRDF->clone(); 
-	else  
-		mReflectiveBRDF = NULL;
+	:	tzPhong()
+{
+	mReflectiveBRDF = std::make_shared<tzPerfectSpecular>();
 }
 
 
-// ---------------------------------------------------------------- assignment operator
+//===================================================================================
+tzReflective::tzReflective(const tzReflective& rm)
+	: 	tzPhong(rm) 
+{
+	
+	if(rm.mReflectiveBRDF)
+		mReflectiveBRDF = std::dynamic_pointer_cast<tzPerfectSpecular>( rm.mReflectiveBRDF->clone() );
+	else  
+		mReflectiveBRDF = nullptr;
+}
 
-tzReflective&
-tzReflective::operator= (const tzReflective& rhs) {
+
+//===================================================================================
+tzReflective& tzReflective::operator= (const tzReflective& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 		
 	tzPhong::operator=(rhs);
-	
-	if (mReflectiveBRDF) {
-		delete mReflectiveBRDF;
-		mReflectiveBRDF = NULL;
-	}
+
 
 	if (rhs.mReflectiveBRDF)
-		mReflectiveBRDF = rhs.mReflectiveBRDF->clone();
+		mReflectiveBRDF = std::dynamic_pointer_cast<tzPerfectSpecular>( rhs.mReflectiveBRDF->clone() );
 
 	return (*this);
 }
 
-
-// ---------------------------------------------------------------- clone
-
-tzReflective*										
-tzReflective::clone(void) const {
-	return (new tzReflective(*this));
+//===================================================================================
+std::shared_ptr<tzIMaterial> tzReflective::clone(void) const
+{
+	return (std::make_shared< tzReflective >(*this));
 }	
 
-
-// ---------------------------------------------------------------- destructor
-
-tzReflective::~tzReflective(void) {
-	if (mReflectiveBRDF) {
-		delete mReflectiveBRDF;
-		mReflectiveBRDF = NULL;
-	}
+//===================================================================================
+tzReflective::~tzReflective(void) 
+{
 }
 
-
-// ------------------------------------------------------------------------------------ shade 
-
-tzColor
-tzReflective::shade(tzShadeRec& sr) {
+//===================================================================================
+tzColor tzReflective::shade(tzShadeRec& sr) 
+{
 	tzColor L(tzPhong::shade(sr));  // direct illumination
 	
 	tzVector3D wo = -sr.mRay.mDirection;

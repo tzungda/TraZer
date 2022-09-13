@@ -20,9 +20,9 @@ tzPointLight::tzPointLight(const tzPointLight& a)
 
 
 //===================================================================================
-tzILight* tzPointLight::clone(void) const 
+std::shared_ptr<tzILight> tzPointLight::clone(void) const 
 {
-	return (new tzPointLight(*this));
+	return (std::make_shared< tzPointLight >(*this));
 }	
 
 
@@ -62,7 +62,7 @@ bool tzPointLight::inShadow(const tzRay &ray, const tzShadeRec &sr) const
 
 	for (int j = 0; j < numObjects; j++)
 	{
-		if (sr.mWorld.mObjects[j]->shadowHit(ray, t) && t < d)
+		if (sr.mWorld.mObjects[j]->shadowHit(ray, sr, t) && t < d)
 		{
 			return true;
 		}

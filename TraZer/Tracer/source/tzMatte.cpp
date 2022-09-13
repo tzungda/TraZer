@@ -1,86 +1,58 @@
 
 #include "../include/tzMatte.h"
 
-// ---------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzMatte::tzMatte(void)
-	:	tzIMaterial(),
-		mAmbientBRDF(new tzLambertian),
-		mDiffuseBRDF(new tzLambertian)
-{}
+	:	tzIMaterial()
+{
+	mAmbientBRDF = std::make_shared< tzLambertian >();
+	mDiffuseBRDF = std::make_shared< tzLambertian >();
+}
 
-
-
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzMatte::tzMatte(const tzMatte& m)
 	: 	tzIMaterial(m)
 {
 	if(m.mAmbientBRDF)
-		mAmbientBRDF = m.mAmbientBRDF->clone(); 
-	else  mAmbientBRDF = NULL;
+		mAmbientBRDF = std::dynamic_pointer_cast<tzLambertian>( m.mAmbientBRDF->clone() );
+	else  mAmbientBRDF = nullptr;
 	
 	if(m.mDiffuseBRDF)
-		mDiffuseBRDF = m.mDiffuseBRDF->clone(); 
-	else  mDiffuseBRDF = NULL;
+		mDiffuseBRDF = std::dynamic_pointer_cast<tzLambertian>(m.mDiffuseBRDF->clone());
+	else  mDiffuseBRDF = nullptr;
 }
 
-
-// ---------------------------------------------------------------- clone
-
-tzIMaterial*										
-tzMatte::clone(void) const {
-	return (new tzMatte(*this));
+//===================================================================================
+std::shared_ptr<tzIMaterial> tzMatte::clone(void) const 
+{
+	return (std::make_shared<tzMatte>(*this));
 }	
 
-
-// ---------------------------------------------------------------- assignment operator
-
-tzMatte&
-tzMatte::operator= (const tzMatte& rhs) {
+//===================================================================================
+tzMatte& tzMatte::operator= (const tzMatte& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 		
 	tzIMaterial::operator=(rhs);
-	
-	if (mAmbientBRDF) {
-		delete mAmbientBRDF;
-		mAmbientBRDF = NULL;
-	}
+
 
 	if (rhs.mAmbientBRDF)
-		mAmbientBRDF = rhs.mAmbientBRDF->clone();
+		mAmbientBRDF = std::dynamic_pointer_cast<tzLambertian>(rhs.mAmbientBRDF->clone());
 		
-	if (mDiffuseBRDF) {
-		delete mDiffuseBRDF;
-		mDiffuseBRDF = NULL;
-	}
 
 	if (rhs.mDiffuseBRDF)
-		mDiffuseBRDF = rhs.mDiffuseBRDF->clone();
+		mDiffuseBRDF = std::dynamic_pointer_cast<tzLambertian>(rhs.mDiffuseBRDF->clone());
 
 	return (*this);
 }
 
-
-// ---------------------------------------------------------------- destructor
-
-tzMatte::~tzMatte(void) {
-
-	if (mAmbientBRDF) {
-		delete mAmbientBRDF;
-		mAmbientBRDF = NULL;
-	}
-	
-	if (mDiffuseBRDF) {
-		delete mDiffuseBRDF;
-		mDiffuseBRDF = NULL;
-	}
+//===================================================================================
+tzMatte::~tzMatte(void) 
+{
 }
 
-
-// ---------------------------------------------------------------- shade
-
+//===================================================================================
 tzColor tzMatte::shade(tzShadeRec& sr) 
 {
 	tzVector3D 	wo 			= -sr.mRay.mDirection;

@@ -19,9 +19,9 @@ tzAmbient::tzAmbient(const tzAmbient& a)
 
 
 //===================================================================================
-tzILight* tzAmbient::clone(void) const
+std::shared_ptr<tzILight>  tzAmbient::clone(void) const
 {
-	return (new tzAmbient(*this));
+	return (std::make_shared< tzAmbient >(*this));
 }	
 
 

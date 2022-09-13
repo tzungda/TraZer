@@ -1,34 +1,26 @@
 
 #include "../include/tzEmissive.h"
  
-// ---------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzEmissive::tzEmissive(void)
 	:	tzIMaterial(), ls( 1.0f ), ce( white )
 {}
 
-
-
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzEmissive::tzEmissive(const tzEmissive& m)
 	: 	tzIMaterial(m), ls(m.emissiveRadiance()), ce(m.emissiveColor())
 {
 }
 
-
-// ---------------------------------------------------------------- clone
-
-tzIMaterial*										
-tzEmissive::clone(void) const {
-	return (new tzEmissive(*this));
+//===================================================================================
+std::shared_ptr<tzIMaterial> tzEmissive::clone(void) const 
+{
+	return (std::make_shared< tzEmissive >(*this));
 }	
 
-
-// ---------------------------------------------------------------- assignment operator
-
-tzEmissive&
-tzEmissive::operator= (const tzEmissive& rhs) {
+//===================================================================================
+tzEmissive& tzEmissive::operator= (const tzEmissive& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 		
@@ -41,8 +33,7 @@ tzEmissive::operator= (const tzEmissive& rhs) {
 }
 
 
-// ---------------------------------------------------------------- destructor
-
+//===================================================================================
 tzEmissive::~tzEmissive(void) 
 {	
 }

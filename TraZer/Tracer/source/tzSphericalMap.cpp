@@ -1,51 +1,38 @@
 
 #include "../include/tzSphericalMap.h"
 
-// ---------------------------------------------------------------- default constructor
-
+//===================================================================================
 tzSphericalMap::tzSphericalMap(void) {}
 
-
-// ---------------------------------------------------------------- copy constructor
-
-tzSphericalMap::tzSphericalMap(const tzSphericalMap& sm) {}
+//===================================================================================
+tzSphericalMap::tzSphericalMap(const tzSphericalMap& sm) 
+{}
 	
-	
-// ---------------------------------------------------------------- assignment operator
-
-tzSphericalMap&
-tzSphericalMap::operator= (const tzSphericalMap& rhs) {
+//===================================================================================
+tzSphericalMap& tzSphericalMap::operator= (const tzSphericalMap& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
 	return (*this);
 }
 
-
-// ---------------------------------------------------------------- destructor
-
+//===================================================================================
 tzSphericalMap::~tzSphericalMap(void) {}
 
-
-// ---------------------------------------------------------------- clone
-
-tzSphericalMap*
-tzSphericalMap::clone(void) const {
-	return (new tzSphericalMap(*this));
+//===================================================================================
+std::shared_ptr<tzIMapping> tzSphericalMap::clone(void) const 
+{
+	return (std::make_shared< tzSphericalMap >(*this));
 }	
 
-
-// ---------------------------------------------------------------- getTexelCoordinates
-
-// Given a hit point on a generic sphere, and the image resolution, this function 
-// returns the texel coordinates in the image
-
-void
-tzSphericalMap::getTexelCoordinates(	const 	tzPoint3D& 	local_hit_point,
+//===================================================================================
+void tzSphericalMap::getTexelCoordinates(	const 	tzPoint3D& 	local_hit_point,
 										const 	int 		xres, 
 										const 	int 		yres, 
 												int& 		row, 
-												int& 		column) const {
+												int& 		column) const 
+{
 	
 	// first, compute theta and phi
 	

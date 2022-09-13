@@ -5,8 +5,7 @@
 
 #include <math.h>
 
-// ----------------------------------------------------------------  default constructor
-
+//===================================================================================
 tzSmoothTriangle::tzSmoothTriangle(void)
 	:	tzIGeometricObject(),
 		v0(0.0), 	
@@ -17,9 +16,7 @@ tzSmoothTriangle::tzSmoothTriangle(void)
 		n2(0, 1, 0)
 {}
 
-
-// ---------------------------------------------------------------- constructor
-
+//===================================================================================
 tzSmoothTriangle::tzSmoothTriangle(const tzPoint3D& a, const tzPoint3D& b, const tzPoint3D& c)
 	:	tzIGeometricObject(),	
 		v0(a),
@@ -30,17 +27,13 @@ tzSmoothTriangle::tzSmoothTriangle(const tzPoint3D& a, const tzPoint3D& b, const
 		n2(0, 1, 0)
 {}
 
-
-// ---------------------------------------------------------------- clone
-
-tzSmoothTriangle*
-tzSmoothTriangle::clone(void) const {
-	return (new tzSmoothTriangle(*this));
+//===================================================================================
+std::shared_ptr<tzIGeometricObject> tzSmoothTriangle::clone(void) const
+{
+	return (std::make_shared< tzSmoothTriangle >(*this));
 }
 
-
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzSmoothTriangle::tzSmoothTriangle(const tzSmoothTriangle& st)
 	:	tzIGeometricObject(st),
 		v0(st.v1),
@@ -51,11 +44,9 @@ tzSmoothTriangle::tzSmoothTriangle(const tzSmoothTriangle& st)
 		n2(st.n2)
 {}
 
-
-// ---------------------------------------------------------------- assignment operator
-
-tzSmoothTriangle&
-tzSmoothTriangle::operator= (const tzSmoothTriangle& rhs) {
+//===================================================================================
+tzSmoothTriangle& tzSmoothTriangle::operator= (const tzSmoothTriangle& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
@@ -69,27 +60,21 @@ tzSmoothTriangle::operator= (const tzSmoothTriangle& rhs) {
 	return (*this);
 }
 
-
-// ---------------------------------------------------------------- destructor
-
+//===================================================================================
 tzSmoothTriangle::~tzSmoothTriangle(void) {}
 
-
-// ---------------------------------------------------------------- computeNormal
-
-tzNormal 
-tzSmoothTriangle::interpolateNormal(const float beta, const float gamma) const {
+//===================================================================================
+tzNormal tzSmoothTriangle::interpolateNormal(const float beta, const float gamma) const 
+{
 	tzNormal normal((1 - beta - gamma) * n0 + beta * n1 + gamma * n2);
 	normal.normalize();
 	
 	return(normal);
 }
 
-
-//---------------------------------------------------------------- getBoundingBox
-
-tzBBox
-tzSmoothTriangle::getBoundingBox(void) {
+//===================================================================================
+tzBBox tzSmoothTriangle::getBoundingBox() const
+{
 	float delta = 0.0001f;
 	
 	return(tzBBox(fminf(fminf(v0.x, v1.x), v2.x) - delta, fmaxf(fmaxf(v0.x, v1.x), v2.x) + delta, 
@@ -97,12 +82,8 @@ tzSmoothTriangle::getBoundingBox(void) {
 				fminf(fminf(v0.z, v1.z), v2.z) - delta, fmaxf(fmaxf(v0.z, v1.z), v2.z) + delta));
 }
 
-
-
-// ------------------------------------------------------------------------------ hit
-
-bool 
-tzSmoothTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
+//===================================================================================
+bool tzSmoothTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr)  
 {
 	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.mDirection.x, d = v0.x - ray.mOrigin.x;
 	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.mDirection.y, h = v0.y - ray.mOrigin.y;
@@ -142,12 +123,8 @@ tzSmoothTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const
 	return (true);	
 }  	
 
-	
-
-// ------------------------------------------------------------------------------ shadow_hit
-// Hit function for shadow rays
-
-bool tzSmoothTriangle::shadowHit(const tzRay& ray, float& tmin) const
+//===================================================================================
+bool tzSmoothTriangle::shadowHit(const tzRay& ray, const tzShadeRec& sr, float& tmin) const
 {
 	float a = v0.x - v1.x, b = v0.x - v2.x, c = ray.mDirection.x, d = v0.x - ray.mOrigin.x;
 	float e = v0.y - v1.y, f = v0.y - v2.y, g = ray.mDirection.y, h = v0.y - ray.mOrigin.y;

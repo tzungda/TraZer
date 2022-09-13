@@ -4,8 +4,8 @@
 //===================================================================================	
 tzAreaLight::tzAreaLight(void)
 	: 	tzILight(),
-		mObjectPtr(NULL),
-		mMaterialPtr(NULL)
+		mObjectPtr(nullptr),
+		mMaterialPtr(nullptr)
 {}	
 
 
@@ -15,36 +15,23 @@ tzAreaLight::tzAreaLight(const tzAreaLight& al)
 {
 	if(al.mObjectPtr)
 		mObjectPtr = al.mObjectPtr->clone();
-	else  mObjectPtr = NULL;
+	else  mObjectPtr = nullptr;
 	
 	if(al.mMaterialPtr)
 		mMaterialPtr = al.mMaterialPtr->clone(); 
-	else  mMaterialPtr = NULL;
+	else  mMaterialPtr = nullptr;
 }
 
 
 //===================================================================================
-tzILight* tzAreaLight::clone(void) const {
-	return (new tzAreaLight(*this));
+std::shared_ptr<tzILight> tzAreaLight::clone(void) const {
+	return (std::make_shared< tzAreaLight >(*this));
 }					
 
 
 //===================================================================================								
 tzAreaLight::~tzAreaLight(void) 
 {
-	/*
-	if (object_ptr) 
-	{
-		delete object_ptr;
-		object_ptr = NULL;
-	}
-	*/
-	/*
-	if (mMaterialPtr) {
-		delete mMaterialPtr;
-		mMaterialPtr = NULL;
-	}
-	*/
 }
 
 
@@ -54,19 +41,10 @@ tzAreaLight& tzAreaLight::operator= (const tzAreaLight& rhs) {
 		return (*this);
 		
 	tzILight::operator=(rhs);
-	
-	if (mObjectPtr) {
-		delete mObjectPtr;
-		mObjectPtr = NULL;
-	}
 
 	if (rhs.mObjectPtr)
 		mObjectPtr = rhs.mObjectPtr->clone();
 		
-	if (mMaterialPtr) {
-		delete mMaterialPtr;
-		mMaterialPtr = NULL;
-	}
 
 	if (rhs.mMaterialPtr)
 		mMaterialPtr = rhs.mMaterialPtr->clone();
@@ -108,7 +86,7 @@ bool tzAreaLight::inShadow(const tzRay& ray, const tzShadeRec& sr) const
 	
 	for (int j = 0; j < numObjects; j++)
 	{
-		if (sr.mWorld.mObjects[j]->shadowHit(ray, t) && t < ts)
+		if (sr.mWorld.mObjects[j]->shadowHit(ray, sr, t) && t < ts)
 		{
 			return (true); 
 		}

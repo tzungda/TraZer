@@ -3,39 +3,30 @@
 #include "../include/tzSmoothMeshTriangle.h"
 						
 
-// ----------------------------------------------------------------  default constructor
-
+//===================================================================================
 tzSmoothMeshTriangle::tzSmoothMeshTriangle(void)
 	: 	tzMeshTriangle()
 {}
 
-
-// ---------------------------------------------------------------- constructor
-
-tzSmoothMeshTriangle::tzSmoothMeshTriangle(tzMesh* meshPtr, const int i0, const int i1, const int i2)
+//===================================================================================
+tzSmoothMeshTriangle::tzSmoothMeshTriangle(std::shared_ptr<tzMesh> meshPtr, const int i0, const int i1, const int i2)
 	: 	tzMeshTriangle(meshPtr, i0, i1, i2)
 {}
 
-
-// ---------------------------------------------------------------- clone
-
-tzSmoothMeshTriangle* tzSmoothMeshTriangle::clone (void) const 
+//===================================================================================
+std::shared_ptr<tzIGeometricObject> tzSmoothMeshTriangle::clone (void) const
 {
-	return (new tzSmoothMeshTriangle(*this));
+	return (std::make_shared< tzSmoothMeshTriangle >(*this));
 }
 
-
-// ---------------------------------------------------------------- copy constructor
-
+//===================================================================================
 tzSmoothMeshTriangle::tzSmoothMeshTriangle(const tzSmoothMeshTriangle& fmt)
 	:	tzMeshTriangle(fmt)
 {}
 
-
-// ---------------------------------------------------------------- assignment operator
-
-tzSmoothMeshTriangle&
-tzSmoothMeshTriangle::operator= (const tzSmoothMeshTriangle& rhs) {
+//===================================================================================
+tzSmoothMeshTriangle& tzSmoothMeshTriangle::operator= (const tzSmoothMeshTriangle& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 
@@ -44,14 +35,10 @@ tzSmoothMeshTriangle::operator= (const tzSmoothMeshTriangle& rhs) {
 	return (*this);
 }
 
-
-// ---------------------------------------------------------------- destructor
-
+//===================================================================================
 tzSmoothMeshTriangle::~tzSmoothMeshTriangle(void) {}
 
-
-// ---------------------------------------------------------------- interpolateNormal
-
+//===================================================================================
 tzNormal  tzSmoothMeshTriangle::interpolateNormal(const float beta, const float gamma) const 
 {
 	tzNormal normal((1 - beta - gamma) * mMeshPtr->mNormals[mIndexV0]
@@ -62,9 +49,8 @@ tzNormal  tzSmoothMeshTriangle::interpolateNormal(const float beta, const float 
 	return(normal);
 }
 
-// ---------------------------------------------------------------- hit
-
-bool tzSmoothMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
+//===================================================================================
+bool tzSmoothMeshTriangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr)  
 {
 	tzPoint3D v0(mMeshPtr->mVertices[mIndexV0]);
 	tzPoint3D v1(mMeshPtr->mVertices[mIndexV1]);

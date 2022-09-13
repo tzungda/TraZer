@@ -49,22 +49,22 @@ void tzImage::read_ppm_file(const char* file_name)
 	fopen_s(&file, file_name, "rb");
     
     if (file == 0){
-		cout << "could not open file" << endl;
+		std::cout << "could not open file" << std::endl;
 	}
 	else
-		cout << "file opened" << endl;
+		std::cout << "file opened" << std::endl;
 
     // PPM header
     
     unsigned char ppm_type;
     if (fscanf_s(file, "P%c\n", &ppm_type, sizeof(ppm_type) ) != 1){
-		cout << "Invalid PPM signature" << endl;
+		std::cout << "Invalid PPM signature" << std::endl;
 	}
 	
     // only binary PPM supported
     
     if (ppm_type != '6'){
-		cout << "Only binary PPM supported" << endl;
+		std::cout << "Only binary PPM supported" << std::endl;
 	}
 
     // skip comments
@@ -76,26 +76,26 @@ void tzImage::read_ppm_file(const char* file_name)
     // read image size
     
     if (fscanf_s(file, "%d %d\n", &mHeight, &mWidth) != 2){
-		cout << "Invalid image size" << endl;
+		std::cout << "Invalid image size" << std::endl;
 	}
 
     if (mHeight <= 0)
-		cout << "Invalid image width" << endl;
+		std::cout << "Invalid image width" << std::endl;
 	else
-		cout << "mHeight = " << mHeight << endl;
+		std::cout << "mHeight = " << mHeight << std::endl;
 
     
 	if (mWidth <= 0)
-		cout << "Invalid image height" << endl;
+		std::cout << "Invalid image height" << std::endl;
 	else
-		cout << "mWidth = " << mWidth << endl;
+		std::cout << "mWidth = " << mWidth << std::endl;
 
 
     // maximum value to be found in the PPM file (usually 255)
     
     unsigned int max_value;
     if (fscanf_s(file, "%d\n", &max_value) != 1){
-		cout << "Invalid max value" << endl;
+		std::cout << "Invalid max value" << std::endl;
 	}
 
 	float inv_max_value = 1.0f / (float)max_value;
@@ -118,13 +118,6 @@ void tzImage::read_ppm_file(const char* file_name)
 			xx = fscanf_s(file, "%c", &blue, sizeof(blue));
 			
 
-			/*
-            if (fscanf_s(file, "%c%c%c", &red, &green, &blue, sizeof(int)*3) != 3) {
-				cout << "Invalid image" << endl;
-			}
-			*/
-			
-
 			float r = red   * inv_max_value;
 			float g = green * inv_max_value;
 			float b = blue  * inv_max_value;
@@ -137,7 +130,7 @@ void tzImage::read_ppm_file(const char* file_name)
     
     fclose(file);
 	
-	cout << "finished reading PPM file" << endl;
+	std::cout << "finished reading PPM file" << std::endl;
 }
 
 //===================================================================================

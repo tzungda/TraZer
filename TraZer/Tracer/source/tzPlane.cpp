@@ -28,9 +28,9 @@ tzPlane::tzPlane(const tzPlane& plane)
 
 
 //===================================================================================
-tzPlane* tzPlane::clone(void) const 
+std::shared_ptr<tzIGeometricObject> tzPlane::clone(void) const
 {
-	return (new tzPlane(*this));
+	return (std::make_shared< tzPlane >(*this));
 }
 
 
@@ -55,7 +55,7 @@ tzPlane::~tzPlane(void)
 {}
 
 //===================================================================================
-bool tzPlane::shadowHit(const tzRay &ray, float &tmin) const
+bool tzPlane::shadowHit(const tzRay &ray, const tzShadeRec& sr, float &tmin) const
 {
 	float t = (float)((mPoint - ray.mOrigin) * mNormal / (ray.mDirection * mNormal));
 
@@ -69,7 +69,7 @@ bool tzPlane::shadowHit(const tzRay &ray, float &tmin) const
 }
 
 //===================================================================================
-bool tzPlane::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
+bool tzPlane::hit(const tzRay& ray, float& tmin, tzShadeRec& sr)  
 {
 	float t = (float)(( mPoint - ray.mOrigin) * mNormal / (ray.mDirection * mNormal));
 														

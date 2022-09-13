@@ -13,7 +13,7 @@ tzRectangle::tzRectangle(void)
 		mNormal(0, 1, 0),
 		mArea(4.0),
 		mInvArea(0.25),
-		mSamplerPtr(NULL)
+		mSamplerPtr(nullptr)
 {}
 
 
@@ -27,7 +27,7 @@ tzRectangle::tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVec
 		mLenSquaredB((float)(mSideB.len_squared())),
 		mArea((float)(mSideA.length() * mSideB.length())),
 		mInvArea(1.0f / (float)mArea),
-		mSamplerPtr(NULL)		
+		mSamplerPtr(nullptr)
 {
 	mNormal = mSideA ^ mSideB;
 	mNormal.normalize();
@@ -44,16 +44,16 @@ tzRectangle::tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVec
 		mArea((float)(mSideA.length() * mSideB.length())),
 		mInvArea(1.0f / (float)mArea),
 		mNormal(n),
-		mSamplerPtr(NULL)
+		mSamplerPtr(nullptr)
 {
 	mNormal.normalize();
 }
 
 
 //===================================================================================
-tzRectangle* tzRectangle::clone(void) const
+std::shared_ptr<tzIGeometricObject> tzRectangle::clone(void) const
 {
-	return (new tzRectangle(*this));
+	return (std::make_shared< tzRectangle >(*this));
 }
 
 //===================================================================================
@@ -70,7 +70,7 @@ tzRectangle::tzRectangle(const tzRectangle& r)
 {
 	if(r.mSamplerPtr)
 		mSamplerPtr	= r.mSamplerPtr->clone(); 
-	else  mSamplerPtr = NULL;
+	else  mSamplerPtr = nullptr;
 }
 
 
@@ -91,10 +91,6 @@ tzRectangle& tzRectangle::operator= (const tzRectangle& rhs)
 	mInvArea		= rhs.mInvArea;
 	mNormal			= rhs.mNormal;
 	
-	if (mSamplerPtr) {
-		delete mSamplerPtr;
-		mSamplerPtr = NULL;
-	}
 
 	if (rhs.mSamplerPtr)
 		mSamplerPtr= rhs.mSamplerPtr->clone();
@@ -105,15 +101,10 @@ tzRectangle& tzRectangle::operator= (const tzRectangle& rhs)
 //===================================================================================
 tzRectangle::~tzRectangle(void)
 {
-
-	if (mSamplerPtr) {
-		delete mSamplerPtr;
-		mSamplerPtr = NULL;
-	}
 }
 
 //===================================================================================
-tzBBox tzRectangle::getBoundingBox(void) 
+tzBBox tzRectangle::getBoundingBox(void) const
 {
 	float delta = 0.0001f;
 
@@ -124,7 +115,7 @@ tzBBox tzRectangle::getBoundingBox(void)
 																			
 
 //===================================================================================
-bool tzRectangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const 
+bool tzRectangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr)  
 {
 	
 	float t = (mP0 - ray.mOrigin) * mNormal / (ray.mDirection * mNormal);
@@ -154,7 +145,7 @@ bool tzRectangle::hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const
 
 
 //===================================================================================
-void tzRectangle::setSampler(tzISampler* sampler) 
+void tzRectangle::setSampler(std::shared_ptr< tzISampler > sampler)
 {
 	mSamplerPtr = sampler;
 }

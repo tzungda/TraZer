@@ -1,30 +1,29 @@
 
 #include "../include/tzITexture.h"
 
-// ---------------------------------------------------------------- default constructor
+//===================================================================================
+tzITexture::tzITexture(void) 
+{
+}
 
-tzITexture::tzITexture(void) {}
+//===================================================================================
+tzITexture::tzITexture(const tzITexture& texture) 
+{
+}
 
-
-// ---------------------------------------------------------------- copy constructor
-
-tzITexture::tzITexture(const tzITexture& texture) {}
-
-
-// ---------------------------------------------------------------- assignment operator
-
-tzITexture&
-tzITexture::operator= (const tzITexture& rhs) {
+//===================================================================================
+tzITexture& tzITexture::operator= (const tzITexture& rhs) 
+{
 	if (this == &rhs)
 		return (*this);
 		
 	return (*this);
 }
 
-
-// ---------------------------------------------------------------- destructor
-
-tzITexture::~tzITexture(void) {}
+//===================================================================================
+tzITexture::~tzITexture(void) 
+{
+}
 
 
 
