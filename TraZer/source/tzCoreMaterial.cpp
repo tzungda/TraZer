@@ -57,7 +57,7 @@ void tzCoreMaterial::setSpecularColor(const tzVector3D& color)
 }
 
 //===================================================================================
-void tzCoreMaterial::addTexture(const std::string &name, tzCoreTexture* texture)
+void tzCoreMaterial::addTexture(const std::string &name, std::shared_ptr<tzCoreTexture> texture)
 {
 	mTextureList[name] = texture;
 }
@@ -75,7 +75,7 @@ void tzCoreMaterial::addFloatAttribute(const std::string &name, float value)
 }
 
 //===================================================================================
-const std::map<std::string, tzCoreTexture*>& tzCoreMaterial::textureList() const
+const std::map<std::string, std::shared_ptr<tzCoreTexture>>& tzCoreMaterial::textureList() const
 {
 	return this->mTextureList;
 }

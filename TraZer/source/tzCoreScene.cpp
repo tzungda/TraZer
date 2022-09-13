@@ -21,70 +21,70 @@ Interfaces
 */
 
 //===================================================================================
-void tzCoreScene::addMesh(const tzCoreMesh* newMesh)
+void tzCoreScene::addMesh(const std::shared_ptr<tzCoreMesh> newMesh)
 {
-	if ( ((tzCoreMesh*)newMesh) == nullptr )
+	if ( newMesh == nullptr )
 	{
 		return;
 	}
-	mObjectList.push_back( (tzCoreObject*)newMesh );
-	mMeshList.push_back( (tzCoreMesh*)newMesh );
+	mObjectList.push_back( (std::shared_ptr<tzCoreObject>)newMesh );
+	mMeshList.push_back( newMesh );
 }
 
 //===================================================================================
-const std::vector<tzCoreMesh*>& tzCoreScene::meshList() const
+const std::vector<std::shared_ptr<tzCoreMesh>>& tzCoreScene::meshList() const
 {
 	return mMeshList;
 }
 
 //===================================================================================
-void tzCoreScene::addMaterial( const tzCoreMaterial* newMaterial )
+void tzCoreScene::addMaterial( const std::shared_ptr<tzCoreMaterial> newMaterial )
 {
-	if ( ((tzCoreMaterial*)newMaterial) == nullptr )
+	if ( newMaterial == nullptr )
 	{
 		return;
 	}
 
-	mObjectList.push_back( (tzCoreObject*)newMaterial );
-	mMaterialList.push_back( (tzCoreMaterial*)newMaterial );
+	mObjectList.push_back( (std::shared_ptr<tzCoreObject>)newMaterial );
+	mMaterialList.push_back( newMaterial );
 }
 
 //===================================================================================
-const std::vector<tzCoreMaterial*>& tzCoreScene::materialList( ) const
+const std::vector<std::shared_ptr<tzCoreMaterial>>& tzCoreScene::materialList( ) const
 {
 	return mMaterialList;
 }
 
 //===================================================================================
-void tzCoreScene::addTexture( tzCoreTexture* newTexture)
+void tzCoreScene::addTexture( std::shared_ptr<tzCoreTexture> newTexture)
 {
-	if (((tzCoreTexture*)newTexture) == nullptr)
+	if ( newTexture == nullptr)
 	{
 		return;
 	}
 	this->mTextureList[newTexture->path()] = newTexture;
-	mObjectList.push_back((tzCoreObject*)newTexture);
+	mObjectList.push_back( (std::shared_ptr<tzCoreObject>)newTexture);
 }
 
 //===================================================================================
-const std::map< std::string, tzCoreTexture* >& tzCoreScene::textureList() const
+const std::map< std::string, std::shared_ptr<tzCoreTexture> >& tzCoreScene::textureList() const
 {
 	return this->mTextureList;
 }
 
 //===================================================================================
-void tzCoreScene::addLight(const tzCoreLight* newLight)
+void tzCoreScene::addLight(const std::shared_ptr<tzCoreLight> newLight)
 {
-	if (((tzCoreLight*)newLight) == nullptr)
+	if ( newLight == nullptr)
 	{
 		return;
 	}
-	mLightList.push_back((tzCoreLight*)newLight );
-	mObjectList.push_back((tzCoreObject*)newLight);
+	mLightList.push_back(newLight );
+	mObjectList.push_back((std::shared_ptr<tzCoreObject>)newLight);
 }
 
 //===================================================================================
-const std::vector<tzCoreLight*>& tzCoreScene::lightList() const
+const std::vector<std::shared_ptr<tzCoreLight>>& tzCoreScene::lightList() const
 {
 	return mLightList;
 }

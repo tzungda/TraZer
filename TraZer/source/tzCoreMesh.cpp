@@ -5,10 +5,10 @@ Constructor/Destructor
 */
 
 //===================================================================================
-tzCoreMesh::tzCoreMesh()
+tzCoreMesh::tzCoreMesh(): tzCoreTransform()
 {
 	mNumVertices = mNumTriangles = 0;
-	mPtrCoreMaterial = NULL;
+	mPtrCoreMaterial = nullptr;
 }
 
 //===================================================================================
@@ -123,7 +123,7 @@ void tzCoreMesh::setFloatTexcoords(const std::vector< float >& texcoord)
 	for (int i = 0; i < (int)texcoord.size(); i+=2)
 	{
 		mU[idx] = texcoord[i];
-		mU[idx] = texcoord[i+1];
+		mV[idx] = texcoord[i+1];
 		idx++;
 	}
 
@@ -160,7 +160,7 @@ void tzCoreMesh::setFaceVertices(const std::vector<std::vector<int>> &faceVertic
 }
 
 //===================================================================================
-void tzCoreMesh::setMaterial(tzCoreMaterial *mat)
+void tzCoreMesh::setMaterial( std::shared_ptr<tzCoreMaterial> mat)
 {
 	this->mPtrCoreMaterial = mat;
 }
@@ -412,7 +412,7 @@ const std::vector<int>& tzCoreMesh::materialIds() const
 }
 
 //===================================================================================
-tzCoreMaterial* tzCoreMesh::material() const
+std::shared_ptr<tzCoreMaterial> tzCoreMesh::material() const
 {
 	return mPtrCoreMaterial;
 }

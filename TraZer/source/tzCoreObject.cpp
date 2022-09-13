@@ -18,7 +18,7 @@ tzCoreObject::tzCoreObject( )
 	*/
 
 	//
-	mParent = NULL;
+	mParent = nullptr;
 }
 
 
@@ -39,13 +39,13 @@ void tzCoreObject::setName(const std::string &name)
 }
 
 //===================================================================================
-tzCoreObject* tzCoreObject::parent() const
+std::shared_ptr<tzCoreObject> tzCoreObject::parent() const
 {
 	return mParent;
 }
 
 //===================================================================================
-void tzCoreObject::setParent(tzCoreObject* parent)
+void tzCoreObject::setParent( std::shared_ptr<tzCoreObject> parent)
 {
 	mParent = parent;
 }
@@ -57,18 +57,18 @@ unsigned int tzCoreObject::numChildren() const
 }
 
 //===================================================================================
-tzCoreObject* tzCoreObject::childByIndex( unsigned int index ) const
+std::shared_ptr<tzCoreObject> tzCoreObject::childByIndex( unsigned int index ) const
 {
 	if ( index >= numChildren())
 	{
 		printf( "tzObject::childByIndex - the index is larger than numChildren()\n" );
-		return NULL;
+		return nullptr;
 	}
 	return mChildren[index];
 }
 
 //===================================================================================
-void tzCoreObject::addChild(tzCoreObject* child )
+void tzCoreObject::addChild( std::shared_ptr<tzCoreObject> child )
 {
 	mChildren.push_back( child );
 }
