@@ -1,6 +1,8 @@
 #ifndef TZ_TRACER_LIGHT
 #define TZ_TRACER_LIGHT
 
+#include <memory>
+
 #include "tzVector3D.h"
 #include "tzColor.h"
 #include "../include/tzRay.h"
@@ -18,7 +20,7 @@ class tzILight
 		tzILight&
 		operator= (const tzILight& rhs);
 
-		virtual tzILight* clone(void) const = 0;
+		virtual std::shared_ptr<tzILight> clone(void) const = 0;
 		
 		virtual ~tzILight(void);
 						

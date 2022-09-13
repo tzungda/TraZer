@@ -7,9 +7,9 @@
 class tzAreaLighting: public tzITracer {
 	public:
 		
-		tzAreaLighting(void);
+		tzAreaLighting(void) = delete;
 		
-		tzAreaLighting(tzWorld* _worldPtr);
+		tzAreaLighting( tzWorld& _worldPtr);
 		
 		virtual ~tzAreaLighting(void);
 						

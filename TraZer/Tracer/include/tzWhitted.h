@@ -7,9 +7,9 @@
 class tzWhitted: public tzITracer {
 	public:
 		
-		tzWhitted(void);
+		tzWhitted(void) = delete;
 		
-		tzWhitted(tzWorld* _worldPtr);
+		tzWhitted(tzWorld& _worldPtr);
 		
 		virtual	~tzWhitted(void);
 	

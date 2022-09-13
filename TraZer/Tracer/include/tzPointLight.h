@@ -12,32 +12,25 @@ class tzPointLight: public tzILight {
 
 		tzPointLight(const tzPointLight& a);
 	
-		virtual tzILight*
-		clone(void) const;	
+		virtual std::shared_ptr<tzILight> clone(void) const;	
 		
-		tzPointLight&
-		operator= (const tzPointLight& rhs);
+		tzPointLight& operator= (const tzPointLight& rhs);
 		
 		virtual ~tzPointLight(void);
-				
-		void
-		scaleRadiance(const float b);
 		
-		void
-		setColor(const float c);
+		void setColor(const float c);
 		
-		void
-		setColor(const tzColor& c);
+		void setColor(const tzColor& c);
 		
-		void
-		setColor(const float r, const float g, const float b); 
+		void setColor(const float r, const float g, const float b); 
 		
 		virtual tzVector3D getDirection( tzShadeRec& s) ;
 		
 		virtual tzColor L( tzShadeRec& s) ;
 
 		// 
-		void		set_location( const tzVector3D &loc );
+		void set_location( const tzVector3D &loc );
+		void scaleRadiance(const float b);
 
 		//
 		virtual bool inShadow(const tzRay &ray, const tzShadeRec &sr) const;

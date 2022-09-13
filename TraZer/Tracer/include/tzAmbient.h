@@ -12,7 +12,7 @@ class tzAmbient: public tzILight
 
 		tzAmbient(const tzAmbient& a);
 	
-		virtual tzILight* clone(void) const;	
+		virtual std::shared_ptr<tzILight>  clone(void) const;
 		
 		tzAmbient& operator= (const tzAmbient& rhs);
 		

@@ -1,7 +1,7 @@
 #ifndef TZ_INTERFACE_MAPPING
 #define TZ_INTERFACE_MAPPING
 
-
+#include <memory>
 #include <math.h>
 
 #include "tzPoint3D.h"
@@ -16,8 +16,7 @@ class tzIMapping {
 		tzIMapping&
 		operator= (const tzIMapping& rhs);
 
-		virtual tzIMapping*
-		clone(void) const = 0;				
+		virtual std::shared_ptr<tzIMapping> clone(void) const = 0;				
 
 		virtual ~tzIMapping(void);
 				

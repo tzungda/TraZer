@@ -16,13 +16,11 @@ class tzLambertianSV: public tzIBRDF
 		
 		tzLambertianSV(const tzLambertianSV& lamb);
 		
-		tzLambertianSV&
-		operator= (const tzLambertianSV& rhs);
+		tzLambertianSV& operator= (const tzLambertianSV& rhs);
 		
 		virtual ~tzLambertianSV(void);
 		
-		virtual tzLambertianSV*
-		clone(void) const;
+		virtual std::shared_ptr< tzIBRDF > clone(void) const;
 		
 		virtual tzColor f(const tzShadeRec& sr, const tzVector3D& wo, const tzVector3D& wi) const;
 		
@@ -34,39 +32,30 @@ class tzLambertianSV: public tzIBRDF
 				
 		void setKd(const float kd);
 		
-		void setCd(const tzITexture* c);
+		void setCd(const std::shared_ptr<tzITexture> c);
 					
 	private:
 	
 		float		mKd;
-		tzITexture 	*mCd;
+		std::shared_ptr<tzITexture>	mCd;
 };
 
-
-
-
-// -------------------------------------------------------------- setKa
-
-inline void
-tzLambertianSV::setKa(const float k) {
+//===================================================================================
+inline void tzLambertianSV::setKa(const float k) 
+{
 	mKd = k;
 }
 
-
-
-// -------------------------------------------------------------- setmKd
-
-inline void
-tzLambertianSV::setKd(const float k) {
+//===================================================================================
+inline void tzLambertianSV::setKd(const float k) 
+{
 	mKd = k;
 }
 
-
-// -------------------------------------------------------------- setCd
-
-inline void
-tzLambertianSV::setCd(const tzITexture* c) {
-	mCd = (tzITexture*)c;
+//===================================================================================
+inline void tzLambertianSV::setCd(const std::shared_ptr<tzITexture> c) 
+{
+	mCd = (std::shared_ptr<tzITexture>)c;
 }
 
 

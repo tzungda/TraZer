@@ -1,6 +1,8 @@
 #ifndef TZ_TRACER_VIEWPLANE
 #define TZ_TRACER_VIEWPLANE
 
+#include <memory>
+
 class tzISampler;
 
 class tzViewPlane
@@ -15,7 +17,7 @@ public:
 	float			mS;			//pixel size
 	float			mGamma;		// monitor gamma factor
 	float			mInvGamma;	// one over gamma
-	tzISampler		*mSamplerPtr;
+	std::shared_ptr<tzISampler>		mSamplerPtr;
 	int				mNumSamples;
 	float			mMaxDepth;
 
@@ -24,7 +26,7 @@ public:
 	void			setWidth( int vres );
 	void			setPixelSize( float s );
 	void			setGamma( float gamma );
-	void			setSampler(tzISampler* sp);
+	void			setSampler(std::shared_ptr<tzISampler> sp);
 	void			setSamples( const int n );
 	void			setMaxDepth( float maxDepth );
 };

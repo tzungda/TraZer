@@ -3,6 +3,7 @@
 #define TZ_TRACER_BTDF
 
 #include <math.h>
+#include <memory>
 
 #include "../include/tzConstants.h"
 #include "tzVector3D.h"
@@ -15,7 +16,7 @@ class tzIBTDF {
 		
 		tzIBTDF(const tzIBTDF& tzIBTDF);
 		
-		virtual tzIBTDF* clone(void) = 0;
+		virtual std::shared_ptr<tzIBTDF> clone(void) = 0;
 		
 		tzIBTDF& operator= (const tzIBTDF& rhs);
 		

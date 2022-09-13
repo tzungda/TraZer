@@ -5,10 +5,9 @@
 #include "tzPoint3D.h"
 #include "tzVector3D.h"
 #include <string>
+#include <memory>
 
-class tzWorld;  // can't #include "World" here because World contains a camera pointer
-
-//--------------------------------------------------------------------- class Camera
+class tzWorld;  
 
 class tzICamera 
 {
@@ -18,7 +17,7 @@ class tzICamera
 
 		tzICamera(const tzICamera& tzICamera);			// copy constructor
 		
-		virtual tzICamera* clone(void) const = 0;
+		virtual std::shared_ptr<tzICamera> clone(void) const = 0;
 		
 		virtual ~tzICamera();   							
 
@@ -61,67 +60,50 @@ class tzICamera
 
 
 // inlined access functions
-
-
-// ----------------------------------------------------------------- setEye
-
+//
+//===================================================================================
 inline void tzICamera::setEye(const tzPoint3D& p) 
 {
 	mEye = p;
 }
 
-
-// ----------------------------------------------------------------- setEye
-
-inline void
-tzICamera::setEye(const float x, const float y, const float z) 
+//===================================================================================
+inline void tzICamera::setEye(const float x, const float y, const float z) 
 {
 	mEye.x = x; mEye.y = y; mEye.z = z;
 }
 
-
-// ----------------------------------------------------------------- setLookAt
-
+//===================================================================================
 inline void tzICamera::setLookAt(const tzPoint3D& p) 
 {
 	mLookAt = p;
 }
 
-
-// ----------------------------------------------------------------- setLookAt
-
+//===================================================================================
 inline void tzICamera::setLookAt(const float x, const float y, const float z)
 {
 	mLookAt.x = x; mLookAt.y = y; mLookAt.z = z;
 }
 
-
-// ----------------------------------------------------------------- setUpVector
-
-inline void
-tzICamera::setUpVector(const tzVector3D& u) {
+//===================================================================================
+inline void tzICamera::setUpVector(const tzVector3D& u) 
+{
 	mUp = u;
 }
 
-
-// ----------------------------------------------------------------- setUpVector
-
+//===================================================================================
 inline void tzICamera::setUpVector(const float x, const float y, const float z) 
 {
 	mUp.x = x; mUp.y = y; mUp.z = z;
 }
 
-
-// ----------------------------------------------------------------- setRoll
-
+//===================================================================================
 inline void tzICamera::setRoll(const float r)
 {
 	mRollAngle = r;
 }
 
-
-// ----------------------------------------------------------------- setExposure_time
-
+//===================================================================================
 inline void tzICamera::setExposureTime(const float exposure) 
 {
 	mExposureTime = exposure;

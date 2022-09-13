@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <math.h>
+#include <memory>
 
 #include "tzPoint2D.h"
 #include "tzPoint3D.h"
@@ -23,7 +24,7 @@ class tzISampler {
 
 		tzISampler& operator= (const tzISampler& rhs);
 
-		virtual tzISampler* clone(void) const = 0;			
+		virtual std::shared_ptr< tzISampler > clone(void) const = 0;			
 
 		virtual ~tzISampler(void);
 		

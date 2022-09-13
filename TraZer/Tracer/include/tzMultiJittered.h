@@ -17,7 +17,7 @@ class tzMultiJittered: public tzISampler {
 
 		tzMultiJittered& operator= (const tzMultiJittered& rhs);
 
-		virtual tzMultiJittered* clone(void) const;			
+		virtual std::shared_ptr< tzISampler > clone(void) const;
 
 		virtual ~tzMultiJittered(void);
 		

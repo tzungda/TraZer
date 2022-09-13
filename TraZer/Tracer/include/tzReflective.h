@@ -15,8 +15,7 @@ class tzReflective: public tzPhong {
 		tzReflective&
 		operator= (const tzReflective& rhs);
 
-		virtual tzReflective*
-		clone(void) const;				
+		virtual std::shared_ptr<tzIMaterial> clone(void) const;
 
 		~tzReflective(void);
 		
@@ -39,7 +38,7 @@ class tzReflective: public tzPhong {
 		
 	private:
 	
-		tzPerfectSpecular* mReflectiveBRDF;
+		std::shared_ptr<tzPerfectSpecular> mReflectiveBRDF;
 };
 
 

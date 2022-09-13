@@ -5,7 +5,6 @@
 #include "../include/tzLambertianSV.h"
 #include "../include/tzITexture.h"
 
-//----------------------------------------------------------------------------- class Matte
 
 class tzMatteSV: public tzIMaterial {
 	public:
@@ -13,18 +12,18 @@ class tzMatteSV: public tzIMaterial {
 		tzMatteSV(void);
 
 		tzMatteSV(const tzMatteSV& m);
-		
-		virtual tzIMaterial* clone(void) const;									
+
+		virtual ~tzMatteSV(void);
 
 		tzMatteSV& operator= (const tzMatteSV& rhs);
 
-		~tzMatteSV(void);
-		
 		void setKa(const float k);
-		
+
 		void setKd(const float k);
+
+		void setCd(const std::shared_ptr<tzITexture> c);
 		
-		void setCd(const tzITexture *c);
+		virtual std::shared_ptr<tzIMaterial> clone(void) const;									
 				
 		virtual tzColor shade(tzShadeRec& sr);
 
@@ -34,34 +33,26 @@ class tzMatteSV: public tzIMaterial {
 		
 	private:
 		
-		tzLambertianSV*		mAmbientBRDF;
-		tzLambertianSV*		mDiffuseBRDF;
+		std::shared_ptr<tzLambertianSV> mAmbientBRDF;
+		std::shared_ptr<tzLambertianSV> mDiffuseBRDF;
 };
 
+typedef std::shared_ptr< tzMatteSV> tzMatteSVPtr;
 
-// ---------------------------------------------------------------- setKa
-// this sets Lambertian::kd
-// there is no Lambertian::ka data member because ambient reflection 
-// is diffuse reflection
-
+//===================================================================================
 inline void tzMatteSV::setKa(const float ka)
 {
 	mAmbientBRDF->setKd(ka);
 }
 
-
-// ---------------------------------------------------------------- setKd
-// this also sets Lambertian::kd, but for a different Lambertian object
-
+//===================================================================================
 inline void tzMatteSV::setKd (const float kd) 
 {
 	mDiffuseBRDF->setKd(kd);
 }
 
-
-// ---------------------------------------------------------------- setCd
-
-inline void tzMatteSV::setCd(const tzITexture *c) 
+//===================================================================================
+inline void tzMatteSV::setCd(const std::shared_ptr<tzITexture> c)
 {
 	mAmbientBRDF->setCd(c);
 	mDiffuseBRDF->setCd(c);

@@ -12,7 +12,7 @@ class tzCompound: public tzIGeometricObject {
 		
 		tzCompound(void);
 
-		virtual tzCompound* clone(void) const;
+		virtual std::shared_ptr<tzIGeometricObject>  clone(void) const;
 	
 		tzCompound(const tzCompound& c);
 
@@ -20,31 +20,29 @@ class tzCompound: public tzIGeometricObject {
 
 		tzCompound& operator= (const tzCompound& c);
 		
-		virtual void  setMaterial(tzIMaterial* mMaterialPtr);
+		virtual void  setMaterial(std::shared_ptr < tzIMaterial> mMaterialPtr, int threadId);
 		
-		virtual void  addObject(tzIGeometricObject* object_ptr);  
+		virtual void  addObject(std::shared_ptr<tzIGeometricObject>  object_ptr);
 		
 		int getNumObjects(void);						
 
-		virtual bool hit(const tzRay& ray, float& tmin, tzShadeRec& s) const;
+		virtual bool hit(const tzRay& ray, float& tmin, tzShadeRec& s) ;
 
-		virtual	bool shadowHit(const tzRay& ray, float& tmin) const;
+		virtual	bool shadowHit(const tzRay& ray, const tzShadeRec& sr, float& tmin ) const;
 			
 	protected:		
 		
-		std::vector<tzIGeometricObject*> mObjects;
+		std::vector<std::shared_ptr<tzIGeometricObject> > mObjects;
 		
 	private:
 	
 		void deleteObjects(void);								
 
-		void copyObjects(const std::vector<tzIGeometricObject*>& rhsObjects);
+		void copyObjects(const std::vector<std::shared_ptr<tzIGeometricObject> >& rhsObjects);
 	
 };
 
-
-// ------------------------------------------------------------------------------- getNumObjects
-
+//===================================================================================
 inline int tzCompound::getNumObjects(void) 
 {
 	return ((int)mObjects.size());

@@ -14,7 +14,7 @@ class tzRegular: public tzISampler {
 
 		tzRegular& operator= (const tzRegular& rhs);
 
-		virtual tzRegular* clone(void) const;			
+		virtual std::shared_ptr< tzISampler > clone(void) const;
 
 		virtual ~tzRegular(void);
 		

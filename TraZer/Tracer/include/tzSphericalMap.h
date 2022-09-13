@@ -15,8 +15,7 @@ class tzSphericalMap: public tzIMapping {
 		tzSphericalMap&
 		operator= (const tzSphericalMap& rhs);
 
-		virtual tzSphericalMap*
-		clone(void) const;				
+		virtual std::shared_ptr<tzIMapping> clone(void) const;				
 
 		~tzSphericalMap(void);
 		

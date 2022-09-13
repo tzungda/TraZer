@@ -4,7 +4,6 @@
 #include "../include/tzIMaterial.h"
 #include "../include/tzLambertian.h"
 
-//----------------------------------------------------------------------------- class Matte
 
 class tzEmissive: public tzIMaterial {
 	private:
@@ -16,11 +15,11 @@ class tzEmissive: public tzIMaterial {
 
 		tzEmissive(const tzEmissive& m);
 		
-		virtual tzIMaterial* clone(void) const;									
+		virtual std::shared_ptr<tzIMaterial> clone(void) const;									
 
 		tzEmissive& operator= (const tzEmissive& rhs);
 
-		~tzEmissive(void);
+		virtual ~tzEmissive(void);
 		
 		float emissiveRadiance( ) const;
 		tzColor	emissiveColor() const;
@@ -41,5 +40,6 @@ class tzEmissive: public tzIMaterial {
 		
 };
 
+typedef std::shared_ptr< tzEmissive > tzEmissivePtr;
 
 #endif

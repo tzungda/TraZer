@@ -1,7 +1,7 @@
 #ifndef TZ_INTERFACE_TEXTURE
 #define TZ_INTERFACE_TEXTURE
 
-
+#include <memory>
 #include <math.h>
 
 #include "../include/tzShadeRec.h"
@@ -14,8 +14,7 @@ class tzITexture {
 		
 		tzITexture(const tzITexture& texture);
 				
-		virtual tzITexture*
-		clone(void) const = 0;	
+		virtual std::shared_ptr<tzITexture> clone(void) const = 0;
 
 		virtual 											
 		~tzITexture(void);

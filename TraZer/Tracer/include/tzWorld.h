@@ -17,21 +17,21 @@ public:
 	tzViewPlane							mVp;
 	tzColor							mBackgroundColor;
 	tzSphere							mSphere;
-	tzITracer*							mTracerPtr;
-	std::vector<tzIGeometricObject*>	mObjects;
+	std::shared_ptr<tzITracer>							mTracerPtr;
+	std::vector<std::shared_ptr<tzIGeometricObject>>	mObjects;
 
 	//
-	tzICamera							*mCameraPtr;
+	std::shared_ptr<tzICamera>							mCameraPtr;
 
 	//
-	tzILight							*mAmbientPtr;
-	std::vector<tzILight*>				mLights;
+	std::shared_ptr<tzILight>							mAmbientPtr;
+	std::vector<std::shared_ptr<tzILight>>				mLights;
 
 	//
 	std::string							mOutputPath;
 
 	// scene
-	tzCoreScene							*mScenePtr;
+	std::shared_ptr<tzCoreScene>		mScenePtr;
 
 
 public:
@@ -40,7 +40,7 @@ public:
 
 public:
 
-	void				addObject(tzIGeometricObject *objectPtr);
+	void				addObject(std::shared_ptr<tzIGeometricObject> objectPtr);
 	tzShadeRec			hitBareBonesObject( const tzRay &ray );
 
 	void				build();
@@ -50,16 +50,16 @@ public:
 	void				writeImage( const std::vector<tzColor>& buffer, const std::string &imagePath ) const;
 
 	// 
-	void				setCamera( const tzICamera *cam );
+	void				setCamera( const std::shared_ptr< tzICamera > cam );
 
 	//
-	void				addLight( tzILight *lightPtr );
+	void				addLight( std::shared_ptr<tzILight> lightPtr );
 
 	// 
 	tzShadeRec			hitObjects( const tzRay &ray, float &tmin ) ;
 
 	//
-	void				setAmbientLight( tzILight *ambientLight );
+	void				setAmbientLight( std::shared_ptr<tzILight> ambientLight );
 
 	//
 	void				setOutputPath( const std::string &outputPath );
@@ -67,7 +67,7 @@ public:
 };
 
 //===================================================================================
-inline void tzWorld::addObject(tzIGeometricObject *objectPtr)
+inline void tzWorld::addObject(std::shared_ptr<tzIGeometricObject> objectPtr)
 {
 	mObjects.push_back(objectPtr);
 }

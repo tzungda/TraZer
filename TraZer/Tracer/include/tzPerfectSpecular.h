@@ -12,8 +12,7 @@ class tzPerfectSpecular: public tzIBRDF
 		
 		~tzPerfectSpecular(void);
 		
-		virtual tzPerfectSpecular*
-		clone(void) const;
+		virtual std::shared_ptr<tzIBRDF> clone(void) const;
 		
 		void setKr(const float k);
 		
@@ -37,33 +36,25 @@ class tzPerfectSpecular: public tzIBRDF
 		tzColor 	mCr;			// the reflection colour
 };
 
-
-// -------------------------------------------------------------- setKr
-
+//===================================================================================
 inline void tzPerfectSpecular::setKr(const float k) 
 {
 	mKr = k;
 }
 
-
-// -------------------------------------------------------------- setCr
-
+//===================================================================================
 inline void tzPerfectSpecular::setCr(const tzColor& c) 
 {
 	mCr = c;
 }
 
-
-// ---------------------------------------------------------------- setCr
-
+//===================================================================================
 inline void tzPerfectSpecular::setCr(const float r, const float g, const float b) 
 {
 	mCr.r = r; mCr.g = g; mCr.b = b;
 }
 
-
-// ---------------------------------------------------------------- setCr
-
+//===================================================================================
 inline void tzPerfectSpecular::setCr(const float c) 
 {
 	mCr.r = c; mCr.g = c; mCr.b = c;

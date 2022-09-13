@@ -6,9 +6,9 @@
 class tzRayCast: public tzITracer {
 	public:
 		
-		tzRayCast(void);
+		tzRayCast(void) = delete;
 		
-		tzRayCast(tzWorld* _worldPtr);
+		tzRayCast(tzWorld& _worldPtr);
 				
 		virtual ~tzRayCast(void);
 

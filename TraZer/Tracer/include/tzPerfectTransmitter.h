@@ -13,7 +13,7 @@ class tzPerfectTransmitter: public tzIBTDF {
 		
 		tzPerfectTransmitter(const tzPerfectTransmitter& pt);
 		
-		virtual tzPerfectTransmitter* clone(void);
+		virtual std::shared_ptr<tzIBTDF> clone(void);
 		
 		~tzPerfectTransmitter(void);
 		
@@ -37,16 +37,13 @@ class tzPerfectTransmitter: public tzIBTDF {
 		float	mIor;		// index of refraction
 };
 
-
-// -------------------------------------------------------------- set_kt
-
+//===================================================================================
 inline void tzPerfectTransmitter::set_kt(const float k) 
 {
 	mKt = k;
 }
 
-// -------------------------------------------------------------- set_ior
-
+//===================================================================================
 inline void tzPerfectTransmitter::set_ior(const float eta) 
 {
 	mIor = eta;

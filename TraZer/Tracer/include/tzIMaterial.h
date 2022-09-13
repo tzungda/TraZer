@@ -3,7 +3,7 @@
 
 #include "../include/tzWorld.h"			// required for the shade function in all derived classes
 #include "tzColor.h"
-
+#include <memory>
 
 class tzIMaterial {	
 	public:
@@ -11,10 +11,9 @@ class tzIMaterial {
 		tzIMaterial(void);
 		
 		tzIMaterial(const tzIMaterial& material);
-		
-		virtual tzIMaterial* clone(void) const = 0;	
-				
 		virtual ~tzIMaterial(void);
+		
+		virtual std::shared_ptr<tzIMaterial> clone(void) const = 0;	
 				
 		virtual tzColor shade(tzShadeRec& sr);	
 
@@ -29,6 +28,8 @@ class tzIMaterial {
 	
 		tzIMaterial& operator= (const tzIMaterial& rhs);
 };
+
+//typedef std::shared_ptr<tzIMaterial> tzIMaterialPtr;
 
 #endif
 

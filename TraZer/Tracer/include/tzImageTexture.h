@@ -14,46 +14,36 @@ class tzImageTexture: public tzITexture {
 				
 		tzImageTexture(const tzImageTexture& it);
 
-		tzImageTexture&
-		operator= (const tzImageTexture& rhs);
+		tzImageTexture& operator= (const tzImageTexture& rhs);
 
-		virtual tzImageTexture*
-		clone(void) const;				
+		virtual std::shared_ptr<tzITexture> clone(void) const;				
 
-		virtual
-		~tzImageTexture(void) ;
+		virtual ~tzImageTexture(void) ;
 		
-		virtual tzColor																				
-		getColor(const tzShadeRec& sr) const;
+		virtual tzColor getColor(const tzShadeRec& sr) const;
 						
-		void
-		set_image(tzImage* _mImagePtr);
+		void set_image(std::shared_ptr<tzImage> _mImagePtr);
 		
-		void
-		set_mapping(tzIMapping* map_ptr);	
+		void set_mapping(std::shared_ptr<tzIMapping> map_ptr);	
 		
 	private:
 	
 		int 		mHeight;			// horizontal resolution of the image
 		int			mWidth;			// vertical resolution of the image
-		tzImage*	mImagePtr;		// the image
-		tzIMapping*	mMappingPtr;	// mapping technique used, if any
+		std::shared_ptr<tzImage>	mImagePtr;		// the image
+		std::shared_ptr<tzIMapping>	mMappingPtr;	// mapping technique used, if any
 };
 
-
-// ---------------------------------------------------------------- set_image
-
-inline void tzImageTexture::set_image(tzImage* imagePtr) 
+//===================================================================================
+inline void tzImageTexture::set_image( std::shared_ptr<tzImage> imagePtr) 
 {
 	mImagePtr = imagePtr;
 	mHeight = imagePtr->getHeight();
 	mWidth = imagePtr->getWidth();
 }
 
-
-// ---------------------------------------------------------------- set_mapping
-
-inline void tzImageTexture::set_mapping(tzIMapping* map_ptr) 
+//===================================================================================
+inline void tzImageTexture::set_mapping(std::shared_ptr<tzIMapping> map_ptr) 
 {
 	mMappingPtr = map_ptr;
 }

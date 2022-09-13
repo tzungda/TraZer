@@ -7,9 +7,9 @@
 class tzPathTrace: public tzITracer {
 	public:
 		
-		tzPathTrace(void);
+		tzPathTrace(void) = delete;
 		
-		tzPathTrace(tzWorld* _worldPtr);
+		tzPathTrace(tzWorld& _worldPtr);
 	
 		virtual tzColor traceRay(const tzRay ray, const int depth) const;
 		

@@ -13,8 +13,7 @@ class tzRectangle: public tzIGeometricObject {
 		
 		tzRectangle(const tzPoint3D& _p0, const tzVector3D& _a, const tzVector3D& _b, const tzNormal& n);
 		
-		virtual tzRectangle*
-		clone(void) const;
+		virtual std::shared_ptr<tzIGeometricObject> clone(void) const;
 	
 		tzRectangle(const tzRectangle& r);
 
@@ -22,14 +21,14 @@ class tzRectangle: public tzIGeometricObject {
 
 		tzRectangle& operator= (const tzRectangle& rhs);
 		
-		tzBBox getBoundingBox(void);				
+		tzBBox getBoundingBox(void) const;
 	
-		virtual bool hit(const tzRay& ray, float& t, tzShadeRec& s) const;
+		virtual bool hit(const tzRay& ray, float& t, tzShadeRec& s) ;
 				
 		
 		// the following functions are used when the rectangle is a light source
 		
-		virtual void setSampler(tzISampler* sampler); 
+		virtual void setSampler(std::shared_ptr< tzISampler > sampler);
 				
 		virtual tzPoint3D sample(const tzShadeRec& sr);
 		
@@ -48,7 +47,7 @@ class tzRectangle: public tzIGeometricObject {
 		
 		float			mArea;			// for rectangular lights
 		float			mInvArea;		// for rectangular lights
-		tzISampler*		mSamplerPtr;	// for rectangular lights 	
+		std::shared_ptr< tzISampler >		mSamplerPtr;	// for rectangular lights 	
 		
 		static const float mEpsilon;
 };

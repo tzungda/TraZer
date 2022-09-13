@@ -4,9 +4,8 @@
 
 #include <vector>		
 #include "tzColor.h"
-using namespace std;
 
-//--------------------------------------------------------------------- class Image
+
 
 class tzImage {	
 	public:

@@ -8,9 +8,9 @@
 class tzMultipleObjects: public tzITracer {
 	public:
 		
-		tzMultipleObjects(void);
+		tzMultipleObjects(void) = delete;
 		
-		tzMultipleObjects( tzWorld* _mWorldPtr);
+		tzMultipleObjects( tzWorld& _mWorldPtr);
 	
 		virtual ~tzMultipleObjects(void);
 						

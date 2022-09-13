@@ -8,7 +8,7 @@
 class tzMeshTriangle: public tzIGeometricObject {	
 	public:
 
-		tzMesh* 	mMeshPtr;					// stores all the data
+		std::shared_ptr<tzMesh> 	mMeshPtr;					// stores all the data
 		int			mIndexV0, mIndexV1, mIndexV2;  	// indices into the vertices array in the mesh
 		int			mIndexN0, mIndexN1, mIndexN2;  	// indices into the normals array in the mesh
 		int			mIndexUV0, mIndexUV1, mIndexUV2;  	// indices into the UVs array in the mesh
@@ -19,11 +19,11 @@ class tzMeshTriangle: public tzIGeometricObject {
 		
 		tzMeshTriangle(void);
 		
-		tzMeshTriangle(tzMesh* _mesh_ptr, const int i1, const int i2, const int i3);
+		tzMeshTriangle(std::shared_ptr<tzMesh> _mesh_ptr, const int i1, const int i2, const int i3);
 
-		tzMeshTriangle(tzMesh* _mesh_ptr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2);
+		tzMeshTriangle(std::shared_ptr<tzMesh> _mesh_ptr, const int v0, const int v1, const int v2, const int n0, const int n1, const int n2, const int uv0, const int uv1, const int uv2);
 
-		virtual tzMeshTriangle* clone(void) const = 0;
+		virtual std::shared_ptr<tzIGeometricObject> clone(void) const = 0;
 	
 		tzMeshTriangle(const tzMeshTriangle& mt);
 
@@ -31,15 +31,15 @@ class tzMeshTriangle: public tzIGeometricObject {
 
 		tzMeshTriangle& operator= (const tzMeshTriangle& rhs);
 		
-		virtual bool hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const = 0;
+		virtual bool hit(const tzRay& ray, float& tmin, tzShadeRec& sr) = 0;
 		
-		virtual	bool shadowHit(const tzRay& ray, float& tmin) const;
+		virtual	bool shadowHit(const tzRay& ray, const tzShadeRec& sr, float& tmin) const;
 		
 		void computeNormal(const bool reverse_normal);
 				
 		virtual tzNormal getNormal(void) const;				
 
-		virtual tzBBox getBoundingBox(void);
+		virtual tzBBox getBoundingBox(void) const;
 		
 	protected:
 	

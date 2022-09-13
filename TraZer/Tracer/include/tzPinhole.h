@@ -5,7 +5,6 @@
 #include "tzPoint2D.h"
 #include "../include/tzWorld.h"    // we can #include "World.h" here
 
-//--------------------------------------------------------------------- class Pinhole
 
 class tzPinhole: public tzICamera {
 	public:
@@ -14,11 +13,9 @@ class tzPinhole: public tzICamera {
 
 		tzPinhole(const tzPinhole& ph);
 		
-		virtual tzICamera*						
-		clone(void) const;			
+		virtual std::shared_ptr<tzICamera> clone(void) const;
 
-		tzPinhole&
-		operator= (const tzPinhole& rhs);
+		tzPinhole& operator= (const tzPinhole& rhs);
 		
 		virtual ~tzPinhole();
 			
@@ -38,19 +35,13 @@ class tzPinhole: public tzICamera {
 };
 
 
-
-
-//-------------------------------------------------------------------------- set_vpd
-
+//===================================================================================
 inline void tzPinhole::setViewDistance(float d) 
 {
 	mDistance = d;
 }	
 	
-
-
-//-------------------------------------------------------------------------- setZoom
-
+//===================================================================================
 inline void tzPinhole::setZoom(float zoomFactor) 
 {
 	mZoom = zoomFactor;

@@ -12,8 +12,7 @@ class tzSmoothTriangle: public tzIGeometricObject {
 		
 		tzSmoothTriangle(const tzPoint3D& a, const tzPoint3D& b, const tzPoint3D& c);
 
-		virtual tzSmoothTriangle*
-		clone(void) const;
+		virtual std::shared_ptr<tzIGeometricObject>  clone(void) const;
 	
 		tzSmoothTriangle(const tzSmoothTriangle& st);
 
@@ -23,13 +22,11 @@ class tzSmoothTriangle: public tzIGeometricObject {
 		tzSmoothTriangle&
 		operator= (const tzSmoothTriangle& rhs);
 		
-		virtual tzBBox
-		getBoundingBox(void);
+		virtual tzBBox getBoundingBox() const;
 		
-		virtual bool 
-		hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;
+		virtual bool hit(const tzRay& ray, float& tmin, tzShadeRec& sr) ;
 		
-		virtual bool shadowHit(const tzRay& ray, float& tmin) const;
+		virtual bool shadowHit(const tzRay& ray, const tzShadeRec& sr, float& tmin) const;
 		
 	private:
 		

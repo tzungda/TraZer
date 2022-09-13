@@ -8,10 +8,9 @@ class tzSmoothUVMeshTriangle: public tzSmoothMeshTriangle {
 		
 		tzSmoothUVMeshTriangle(void);
 		
-		tzSmoothUVMeshTriangle(tzMesh* _meshPtr, const int i0, const int i1, const int i2);
+		tzSmoothUVMeshTriangle(std::shared_ptr<tzMesh> _meshPtr, const int i0, const int i1, const int i2);
 
-		virtual tzSmoothUVMeshTriangle*
-		clone(void) const;
+		virtual std::shared_ptr<tzIGeometricObject> clone(void) const;
 	
 		tzSmoothUVMeshTriangle(const tzSmoothUVMeshTriangle& fmt);
 
@@ -21,8 +20,7 @@ class tzSmoothUVMeshTriangle: public tzSmoothMeshTriangle {
 		tzSmoothUVMeshTriangle&
 		operator= (const tzSmoothUVMeshTriangle& rhs);
 				
-		virtual	bool 
-		hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;
+		virtual	bool hit(const tzRay& ray, float& tmin, tzShadeRec& sr) ;
 
 };
 

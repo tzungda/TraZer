@@ -1,11 +1,14 @@
 #ifndef TZ_TRACE_SHADE_REC
 #define TZ_TRACE_SHADE_REC
 
+#include <memory>
+
 #include "tzPoint3D.h"
 #include "tzVector3D.h"
 #include "tzNormal.h"
 #include "tzColor.h"
 #include "../include/tzRay.h"
+#include "../include/tzConstants.h"
 
 class tzWorld;
 class tzIMaterial;
@@ -24,7 +27,7 @@ public:
 	float				mV;
 
 	//
-	tzIMaterial			*mMaterialPtr;
+	std::shared_ptr < tzIMaterial>		mMaterialPtr[MAX_THREADS];
 	tzPoint3D			mHitPoint;
 	tzRay				mRay;
 	int					mDepth;
@@ -33,7 +36,6 @@ public:
 	//
 	unsigned int		mThreadId;
 	unsigned int		mMaxThreads;
-
 
 	// constructor
 	tzShadeRec( tzWorld &w );

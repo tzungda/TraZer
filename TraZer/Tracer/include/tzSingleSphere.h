@@ -6,9 +6,9 @@
 class tzSingleSphere: public tzITracer {
 	public:
 		
-		tzSingleSphere(void);
+		tzSingleSphere(void) = delete;
 										
-		tzSingleSphere(tzWorld* _worldPtr);					
+		tzSingleSphere(tzWorld& _worldPtr);					
 		
 		virtual											
 		~tzSingleSphere(void);

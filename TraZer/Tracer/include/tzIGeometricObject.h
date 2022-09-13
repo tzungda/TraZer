@@ -12,6 +12,8 @@
 #include "tzNormal.h"
 #include "../include/tzRay.h"
 #include "../include/tzShadeRec.h"
+#include <memory>
+#include <vector>
 
 class tzIMaterial;	
 class tzITexture;
@@ -23,21 +25,20 @@ class tzIGeometricObject {
 		
 		tzIGeometricObject(const tzIGeometricObject& object);			
 	
-		virtual tzIGeometricObject*								
-		clone(void) const = 0;
+		virtual std::shared_ptr<tzIGeometricObject> clone(void) const = 0;
 
 		virtual 												
 		~tzIGeometricObject(void);	
 			
-		virtual bool hit(const tzRay& ray, float& t, tzShadeRec& s) const = 0;
+		virtual bool hit(const tzRay& ray, float& t, tzShadeRec& s)  = 0;
 
 		//
-		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
+		virtual bool shadowHit(const tzRay &ray, const tzShadeRec& sr, float &tmin) const;
 		
-		virtual void  setMaterial(tzIMaterial* mPtr); 
-		virtual void  setAlphaTexture( tzITexture *alphaTexture );
+		virtual void  setMaterial(std::shared_ptr < tzIMaterial > mPtr, int threadId);
+		virtual void  setAlphaTexture( std::shared_ptr<tzITexture> alphaTexture );
 		
-		tzIMaterial* getMaterial(void) const;
+		virtual std::shared_ptr < tzIMaterial > getMaterial( int threadId ) const;
 
 				   
 		// The following three functions are only required for Chapter 3
@@ -50,9 +51,9 @@ class tzIGeometricObject {
 		
 		virtual void setBoundingBox(void);
 		
-		virtual tzBBox getBoundingBox(void);
+		virtual tzBBox getBoundingBox(void) const;
 
-		virtual void addObject(tzIGeometricObject* object_ptr);
+		virtual void addObject(std::shared_ptr<tzIGeometricObject> object_ptr);
 				
 		
 		// The following two functions are only required for objects that are light sources, eg disks, rectangles, and spheres
@@ -71,10 +72,10 @@ class tzIGeometricObject {
 	
 	protected:
 	
-		mutable tzIMaterial*   mMaterialPtr;   	// mutable allows the const functions Compound::hit, Instance::hit, and RegularGrid::hit to assign to mMaterialPtr
+		std::shared_ptr < tzIMaterial >   mMaterialPtr[MAX_THREADS];   	// mutable allows the const functions Compound::hit, Instance::hit, and RegularGrid::hit to assign to mMaterialPtr
 		tzColor   		   mColor;				// only used for Bare Bones ray tracing
 
-		mutable tzITexture*	   mAlphaTexture;
+		std::shared_ptr<tzITexture>	   mAlphaTexture;
 	
 		tzIGeometricObject& operator= (const tzIGeometricObject& rhs);
 };

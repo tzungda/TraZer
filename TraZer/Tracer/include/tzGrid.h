@@ -8,128 +8,95 @@
 #include "tzMesh.h"
 
 
-//---------------------------------------------------------------------- class Grid
+class tzGrid: public tzCompound 
+{										  	
+public:
+	tzGrid(void);
 
-class tzGrid: public tzCompound {										  	
-	public:
+	tzGrid(std::shared_ptr<tzMesh> _mesh_ptr);
 
-		tzGrid(void);
+	virtual std::shared_ptr<tzIGeometricObject> clone(void) const;
 
-		tzGrid(tzMesh* _mesh_ptr);
+	tzGrid(const tzGrid& rg);
 
-		virtual tzGrid*
-		clone(void) const;
+	tzGrid&
+	operator= (const tzGrid& rhs);
 
-		tzGrid(const tzGrid& rg);
+	virtual 										
+	~tzGrid(void);
 
-		tzGrid&
-		operator= (const tzGrid& rhs);
+	virtual tzBBox getBoundingBox(void) const;
 
-		virtual 										
-		~tzGrid(void);
 
-		virtual tzBBox 
-		getBoundingBox(void);
+	void												
+	tessellate_flat_sphere(const int horizontal_steps, const int vertical_steps);
 
-		void												
-		read_flat_triangles(char* file_name);
+	void												
+	tessellate_smooth_sphere(const int horizontal_steps, const int vertical_steps);
 
-		void												
-		read_smooth_triangles(char* file_name);
+	virtual bool 
+	hit(const tzRay& ray, float& tmin, tzShadeRec& sr) ;
 
-		void												
-		tessellate_flat_sphere(const int horizontal_steps, const int vertical_steps);
+	virtual bool shadowHit(const tzRay &ray, const tzShadeRec& sr, float &tmin) const;
 
-		void												
-		tessellate_smooth_sphere(const int horizontal_steps, const int vertical_steps);
+	void
+	setupCells(void);
 
-		virtual bool 
-		hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;
+	void reverse_mesh_normals(void);
 
-		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
+	void store_material(std::shared_ptr < tzIMaterial > material, const int index, int threadId);
 
-		void
-		setupCells(void);
+	void	setScale( float scale );
 
-		void
-		reverse_mesh_normals(void);
+	// add mesh
+	void addMesh(	const std::vector<tzPoint3D> &vertices,
+					const std::vector<tzNormal> &normals,
+					const std::vector<float> &u,
+					const std::vector<float> &v,
+					const std::vector<std::vector<int> > &vertex_faces,
+					const std::vector< tzCoreMesh::index > &face_vertices,
+					const int &num_vertices,
+					const int &num_triangles,
+					const tzMatrix &matrix,
+					std::shared_ptr < tzIMaterial> material,
+					std::shared_ptr<tzITexture> alphaTexture = nullptr);
 
-		void
-		store_material(tzIMaterial* material, const int index); 							
+private: 
 
-		void	setScale( float scale );
+	std::vector<std::shared_ptr<tzIGeometricObject>>	mCells;			// grid of cells
+	int							mNx, mNy, mNz;    	// number of cells in the x, y, and z directions
+	tzBBox						mBbox;			// bounding box
+	std::shared_ptr<tzMesh>						mMeshPtr;		// holds triangle data
+	bool						mReverseNormal;	
+	float						mScale;
 
-		// uv related
-		//void read_flat_uv_triangles(char* file_name);
-		//void read_smooth_uv_triangles(char* file_name);
+	std::vector<std::shared_ptr<tzMesh>>		mMeshList;
 
-		// add mesh
-		void addMesh(	const std::vector<tzPoint3D> &vertices,
-						const std::vector<tzNormal> &normals,
-						const std::vector<float> &u,
-						const std::vector<float> &v,
-						const std::vector<std::vector<int> > &vertex_faces,
-						const std::vector< tzCoreMesh::index > &face_vertices,
-						const int &num_vertices,
-						const int &num_triangles,
-						const tzMatrix &matrix,
-						tzIMaterial* material,
-						tzITexture* alphaTexture = NULL);
+	tzPoint3D findMinBounds(void);
 
-	private: 
+	tzPoint3D findMaxBounds(void);
 
-		std::vector<tzIGeometricObject*>	mCells;			// grid of cells
-		int							mNx, mNy, mNz;    	// number of cells in the x, y, and z directions
-		tzBBox						mBbox;			// bounding box
-		tzMesh*						mMeshPtr;		// holds triangle data
-		bool						mReverseNormal;	// some PLY files have normals that point inwards
-		float						mScale;
+	void computeMeshNormals(void);	
 
-		std::vector<tzMesh*>		mMeshList;
-
-		tzPoint3D findMinBounds(void);
-
-		tzPoint3D findMaxBounds(void);
-
-		//void read_ply_file(char* file_name, const int triangle_type);
-
-		void computeMeshNormals(void);	
-
-		// uv related
-		//void read_uv_ply_file(char* file_name, const int triangle_type);
 };
 
-
-// ------------------------------------------------------------------------------ store_material
-
-inline void
-tzGrid::reverse_mesh_normals(void) 
+//===================================================================================
+inline void tzGrid::reverse_mesh_normals(void) 
 {
 	mReverseNormal = true;
 }
 
-
-// ------------------------------------------------------------------------------ store_material
-// stores the material in the specified object
-// this is called from the Rosette and Archway classes, which inherit from Grid
-
-inline void
-tzGrid::store_material(tzIMaterial* mMaterialPtr, const int index) {
-	mObjects[index]->setMaterial(mMaterialPtr);
+//===================================================================================
+inline void tzGrid::store_material(std::shared_ptr < tzIMaterial> materialPtr, const int index, int threadId)
+{
+	mObjects[index]->setMaterial(materialPtr, threadId);
 }
 
+//===================================================================================
 inline void tzGrid::setScale(float scale)
 {
 	mScale = scale;
 }
 
 #endif
-
-
-
-
-
-
-
-
 

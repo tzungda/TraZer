@@ -16,7 +16,7 @@ class tzSphere: public tzIGeometricObject {
 					
 		tzSphere(const tzSphere& tzSphere); 						// Copy constructor
 		
-		virtual tzSphere* clone(void) const;
+		virtual std::shared_ptr<tzIGeometricObject>  clone(void) const;
 
 		virtual ~tzSphere(void);   									
 
@@ -28,9 +28,9 @@ class tzSphere: public tzIGeometricObject {
 		
 		void setRadius(const float r);
 
-		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
+		virtual bool shadowHit(const tzRay &ray, const tzShadeRec& sr, float &tmin) const;
 						
-		virtual bool hit(const tzRay& ray, float& t, tzShadeRec& s) const;
+		virtual bool hit(const tzRay& ray, float& t, tzShadeRec& s) ;
 		
 	private:
 	

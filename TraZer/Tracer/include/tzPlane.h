@@ -15,16 +15,16 @@ class tzPlane: public tzIGeometricObject {
 	
 		tzPlane(const tzPlane& plane); 									// copy constructor
 		
-		virtual tzPlane* clone(void) const;
+		virtual std::shared_ptr<tzIGeometricObject> clone(void) const;
 
 		tzPlane& operator= (const tzPlane& rhs);
 		
 		virtual ~tzPlane(void);
 					
 		//
-		virtual bool shadowHit(const tzRay &ray, float &tmin) const;
+		virtual bool shadowHit(const tzRay &ray, const tzShadeRec& sr, float &tmin) const;
 		//
-		virtual bool hit(const tzRay& ray, float& tmin, tzShadeRec& sr) const;
+		virtual bool hit(const tzRay& ray, float& tmin, tzShadeRec& sr) ;
 
 		
 		

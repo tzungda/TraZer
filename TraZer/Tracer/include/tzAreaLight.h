@@ -18,13 +18,13 @@ class tzAreaLight: public tzILight {
 
 		tzAreaLight(const tzAreaLight& al);
 
-		virtual tzILight* clone(void) const;
+		virtual std::shared_ptr<tzILight> clone(void) const;
 		
 		virtual ~tzAreaLight(void);
 		
 		tzAreaLight& operator= (const tzAreaLight& rhs);
 		
-		void  setObject(tzIGeometricObject* obj_ptr);
+		void  setObject(std::shared_ptr<tzIGeometricObject>  obj_ptr, int threadId);
 		
 		virtual tzVector3D getDirection( tzShadeRec& s) ;
 		
@@ -38,8 +38,8 @@ class tzAreaLight: public tzILight {
 		
 	private:
 		
-		tzIGeometricObject* 	mObjectPtr;
-		tzIMaterial* 			mMaterialPtr;	 // will be an emissive material
+		std::shared_ptr<tzIGeometricObject> 	mObjectPtr;
+		std::shared_ptr < tzIMaterial> 			mMaterialPtr;	 // will be an emissive material
 		tzPoint3D				mSamplePoint[MAX_THREADS];
 		tzNormal				mLightNormal[MAX_THREADS];    // assigned in get_direction - which therefore can't be const for any light
 		tzVector3D				mWi[MAX_THREADS];			     // unit direction from hit point being shaded to sample point on light surface			
@@ -48,10 +48,10 @@ class tzAreaLight: public tzILight {
 
 
 //===================================================================================
-inline void tzAreaLight::setObject(tzIGeometricObject* objPtr) 
+inline void tzAreaLight::setObject(std::shared_ptr<tzIGeometricObject>  objPtr, int threadId)
 {
 	mObjectPtr = objPtr;
-	mMaterialPtr = mObjectPtr->getMaterial();
+	mMaterialPtr = mObjectPtr->getMaterial(threadId);
 }
 
 #endif

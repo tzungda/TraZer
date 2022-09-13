@@ -11,8 +11,7 @@ class tzAmbientOccluder: public tzILight {
 
 		tzAmbientOccluder(const tzAmbientOccluder& a);
 	
-		virtual tzILight*
-		clone(void) const;	
+		virtual std::shared_ptr<tzILight> clone(void) const;	
 		
 		tzAmbientOccluder&
 		operator= (const tzAmbientOccluder& rhs);
@@ -39,7 +38,7 @@ class tzAmbientOccluder: public tzILight {
 		virtual bool	inShadow(const tzRay &ray, const tzShadeRec &sr) const;
 
 		//
-		void		setSampler( tzISampler *samplerPtr );
+		void		setSampler(std::shared_ptr< tzISampler > samplerPtr );
 
 		//
 		void		setMinAmount( float minAmount );
@@ -48,7 +47,7 @@ class tzAmbientOccluder: public tzILight {
 	
 		float		mLs;
 		tzColor	mColor;
-		tzISampler	*mSamplerPtr;
+		std::shared_ptr< tzISampler > mSamplerPtr;
 		tzVector3D	mU, mV, mW;
 		tzColor	mMinAmount;
 };

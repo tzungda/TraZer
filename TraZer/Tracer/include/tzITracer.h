@@ -11,9 +11,9 @@ class tzWorld;
 class tzITracer {
 	public:
 	
-		tzITracer(void);									
+		tzITracer(void) = delete;									
 		
-		tzITracer( tzWorld* _mWorldPtr);						
+		tzITracer( tzWorld& _mWorldPtr);						
 				
 		virtual											
 		~tzITracer(void);									
@@ -26,7 +26,7 @@ class tzITracer {
 				
 	protected:
 	
-		tzWorld* mWorldPtr;
+		tzWorld& mWorldPtr;
 };
 
 #endif
