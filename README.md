@@ -4,8 +4,8 @@ My ray tracer and 3d-viewport based on [OpenGL 3D 繪圖互動程式設計](http
 
 
 ## Images
-OpenGL viewport
+OpenGL viewport  
 ![alt text](https://github.com/tzungda/TraZer/blob/master/images/opengl_70803.png)
 
-Ray tracing output
+Ray tracing output  
 ![alt text](https://github.com/tzungda/TraZer/blob/master/images/render_5065.png)
